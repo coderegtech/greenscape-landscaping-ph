@@ -1,6 +1,6 @@
 # Migration Plan
 
-Status: **design**. Source access (decision D3 in `implementation-plan.md`) is not yet granted, so nothing has been read from Firestore beyond what the public site renders.
+Status: **public content migrated (Phase 6)**: `scripts/migrate/` extracts what the public pages show (rendered pages plus the same unauthenticated Firestore reads the pages make; identity fields stripped; approved testimonials only) and seeds MongoDB (`pnpm content:seed`). Images still load from Firebase Storage; copying them to Supabase Storage, products, quotations history, users and employees wait for authorized exports (D3) and Phase 11. URL redirects are live (`apps/web/lib/legacy-redirects.ts` + proxy for story ids); product URLs come with Phase 8.
 
 ## Source inventory (from public client code + rendered pages)
 

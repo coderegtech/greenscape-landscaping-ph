@@ -1,5 +1,4 @@
 'use client';
-import { createSupabaseBrowserClient } from '@greenscape/auth/browser';
 import { Button } from '@greenscape/ui/components/button';
 import { fieldClass } from '@greenscape/ui/components/input';
 import { Textarea } from '@greenscape/ui/components/textarea';
@@ -27,6 +26,8 @@ const STEPS: { title: string; fields: FieldPath<QuoteRequestInput>[] }[] = [
 ];
 
 async function authHeader(): Promise<Record<string, string>> {
+  // Loaded on demand: the Supabase client is the heaviest part of this page and only needed to attach a token.
+  const { createSupabaseBrowserClient } = await import('@greenscape/auth/browser');
   const { data } = await createSupabaseBrowserClient().auth.getSession();
   return data.session ? { authorization: `Bearer ${data.session.access_token}` } : {};
 }

@@ -6,7 +6,10 @@ import { Button } from '../components/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/dropdown-menu';
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '../components/sheet';
 import { cn } from '../lib/utils';
-import { SwapNumber } from '../motion/presence';
+import dynamic from 'next/dynamic';
+
+// Motion is only needed once the cart has items; keep it out of every page's first load.
+const SwapNumber = dynamic(() => import('../motion/presence').then((m) => m.SwapNumber), { loading: () => null });
 
 export interface NavLink {
   label: string;

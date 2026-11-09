@@ -15,7 +15,7 @@ Living document; each phase adds its section. Threat model and DPA notes are in 
 | Privileged changes | Changing roles or suspending users requires `roles.manage` / `users.manage`; touching `super_admin` additionally needs `roles.manage_super`; nobody can change their own roles or status. Every change writes an `AuditLog` row (actor, before/after, IP, user agent) in the same transaction. |
 | Suspension | A suspended user is refused (403 `ACCOUNT_SUSPENDED`) on their next API request, even with a still-valid token. |
 | Redirects | Post-login `next` must be a same-site relative path (`safeNext`); `//host`, `/\host`, absolute and `javascript:` URLs fall back. Error banners use fixed codes, never text from the query string. |
-| Forms before JS loads | Auth forms use `method="post"`, so a submit before hydration can't put credentials in the URL or logs. |
+| Forms before JS loads | Auth forms use `method="post"`, so a submit before hydration can't put credentials in the URL or logs. Sign-out is a form POST to `/auth/signout` (server-side `signOut`, 303 redirect), so it works before hydration; SameSite=Lax cookies mean a cross-site form can't trigger it with the session. |
 | Enumeration | Password reset answers the same whether or not the account exists. |
 | First admin | `pnpm --filter @greenscape/database grant-role <email> super_admin` from a server shell (person must have signed in once). Audited with `via: cli`. |
 | Account linking | A new Supabase identity with a **verified** email that matches an existing user is linked to that user (re-created accounts, Firebase migration). Email confirmation is required before any session exists, so only the mailbox owner can trigger this. |

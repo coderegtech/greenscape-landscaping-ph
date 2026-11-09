@@ -1,4 +1,4 @@
-import { Toaster } from '@greenscape/ui/components/sonner';
+import { LazyToaster as Toaster } from '@greenscape/ui/components/lazy-toaster';
 import { TooltipProvider } from '@greenscape/ui/components/tooltip';
 import { fontVariables } from '@greenscape/ui/fonts';
 import { SiteFooter } from '@greenscape/ui/layout/site-footer';

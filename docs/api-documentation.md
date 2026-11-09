@@ -24,3 +24,11 @@ It is built from the same Zod schemas the API validates with (`packages/validati
 | PUT | `/v1/users/{id}/roles` | `roles.manage` (+ `roles.manage_super` for super_admin) | Replace roles; audited |
 | PATCH | `/v1/users/{id}/status` | `users.manage` | Suspend/reactivate; audited |
 | GET | `/v1/roles` | `users.read` | Roles with their permissions |
+| GET | `/v1/cms/site`, `/pages/{slug}`, `/services[/{slug}]`, `/projects[/{slug}]`, `/articles[/{slug}]`, `/articles/legacy/{id}`, `/gallery`, `/testimonials`, `/faqs` | — | Published content (Redis-cached; mounted before the per-IP limiter) |
+| POST | `/v1/quotations/attachments` | — (form limit) | Reserve a signed upload slot (photo/PDF ≤ 10 MB) |
+| POST | `/v1/quotations` | — (form limit) | Submit a quote request; emails team + customer |
+| GET | `/v1/quotations/mine` | signed in | Own requests and status |
+| GET | `/v1/quotations`, `/v1/quotations/{id}` | `quotations.read` | Inbox and detail (5-minute attachment links) |
+| PATCH / POST | `/v1/quotations/{id}`, `/{id}/notes` | `quotations.manage` | Status/assignee (audited), internal notes |
+| POST | `/v1/contact` | — (form limit) | Message to the team |
+| POST | `/v1/testimonials` | signed in | Feedback, held for moderation |

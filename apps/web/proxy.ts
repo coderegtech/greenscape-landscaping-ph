@@ -24,8 +24,9 @@ export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   if (LEGACY_STORY_PATHS.has(pathname)) return legacyStory(request);
 
+  const isProtected = PROTECTED.some((p) => pathname === p || pathname.startsWith(`${p}/`));
   const { response, user } = await refreshSession(request);
-  if (!user && PROTECTED.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+  if (!user && isProtected) {
     const login = new URL('/login', request.url);
     login.searchParams.set('next', pathname + search);
     return NextResponse.redirect(login);

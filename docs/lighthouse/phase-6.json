@@ -1,0 +1,84 @@
+{
+  "ranAt": "2026-11-09T17:09:51.503Z",
+  "base": "http://localhost:3000",
+  "rows": [
+    {
+      "page": "/",
+      "performance": 83,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "3.7 s",
+      "cls": "0",
+      "tbt": "310 ms",
+      "weight": "Total size was 626 KiB",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time",
+        "Browser errors were logged to the console"
+      ]
+    },
+    {
+      "page": "/services/garden-maintenance",
+      "performance": 93,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "2.5 s",
+      "cls": "0",
+      "tbt": "250 ms",
+      "weight": "Total size was 384 KiB",
+      "failing": [
+        "Total Blocking Time",
+        "Browser errors were logged to the console"
+      ]
+    },
+    {
+      "page": "/projects/sustainable-landscaping-in-action",
+      "performance": 85,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "3.5 s",
+      "cls": "0",
+      "tbt": "270 ms",
+      "weight": "Total size was 787 KiB",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time",
+        "Browser errors were logged to the console"
+      ]
+    },
+    {
+      "page": "/stories/a-new-digital-home-greenscape-unveils-official-website",
+      "performance": 93,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "2.5 s",
+      "cls": "0",
+      "tbt": "230 ms",
+      "weight": "Total size was 469 KiB",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time",
+        "Browser errors were logged to the console"
+      ]
+    },
+    {
+      "page": "/quote",
+      "performance": 91,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "2.3 s",
+      "cls": "0",
+      "tbt": "330 ms",
+      "weight": "Total size was 430 KiB",
+      "failing": [
+        "Total Blocking Time",
+        "Browser errors were logged to the console"
+      ]
+    }
+  ]
+}

@@ -130,21 +130,16 @@ export function ResetPasswordFormView() {
   );
 }
 
+/**
+ * Plain form POST to the app's /auth/signout route: works before (or without) JavaScript, so a quick click on a
+ * slow phone is never lost. The route ends the Supabase session server-side and redirects.
+ */
 export function SignOutButton() {
-  const [pending, setPending] = useState(false);
   return (
-    <Button
-      variant="secondary"
-      size="sm"
-      loading={pending}
-      onClick={async () => {
-        setPending(true);
-        await createSupabaseBrowserClient().auth.signOut();
-        // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full load on purpose: router.replace+refresh raced in Next 16 (docs/progress.md)
-        window.location.assign('/');
-      }}
-    >
-      Sign out
-    </Button>
+    <form method="post" action="/auth/signout">
+      <Button type="submit" variant="secondary" size="sm">
+        Sign out
+      </Button>
+    </form>
   );
 }

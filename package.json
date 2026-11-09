@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "pnpm -r --parallel --filter ./apps/* dev",
-    "build": "pnpm -r --filter ./apps/* build",
+    "build": "node scripts/build.mjs",
     "typecheck": "pnpm -r --parallel typecheck && tsc -p tests",
     "services:up": "docker compose -f docker/compose.dev.yml up -d --wait",
     "services:down": "docker compose -f docker/compose.dev.yml down",

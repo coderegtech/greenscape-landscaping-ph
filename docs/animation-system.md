@@ -22,7 +22,7 @@ Never the browser's `ease`, never `transition: all` (lint-enforced), never bounc
 | `Reveal kind="rise"` (fade + 12 px) | CSS + one shared IntersectionObserver; plays once; `index` staggers | Content is hidden only under `html.js` + `no-preference`, so it's visible without JS; under reduced motion it renders at its end state |
 | `Reveal kind="fade"` | as above, opacity only | same |
 | `Reveal kind="mask"` (image) | frame opens upward via `clip-path`, photo settles from 4% zoom | same |
-| `Parallax` | Motion `useScroll`/`useTransform`, ±6% inside a clipped frame | static |
+| `Parallax` | CSS scroll-driven animation (`animation-timeline: view()`), ±6% inside a clipped frame, zero JS | static (and where unsupported) |
 | `Counter` | Motion `animate` once in view; server HTML already holds the final number | shows final number |
 | `SwapNumber` | Motion `AnimatePresence`, 220 ms vertical swap (cart count, unread) | instant swap; change announced via `aria-live` |
 | Button press | `active:scale-[0.98]` at `--dur-micro` | n/a (instant) |
@@ -32,6 +32,7 @@ Never the browser's `ease`, never `transition: all` (lint-enforced), never bounc
 Why reveals are CSS, not Motion: Motion's `initial` state is written into server HTML (`opacity: 0`), which would make content invisible to visitors without JavaScript and to crawlers that don't run it. The CSS approach keeps server-rendered pages complete.
 
 ## Rules of use
+- **Never reveal above-the-fold content.** The hero headline, sentence and actions render immediately (they are usually the LCP element).
 - **One reveal language per page** (usually `rise`, plus `mask` for photographs). Hero text staggers 0, 1, 2; lists stagger by row. Nothing re-animates on scroll back up.
 - **Parallax only on hero/feature photographs**, never on text, never more than one per screen.
 - **Counters only for figures the business supplied.**

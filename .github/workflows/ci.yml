@@ -38,11 +38,14 @@ jobs:
       - run: pnpm db:deploy
       - run: pnpm db:seed
       - run: pnpm content:indexes
+      - run: pnpm content:seed
+      - run: pnpm storage:setup
 
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm test
       - run: pnpm test:integration
+      # Builds web + admin with the API running (the web app pre-renders pages from the CMS).
       - run: pnpm build
 
       - run: pnpm exec playwright install --with-deps chromium

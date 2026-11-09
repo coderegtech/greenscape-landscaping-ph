@@ -1,21 +1,15 @@
-'use client';
-import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
-import { useRef, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 /**
  * Subtle vertical parallax for a hero/feature image (client brief; Hallmark waiver recorded in theme.css).
- * Moves at most ±`amount`% inside a clipped frame, transform only; static under reduced motion.
+ * Pure CSS scroll-driven animation (theme.css `.gs-parallax`): no JavaScript, so it never delays the LCP image.
+ * Browsers without `animation-timeline` and visitors who prefer reduced motion get a still image.
+ * (A Motion/useScroll version measured a 2.9 s LCP render delay on mobile Lighthouse.)
  */
-export function Parallax({ children, amount = 6, className }: { children: ReactNode; amount?: number; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
-  const y = useTransform(scrollYProgress, [0, 1], [`-${amount}%`, `${amount}%`]);
+export function Parallax({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div ref={ref} className={`relative overflow-clip ${className ?? ''}`}>
-      <motion.div style={reduce ? undefined : { y, scale: 1 + (amount * 2.2) / 100 }} className="h-full w-full">
-        {children}
-      </motion.div>
+    <div className={`relative overflow-clip ${className ?? ''}`}>
+      <div className="gs-parallax h-full w-full">{children}</div>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { Button } from '@greenscape/ui/components/button';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@greenscape/ui/components/dialog';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 // 2 columns on phones; on wider screens pick 4 or 3, whichever leaves no orphan (or the fuller last row).
 function autoColumns(n: number) {
@@ -37,6 +37,7 @@ export function PhotoGrid({
   sizes?: string;
 }) {
   const [open, setOpen] = useState<number | null>(null);
+  const opener = useRef<HTMLButtonElement | null>(null);
   const go = useCallback((d: number) => setOpen((i) => (i === null ? i : (i + d + images.length) % images.length)), [images.length]);
   useEffect(() => {
     if (open === null) return;
@@ -57,7 +58,7 @@ export function PhotoGrid({
           <li key={im.url} className="min-w-0">
             <button
               type="button"
-              onClick={() => setOpen(i)}
+              onClick={(ev) => { opener.current = ev.currentTarget; setOpen(i); }}
               className="group photo-frame relative block w-full overflow-clip bg-paper-3"
               style={{ aspectRatio: ratio }}
               aria-label={`Open photo ${i + 1} of ${images.length}: ${im.alt}`}
@@ -68,7 +69,10 @@ export function PhotoGrid({
         ))}
       </ul>
       <Dialog open={open !== null} onOpenChange={(o) => !o && setOpen(null)}>
-        <DialogContent className="max-w-[min(96vw,80rem)] border-rule bg-paper-2 p-3 sm:max-w-[min(96vw,80rem)] md:p-4">
+        <DialogContent
+          // Opened from state, not a Dialog.Trigger: return focus to the photo that opened it.
+          onCloseAutoFocus={(ev) => { ev.preventDefault(); opener.current?.focus(); }}
+          className="max-w-[min(96vw,80rem)] border-rule bg-paper-2 p-3 sm:max-w-[min(96vw,80rem)] md:p-4">
           <DialogTitle className="sr-only">{label}</DialogTitle>
           <DialogDescription className="sr-only">
             Photo {open === null ? 0 : open + 1} of {images.length}. Use the arrow keys to move between photos.

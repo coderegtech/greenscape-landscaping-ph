@@ -19,7 +19,14 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 } } },
   ],
   webServer: [
-    { command: 'pnpm --filter @greenscape/api start', url: 'http://localhost:4000/v1/health/live', reuseExistingServer: !ci, timeout: 60_000 },
+    {
+      command: 'pnpm --filter @greenscape/api start',
+      url: 'http://localhost:4000/v1/health/live',
+      reuseExistingServer: !ci,
+      timeout: 60_000,
+      // Every test submission comes from 127.0.0.1; the production default (10/hour) would throttle the suite.
+      env: { ...(process.env as Record<string, string>), FORM_RATE_LIMIT_PER_HOUR: '1000' },
+    },
     { command: 'pnpm --filter @greenscape/web start', url: 'http://localhost:3000/api/health', reuseExistingServer: !ci, timeout: 60_000 },
     { command: 'pnpm --filter @greenscape/admin start', url: 'http://localhost:3001/api/health', reuseExistingServer: !ci, timeout: 60_000 },
   ],

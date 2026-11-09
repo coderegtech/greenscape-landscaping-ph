@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import { Photo } from '../components/photo';
 import { cn } from '../lib/utils';
 import { Parallax } from '../motion/parallax';
-import { Reveal } from '../motion/reveal';
 
 interface HeroImage {
   src: string;
@@ -32,18 +31,13 @@ export function PageHero({
 }) {
   const text = (
     <div className="flex max-w-[44rem] flex-col gap-4">
-      <Reveal kind="rise" index={0}>
-        <h1 className={cn('text-ink', size === 'full' ? 'text-display' : 'text-display-s')}>{title}</h1>
-      </Reveal>
+      {/* Above the fold: never wait for JS to show the headline (it is usually the LCP element). */}
+      <h1 className={cn('text-ink', size === 'full' ? 'text-display' : 'text-display-s')}>{title}</h1>
       {lead && (
-        <Reveal kind="rise" index={1}>
-          <p className="max-w-[38ch] text-lg text-ink">{lead}</p>
-        </Reveal>
+        <p className="max-w-[38ch] text-lg text-ink">{lead}</p>
       )}
       {actions && (
-        <Reveal kind="rise" index={2} className="mt-2 flex flex-wrap gap-3">
-          {actions}
-        </Reveal>
+        <div className="mt-2 flex flex-wrap gap-3">{actions}</div>
       )}
     </div>
   );

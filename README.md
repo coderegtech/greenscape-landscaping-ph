@@ -1,7 +1,7 @@
 # Greenscape Landscaping PH — Platform Rebuild
 
 Rebuild of https://greenscapelandscapingph.com into a public site, shop, CMS, attendance system and admin, as one platform.
-Branch: `rebuild/platform`. Status: **Phase 5 (Design system) complete** — see `docs/progress.md`.
+Branch: `rebuild/platform`. Status: **Phase 6 (Public website) complete** — see `docs/progress.md`.
 
 ## Stack (as installed)
 Next.js 16 · React 19 · Supabase Auth (local CLI) · Tailwind 4 · Express 5 · Prisma 7.10 (PostgreSQL 17) · MongoDB 8 driver 7 · ioredis 6 (Redis 7) · Zod 4 · Vitest 5 · Playwright 1.65 · TypeScript 5.9 · pnpm 10 · Node 24.
@@ -54,6 +54,12 @@ pnpm db:seed
 pnpm content:indexes
 ```
 ```bash
+pnpm content:seed
+```
+```bash
+pnpm storage:setup
+```
+```bash
 pnpm dev
 ```
 Then open http://localhost:3000 (site; sign up at /signup; design gallery at /design), http://localhost:3001 (admin) and http://localhost:4000/v1/docs (API docs). Verification and reset emails land in the local inbox at http://127.0.0.1:54324.
@@ -71,7 +77,7 @@ pnpm --filter @greenscape/database grant-role you@example.com super_admin
 | `pnpm lint` | ESLint (TypeScript, React hooks, Next.js, jsx-a11y) |
 | `pnpm test` | unit tests (no services needed) |
 | `pnpm test:integration` | API, auth/RBAC, cache, DB constraints against Docker services + local Supabase |
-| `pnpm build && pnpm test:e2e` | Playwright, desktop 1440 + mobile 390 |
+| `pnpm build && pnpm test:e2e` | Playwright, desktop 1440 + mobile 390 (build starts the API if needed: services + Supabase must be up) |
 
 CI (`.github/workflows/ci.yml`) runs all of the above on every push to `main`/`rebuild/**` and on PRs.
 
