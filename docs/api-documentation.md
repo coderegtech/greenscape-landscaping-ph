@@ -80,4 +80,26 @@ Money is a string with two decimals (`"1250.00"`, PHP). Prices are always read f
 | POST | `/v1/shop-admin/orders/{id}/fulfillment`, `/cancel`, `/refund` | `orders.fulfill` / `orders.manage` / `payments.refund` | Next fulfilment step (paid orders only); cancel unpaid; refund ≤ remaining, restock only with a full refund. Audited |
 | GET / PUT | `/v1/shop-admin/zones[/{id}]` | `settings.read` / `settings.manage` | Delivery fees; a zone can only be on with a fee (also a DB CHECK) |
 
+## Attendance and leave (Phase 9)
+Dates are `YYYY-MM-DD` in Asia/Manila; times are ISO instants. The server clock decides every punch.
+
+| Method | Path | Permission | Purpose |
+|---|---|---|---|
+| GET | `/v1/me/attendance/today` | `attendance.self` + linked employee | Schedule, record and whether clocked in (403 `NOT_AN_EMPLOYEE` otherwise) |
+| POST | `/v1/me/attendance/punch` | `attendance.self` | `{ type: IN \| OUT }`; 409 when already in / not in / within a minute of the last punch / day already approved |
+| GET | `/v1/me/attendance?from&to` | `attendance.self` | Own days (default last 30) |
+| POST | `/v1/me/attendance/corrections` | `attendance.self` | `{ workDate, punches: [{ type, time, nextDay }], reason }`, last 31 days, must alternate in/out; one waiting per day |
+| GET / POST | `/v1/me/leave`, `/v1/me/leave/{id}/cancel` | `leave.self` | Balances for this year and requests; request `{ leaveTypeId, startDate, endDate, halfDay, reason }`; withdraw a waiting one |
+| GET / POST / PUT | `/v1/hr/employees[/{id}]`, `/employees/{id}/link`, `/employees/{id}/schedule`, `/departments` | `employees.read` / `employees.manage` | Employees (linking by email grants the `employee` role; leaving removes it), departments, schedule assignment from a date |
+| GET / POST / PUT | `/v1/hr/schedules[/{id}]` | `employees.read` / `employees.manage` | Schedules with per-weekday blocks (end ≤ start = overnight) |
+| GET | `/v1/hr/attendance?date`, `/v1/hr/attendance/records?employeeId&from&to` | `attendance.read` | Daily board with counts; one employee's days |
+| PUT | `/v1/hr/attendance/records/{id}` | `attendance.manage` | Replace a day's punches with a reason (audited; not your own) |
+| POST | `/v1/hr/attendance/approve` | `attendance.approve` | `{ recordIds }`; finished days only, never your own; returns approved / skipped |
+| GET / POST | `/v1/hr/corrections`, `/v1/hr/corrections/{id}/decision` | `attendance.read` / `attendance.approve` | Queue (`status`); approve replaces punches and recomputes |
+| GET / POST | `/v1/hr/leave`, `/leave/{id}/decision`, `/leave/{id}/cancel` | `leave.read` / `leave.approve` | Requests (`status`, `from`, `to`); decide; cancel approved leave (days return) |
+| GET / PUT | `/v1/hr/leave/balances?year`, `/v1/hr/leave/balances` | `leave.read` / `employees.manage` | Balances grid; set an allotment (not below used) |
+| GET / POST / PUT | `/v1/hr/leave-types[/{id}]` | `leave.read` / `employees.manage` | Types and default days a year |
+| GET / POST / DELETE | `/v1/hr/holidays[?year]`, `/v1/hr/holidays/{id}` | `attendance.read` / `employees.manage` | Holidays (regular, special non-working, special working) |
+| GET | `/v1/hr/reports/attendance?from&to&format=json\|csv\|xlsx` | `reports.attendance` | Per employee: days worked, hours, late, undertime, overtime (recorded only), absences, missing time out, leave days; ≤ 1 year |
+
 Every write that changes public content deletes the Redis tags `cms:{type}` and `cms:{type}:{slug}` and POSTs them to `WEB_URL/api/revalidate` (header `x-revalidate-secret`). Public reads with `x-preview-secret: PREVIEW_SECRET` return the draft, uncached.

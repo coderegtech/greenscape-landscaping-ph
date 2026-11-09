@@ -39,14 +39,15 @@ const IA: { title: string; items: Item[] }[] = [
   {
     title: 'People',
     items: [
-      { label: 'Employees', href: '/employees', permission: 'employees.read', ready: false },
-      { label: 'Attendance', href: '/attendance', permission: 'attendance.read', ready: false },
-      { label: 'Leave', href: '/leave', permission: 'leave.read', ready: false },
+      { label: 'Employees', href: '/employees', permission: 'employees.read', ready: true },
+      { label: 'Attendance', href: '/attendance', permission: 'attendance.read', ready: true },
+      { label: 'Leave', href: '/leave', permission: 'leave.read', ready: true },
     ],
   },
   {
     title: 'System',
     items: [
+      { label: 'Attendance report', href: '/reports/attendance', permission: 'reports.attendance', ready: true },
       { label: 'Reports', href: '/reports', permission: 'reports.sales', ready: false },
       { label: 'Users & roles', href: '/users', permission: 'users.read', ready: false },
       { label: 'Delivery areas', href: '/settings/delivery', permission: 'settings.read', ready: true },

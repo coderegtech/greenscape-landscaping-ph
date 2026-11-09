@@ -51,5 +51,16 @@ Living document; each phase adds its section. Threat model and DPA notes are in 
 | Mock provider | `/v1/payments/mock/*` exists only when `PAYMENT_PROVIDER=mock`; anyone holding the unguessable ref can settle that payment, so mock must never be the provider in production. |
 | Image optimiser | `dangerouslyAllowLocalIP` is enabled only when the configured Supabase host is `127.0.0.1`/`localhost` (local dev and CI), never for a hosted project. |
 
+## Attendance and leave (Phase 9)
+| Concern | Implementation |
+|---|---|
+| Payroll exclusion | No pay, rate, allowance, deduction or government-ID fields in the schema, API, UI or exports (the report test checks the CSV has none). Overtime minutes are recorded only. |
+| Personal data (DPA, D6) | No clock-in photos and no location. A punch keeps the server time, its source and the network address. Only HR roles see other people's attendance; employees see their own. |
+| Time tampering | The browser never sends a time for a punch. Corrections are proposals that an approver must accept; HR edits need a reason and are audited with before/after. |
+| Double punches | A transaction-scoped advisory lock per employee plus "last punch" checks: 5 simultaneous taps make one punch (integration-tested). |
+| Conflicts of interest | Nobody can approve their own attendance days, corrections or leave, or edit their own day, even with the permission. |
+| Balances | Approval locks the balance row (`FOR UPDATE`) and refuses to go over; requests count waiting requests too. Allotments cannot go below days already used. |
+| Who is an employee | Determined server-side by `Employee.userId`. Linking happens only by matching an existing account's email and is audited; ending employment removes the `employee` role at once. |
+
 ## HTTP hardening (Phase 3)
 API: helmet defaults (CSP `default-src 'self'`, HSTS, nosniff, frame-ancestors self), CORS allow-list with credentials, Redis-backed rate limit (300/min/IP, fails open if Redis is down), 1 MB JSON body limit, request ids, no `x-powered-by`, log redaction of `authorization`/`cookie`. Next.js apps: nosniff, referrer policy, frame options, permissions policy; admin is `noindex`.

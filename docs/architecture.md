@@ -121,6 +121,9 @@ interface PaymentProvider {
 - UI shows a persistent **"Test mode — no real charge"** banner whenever `isTest`.
 - Swap path for production: a PayMongo / Xendit / Maya adapter (all support GCash, Maya, cards in PH) implementing the same interface. Recommendation in `docs/implementation-plan.md`.
 
+## 7b. Attendance (Phase 9)
+All rules live in pure functions (`apps/api/src/modules/attendance/time.ts`, unit-tested): Manila is a fixed UTC+8, so no time-zone library is needed. A punch belongs to the work date whose shift window (start − 4 h … end + 4 h) contains it, which keeps overnight shifts on the day they started. Days are recomputed from their punches whenever they change; a Redis-locked job every 15 minutes closes the last two days (absent, missing time out, holiday, leave). The employee portal is `/staff` on the public site (employees already have website accounts); HR works in the admin.
+
 ## 8. API surface (v1)
 
 `/v1/health`, `/v1/auth/me`, `/v1/users`, `/v1/roles`, `/v1/products`, `/v1/categories`, `/v1/inventory`, `/v1/cart`, `/v1/checkout`, `/v1/orders`, `/v1/payments` (+ `/webhooks/:provider`), `/v1/quotations`, `/v1/messages`, `/v1/cms/*`, `/v1/media`, `/v1/employees`, `/v1/schedules`, `/v1/attendance`, `/v1/leave`, `/v1/reports/*`, `/v1/settings`. OpenAPI at `/v1/docs`.

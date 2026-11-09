@@ -183,3 +183,4 @@ export const TestimonialRequest = z.object({
 export type TestimonialRequest = z.infer<typeof TestimonialRequest>;
 
 export * from './shop.ts';
+export * from './hr.ts';

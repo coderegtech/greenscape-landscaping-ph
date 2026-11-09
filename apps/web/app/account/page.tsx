@@ -25,6 +25,11 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           <SignOutButton />
         </div>
         {reset && <Notice tone="success">Your password has been changed.</Notice>}
+        {me.permissions.includes('attendance.self') && (
+          <p className="border-l-2 border-signal pl-4 text-lg">
+            <Link href="/staff">Open the staff page</Link> to clock in and out and request leave.
+          </p>
+        )}
         <FactList
           items={[
             { term: 'Email', detail: <span data-testid="account-email">{me.user.email}</span> },

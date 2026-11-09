@@ -2,7 +2,7 @@ import { refreshSession } from '@greenscape/auth/next';
 import { NextResponse, type NextRequest } from 'next/server';
 import { LEGACY_PRODUCT_PATHS, LEGACY_STORY_PATHS } from './lib/legacy-redirects';
 
-const PROTECTED = ['/account'];
+const PROTECTED = ['/account', '/staff'];
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 /** Old story and product links carried Firestore ids (`story.html?id=…`, `product-detail?id=…`): resolve to the new slug. */

@@ -20,6 +20,15 @@ await db.$transaction(async (tx) => {
   }
 });
 
+// Leave types: created once, never overwritten (HR edits names and days in the admin).
+// Service incentive leave is the statutory minimum (Labor Code Art. 95: 5 days a year after one year of service);
+// the others start at 0 days until HR sets the company's own allowance.
+for (const t of [
+  { key: 'service_incentive', name: 'Service incentive leave', defaultDaysPerYear: 5 },
+  { key: 'vacation', name: 'Vacation leave', defaultDaysPerYear: 0 },
+  { key: 'sick', name: 'Sick leave', defaultDaysPerYear: 0 },
+]) await db.leaveType.upsert({ where: { key: t.key }, create: t, update: {} });
+
 const counts = await db.role.findMany({ select: { key: true, _count: { select: { permissions: true } } }, orderBy: { key: 'asc' } });
 console.log('roles synced:', counts.map((r) => `${r.key}=${r._count.permissions}`).join(' '));
 await db.$disconnect();
