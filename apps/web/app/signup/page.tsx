@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: 'Create an account', robots: { index:
 
 export default function SignUpPage() {
   return (
-    <AuthCard title="Create an account" footer={<>Already have an account? <Link href="/login" className="font-medium text-forest-700 underline">Sign in</Link></>}>
+    <AuthCard title="Create an account" footer={<>Already have an account? <Link href="/login" className="font-medium text-ink">Sign in</Link></>}>
       <GoogleButton next="/account" />
       <SignUpFormView />
     </AuthCard>

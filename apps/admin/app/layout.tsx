@@ -1,4 +1,7 @@
-import type { Metadata } from 'next';
+import { Toaster } from '@greenscape/ui/components/sonner';
+import { TooltipProvider } from '@greenscape/ui/components/tooltip';
+import { fontVariables } from '@greenscape/ui/fonts';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -6,10 +9,17 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+export const viewport: Viewport = { themeColor: '#f6f3ea', colorScheme: 'light' };
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="bg-neutral-50">{children}</body>
+    <html lang="en" data-theme="admin" className={fontVariables}>
+      <body>
+        <TooltipProvider delayDuration={800}>
+          {children}
+          <Toaster />
+        </TooltipProvider>
+      </body>
     </html>
   );
 }

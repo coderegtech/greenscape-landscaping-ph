@@ -1,0 +1,340 @@
+/* Hallmark · v2.0.0 · theme: hedgerow (dealt 1/3, seed premium-landscaping-garden-maintenance-ff80·d24e6890·2026-11-09·r0) · colourway hedge, greens rotated 158→140 onto brand #163d08 · genre editorial · posture drenched · scope: design system (web + admin) */
+/* critique: a field guide to a tropical garden, Prata names over Manrope on leaf green, one chartreuse signal; risk is monotony on long pages, answered by cream and deep bands (two a page) and real photography */
+/* waive craft§5-parallax, craft§5-one-reveal: the client brief asks for scroll reveals, stagger, a subtle hero parallax and animated statistics; all are transform/opacity, IntersectionObserver-driven, off under reduced motion, content visible without JS */
+/* waive theme-motion-still: same reason; hover/state motion stays at --dur-short on --ease-out as the theme says */
+
+/*
+ * Imported by each app's globals.css right after `@import "tailwindcss";`.
+ * Raw tokens live on :root; @theme exposes them as Tailwind utilities (bg-paper, text-ink, font-display, text-display, p-lg …).
+ * shadcn's semantic variables (--background, --primary …) are mapped onto these tokens at the bottom.
+ */
+
+:root {
+  /* paper: the ground and its steps (dark, leaf green on the brand hue) */
+  --gs-paper: oklch(24% 0.058 142);
+  --gs-paper-2: oklch(19.5% 0.05 142);
+  --gs-paper-3: oklch(29.5% 0.055 142);
+  --gs-brand: oklch(32% 0.091 139); /* #163d08, the current Greenscape green */
+  /* ink */
+  --gs-ink: oklch(93% 0.022 88);
+  --gs-ink-2: oklch(81% 0.035 135);
+  --gs-muted: oklch(70% 0.045 135);
+  --gs-rule: oklch(35% 0.05 142);
+  --gs-rule-strong: oklch(48% 0.05 140);
+  /* the one signal */
+  --gs-signal: oklch(87% 0.19 118);
+  --gs-signal-2: oklch(92% 0.13 118);
+  --gs-signal-deep: oklch(46% 0.12 128);
+  --gs-signal-ink: oklch(22% 0.05 142);
+  --gs-focus: oklch(92% 0.13 118);
+  /* states (never the only signal: always paired with text or an icon) */
+  --gs-danger: oklch(74% 0.14 35);
+  --gs-danger-ink: oklch(22% 0.05 35);
+  --gs-success: var(--gs-signal);
+  /* overlays */
+  --gs-scrim: oklch(20% 0.05 142 / 0.7);
+  --gs-scrim-soft: oklch(20% 0.05 142 / 0.35);
+  --gs-photo-ring: oklch(93% 0.022 88 / 0.08);
+
+  /* motion */
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+  --stagger-row: 40ms;
+  --stagger-block: 80ms;
+}
+
+/* Admin: a light "cream proof" surface for an app screen, same families and hues. */
+[data-theme='admin'] {
+  --gs-paper: oklch(97% 0.012 95);
+  --gs-paper-2: oklch(94.5% 0.016 95);
+  --gs-paper-3: oklch(99% 0.006 95);
+  --gs-ink: oklch(22% 0.04 142);
+  --gs-ink-2: oklch(32% 0.035 142);
+  --gs-muted: oklch(48% 0.03 142);
+  --gs-rule: oklch(88% 0.02 120);
+  --gs-rule-strong: oklch(78% 0.03 130);
+  --gs-signal: oklch(32% 0.091 139);
+  --gs-signal-2: oklch(38% 0.1 139);
+  --gs-signal-deep: oklch(46% 0.12 128);
+  --gs-signal-ink: oklch(97% 0.012 95);
+  --gs-focus: oklch(46% 0.12 128);
+  --gs-danger: oklch(50% 0.17 30);
+  --gs-danger-ink: oklch(98% 0.01 30);
+}
+
+/* The cream band inside the green site: text and controls swap in the same rule. */
+.band-cream {
+  --gs-paper: oklch(93% 0.022 88);
+  --gs-paper-2: oklch(89% 0.026 88);
+  --gs-paper-3: oklch(96% 0.016 88);
+  --gs-ink: oklch(24% 0.058 142);
+  --gs-ink-2: oklch(30% 0.05 142);
+  --gs-muted: oklch(42% 0.04 142);
+  --gs-rule: oklch(80% 0.03 100);
+  --gs-signal: oklch(32% 0.091 139);
+  --gs-signal-2: oklch(38% 0.1 139);
+  --gs-signal-ink: oklch(93% 0.022 88);
+  --gs-focus: oklch(46% 0.12 128);
+  background-color: var(--gs-paper);
+  color: var(--gs-ink-2);
+}
+.band-deep {
+  background-color: var(--gs-paper-2);
+}
+
+@theme {
+  --color-paper: var(--gs-paper);
+  --color-paper-2: var(--gs-paper-2);
+  --color-paper-3: var(--gs-paper-3);
+  --color-brand: var(--gs-brand);
+  --color-ink: var(--gs-ink);
+  --color-ink-2: var(--gs-ink-2);
+  --color-muted: var(--gs-muted);
+  --color-rule: var(--gs-rule);
+  --color-rule-strong: var(--gs-rule-strong);
+  --color-signal: var(--gs-signal);
+  --color-signal-2: var(--gs-signal-2);
+  --color-signal-deep: var(--gs-signal-deep);
+  --color-signal-ink: var(--gs-signal-ink);
+  --color-focus: var(--gs-focus);
+  --color-danger: var(--gs-danger);
+  --color-danger-ink: var(--gs-danger-ink);
+  --color-scrim: var(--gs-scrim);
+
+  --font-display: var(--font-prata), 'Prata', Georgia, serif;
+  --font-body: var(--font-manrope), 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body);
+
+  /* 1.25 scale from a 16px base; body copy sits at --text-md (17px) */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.4;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.45;
+  --text-base: 1rem;
+  --text-base--line-height: 1.55;
+  --text-md: 1.0625rem;
+  --text-md--line-height: 1.6;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.45;
+  --text-xl: 1.5625rem;
+  --text-xl--line-height: 1.25;
+  --text-2xl: 1.953rem;
+  --text-2xl--line-height: 1.15;
+  --text-3xl: 2.441rem;
+  --text-3xl--line-height: 1.12;
+  --text-4xl: 3.052rem;
+  --text-4xl--line-height: 1.1;
+  --text-display-s: clamp(2.5rem, 1.75rem + 2.6vw, 3.815rem);
+  --text-display-s--line-height: 1.08;
+  --text-display: clamp(2.875rem, 1.6rem + 4.4vw, 5.25rem);
+  --text-display--line-height: 1.04;
+
+  /* spacing: Tailwind numeric scale (4px base). Hallmark names map as 2xs=1, xs=2, sm=3, md=4, lg=6, xl=10, 2xl=16, 3xl=24, 4xl=36.
+     (Named --spacing-* tokens are avoided: they collide with max-w-sm/md/lg container sizes in Tailwind v4.) */
+
+  --container-page: 80rem;
+  --container-prose: 68ch;
+  --container-admin: 96rem;
+
+  --radius-card: 0px;
+  --radius-control: 0px;
+  --radius-pill: 999px;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --breakpoint-sm: 30rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 90rem;
+}
+
+/* shadcn/ui semantic variables → our tokens (components installed into packages/ui read these). */
+@theme inline {
+  --color-background: var(--gs-paper);
+  --color-foreground: var(--gs-ink);
+  --color-card: var(--gs-paper-3);
+  --color-card-foreground: var(--gs-ink);
+  --color-popover: var(--gs-paper-2);
+  --color-popover-foreground: var(--gs-ink);
+  --color-primary: var(--gs-signal);
+  --color-primary-foreground: var(--gs-signal-ink);
+  --color-secondary: var(--gs-paper-3);
+  --color-secondary-foreground: var(--gs-ink);
+  --color-accent: var(--gs-paper-3);
+  --color-accent-foreground: var(--gs-ink);
+  --color-muted-foreground: var(--gs-muted);
+  --color-destructive: var(--gs-danger);
+  --color-destructive-foreground: var(--gs-danger-ink);
+  --color-border: var(--gs-rule);
+  --color-input: var(--gs-muted);
+  --color-ring: var(--gs-focus);
+  --radius: 0px;
+}
+
+@layer base {
+  html {
+    overflow-x: clip;
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+    color-scheme: dark;
+  }
+  html[data-theme='admin'] {
+    color-scheme: light;
+  }
+  body {
+    overflow-x: clip;
+    min-height: 100dvh;
+    background-color: var(--gs-paper);
+    color: var(--gs-ink-2);
+    font-family: var(--font-body);
+    font-size: var(--text-md);
+    line-height: 1.6;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--gs-ink);
+    line-height: 1.08;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+    min-width: 0;
+  }
+  h1 { max-width: 20ch; }
+  h2 { max-width: 30ch; }
+  h3 { max-width: 40ch; }
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+  a {
+    text-decoration-color: var(--gs-signal);
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+  :focus-visible {
+    outline: 2px solid var(--gs-focus);
+    outline-offset: 2px;
+  }
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline-offset: -2px;
+  }
+  ::selection {
+    background: var(--gs-signal);
+    color: var(--gs-signal-ink);
+  }
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+  [data-theme='admin'] body,
+  body[data-theme='admin'] {
+    font-size: var(--text-sm);
+  }
+}
+
+@layer utilities {
+  .figure {
+    font-family: var(--font-display);
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .label {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--gs-muted);
+  }
+  .photo-frame {
+    outline: 1px solid var(--gs-photo-ring);
+    outline-offset: -1px;
+  }
+  .container-page {
+    width: 100%;
+    max-width: var(--container-page);
+    margin-inline: auto;
+    padding-inline: calc(var(--spacing) * 4);
+  }
+  @media (min-width: 48rem) {
+    .container-page {
+      padding-inline: calc(var(--spacing) * 10);
+    }
+  }
+}
+
+/* Reduced motion: every reveal shows its end state; only `.keep-motion` (loaders) keeps moving. */
+@media (prefers-reduced-motion: reduce) {
+  *:not(.keep-motion),
+  *:not(.keep-motion)::before,
+  *:not(.keep-motion)::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Coarse pointers get 48px targets. */
+@media (pointer: coarse) {
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+@keyframes gs-appear {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/*
+ * Scroll reveal (see packages/ui/src/motion/reveal.tsx). Content is visible by default: it is only hidden once
+ * JS has run (html.js) and motion is allowed; the shared IntersectionObserver then sets [data-inview].
+ * Stagger: set --i on siblings (0, 1, 2 …); capped so a group never takes more than ~500 ms.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal] {
+    transition-property: opacity, transform, clip-path;
+    transition-duration: 640ms;
+    transition-timing-function: var(--ease-out);
+    transition-delay: calc(min(var(--i, 0), 6) * var(--stagger-block));
+  }
+  html.js [data-reveal='rise']:not([data-inview]) {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  html.js [data-reveal='fade']:not([data-inview]) {
+    opacity: 0;
+  }
+  /* image mask: the frame opens upward, the picture settles from a 4% zoom */
+  html.js [data-reveal='mask'] > * {
+    transition: transform 900ms var(--ease-out);
+  }
+  html.js [data-reveal='mask']:not([data-inview]) {
+    clip-path: inset(0 0 14% 0);
+    opacity: 0.001;
+  }
+  html.js [data-reveal='mask']:not([data-inview]) > * {
+    transform: scale(1.04);
+  }
+}

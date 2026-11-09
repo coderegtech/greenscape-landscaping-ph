@@ -1,46 +1,48 @@
 'use client';
-// Minimal accessible form primitives. Phase 5 replaces the styling with the design system; the API stays.
+// Form primitives used by every form (auth, quote, checkout, admin). API kept from Phase 4.
 import { useId, type InputHTMLAttributes, type ReactNode } from 'react';
+import { Button } from './components/button';
+import { Input } from './components/input';
+import { cn } from './lib/utils';
 
 type FieldProps = InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string; hint?: ReactNode };
 
+/** Label + input + hint/error, wired with aria-describedby / aria-invalid. Space for the message is reserved (no jump). */
 export function Field({ label, error, hint, className, ...input }: FieldProps) {
   const id = useId();
   const describedBy = [error && `${id}-error`, hint && `${id}-hint`].filter(Boolean).join(' ') || undefined;
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-ink">{label}</label>
-      <input
-        id={id}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={describedBy}
-        className={`h-11 rounded-md border bg-white px-3 text-base outline-none transition-colors focus-visible:ring-2 focus-visible:ring-forest-700/40 ${error ? 'border-red-600' : 'border-neutral-300 focus:border-forest-700'} ${className ?? ''}`}
-        {...input}
-      />
-      {hint && !error && <p id={`${id}-hint`} className="text-xs text-neutral-600">{hint}</p>}
-      {error && <p id={`${id}-error`} className="text-sm text-red-700">{error}</p>}
+    <div className="flex flex-col gap-1">
+      <label htmlFor={id} className="text-sm font-medium text-ink">
+        {label}
+      </label>
+      <Input id={id} aria-invalid={error ? true : undefined} aria-describedby={describedBy} className={className} {...input} />
+      <div className="min-h-[1lh] pb-2 text-sm">
+        {error ? (
+          <p id={`${id}-error`} className="text-danger">{error}</p>
+        ) : hint ? (
+          <p id={`${id}-hint`} className="text-muted">{hint}</p>
+        ) : null}
+      </div>
     </div>
   );
 }
 
-export function SubmitButton({ pending, children }: { pending: boolean; children: ReactNode }) {
+export function SubmitButton({ pending, children, className }: { pending: boolean; children: ReactNode; className?: string }) {
   return (
-    <button
-      type="submit"
-      disabled={pending}
-      aria-busy={pending}
-      className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-forest-900 px-5 font-medium text-white transition-[transform,background-color] hover:bg-forest-700 active:scale-[0.98] disabled:cursor-progress disabled:opacity-70"
-    >
-      {pending && <span aria-hidden className="size-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />}
+    <Button type="submit" loading={pending} className={cn('w-full sm:w-auto', className)}>
       {children}
-    </button>
+    </Button>
   );
 }
 
-/** Polite live region so screen readers hear success/error banners. */
+/** Banner for form results. Errors are role=alert (assertive), successes role=status (polite). */
 export function Notice({ tone, children }: { tone: 'error' | 'success'; children: ReactNode }) {
   return (
-    <div role={tone === 'error' ? 'alert' : 'status'} className={`rounded-md px-4 py-3 text-sm ${tone === 'error' ? 'bg-red-50 text-red-800' : 'bg-green-50 text-forest-900'}`}>
+    <div
+      role={tone === 'error' ? 'alert' : 'status'}
+      className={cn('border-l-2 px-4 py-3 text-base', tone === 'error' ? 'border-danger bg-paper-2 text-ink' : 'border-signal bg-paper-2 text-ink')}
+    >
       {children}
     </div>
   );
@@ -48,10 +50,12 @@ export function Notice({ tone, children }: { tone: 'error' | 'success'; children
 
 export function AuthCard({ title, children, footer }: { title: string; children: ReactNode; footer?: ReactNode }) {
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-4 py-12">
-      <h1 className="mb-6 text-3xl font-semibold text-forest-900">{title}</h1>
-      <div className="flex flex-col gap-5">{children}</div>
-      {footer && <div className="mt-6 text-sm text-neutral-700">{footer}</div>}
+    <main id="main" className="container-page py-16 md:py-24">
+      <div className="mx-auto w-full max-w-[30rem]">
+        <h1 className="mb-10 text-4xl text-ink">{title}</h1>
+        <div className="flex flex-col gap-6">{children}</div>
+        {footer && <div className="mt-10 border-t border-rule pt-6 text-base text-ink-2">{footer}</div>}
+      </div>
     </main>
   );
 }

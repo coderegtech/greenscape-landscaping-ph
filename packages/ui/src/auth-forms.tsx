@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { z } from 'zod';
+import { Button } from './components/button';
 import { Field, Notice, SubmitButton } from './form.tsx';
 
 const callback = (next: string) => `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
@@ -21,17 +22,13 @@ function friendly(message: string) {
 export function GoogleButton({ next }: { next: string }) {
   if (process.env.NEXT_PUBLIC_AUTH_GOOGLE !== 'true') return null;
   return (
-    <button
-      type="button"
-      onClick={() => createSupabaseBrowserClient().auth.signInWithOAuth({ provider: 'google', options: { redirectTo: callback(next) } })}
-      className="inline-flex h-11 items-center justify-center rounded-md border border-neutral-300 bg-white font-medium hover:bg-neutral-50"
-    >
+    <Button variant="secondary" onClick={() => createSupabaseBrowserClient().auth.signInWithOAuth({ provider: 'google', options: { redirectTo: callback(next) } })}>
       Continue with Google
-    </button>
+    </Button>
   );
 }
 
-export function SignInFormView({ next }: { next: string }) {
+export function SignInFormView({ next, forgotHref = '/forgot-password' }: { next: string; forgotHref?: string }) {
   const [error, setError] = useState<string>();
   const { register, handleSubmit, formState } = useForm<z.input<typeof SignInForm>, unknown, z.output<typeof SignInForm>>({ resolver: zodResolver(SignInForm) });
 
@@ -39,15 +36,16 @@ export function SignInFormView({ next }: { next: string }) {
     setError(undefined);
     const { error } = await createSupabaseBrowserClient().auth.signInWithPassword({ email, password });
     if (error) return setError(friendly(error.message));
+     
     window.location.assign(next); // full load: server renders with the new session cookie
   });
 
   return (
-    <form method="post" onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
+    <form method="post" onSubmit={onSubmit} noValidate className="flex flex-col gap-2">
       {error && <Notice tone="error">{error}</Notice>}
       <Field label="Email" type="email" autoComplete="email" error={formState.errors.email?.message} {...register('email')} />
       <Field label="Password" type="password" autoComplete="current-password" error={formState.errors.password?.message} {...register('password')} />
-      <Link href="/forgot-password" className="self-end text-sm text-forest-700 underline-offset-2 hover:underline">Forgot password?</Link>
+      <Link href={forgotHref} className="-mt-2 mb-3 self-start text-sm text-ink underline decoration-signal underline-offset-[0.2em] hover:decoration-2">Forgot password?</Link>
       <SubmitButton pending={formState.isSubmitting}>Sign in</SubmitButton>
     </form>
   );
@@ -77,19 +75,19 @@ export function SignUpFormView() {
     );
   }
   return (
-    <form method="post" onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
+    <form method="post" onSubmit={onSubmit} noValidate className="flex flex-col gap-2">
       {error && <Notice tone="error">{error}</Notice>}
       <Field label="Full name" autoComplete="name" error={formState.errors.name?.message} {...register('name')} />
       <Field label="Email" type="email" autoComplete="email" error={formState.errors.email?.message} {...register('email')} />
       <Field label="Password" type="password" autoComplete="new-password" hint="At least 8 characters with upper- and lowercase letters and a number." error={formState.errors.password?.message} {...register('password')} />
       <Field label="Confirm password" type="password" autoComplete="new-password" error={formState.errors.confirm?.message} {...register('confirm')} />
-      <label className="flex items-start gap-3 text-sm">
-        <input type="checkbox" className="mt-1 size-4 accent-forest-900" aria-invalid={formState.errors.consent ? true : undefined} {...register('consent')} />
+      <label className="flex cursor-pointer items-start gap-3 py-2 text-sm text-ink-2">
+        <input type="checkbox" className="mt-0.5 size-5 shrink-0 accent-[var(--gs-signal)]" aria-invalid={formState.errors.consent ? true : undefined} {...register('consent')} />
         <span>
-          I have read the <Link href="/privacy" className="text-forest-700 underline">Privacy Notice</Link> and agree to Greenscape processing my details to manage my account and orders.
+          I have read the <Link href="/privacy" className="text-ink underline decoration-signal">Privacy Notice</Link> and agree to Greenscape processing my details to manage my account and orders.
         </span>
       </label>
-      {formState.errors.consent && <p className="-mt-2 text-sm text-red-700">{formState.errors.consent.message}</p>}
+      {formState.errors.consent && <p className="-mt-2 mb-2 text-sm text-danger">{formState.errors.consent.message}</p>}
       <SubmitButton pending={formState.isSubmitting}>Create account</SubmitButton>
     </form>
   );
@@ -105,7 +103,7 @@ export function ForgotPasswordFormView() {
   });
   if (sent) return <Notice tone="success">If an account exists for that email, a reset link is on its way.</Notice>;
   return (
-    <form method="post" onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
+    <form method="post" onSubmit={onSubmit} noValidate className="flex flex-col gap-2">
       <Field label="Email" type="email" autoComplete="email" error={formState.errors.email?.message} {...register('email')} />
       <SubmitButton pending={formState.isSubmitting}>Send reset link</SubmitButton>
     </form>
@@ -119,10 +117,11 @@ export function ResetPasswordFormView() {
     setError(undefined);
     const { error } = await createSupabaseBrowserClient().auth.updateUser({ password });
     if (error) return setError(friendly(error.message));
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full load on purpose: router.replace+refresh raced in Next 16 (docs/progress.md)
     window.location.assign('/account?reset=1');
   });
   return (
-    <form method="post" onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
+    <form method="post" onSubmit={onSubmit} noValidate className="flex flex-col gap-2">
       {error && <Notice tone="error">{error}</Notice>}
       <Field label="New password" type="password" autoComplete="new-password" error={formState.errors.password?.message} {...register('password')} />
       <Field label="Confirm new password" type="password" autoComplete="new-password" error={formState.errors.confirm?.message} {...register('confirm')} />
@@ -134,17 +133,18 @@ export function ResetPasswordFormView() {
 export function SignOutButton() {
   const [pending, setPending] = useState(false);
   return (
-    <button
-      type="button"
-      disabled={pending}
+    <Button
+      variant="secondary"
+      size="sm"
+      loading={pending}
       onClick={async () => {
         setPending(true);
         await createSupabaseBrowserClient().auth.signOut();
+        // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full load on purpose: router.replace+refresh raced in Next 16 (docs/progress.md)
         window.location.assign('/');
       }}
-      className="inline-flex h-10 items-center rounded-md border border-neutral-300 px-4 text-sm font-medium hover:bg-neutral-50 disabled:opacity-60"
     >
-      {pending ? 'Signing out…' : 'Sign out'}
-    </button>
+      Sign out
+    </Button>
   );
 }

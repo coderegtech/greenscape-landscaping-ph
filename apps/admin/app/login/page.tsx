@@ -11,10 +11,10 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
   const { next, error } = await searchParams;
   const to = safeNext(next, '/');
   return (
-    <AuthCard title="Greenscape Admin" footer="Staff accounts are created by an administrator. Forgot your password? Reset it on the main site.">
+    <AuthCard title="Greenscape Admin" footer="Staff accounts are created by an administrator.">
       {error && ERRORS[error] && <Notice tone="error">{ERRORS[error]}</Notice>}
       <GoogleButton next={to} />
-      <SignInFormView next={to} />
+      <SignInFormView next={to} forgotHref={`${process.env.WEB_URL ?? 'http://localhost:3000'}/forgot-password`} />
     </AuthCard>
   );
 }

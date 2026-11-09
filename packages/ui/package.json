@@ -5,7 +5,14 @@
   "type": "module",
   "exports": {
     "./form": "./src/form.tsx",
-    "./auth-forms": "./src/auth-forms.tsx"
+    "./auth-forms": "./src/auth-forms.tsx",
+    "./components/*": "./src/components/*.tsx",
+    "./layout/*": "./src/layout/*.tsx",
+    "./motion/*": "./src/motion/*.tsx",
+    "./lib/*": "./src/lib/*.ts",
+    "./hooks/*": "./src/hooks/*.ts",
+    "./styles/theme.css": "./src/styles/theme.css",
+    "./fonts": "./src/fonts.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
@@ -18,7 +25,15 @@
     "@greenscape/auth": "workspace:*",
     "@greenscape/validation": "workspace:*",
     "@hookform/resolvers": "^7.0.5",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.70.0",
+    "motion": "^14.11.1",
+    "radix-ui": "^1.8.1",
     "react-hook-form": "^7.91.0",
+    "sonner": "^2.0.8",
+    "tailwind-merge": "^3.7.0",
+    "tw-animate-css": "^1.4.0",
     "zod": "^4.6.7"
   },
   "devDependencies": {
