@@ -1,0 +1,1 @@
+{ "extends": "@greenscape/config/tsconfig.next.json", "compilerOptions": { "incremental": false, "plugins": [] }, "include": ["src"] }

@@ -56,7 +56,7 @@ Browsers never talk to Postgres/Mongo/Redis. The only direct browser→Supabase 
 ## 4. Authentication & authorization
 
 - **Supabase Auth** is the identity provider for every user type. Next.js uses `@supabase/ssr` (cookie session, refreshed in middleware).
-- **Express verifies** the access token on every request with Supabase's JWKS (`jose` `createRemoteJWKSet`, asymmetric signing keys); falls back to HS256 project secret only if the project hasn't migrated to signing keys. Checks `iss`, `aud=authenticated`, `exp`.
+- **Express verifies** the access token on every request against the Supabase JWKS (`jose` `createRemoteJWKSet`, ES256/RS256 only; local dev uses generated ES256 signing keys so all environments share one code path). Checks `iss`, `aud=authenticated`, `exp`. No HS256 shared-secret fallback.
 - **Mapping**: `sub` → `User.authUserId`. First authenticated call upserts the `User` and grants `customer`. Staff roles are granted only by an admin (audited).
 - **RBAC**: `requirePermission('orders.refund')` middleware loads the user's permission set from Postgres (Redis-cached per user, TTL 60 s, busted on role change). JWT claims are never trusted for roles.
 - Admin app is a separate origin; admin routes additionally require MFA-enrolled (`aal2`) sessions for `super_admin`/`admin` once enabled.

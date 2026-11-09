@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../../../packages/ui/src";
 
 /* Brand anchors from the audit (docs/audit/ui-components.md). Full token system lands in Phase 5. */
 @theme {

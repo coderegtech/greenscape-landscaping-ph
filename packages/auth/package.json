@@ -1,0 +1,32 @@
+{
+  "name": "@greenscape/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./server": "./src/verify.ts",
+    "./next": "./src/next.ts",
+    "./browser": "./src/browser.ts",
+    "./api": "./src/api.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.119.0",
+    "jose": "^6.2.16",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@greenscape/config": "workspace:*",
+    "@types/react": "^19.3.0",
+    "next": "^16.4.5",
+    "react": "^19.3.1"
+  },
+  "peerDependencies": {
+    "next": ">=16",
+    "react": ">=19"
+  }
+}

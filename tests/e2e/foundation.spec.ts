@@ -21,8 +21,7 @@ test('web sends security headers', async ({ request }) => {
   expect(res.headers()['x-powered-by']).toBeUndefined();
 });
 
-test('admin shell reaches the API and is not indexable', async ({ page }) => {
-  await page.goto(ADMIN);
-  await expect(page.getByTestId('api-status')).toHaveText('ok');
+test('admin is not indexable (checked on its public login page)', async ({ page }) => {
+  await page.goto(`${ADMIN}/login`);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
 });

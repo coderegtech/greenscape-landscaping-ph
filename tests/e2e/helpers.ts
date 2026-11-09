@@ -1,0 +1,51 @@
+import { randomUUID } from 'node:crypto';
+import { expect } from '@playwright/test';
+import { createClient } from '@supabase/supabase-js';
+import { createPrismaClient } from '@greenscape/database';
+
+export const WEB = 'http://localhost:3000';
+export const ADMIN = 'http://localhost:3001';
+export const PASSWORD = 'Greenscape-E2e-2026';
+export const email = (label: string) => `${label}-${randomUUID().slice(0, 8)}@e2e.greenscape.local`;
+
+const mailpit = () => process.env.MAILPIT_URL ?? 'http://127.0.0.1:54324';
+
+/** Polls the local Mailpit inbox and returns the first link in the newest mail to `to` matching `pattern`. */
+export async function linkFromEmail(to: string, pattern = /https?:\/\/[^"'\s<>]+\/auth\/v1\/verify[^"'\s<>]+/): Promise<string> {
+  let link: string | undefined;
+  await expect
+    .poll(async () => {
+      const search = await fetch(`${mailpit()}/api/v1/search?query=${encodeURIComponent(`to:"${to}"`)}`).then((r) => r.json());
+      const id = search.messages?.[0]?.ID;
+      if (!id) return undefined;
+      const msg = await fetch(`${mailpit()}/api/v1/message/${id}`).then((r) => r.json());
+      link = (msg.HTML as string).match(pattern)?.[0]?.replaceAll('&amp;', '&');
+      return link;
+    }, { timeout: 15_000, message: `email to ${to}` })
+    .toBeTruthy();
+  return link!;
+}
+
+export function supabaseAdmin() {
+  return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!, { auth: { persistSession: false, autoRefreshToken: false } });
+}
+
+/** A confirmed account created directly (skips the email step for tests that aren't about sign-up). */
+export async function confirmedUser(label: string) {
+  const e = email(label);
+  const { data, error } = await supabaseAdmin().auth.admin.createUser({ email: e, password: PASSWORD, email_confirm: true });
+  if (error) throw error;
+  return { email: e, authUserId: data.user.id };
+}
+
+/** Grants roles in Postgres. The user row must exist (it does after their first signed-in API call). */
+export async function grantRoles(userEmail: string, roles: string[]) {
+  const db = createPrismaClient(process.env.DATABASE_URL!);
+  try {
+    const user = await db.user.findUniqueOrThrow({ where: { email: userEmail } });
+    const rows = await db.role.findMany({ where: { key: { in: roles } } });
+    await db.userRole.createMany({ data: rows.map((r) => ({ userId: user.id, roleId: r.id })), skipDuplicates: true });
+  } finally {
+    await db.$disconnect();
+  }
+}

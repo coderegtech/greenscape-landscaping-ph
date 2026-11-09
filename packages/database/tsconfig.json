@@ -1,1 +1,1 @@
-{ "extends": "@greenscape/config/tsconfig.base.json", "include": ["src", "prisma.config.ts"] }
+{ "extends": "@greenscape/config/tsconfig.base.json", "include": ["src", "prisma", "prisma.config.ts"] }

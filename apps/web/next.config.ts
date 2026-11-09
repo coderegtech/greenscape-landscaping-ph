@@ -13,6 +13,7 @@ const securityHeaders = [
 const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  transpilePackages: ['@greenscape/auth', '@greenscape/ui', '@greenscape/validation'],
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];
   },

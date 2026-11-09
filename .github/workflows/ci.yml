@@ -26,7 +26,17 @@ jobs:
 
       # Same compose file as local dev (Mongo needs a replica set, which service containers can't configure).
       - run: pnpm services:up
+
+      # Local Supabase (auth + mail) with a throwaway ES256 signing key, like a hosted project.
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: echo '[]' > supabase/signing_keys.json && supabase gen signing-key --algorithm ES256 --append
+      - run: pnpm supabase:start
+      - run: pnpm supabase:env
+
       - run: pnpm db:deploy
+      - run: pnpm db:seed
       - run: pnpm content:indexes
 
       - run: pnpm typecheck

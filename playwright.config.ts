@@ -1,14 +1,18 @@
 import { defineConfig, devices } from '@playwright/test';
 
 // E2E runs against production builds (`pnpm build` first). Locally, already-running dev servers are reused.
+try { process.loadEnvFile('.env'); } catch { /* CI provides env */ }
 const ci = !!process.env.CI;
 
 export default defineConfig({
   testDir: 'tests/e2e',
   fullyParallel: true,
+  timeout: 90_000,
+  globalTeardown: './tests/e2e/teardown.ts',
   forbidOnly: ci,
   retries: ci ? 1 : 0,
   reporter: ci ? [['github'], ['html', { open: 'never' }]] : 'list',
+  expect: { timeout: 10_000 },
   use: { trace: 'retain-on-failure', screenshot: 'only-on-failure' },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },

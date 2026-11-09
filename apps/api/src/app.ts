@@ -8,7 +8,10 @@ import { openApiDocument } from './lib/openapi.ts';
 import { errorHandler, notFound } from './middleware/error-handler.ts';
 import { apiRateLimit } from './middleware/rate-limit.ts';
 import { requestId } from './middleware/request-id.ts';
+import { authenticate } from './middleware/auth.ts';
+import { authRoutes } from './modules/auth/routes.ts';
 import { healthRoutes } from './modules/health/routes.ts';
+import { userRoutes } from './modules/users/routes.ts';
 
 export function createApp(deps: Deps) {
   const { env, log } = deps;
@@ -46,6 +49,11 @@ export function createApp(deps: Deps) {
   app.get('/v1/openapi.json', (_req, res) => { res.json(doc); });
   // Swagger UI ships inline scripts; relax CSP for this route only.
   app.use('/v1/docs', helmet({ contentSecurityPolicy: false }), swaggerUi.serve, swaggerUi.setup(doc));
+
+  // Everything below may see a signed-in user; routes decide whether one is required.
+  app.use('/v1', authenticate(deps));
+  app.use('/v1/auth', authRoutes(deps));
+  app.use('/v1', userRoutes(deps));
 
   app.use(notFound);
   app.use(errorHandler);

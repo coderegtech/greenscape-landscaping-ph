@@ -8,6 +8,7 @@ export const EnvSchema = z.object({
   MONGODB_URL: z.string().startsWith('mongodb'),
   MONGODB_DB: z.string().default('greenscape'),
   REDIS_URL: z.string().startsWith('redis'),
+  SUPABASE_URL: z.string().url(),
   CACHE_PREFIX: z.string().default('gs:dev'),
   CORS_ORIGINS: csv,
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),

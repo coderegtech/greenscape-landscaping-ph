@@ -1,5 +1,6 @@
 import { createCache, createRedis, type Cache, type Redis } from '@greenscape/cache';
 import { connectContentDb } from '@greenscape/content';
+import { createTokenVerifier, type TokenVerifier } from '@greenscape/auth/server';
 import { createPrismaClient, type Db } from '@greenscape/database';
 import type { MongoClient, MongoDb } from '@greenscape/content';
 import type { Env } from '../config/env.ts';
@@ -13,6 +14,7 @@ export interface Deps {
   mongo: { client: MongoClient; db: MongoDb };
   redis: Redis;
   cache: Cache;
+  verifyToken: TokenVerifier;
 }
 
 export async function createDeps(env: Env, log: Logger): Promise<Deps> {
@@ -23,7 +25,7 @@ export async function createDeps(env: Env, log: Logger): Promise<Deps> {
   // Redis is optional at boot: the app serves from the databases while it reconnects.
   await redis.connect().catch((err) => log.warn({ err: err.message }, 'redis unavailable at boot; continuing without cache'));
   const cache = createCache({ redis, prefix: env.CACHE_PREFIX, logger: log });
-  return { env, log, db, mongo, redis, cache };
+  return { env, log, db, mongo, redis, cache, verifyToken: createTokenVerifier(env.SUPABASE_URL) };
 }
 
 export async function closeDeps(d: Deps) {

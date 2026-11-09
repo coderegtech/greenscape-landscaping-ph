@@ -1,0 +1,31 @@
+{
+  "name": "@greenscape/ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./form": "./src/form.tsx",
+    "./auth-forms": "./src/auth-forms.tsx"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "next": ">=16",
+    "react": ">=19"
+  },
+  "dependencies": {
+    "@greenscape/auth": "workspace:*",
+    "@greenscape/validation": "workspace:*",
+    "@hookform/resolvers": "^7.0.5",
+    "react-hook-form": "^7.91.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@greenscape/config": "workspace:*",
+    "@types/react": "^19.3.0",
+    "next": "^16.4.5",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  }
+}

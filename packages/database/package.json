@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./rbac": "./src/rbac.ts"
   },
   "scripts": {
     "generate": "prisma generate",
@@ -12,11 +13,14 @@
     "migrate:deploy": "prisma migrate deploy",
     "studio": "prisma studio",
     "postinstall": "prisma generate",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "seed": "tsx prisma/seed.ts",
+    "grant-role": "tsx prisma/grant-role.ts"
   },
   "devDependencies": {
     "@greenscape/config": "workspace:*",
-    "prisma": "7.10.1"
+    "prisma": "7.10.1",
+    "tsx": "^4.23.15"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",
