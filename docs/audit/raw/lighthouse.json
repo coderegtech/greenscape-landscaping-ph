@@ -1,0 +1,466 @@
+{
+  "ranAt": "2026-11-09T12:01:01.924Z",
+  "results": [
+    {
+      "url": "/",
+      "preset": "mobile",
+      "scores": {
+        "performance": 59,
+        "accessibility": 70,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": "26.0 s",
+      "fcp": "2.8 s",
+      "tbt": "160 ms",
+      "cls": "0",
+      "si": "15.0 s",
+      "weight": "Total size was 33,068 KiB",
+      "opportunities": [
+        "Defer offscreen images — Est savings of 530 KiB",
+        "Eliminate render-blocking resources — Est savings of 1,230 ms",
+        "Minify CSS — Est savings of 3 KiB",
+        "Minify JavaScript — Est savings of 14 KiB",
+        "Reduce unused JavaScript — Est savings of 81 KiB",
+        "Serve images in next-gen formats — Est savings of 3,355 KiB",
+        "Efficiently encode images — Est savings of 130 KiB",
+        "Properly size images — Est savings of 9,712 KiB",
+        "Avoid serving legacy JavaScript to modern browsers"
+      ],
+      "failingA11y": [
+        "Buttons do not have an accessible name",
+        "Background and foreground colors do not have a sufficient contrast ratio.",
+        "Heading elements are not in a sequentially-descending order",
+        "Links do not have a discernible name",
+        "Touch targets do not have sufficient size or spacing."
+      ],
+      "failingSeo": [],
+      "failingBestPractices": []
+    },
+    {
+      "url": "/",
+      "preset": "desktop",
+      "scores": {
+        "performance": 65,
+        "accessibility": 79,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": "7.5 s",
+      "fcp": "0.6 s",
+      "tbt": "0 ms",
+      "cls": "0.003",
+      "si": "7.0 s",
+      "weight": "Total size was 32,919 KiB",
+      "opportunities": [
+        "Eliminate render-blocking resources — Est savings of 180 ms",
+        "Minify CSS — Est savings of 3 KiB",
+        "Minify JavaScript — Est savings of 5 KiB",
+        "Reduce unused JavaScript — Est savings of 62 KiB",
+        "Serve images in next-gen formats — Est savings of 3,355 KiB",
+        "Efficiently encode images — Est savings of 130 KiB",
+        "Properly size images — Est savings of 10,007 KiB"
+      ],
+      "failingA11y": [
+        "Buttons do not have an accessible name",
+        "Background and foreground colors do not have a sufficient contrast ratio.",
+        "Links do not have a discernible name"
+      ],
+      "failingSeo": [],
+      "failingBestPractices": []
+    },
+    {
+      "url": "/pages/services/landscaping/",
+      "preset": "mobile",
+      "scores": {
+        "performance": 67,
+        "accessibility": 78,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": "9.9 s",
+      "fcp": "1.8 s",
+      "tbt": "110 ms",
+      "cls": "0.001",
+      "si": "6.5 s",
+      "weight": "Total size was 5,204 KiB",
+      "opportunities": [
+        "Eliminate render-blocking resources — Est savings of 860 ms",
+        "Minify CSS — Est savings of 3 KiB",
+        "Minify JavaScript — Est savings of 14 KiB",
+        "Reduce unused CSS — Est savings of 14 KiB",
+        "Reduce unused JavaScript — Est savings of 28 KiB",
+        "Serve images in next-gen formats — Est savings of 33 KiB",
+        "Properly size images — Est savings of 3,624 KiB",
+        "Avoid serving legacy JavaScript to modern browsers"
+      ],
+      "failingA11y": [
+        "Buttons do not have an accessible name",
+        "Links do not have a discernible name",
+        "Touch targets do not have sufficient size or spacing."
+      ],
+      "failingSeo": [],
+      "failingBestPractices": []
+    },
+    {
+      "url": "/pages/services/landscaping/",
+      "preset": "desktop",
+      "scores": {
+        "performance": 85,
+        "accessibility": 92,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": "2.2 s",
+      "fcp": "0.5 s",
+      "tbt": "0 ms",
+      "cls": "0.041",
+      "si": "2.1 s",
+      "weight": "Total size was 5,072 KiB",
+      "opportunities": [
+        "Eliminate render-blocking resources — Est savings of 270 ms",
+        "Minify CSS — Est savings of 3 KiB",
+        "Minify JavaScript — Est savings of 14 KiB",
+        "Reduce unused CSS — Est savings of 14 KiB",
+        "Reduce unused JavaScript — Est savings of 78 KiB",
+        "Serve images in next-gen formats — Est savings of 33 KiB",
+        "Properly size images — Est savings of 3,708 KiB"
+      ],
+      "failingA11y": [
+        "Links do not have a discernible name"
+      ],
+      "failingSeo": [],
+      "failingBestPractices": []
+    },
+    {
+      "url": "/pages/services/products/",
+      "preset": "mobile",
+      "scores": {
+        "performance": 57,
+        "accessibility": 74,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": "11.7 s",
+      "fcp": "2.1 s",
+      "tbt": "380 ms",
+      "cls": "0.001",
+      "si": "7.4 s",
+      "weight": "Total size was 19,003 KiB",
+      "opportunities": [
+        "Eliminate render-blocking resources — Est savings of 770 ms",
+        "Minify CSS — Est savings of 3 KiB",
+        "Minify JavaScript — Est savings of 5 KiB",
+        "Reduce unused CSS — Est savings of 18 KiB",
+        "Reduce unused JavaScript — Est savings of 71 KiB",
+        "Serve images in next-gen formats — Est savings of 12,008 KiB",
+        "Efficiently encode images — Est savings of 2,568 KiB",
+        "Properly size images — Est savings of 15,621 KiB",
+        "Avoid serving legacy JavaScript to modern browsers"
+      ],
+      "failingA11y": [
+        "Buttons do not have an accessible name",
+        "Links do not have a discernible name",
+        "Select elements do not have associated label elements.",
+        "Touch targets do not have sufficient size or spacing."
+      ],
+      "failingSeo": [],
+      "failingBestPractices": []
+    },
+    {
+      "url": "/pages/services/products/",
+      "preset": "desktop",
+      "scores": {
+        "performance": 80,
+        "accessibility": 82,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": "2.6 s",
+      "fcp": "0.6 s",
+      "tbt": "0 ms",
+      "cls": "0.002",
+      "si": "2.5 s",
+      "weight": "Total size was 18,867 KiB",
+      "opportunities": [
+        "Eliminate render-blocking resources — Est savings of 220 ms",
+        "Minify CSS — Est savings of 3 KiB",
+        "Minify JavaScript — Est savings of 5 KiB",
+        "Reduce unused JavaScript — Est savings of 92 KiB",
+        "Serve images in next-gen formats — Est savings of 11,877 KiB",
+        "Efficiently encode images — Est savings of 2,299 KiB",
+        "Properly size images — Est savings of 16,273 KiB"
+      ],
+      "failingA11y": [
+        "Background and foreground colors do not have a sufficient contrast ratio.",
+        "Links do not have a discernible name",
+        "Select elements do not have associated label elements."
+      ],
+      "failingSeo": [],
+      "failingBestPractices": []
+    },
+    {
+      "url": "/pages/gallery.html",
+      "preset": "mobile",
+      "scores": {
+        "performance": 64,
+        "accessibility": 75,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": "60.5 s",
+      "fcp": "2.2 s",
+      "tbt": "140 ms",
+      "cls": "0.015",
+      "si": "7.2 s",
+      "weight": "Total size was 13,433 KiB",
+      "opportunities": [
+        "Avoid multiple page redirects — Est savings of 790 ms",
+        "Eliminate render-blocking resources — Est savings of 680 ms",
+        "Minify CSS — Est savings of 3 KiB",
+        "Minify JavaScript — Est savings of 14 KiB",
+        "Reduce unused JavaScript — Est savings of 78 KiB",
+        "Serve images in next-gen formats — Est savings of 33 KiB",
+        "Properly size images — Est savings of 4,001 KiB",
+        "Avoid serving legacy JavaScript to modern browsers"
+      ],
+      "failingA11y": [
+        "Buttons do not have an accessible name",
+        "Heading elements are not in a sequentially-descending order",
+        "Links do not have a discernible name",
+        "Touch targets do not have sufficient size or spacing."
+      ],
+      "failingSeo": [],
+      "failingBestPractices": []
+    },
+    {
+      "url": "/pages/gallery.html",
+      "preset": "desktop",
+      "scores": {
+        "performance": 69,
+        "accessibility": 89,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": "11.9 s",
+      "fcp": "0.6 s",
+      "tbt": "0 ms",
+      "cls": "0.005",
+      "si": "2.4 s",
+      "weight": "Total size was 13,298 KiB",
+      "opportunities": [
+        "Avoid multiple page redirects — Est savings of 250 ms",
+        "Eliminate render-blocking resources — Est savings of 220 ms",
+        "Minify CSS — Est savings of 3 KiB",
+        "Minify JavaScript — Est savings of 14 KiB",
+        "Serve images in next-gen formats — Est savings of 33 KiB",
+        "Properly size images — Est savings of 4,076 KiB"
+      ],
+      "failingA11y": [
+        "Heading elements are not in a sequentially-descending order",
+        "Links do not have a discernible name"
+      ],
+      "failingSeo": [],
+      "failingBestPractices": []
+    },
+    {
+      "url": "/pages/our-story/",
+      "preset": "mobile",
+      "scores": {
+        "performance": 64,
+        "accessibility": 70,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": "10.7 s",
+      "fcp": "2.7 s",
+      "tbt": "100 ms",
+      "cls": "0",
+      "si": "6.6 s",
+      "weight": "Total size was 6,107 KiB",
+      "opportunities": [
+        "Eliminate render-blocking resources — Est savings of 1,580 ms",
+        "Minify CSS — Est savings of 3 KiB",
+        "Minify JavaScript — Est savings of 14 KiB",
+        "Reduce unused CSS — Est savings of 18 KiB",
+        "Reduce unused JavaScript — Est savings of 97 KiB",
+        "Serve images in next-gen formats — Est savings of 1,427 KiB",
+        "Efficiently encode images — Est savings of 370 KiB",
+        "Properly size images — Est savings of 4,444 KiB",
+        "Avoid serving legacy JavaScript to modern browsers"
+      ],
+      "failingA11y": [
+        "Buttons do not have an accessible name",
+        "Background and foreground colors do not have a sufficient contrast ratio.",
+        "Heading elements are not in a sequentially-descending order",
+        "Links do not have a discernible name",
+        "Touch targets do not have sufficient size or spacing."
+      ],
+      "failingSeo": [],
+      "failingBestPractices": []
+    },
+    {
+      "url": "/pages/our-story/",
+      "preset": "desktop",
+      "scores": {
+        "performance": 87,
+        "accessibility": 75,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": "2.0 s",
+      "fcp": "0.6 s",
+      "tbt": "0 ms",
+      "cls": "0.001",
+      "si": "1.9 s",
+      "weight": "Total size was 5,970 KiB",
+      "opportunities": [
+        "Eliminate render-blocking resources — Est savings of 220 ms",
+        "Minify CSS — Est savings of 3 KiB",
+        "Minify JavaScript — Est savings of 14 KiB",
+        "Reduce unused JavaScript — Est savings of 68 KiB",
+        "Serve images in next-gen formats — Est savings of 1,427 KiB",
+        "Efficiently encode images — Est savings of 370 KiB",
+        "Properly size images — Est savings of 4,628 KiB"
+      ],
+      "failingA11y": [
+        "Buttons do not have an accessible name",
+        "Background and foreground colors do not have a sufficient contrast ratio.",
+        "Heading elements are not in a sequentially-descending order",
+        "Links do not have a discernible name"
+      ],
+      "failingSeo": [],
+      "failingBestPractices": []
+    },
+    {
+      "url": "/pages/get-a-quote/",
+      "preset": "mobile",
+      "scores": {
+        "performance": 84,
+        "accessibility": 79,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": "4.4 s",
+      "fcp": "1.8 s",
+      "tbt": "40 ms",
+      "cls": "0",
+      "si": "2.7 s",
+      "weight": "Total size was 1,235 KiB",
+      "opportunities": [
+        "Eliminate render-blocking resources — Est savings of 860 ms",
+        "Minify CSS — Est savings of 3 KiB",
+        "Minify JavaScript — Est savings of 14 KiB",
+        "Reduce unused CSS — Est savings of 18 KiB",
+        "Reduce unused JavaScript — Est savings of 56 KiB",
+        "Serve images in next-gen formats — Est savings of 353 KiB",
+        "Efficiently encode images — Est savings of 130 KiB",
+        "Properly size images — Est savings of 525 KiB",
+        "Avoid serving legacy JavaScript to modern browsers"
+      ],
+      "failingA11y": [
+        "Buttons do not have an accessible name",
+        "Links do not have a discernible name",
+        "Touch targets do not have sufficient size or spacing."
+      ],
+      "failingSeo": [],
+      "failingBestPractices": []
+    },
+    {
+      "url": "/pages/get-a-quote/",
+      "preset": "desktop",
+      "scores": {
+        "performance": 95,
+        "accessibility": 94,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": "1.5 s",
+      "fcp": "0.8 s",
+      "tbt": "0 ms",
+      "cls": "0.001",
+      "si": "0.9 s",
+      "weight": "Total size was 1,100 KiB",
+      "opportunities": [
+        "Eliminate render-blocking resources — Est savings of 400 ms",
+        "Minify CSS — Est savings of 3 KiB",
+        "Minify JavaScript — Est savings of 14 KiB",
+        "Reduce unused CSS — Est savings of 18 KiB",
+        "Reduce unused JavaScript — Est savings of 58 KiB",
+        "Serve images in next-gen formats — Est savings of 353 KiB",
+        "Efficiently encode images — Est savings of 130 KiB",
+        "Properly size images — Est savings of 543 KiB"
+      ],
+      "failingA11y": [
+        "Links do not have a discernible name"
+      ],
+      "failingSeo": [],
+      "failingBestPractices": []
+    },
+    {
+      "url": "/pages/contact/",
+      "preset": "mobile",
+      "scores": {
+        "performance": 64,
+        "accessibility": 73,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": "12.2 s",
+      "fcp": "2.9 s",
+      "tbt": "50 ms",
+      "cls": "0.001",
+      "si": "6.5 s",
+      "weight": "Total size was 1,734 KiB",
+      "opportunities": [
+        "Eliminate render-blocking resources — Est savings of 1,580 ms",
+        "Minify CSS — Est savings of 3 KiB",
+        "Minify JavaScript — Est savings of 14 KiB",
+        "Reduce unused CSS — Est savings of 18 KiB",
+        "Reduce unused JavaScript — Est savings of 93 KiB",
+        "Serve images in next-gen formats — Est savings of 33 KiB",
+        "Properly size images — Est savings of 57 KiB",
+        "Avoid serving legacy JavaScript to modern browsers"
+      ],
+      "failingA11y": [
+        "Buttons do not have an accessible name",
+        "`<frame>` or `<iframe>` elements do not have a title",
+        "Links do not have a discernible name",
+        "Touch targets do not have sufficient size or spacing."
+      ],
+      "failingSeo": [],
+      "failingBestPractices": []
+    },
+    {
+      "url": "/pages/contact/",
+      "preset": "desktop",
+      "scores": {
+        "performance": 84,
+        "accessibility": 86,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": "2.2 s",
+      "fcp": "0.6 s",
+      "tbt": "0 ms",
+      "cls": "0.001",
+      "si": "2.1 s",
+      "weight": "Total size was 1,577 KiB",
+      "opportunities": [
+        "Eliminate render-blocking resources — Est savings of 270 ms",
+        "Minify CSS — Est savings of 3 KiB",
+        "Minify JavaScript — Est savings of 14 KiB",
+        "Reduce unused CSS — Est savings of 18 KiB",
+        "Reduce unused JavaScript — Est savings of 77 KiB",
+        "Serve images in next-gen formats — Est savings of 33 KiB",
+        "Properly size images — Est savings of 57 KiB"
+      ],
+      "failingA11y": [
+        "`<frame>` or `<iframe>` elements do not have a title",
+        "Links do not have a discernible name"
+      ],
+      "failingSeo": [],
+      "failingBestPractices": []
+    }
+  ]
+}
