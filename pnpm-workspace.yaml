@@ -1,0 +1,10 @@
+packages:
+  - apps/*
+  - packages/*
+  - scripts/audit
+onlyBuiltDependencies:
+  - '@prisma/engines'
+  - prisma
+  - esbuild
+  - sharp
+  - mongodb-memory-server

@@ -1,0 +1,22 @@
+import { defineConfig, devices } from '@playwright/test';
+
+// E2E runs against production builds (`pnpm build` first). Locally, already-running dev servers are reused.
+const ci = !!process.env.CI;
+
+export default defineConfig({
+  testDir: 'tests/e2e',
+  fullyParallel: true,
+  forbidOnly: ci,
+  retries: ci ? 1 : 0,
+  reporter: ci ? [['github'], ['html', { open: 'never' }]] : 'list',
+  use: { trace: 'retain-on-failure', screenshot: 'only-on-failure' },
+  projects: [
+    { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
+    { name: 'mobile', use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 } } },
+  ],
+  webServer: [
+    { command: 'pnpm --filter @greenscape/api start', url: 'http://localhost:4000/v1/health/live', reuseExistingServer: !ci, timeout: 60_000 },
+    { command: 'pnpm --filter @greenscape/web start', url: 'http://localhost:3000/api/health', reuseExistingServer: !ci, timeout: 60_000 },
+    { command: 'pnpm --filter @greenscape/admin start', url: 'http://localhost:3001/api/health', reuseExistingServer: !ci, timeout: 60_000 },
+  ],
+});

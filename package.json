@@ -1,0 +1,37 @@
+{
+  "name": "greenscape",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.30.3",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm -r --parallel --filter ./apps/* dev",
+    "build": "pnpm -r --filter ./apps/* build",
+    "typecheck": "pnpm -r --parallel typecheck && tsc -p tests",
+    "services:up": "docker compose -f docker/compose.dev.yml up -d --wait",
+    "services:down": "docker compose -f docker/compose.dev.yml down",
+    "db:migrate": "pnpm --filter @greenscape/database migrate:dev",
+    "db:deploy": "pnpm --filter @greenscape/database migrate:deploy",
+    "db:seed": "pnpm --filter @greenscape/database seed",
+    "content:indexes": "pnpm --filter @greenscape/content indexes",
+    "test": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@greenscape/cache": "workspace:*",
+    "@greenscape/config": "workspace:*",
+    "@greenscape/content": "workspace:*",
+    "@greenscape/database": "workspace:*",
+    "@greenscape/validation": "workspace:*",
+    "@playwright/test": "^1.65.0",
+    "@types/node": "^24.19.2",
+    "@types/supertest": "^7.2.1",
+    "supertest": "^7.3.2",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.3",
+    "vitest": "^5.1.0"
+  }
+}

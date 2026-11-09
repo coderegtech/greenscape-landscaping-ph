@@ -1,6 +1,6 @@
 # Implementation Plan
 
-Status: Phase 1 (Discovery) and Phase 2 (Planning) done. Nothing is built yet.
+Status: Phases 1–3 done (audit, planning, foundation). Defaults for D1–D9 accepted on 2026-11-09 — see `progress.md`.
 
 ## 1. Decisions needed before Phase 3
 

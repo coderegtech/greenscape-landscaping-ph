@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Brand anchors from the audit (docs/audit/ui-components.md). Full token system lands in Phase 5. */
+@theme {
+  --color-forest-900: #163d08;
+  --color-forest-700: #2d5a27;
+  --color-ink: #1a1a1a;
+}
+
+body {
+  @apply bg-white text-ink antialiased;
+}

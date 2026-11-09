@@ -1,0 +1,20 @@
+{
+  "name": "@greenscape/content",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "indexes": "tsx src/ensure-indexes.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "mongodb": "^7.8.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@greenscape/config": "workspace:*"
+  }
+}

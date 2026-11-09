@@ -1,0 +1,52 @@
+# Local backing services. Host ports are offset (55433/57017/56379) so they don't clash with other local stacks.
+# Usage: pnpm services:up   (waits for healthchecks)
+name: greenscape
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: greenscape
+      POSTGRES_PASSWORD: greenscape
+      POSTGRES_DB: greenscape
+    ports: ["127.0.0.1:55433:5432"]
+    volumes: [pg-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U greenscape -d greenscape"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  mongo:
+    image: mongo:8
+    # single-node replica set: needed for multi-document transactions (CMS publish + revision)
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    ports: ["127.0.0.1:57017:27017"]
+    volumes: [mongo-data:/data/db]
+    healthcheck:
+      test:
+        - CMD
+        - mongosh
+        - --quiet
+        - --eval
+        - "try { rs.status().ok } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] }).ok }"
+      interval: 3s
+      timeout: 10s
+      retries: 30
+      start_period: 5s
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports: ["127.0.0.1:56379:6379"]
+    volumes: [redis-data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  pg-data:
+  mongo-data:
+  redis-data:

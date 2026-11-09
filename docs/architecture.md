@@ -39,7 +39,7 @@ greenscape/
 ├── tests/{e2e,integration,unit}
 ├── docker/  docs/  scripts/  .github/workflows/
 ```
-`validation` is the contract layer: Express validates with it, Next.js infers types from it, OpenAPI is generated from it (`zod-to-openapi`).
+`validation` is the contract layer: Express validates with it, Next.js infers types from it, OpenAPI 3.1 is generated from it with Zod 4's native `z.toJSONSchema` (`apps/api/src/lib/openapi.ts`); no extra library.
 
 ## 3. Request flow
 
