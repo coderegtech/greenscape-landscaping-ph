@@ -58,6 +58,13 @@ export function createStorage(url: string, secretKey: string) {
       return { size: data.size, mime: sniffMime(head) };
     },
 
+    /** Whole object as bytes (callers cap sizes); null when missing. */
+    async download(bucket: BucketId, path: string): Promise<Uint8Array | null> {
+      const { data, error } = await sb.storage.from(bucket).download(path);
+      if (error || !data) return null;
+      return new Uint8Array(await data.arrayBuffer());
+    },
+
     async signedUrl(bucket: BucketId, path: string, expiresInSec = 300) {
       const { data, error } = await sb.storage.from(bucket).createSignedUrl(path, expiresInSec);
       if (error) throw error;

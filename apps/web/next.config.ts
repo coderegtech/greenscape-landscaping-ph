@@ -20,7 +20,15 @@ const config: NextConfig = {
     // Current site's public photos until migration moves them to Supabase Storage (Phase 11).
     remotePatterns: [
       { protocol: 'https', hostname: 'firebasestorage.googleapis.com', pathname: '/v0/b/greenscape-palawan.firebasestorage.app/**' },
-      { protocol: 'http', hostname: '127.0.0.1', port: '54321', pathname: '/storage/v1/object/public/**' },
+      // CMS media library (Supabase Storage public bucket), from the configured project URL.
+      ...(() => {
+        try {
+          const u = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'http://127.0.0.1:54321');
+          return [{ protocol: u.protocol.replace(':', '') as 'http' | 'https', hostname: u.hostname, port: u.port, pathname: '/storage/v1/object/public/**' }];
+        } catch {
+          return [];
+        }
+      })(),
     ],
   },
   async redirects() {

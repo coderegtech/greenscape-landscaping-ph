@@ -16,6 +16,9 @@ export const EnvSchema = z.object({
   SMTP_URL: z.string().optional().or(z.literal('').transform(() => undefined)),
   MAIL_FROM: z.string().default('Greenscape Palawan <no-reply@greenscapelandscapingph.com>'),
   QUOTE_NOTIFY_TO: csv,
+  // Shared with the web app: lets the API trigger revalidation and read drafts for preview (server-to-server only).
+  REVALIDATE_SECRET: z.string().min(16).optional().or(z.literal('').transform(() => undefined)),
+  PREVIEW_SECRET: z.string().min(16).optional().or(z.literal('').transform(() => undefined)),
   FORM_RATE_LIMIT_PER_HOUR: z.coerce.number().int().positive().default(10),
   CACHE_PREFIX: z.string().default('gs:dev'),
   CORS_ORIGINS: csv,

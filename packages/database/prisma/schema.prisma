@@ -499,6 +499,7 @@ model MediaAsset {
   width                Int?
   height               Int?
   alt                  String?
+  blurDataUrl          String?
   checksum             String?
   uploadedById         String?               @db.Uuid
   refCount             Int                   @default(0)

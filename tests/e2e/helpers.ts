@@ -49,3 +49,22 @@ export async function grantRoles(userEmail: string, roles: string[]) {
     await db.$disconnect();
   }
 }
+
+/** A confirmed staff account whose roles exist before the first sign-in (no permission-cache wait). */
+export async function staffUser(label: string, roles: string[]) {
+  const u = await confirmedUser(label);
+  const db = createPrismaClient(process.env.DATABASE_URL!);
+  try {
+    const rows = await db.role.findMany({ where: { key: { in: roles } } });
+    await db.user.create({ data: { authUserId: u.authUserId, email: u.email, roles: { create: rows.map((r) => ({ roleId: r.id })) } } });
+  } finally {
+    await db.$disconnect();
+  }
+  return u;
+}
+
+export async function signIn(page: import('@playwright/test').Page, userEmail: string, password = PASSWORD) {
+  await page.getByLabel('Email').fill(userEmail);
+  await page.getByLabel('Password', { exact: true }).fill(password);
+  await page.getByRole('button', { name: 'Sign in' }).click();
+}

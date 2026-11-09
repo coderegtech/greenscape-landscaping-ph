@@ -25,11 +25,15 @@ const IA: { title: string; items: Item[] }[] = [
   {
     title: 'Content',
     items: [
-      { label: 'Pages', href: '/cms/pages', permission: 'cms.read', ready: false },
-      { label: 'Stories', href: '/cms/articles', permission: 'cms.read', ready: false },
-      { label: 'Projects & gallery', href: '/cms/projects', permission: 'cms.read', ready: false },
-      { label: 'Testimonials', href: '/cms/testimonials', permission: 'testimonials.moderate', ready: false },
-      { label: 'Media', href: '/media', permission: 'media.read', ready: false },
+      { label: 'Pages', href: '/cms/pages', permission: 'cms.read', ready: true },
+      { label: 'Services', href: '/cms/services', permission: 'cms.read', ready: true },
+      { label: 'Projects', href: '/cms/projects', permission: 'cms.read', ready: true },
+      { label: 'Stories', href: '/cms/articles', permission: 'cms.read', ready: true },
+      { label: 'Gallery', href: '/cms/gallery', permission: 'cms.read', ready: true },
+      { label: 'FAQs', href: '/cms/faqs', permission: 'cms.read', ready: true },
+      { label: 'Testimonials', href: '/cms/testimonials', permission: 'testimonials.moderate', ready: true },
+      { label: 'Media', href: '/media', permission: 'media.read', ready: true },
+      { label: 'Site settings', href: '/cms/site', permission: 'cms.read', ready: true },
     ],
   },
   {

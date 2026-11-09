@@ -23,7 +23,8 @@
     "supabase:env": "node scripts/supabase-env.mjs",
     "lint": "eslint .",
     "content:seed": "tsx scripts/migrate/seed-content.ts",
-    "storage:setup": "pnpm --filter @greenscape/storage buckets"
+    "storage:setup": "pnpm --filter @greenscape/storage buckets",
+    "media:sweep": "tsx scripts/sweep-orphans.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
@@ -33,6 +34,7 @@
     "@greenscape/config": "workspace:*",
     "@greenscape/content": "workspace:*",
     "@greenscape/database": "workspace:*",
+    "@greenscape/storage": "workspace:*",
     "@greenscape/ui": "workspace:*",
     "@greenscape/validation": "workspace:*",
     "@next/eslint-plugin-next": "^16.4.5",

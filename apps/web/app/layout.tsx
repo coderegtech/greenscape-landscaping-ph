@@ -6,6 +6,7 @@ import { SiteHeader } from '@greenscape/ui/layout/site-header';
 import { JS_FLAG_SCRIPT } from '@greenscape/ui/motion/reveal';
 import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
+import { draftMode } from 'next/headers';
 import { cms } from '@/lib/cms';
 import './globals.css';
 
@@ -26,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = { themeColor: '#14280f', colorScheme: 'dark' };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const site = await cms.site();
+  const [site, preview] = await Promise.all([cms.site(), draftMode().then((d) => d.isEnabled)]);
   const c = site?.config;
   return (
     <html lang="en" className={fontVariables} suppressHydrationWarning>
@@ -35,6 +36,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <TooltipProvider delayDuration={800}>
+          {preview && (
+            <div role="status" className="band-cream sticky top-0 z-[400] flex flex-wrap items-center justify-center gap-3 px-4 py-2 text-sm">
+              <strong>Preview:</strong> you are seeing unpublished drafts.
+              <a href="/api/preview/exit" className="font-bold">Exit preview</a>
+            </div>
+          )}
           <SiteHeader items={site?.nav.main ?? []} />
           {children}
           <SiteFooter

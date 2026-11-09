@@ -1,5 +1,6 @@
 import 'server-only';
 import type { ArticleBody, MediaRef, PageBody, ProjectBody, RichTextNode, Section, ServiceBody } from '@greenscape/content';
+import { draftMode } from 'next/headers';
 import type { z } from 'zod';
 
 // Server-side reads of the public CMS API. Next caches each response and tags it, so a CMS publish
@@ -10,10 +11,17 @@ const REVALIDATE = 300;
 
 export class CmsUnavailable extends Error {}
 
-async function get<T>(path: string, tags: string[]): Promise<T | null> {
+/**
+ * `previewable`: single-document reads honour draft mode (CMS preview: drafts, server-to-server, never cached).
+ * Lists never do: they show published content only, and they run in generateStaticParams, where draftMode() is forbidden.
+ */
+async function get<T>(path: string, tags: string[], previewable = false): Promise<T | null> {
   let res: Response;
+  const preview = previewable && !!process.env.PREVIEW_SECRET && (await draftMode()).isEnabled;
   try {
-    res = await fetch(`${API()}/v1/cms${path}`, { next: { revalidate: REVALIDATE, tags }, signal: AbortSignal.timeout(8000) });
+    res = await fetch(`${API()}/v1/cms${path}`, preview
+      ? { cache: 'no-store', headers: { 'x-preview-secret': process.env.PREVIEW_SECRET! }, signal: AbortSignal.timeout(8000) }
+      : { next: { revalidate: REVALIDATE, tags }, signal: AbortSignal.timeout(8000) });
   } catch (err) {
     throw new CmsUnavailable(`CMS unreachable: ${(err as Error).message}`);
   }
@@ -43,9 +51,9 @@ export interface SiteData {
 
 export const cms = {
   site: () => get<SiteData>('/site', ['cms:site']),
-  page: (slug: string) => get<CmsPage>(`/pages/${slug}`, ['cms:pages', `cms:pages:${slug}`]),
+  page: (slug: string) => get<CmsPage>(`/pages/${slug}`, ['cms:pages', `cms:pages:${slug}`], true),
   services: () => get<ServiceSummary[]>('/services', ['cms:services']).then((x) => x ?? []),
-  service: (slug: string) => get<CmsService>(`/services/${slug}`, ['cms:services', `cms:services:${slug}`]),
+  service: (slug: string) => get<CmsService>(`/services/${slug}`, ['cms:services', `cms:services:${slug}`], true),
   projects: (q: { category?: string; featured?: boolean; limit?: number } = {}) => {
     const p = new URLSearchParams();
     if (q.category) p.set('category', q.category);
@@ -53,14 +61,14 @@ export const cms = {
     if (q.limit) p.set('limit', String(q.limit));
     return get<ProjectSummary[]>(`/projects?${p}`, ['cms:projects']).then((x) => x ?? []);
   },
-  project: (slug: string) => get<CmsProject>(`/projects/${slug}`, ['cms:projects', `cms:projects:${slug}`]),
+  project: (slug: string) => get<CmsProject>(`/projects/${slug}`, ['cms:projects', `cms:projects:${slug}`], true),
   articles: (q: { topic?: 'story' | 'garden-essentials'; limit?: number } = {}) => {
     const p = new URLSearchParams();
     if (q.topic) p.set('topic', q.topic);
     if (q.limit) p.set('limit', String(q.limit));
     return get<ArticleSummary[]>(`/articles?${p}`, ['cms:articles']).then((x) => x ?? []);
   },
-  article: (slug: string) => get<CmsArticle>(`/articles/${slug}`, ['cms:articles', `cms:articles:${slug}`]),
+  article: (slug: string) => get<CmsArticle>(`/articles/${slug}`, ['cms:articles', `cms:articles:${slug}`], true),
   legacyArticle: (id: string) => get<{ slug: string }>(`/articles/legacy/${encodeURIComponent(id)}`, ['cms:articles']),
   gallery: (limit = 48) => get<GalleryItem[]>(`/gallery?limit=${limit}`, ['cms:galleryItems']).then((x) => x ?? []),
   testimonials: (limit = 24) => get<Testimonial[]>(`/testimonials?limit=${limit}`, ['cms:testimonials']).then((x) => x ?? []),

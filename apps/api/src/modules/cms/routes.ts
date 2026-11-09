@@ -18,6 +18,10 @@ const ListQ = LocaleQ.extend({ limit: z.coerce.number().int().min(1).max(100).de
 const tagsFor = (coll: string, slug?: string) => [`cms:${coll}`, ...(slug ? [`cms:${coll}:${slug}`] : [])];
 
 /** Shape every publishable doc the same way: the published body plus slug, seo and dates. */
+function presentDraft(doc: Record<string, any> | null) {
+  const body = doc?.draft ?? doc?.published;
+  return body ? { slug: doc!.slug, locale: doc!.locale, publishedAt: doc!.publishedAt ?? null, seo: doc!.seo ?? {}, preview: true, ...body } : null;
+}
 function present(doc: Record<string, any> | null) {
   if (!doc?.published) return null;
   return { slug: doc.slug, locale: doc.locale, publishedAt: doc.publishedAt ?? null, seo: doc.seo ?? {}, ...doc.published };
@@ -41,12 +45,22 @@ for (const [path, summary] of [
   registry.registerPath({ method: 'get', path, tags: ['cms'], summary, responses: { 200: { description: 'ok' }, 404: { description: 'not found or not published' } } });
 }
 
-export function cmsRoutes({ mongo, cache }: Deps) {
+export function cmsRoutes({ mongo, cache, env }: Deps) {
   const db = mongo.db;
   const r = Router();
   const cached = <T>(key: string, ttl: number, tags: string[], load: () => Promise<T>) => cache.getOrSet(key, ttl, load, { tags });
   // Public content: let browsers/CDN cache briefly; Next.js revalidates via tags.
-  r.use((_req, res, next) => { res.set('cache-control', 'public, max-age=60, stale-while-revalidate=300'); next(); });
+  r.use((req, res, next) => {
+    // Preview: the web server (never a browser) sends the shared secret to read drafts, uncached.
+    res.locals.preview = !!env.PREVIEW_SECRET && req.get('x-preview-secret') === env.PREVIEW_SECRET;
+    res.set('cache-control', res.locals.preview ? 'no-store' : 'public, max-age=60, stale-while-revalidate=300');
+    next();
+  });
+  /** Single-document read: published (cached) normally; draft (uncached, any status but archived) in preview. */
+  const one = async (collection: string, slug: string, locale: string, preview: boolean, key: string, tags: string[]) =>
+    preview
+      ? presentDraft(await db.collection(collection).findOne({ slug, locale, status: { $ne: 'archived' } }))
+      : cached(key, TTL_DOC, tags, async () => present(await db.collection(collection).findOne({ slug, ...live(locale) })));
 
   r.get('/site', async (req, res) => {
     const { locale } = LocaleQ.parse(req.query);
@@ -63,7 +77,7 @@ export function cmsRoutes({ mongo, cache }: Deps) {
   r.get('/pages/:slug', async (req, res) => {
     const slug = Slug.parse(req.params.slug);
     const { locale } = LocaleQ.parse(req.query);
-    const page = await cached(`cms:page:${slug}:${locale}`, TTL_DOC, tagsFor('pages', slug), async () => present(await db.collection(collections.pages).findOne({ slug, ...live(locale) })));
+    const page = await one(collections.pages, slug, locale, !!res.locals.preview, `cms:page:${slug}:${locale}`, tagsFor('pages', slug));
     if (!page) throw AppError.notFound('Page not found');
     res.json(page);
   });
@@ -85,7 +99,7 @@ export function cmsRoutes({ mongo, cache }: Deps) {
   r.get('/services/:slug', async (req, res) => {
     const slug = Slug.parse(req.params.slug);
     const { locale } = LocaleQ.parse(req.query);
-    const s = await cached(`cms:service:${slug}:${locale}`, TTL_DOC, tagsFor('services', slug), async () => present(await db.collection(collections.services).findOne({ slug, ...live(locale) })));
+    const s = await one(collections.services, slug, locale, !!res.locals.preview, `cms:service:${slug}:${locale}`, tagsFor('services', slug));
     if (!s) throw AppError.notFound('Service not found');
     res.json(s);
   });
@@ -106,7 +120,7 @@ export function cmsRoutes({ mongo, cache }: Deps) {
   r.get('/projects/:slug', async (req, res) => {
     const slug = Slug.parse(req.params.slug);
     const { locale } = LocaleQ.parse(req.query);
-    const p = await cached(`cms:project:${slug}:${locale}`, TTL_DOC, tagsFor('projects', slug), async () => present(await db.collection(collections.projects).findOne({ slug, ...live(locale) })));
+    const p = await one(collections.projects, slug, locale, !!res.locals.preview, `cms:project:${slug}:${locale}`, tagsFor('projects', slug));
     if (!p) throw AppError.notFound('Project not found');
     res.json(p);
   });
@@ -133,7 +147,7 @@ export function cmsRoutes({ mongo, cache }: Deps) {
   r.get('/articles/:slug', async (req, res) => {
     const slug = Slug.parse(req.params.slug);
     const { locale } = LocaleQ.parse(req.query);
-    const a = await cached(`cms:article:${slug}:${locale}`, TTL_DOC, tagsFor('articles', slug), async () => present(await db.collection(collections.articles).findOne({ slug, ...live(locale) })));
+    const a = await one(collections.articles, slug, locale, !!res.locals.preview, `cms:article:${slug}:${locale}`, tagsFor('articles', slug));
     if (!a) throw AppError.notFound('Article not found');
     res.json(a);
   });

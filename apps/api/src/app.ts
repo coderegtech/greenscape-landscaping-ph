@@ -10,8 +10,10 @@ import { apiRateLimit } from './middleware/rate-limit.ts';
 import { requestId } from './middleware/request-id.ts';
 import { authenticate } from './middleware/auth.ts';
 import { authRoutes } from './modules/auth/routes.ts';
+import { cmsAdminRoutes } from './modules/cms-admin/routes.ts';
 import { cmsRoutes } from './modules/cms/routes.ts';
 import { healthRoutes } from './modules/health/routes.ts';
+import { mediaRoutes } from './modules/media/routes.ts';
 import { inquiryRoutes } from './modules/inquiries/routes.ts';
 import { quotationRoutes } from './modules/quotations/routes.ts';
 import { userRoutes } from './modules/users/routes.ts';
@@ -61,6 +63,8 @@ export function createApp(deps: Deps) {
   app.use('/v1/auth', authRoutes(deps));
   app.use('/v1', userRoutes(deps));
   app.use('/v1/quotations', quotationRoutes(deps));
+  app.use('/v1/cms-admin', cmsAdminRoutes(deps));
+  app.use('/v1/media', mediaRoutes(deps));
   app.use('/v1', inquiryRoutes(deps));
 
   app.use(notFound);

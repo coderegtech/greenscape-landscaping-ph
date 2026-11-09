@@ -7,7 +7,8 @@
     "./server": "./src/verify.ts",
     "./next": "./src/next.ts",
     "./browser": "./src/browser.ts",
-    "./api": "./src/api.ts"
+    "./api": "./src/api.ts",
+    "./preview": "./src/preview.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

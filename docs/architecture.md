@@ -100,6 +100,8 @@ Pattern: cache-aside with **single-flight lock** (`SET lock NX PX 5000`) to prev
 
 Never cached: stock levels, cart, checkout totals, payment/order status, attendance approvals, permissions beyond 60 s. Product pages read live stock via a small uncached endpoint.
 
+Publishing (Phase 7, `apps/api/src/lib/publisher.ts`): a publish copies `draft` → `published` in one conditional update (on `revision`), snapshots it to `pageRevisions`, then invalidates. Scheduled documents are published by a 60 s worker guarded by a Redis lock (`lock:cms-scheduler`), so several API instances never double-publish. Admin preview: admin server signs a path-bound link → web `/api/preview` enables Next draft mode → single-document reads go uncached with `x-preview-secret`.
+
 Invalidation: each write publishes `{tags:[...]}` → API deletes tagged keys (Redis sets per tag) and calls `web /api/revalidate` with the same Next.js cache tags.
 
 ## 7. Payments

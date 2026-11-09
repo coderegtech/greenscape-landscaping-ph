@@ -32,3 +32,29 @@ It is built from the same Zod schemas the API validates with (`packages/validati
 | PATCH / POST | `/v1/quotations/{id}`, `/{id}/notes` | `quotations.manage` | Status/assignee (audited), internal notes |
 | POST | `/v1/contact` | — (form limit) | Message to the team |
 | POST | `/v1/testimonials` | signed in | Feedback, held for moderation |
+
+## CMS editing (Phase 7)
+`{type}` is `pages`, `services`, `projects` or `articles`; `?locale=` defaults to `en`. Bodies are validated with the same Zod schemas as the seed; failures return `400 VALIDATION_ERROR` with `details: [{ path: "sections.0.heading", message }]` (paths relative to the body).
+
+| Method | Path | Permission | Purpose |
+|---|---|---|---|
+| GET | `/v1/cms-admin/{type}` | `cms.read` | Summaries (`?status`, `?q`); archived hidden unless asked; `hasUnpublishedChanges` |
+| POST | `/v1/cms-admin/{type}` | `cms.write` | Create a draft `{ slug, body, seo }`; 409 if the slug exists |
+| GET | `/v1/cms-admin/{type}/{slug}` | `cms.read` | Full envelope (draft + published) |
+| PUT | `/v1/cms-admin/{type}/{slug}` | `cms.write` | Save draft `{ body, seo, revision }`; 409 when `revision` is stale |
+| POST | `/v1/cms-admin/{type}/{slug}/publish` | `cms.publish` | Publish now, or `{ at }` (ISO, > 30 s ahead) to schedule; the live version stays until then |
+| POST | `/v1/cms-admin/{type}/{slug}/unpublish`, `/archive` | `cms.publish` | Take down (keep as draft) / archive |
+| GET | `/v1/cms-admin/{type}/{slug}/revisions` | `cms.read` | Snapshots with author |
+| POST | `/v1/cms-admin/{type}/{slug}/rollback` | `cms.write` | `{ revision }` → restored as the draft (re-validated) |
+| GET | `/v1/cms-admin/{type}/{slug}/export` | `cms.read` | `greenscape-cms/1` JSON file |
+| POST | `/v1/cms-admin/{type}/import` | `cms.write` | Import an export as a draft (create or overwrite the draft) |
+| GET / POST / PATCH / DELETE | `/v1/cms-admin/collections/galleryItems[/{id}]`, `/faqs[/{id}]` | `cms.read` / `cms.write` | Live on save |
+| GET / PATCH | `/v1/cms-admin/collections/testimonials[/{id}]` | `testimonials.moderate` | `?status`; `{ status }` approve/reject/pending; audited |
+| GET | `/v1/cms-admin/site` | `cms.read` | Site config + menus |
+| PUT | `/v1/cms-admin/site/config`, `/site/nav/{main\|footer}` | `cms.publish` | Replace; audited |
+| POST | `/v1/media/uploads` | `media.write` | `{ filename, contentType, size }` → `{ id, uploadUrl, path }` (image ≤ 15 MB) |
+| POST | `/v1/media/uploads/{id}/complete` | `media.write` | `{ alt }`: checks magic bytes and that the image decodes (else deleted, 400), records size + blur placeholder |
+| GET / PATCH | `/v1/media`, `/v1/media/{id}` | `media.read` / `media.write` | List (`q`, `page`) / set alt text |
+| DELETE | `/v1/media/{id}` | `media.write` | 409 `IN_USE` with `details.usedBy` while content references it |
+
+Every write that changes public content deletes the Redis tags `cms:{type}` and `cms:{type}:{slug}` and POSTs them to `WEB_URL/api/revalidate` (header `x-revalidate-secret`). Public reads with `x-preview-secret: PREVIEW_SECRET` return the draft, uncached.

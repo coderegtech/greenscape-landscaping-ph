@@ -25,5 +25,17 @@ Living document; each phase adds its section. Threat model and DPA notes are in 
 - Locally, web (`:3000`) and admin (`:3001`) share cookies because browsers scope cookies by host, not port. In staging/production they're on different subdomains.
 - Session revocation: suspension blocks the API immediately, but an already-issued Supabase access token stays valid at Supabase until expiry (1 h). Admin "sign out everywhere" (Supabase admin API) is a follow-up.
 
+## CMS (Phase 7)
+| Concern | Implementation |
+|---|---|
+| Who can do what | `cms.read` / `cms.write` (drafts) / `cms.publish` (live, schedule, site settings) / `media.*` / `testimonials.moderate`, checked by the API on every call; the admin hides controls the user lacks but never relies on that. |
+| Draft leakage | Public reads return `published` only. Drafts are served only with `x-preview-secret`, which only the web server sends, and only while Next draft mode is on. |
+| Preview links | `/api/preview?path=&token=` where token = `exp.HMAC-SHA256(path + exp, PREVIEW_SECRET)`, valid 10 minutes, bound to one path, compared in constant time (`packages/auth/src/preview.ts`). Signed by the admin server; the secret never reaches a browser. |
+| Revalidation | `/api/revalidate` needs `x-revalidate-secret` and only accepts `cms:*` tags (≤ 50). |
+| Content safety | Bodies are Zod-validated (links limited to relative, http(s), mailto, tel; no `javascript:`); rich text is structured JSON rendered by our own renderer, never HTML. Old revisions are re-validated on rollback. |
+| Uploads | Signed one-time upload URLs; type and size checked before the slot; magic bytes and a full decode checked after, otherwise the file and row are deleted. Deletion refused while any content references the file. |
+| Lost updates | Saves carry the revision they started from; a stale save is a 409, never a silent overwrite. |
+| Audit | Testimonial moderation and site settings/menu changes write `AuditLog`; every content save/publish/rollback is a revision snapshot with its author. |
+
 ## HTTP hardening (Phase 3)
 API: helmet defaults (CSP `default-src 'self'`, HSTS, nosniff, frame-ancestors self), CORS allow-list with credentials, Redis-backed rate limit (300/min/IP, fails open if Redis is down), 1 MB JSON body limit, request ids, no `x-powered-by`, log redaction of `authorization`/`cookie`. Next.js apps: nosniff, referrer policy, frame options, permissions policy; admin is `noindex`.
