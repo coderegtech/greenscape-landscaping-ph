@@ -116,8 +116,8 @@ interface PaymentProvider {
 }
 ```
 - `stripe-test` adapter: Checkout Sessions in **PHP** (Stripe supports PHP presentment; settlement account country is a business decision). Refuses to start if the key starts with `sk_live_` unless `PAYMENTS_LIVE_APPROVED=true` (and that flag is not set anywhere in this repo).
-- `mock` adapter: local default; a `/mock-pay/:ref` page with Succeed / Fail / Cancel buttons that fires the same normalized webhook path, so e2e tests cover the real state machine.
-- Webhook: raw body, signature verification, `WebhookEvent` idempotency insert, then state transition in a transaction. A reconciliation job polls `getPaymentStatus` for `PENDING` payments older than 15 min.
+- `mock` adapter: local default; the web page `/checkout/pay/{ref}` has Pay / Decline / Cancel buttons that produce signed events through the same webhook handler, so e2e tests cover the real state machine.
+- Webhook: raw body, signature verification, `WebhookEvent` idempotency insert, then state transition in a transaction. Unpaid orders hold stock for `RESERVATION_MINUTES` (30); a Redis-locked job (every 60 s) asks the provider about each expired hold before cancelling it (`apps/api/src/modules/shop/orders.ts`).
 - UI shows a persistent **"Test mode — no real charge"** banner whenever `isTest`.
 - Swap path for production: a PayMongo / Xendit / Maya adapter (all support GCash, Maya, cards in PH) implementing the same interface. Recommendation in `docs/implementation-plan.md`.
 

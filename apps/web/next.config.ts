@@ -17,6 +17,14 @@ const config: NextConfig = {
   transpilePackages: ['@greenscape/auth', '@greenscape/ui', '@greenscape/validation'],
   images: {
     formats: ['image/avif', 'image/webp'],
+    // The optimiser refuses private addresses (SSRF guard). Only lifted when Supabase itself is local (dev/CI), never in production.
+    dangerouslyAllowLocalIP: (() => {
+      try {
+        return ['127.0.0.1', 'localhost'].includes(new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? '').hostname);
+      } catch {
+        return false;
+      }
+    })(),
     // Current site's public photos until migration moves them to Supabase Storage (Phase 11).
     remotePatterns: [
       { protocol: 'https', hostname: 'firebasestorage.googleapis.com', pathname: '/v0/b/greenscape-palawan.firebasestorage.app/**' },

@@ -3,6 +3,8 @@
 import { z } from 'zod';
 
 export { z };
+import { Email, PhPhone } from './primitives.ts';
+export { Email, PhPhone };
 
 export const ErrorBody = z.object({
   error: z.object({
@@ -64,7 +66,6 @@ export const SetStatusBody = z.object({ status: z.enum(['ACTIVE', 'SUSPENDED']) 
 export const RoleSummary = z.object({ key: z.string(), name: z.string(), permissions: z.array(z.string()) });
 
 // ── Auth forms (client + server). Password rules mirror supabase/config.toml. ──
-export const Email = z.string().trim().toLowerCase().email('Enter a valid email address');
 export const Password = z
   .string()
   .min(8, 'Use at least 8 characters')
@@ -94,14 +95,6 @@ export function safeNext(next: string | null | undefined, fallback = '/') {
 }
 
 // ── Public forms: quote, contact, testimonial ──
-/** Philippine mobile or landline: 09XX XXX XXXX, +63 9XX…, or (0XX) XXX XXXX. Stored normalised to +63… */
-export const PhPhone = z
-  .string()
-  .trim()
-  .transform((s) => s.replace(/[\s\-().]/g, ''))
-  .refine((s) => /^(\+63|0)\d{9,10}$/.test(s), 'Enter a Philippine number, e.g. 0917 844 3330')
-  .transform((s) => (s.startsWith('0') ? `+63${s.slice(1)}` : s));
-
 export const QUOTE_SERVICES = {
   'garden-design': 'Garden design',
   landscaping: 'Landscaping',
@@ -188,3 +181,5 @@ export const TestimonialRequest = z.object({
   consent: z.literal(true, { error: 'Please agree so we can publish your feedback' }),
 });
 export type TestimonialRequest = z.infer<typeof TestimonialRequest>;
+
+export * from './shop.ts';

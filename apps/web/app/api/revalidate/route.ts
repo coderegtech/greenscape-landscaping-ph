@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 // Called by the API after a CMS publish. Expires exactly the cached pages that used the given tags.
-const Body = z.object({ tags: z.array(z.string().regex(/^cms:[\w:-]{1,120}$/)).min(1).max(50) });
+const Body = z.object({ tags: z.array(z.string().regex(/^(cms|shop):[\w:-]{1,120}$/)).min(1).max(50) });
 
 export async function POST(request: NextRequest) {
   const secret = process.env.REVALIDATE_SECRET;

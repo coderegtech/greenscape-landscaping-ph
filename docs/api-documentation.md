@@ -57,4 +57,27 @@ It is built from the same Zod schemas the API validates with (`packages/validati
 | GET / PATCH | `/v1/media`, `/v1/media/{id}` | `media.read` / `media.write` | List (`q`, `page`) / set alt text |
 | DELETE | `/v1/media/{id}` | `media.write` | 409 `IN_USE` with `details.usedBy` while content references it |
 
+## Shop (Phase 8)
+Money is a string with two decimals (`"1250.00"`, PHP). Prices are always read from Postgres; anything price-like sent by a client is ignored.
+
+| Method | Path | Permission | Purpose |
+|---|---|---|---|
+| GET | `/v1/shop/categories`, `/v1/shop/products`, `/v1/shop/products/{slug}` | — | Catalogue (`q`, `category`, `plantType`, `flag`, `sort`, `page`, `pageSize` ≤ 48). Redis + Next cached, tags `shop:catalog`, `shop:product:{slug}`; no stock in these |
+| GET | `/v1/shop/availability?ids=` | — | Live stock per variant (≤ 100 ids), `no-store`; `available: null` = not stock-tracked |
+| GET | `/v1/shop/zones`, `/v1/shop/checkout-config` | — | Active delivery areas with fees; provider, test mode, hold minutes |
+| GET | `/v1/shop/legacy/{id}` | — | Old Firestore product id → slug |
+| GET / POST / PATCH | `/v1/cart`, `/v1/cart/items`, `/v1/cart/items/{variantId}` | — | Cart of the signed-in customer, or guest via `x-cart-token` (returned once as `cartToken`). Quantity 0 removes |
+| POST | `/v1/cart/merge` | signed in | Move the guest cart (`x-cart-token`) into the account |
+| POST | `/v1/checkout` | — (form limit ×3) | `CheckoutRequest` incl. `idempotencyKey`. 201 `{ number, redirectUrl, accessKey, isTest }`; 409 `OUT_OF_STOCK` / `UNAVAILABLE` with details; 400 `ZONE_UNAVAILABLE` / `CART_EMPTY`; 502 `PAYMENT_UNAVAILABLE` (stock released) |
+| GET | `/v1/orders/mine` | signed in | Own orders (also guest orders placed with the verified email) |
+| GET | `/v1/orders/{number}?key=` | owner or link key | Order status; 404 for everyone else |
+| POST | `/v1/payments/webhooks/{provider}` | signature | Raw body; idempotent by provider event id |
+| GET / POST | `/v1/payments/mock/{ref}`, `/v1/payments/mock/{ref}/{outcome}` | — | Only when `PAYMENT_PROVIDER=mock`: the test payment page (`succeed`, `fail`, `cancel`) |
+| GET / POST / PUT | `/v1/shop-admin/products[/{id}]`, `/products/{id}/variants`, `/variants/{id}` | `products.read` / `products.write` | Products, photos, care text; sizes and prices (audited before/after) |
+| GET / POST | `/v1/shop-admin/inventory[?low=1]`, `/inventory/{variantId}/adjust`, `/inventory/{variantId}/movements` | `inventory.read` / `inventory.adjust` | Stock levels; RECEIVE / ADJUST / DAMAGE / RETURN (never below reserved); history |
+| GET / POST | `/v1/shop-admin/export/products.csv`, `/v1/shop-admin/import/stock[?apply=1]` | `products.read` / `inventory.adjust` | CSV export (formula-safe); `sku,counted` import, dry run unless `apply=1`, nothing applied if any line is wrong |
+| GET | `/v1/shop-admin/orders[/{id}]` | `orders.read` | List (`status`, `fulfillment`, `q`) with counts; detail with payments, refunds, history |
+| POST | `/v1/shop-admin/orders/{id}/fulfillment`, `/cancel`, `/refund` | `orders.fulfill` / `orders.manage` / `payments.refund` | Next fulfilment step (paid orders only); cancel unpaid; refund ≤ remaining, restock only with a full refund. Audited |
+| GET / PUT | `/v1/shop-admin/zones[/{id}]` | `settings.read` / `settings.manage` | Delivery fees; a zone can only be on with a fee (also a DB CHECK) |
+
 Every write that changes public content deletes the Redis tags `cms:{type}` and `cms:{type}:{slug}` and POSTs them to `WEB_URL/api/revalidate` (header `x-revalidate-secret`). Public reads with `x-preview-secret: PREVIEW_SECRET` return the draft, uncached.

@@ -23,12 +23,15 @@ const map: [string, string][] = [
   ['/pages/get-a-quote', '/quote'],
   ['/pages/delivery-policy', '/delivery-policy'],
   ['/pages/privacy-policy', '/privacy'],
-  // /pages/services/products/* (catalogue and product-detail?id=) are mapped with the shop in Phase 8.
+  ['/pages/services/products', '/shop'], // ?category=plants etc. pass through unchanged
 ];
 
 export const legacyRedirects: Redirect[] = map.flatMap(([from, to]) =>
   (from === '/index.html' ? [from] : [from, `${from}/`, `${from}.html`, `${from}/index.html`]).map((source) => ({ source, destination: to, statusCode: 301 as const })),
 );
+
+/** Product pages used Firestore ids in the query string (`product-detail?id=…`); the proxy resolves them to slugs. */
+export const LEGACY_PRODUCT_PATHS = new Set(['/pages/services/products/product-detail', '/pages/services/products/product-detail.html', '/pages/services/products/product-detail/']);
 
 /** Story pages used Firestore ids in the query string; the proxy resolves them to slugs. */
 export const LEGACY_STORY_PATHS = new Set(['/pages/our-story/story.html', '/pages/our-story/story', '/share/story']);

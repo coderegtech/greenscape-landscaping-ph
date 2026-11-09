@@ -11,6 +11,8 @@ export default defineConfig({
   globalTeardown: './tests/e2e/teardown.ts',
   forbidOnly: ci,
   retries: ci ? 1 : 0,
+  // Locally the browsers share the CPU with three Next servers, the API, Supabase and Docker; more workers saturate it.
+  workers: ci ? undefined : 4,
   reporter: ci ? [['github'], ['html', { open: 'never' }]] : 'list',
   expect: { timeout: 10_000 },
   use: { trace: 'retain-on-failure', screenshot: 'only-on-failure' },

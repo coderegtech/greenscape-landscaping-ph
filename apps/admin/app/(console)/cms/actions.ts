@@ -5,6 +5,7 @@ import { api, attempt } from '@greenscape/auth/api';
 import { signPreview } from '@greenscape/auth/preview';
 import { z } from '@greenscape/validation';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { CONTENT_TYPES, isTypeKey } from '@/lib/content-types';
 
 const Any = z.any();
@@ -12,12 +13,15 @@ const Type = z.string().refine(isTypeKey, 'Unknown content type');
 const SlugS = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 const json = (method: string, body?: unknown) => ({ method, body: body === undefined ? undefined : JSON.stringify(body) });
 
+/** On success, navigates to the editor from the server (a client push can lose to the revalidation refresh). */
 export async function createDoc(type: string, slug: string, body: unknown, seo: unknown) {
-  return attempt(async () => {
+  const res = await attempt(async () => {
     const out = await api(`/v1/cms-admin/${Type.parse(type)}`, Any, json('POST', { slug: SlugS.parse(slug), body, seo }));
     revalidatePath(`/cms/${type}`);
     return out;
   });
+  if (res.ok) redirect(`/cms/${type}/${slug}`); // outside attempt(): redirect() works by throwing
+  return res;
 }
 
 export async function saveDraft(type: string, slug: string, body: unknown, seo: unknown, revision: number) {

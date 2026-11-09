@@ -106,6 +106,8 @@ export function mediaRoutes({ db, storage, mongo }: Deps) {
     const a = await db.mediaAsset.findUnique({ where: { id } });
     if (!a || a.bucket !== BUCKET) throw AppError.notFound();
     const usedBy = await usage(storage.publicUrl(a.path));
+    const products = await db.productImage.findMany({ where: { mediaId: a.id }, select: { product: { select: { slug: true } } } });
+    usedBy.push(...products.map((p) => `products/${p.product.slug}`));
     if (usedBy.length) throw new AppError(409, 'IN_USE', 'This image is still used on the site. Replace it there first.', { usedBy });
     await storage.remove(BUCKET, [a.path]);
     await db.$transaction(async (tx) => {

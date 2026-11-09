@@ -37,5 +37,19 @@ Living document; each phase adds its section. Threat model and DPA notes are in 
 | Lost updates | Saves carry the revision they started from; a stale save is a 409, never a silent overwrite. |
 | Audit | Testimonial moderation and site settings/menu changes write `AuditLog`; every content save/publish/rollback is a revision snapshot with its author. |
 
+## Shop and payments (Phase 8)
+| Concern | Implementation |
+|---|---|
+| Live money | `PAYMENT_PROVIDER` is `mock` locally. The Stripe adapter refuses `sk_live_`/`rk_live_` keys unless `PAYMENTS_LIVE_APPROVED=true`, which this repository never sets (unit-tested). Checkout and order pages show a test-mode banner or badge. |
+| Price tampering | The client sends variant ids and quantities only; prices, delivery fee and totals are computed from Postgres inside the order transaction and snapshotted on `OrderItem`. |
+| Overselling | Reservation is one conditional `UPDATE … WHERE onHand - reserved >= qty` per line (sorted by variant), plus the `reserved <= onHand` CHECK. Integration test: 8 parallel checkouts for the last item → exactly one order. |
+| Double submits | `idempotencyKey` is unique on `Order`; a repeat (even concurrent) returns the same order. |
+| Webhooks | Raw body, signature verified (Stripe `Stripe-Signature`; mock HMAC with `MOCK_PAYMENT_SECRET`), `WebhookEvent` insert first so replays are no-ops, state change under `SELECT … FOR UPDATE` on the order. Unknown refs are recorded, not applied. |
+| Stale state | Stock and payment status are never cached. Unpaid holds expire after `RESERVATION_MINUTES`; the job asks the provider before cancelling. A payment that lands after expiry re-takes stock or is refunded automatically. |
+| Cart and order access | Guest cart token and order link key are random 24-byte values, stored only as sha256; the cart token lives in an httpOnly SameSite=Lax cookie and is sent server-to-server only. A wrong key and a missing order both answer 404. |
+| Staff actions | Permissions per action (products, inventory, orders, refunds, settings); price changes, stock changes, cancellations, refunds, fulfilment and zone fees are audited. CSV export escapes formula prefixes. |
+| Mock provider | `/v1/payments/mock/*` exists only when `PAYMENT_PROVIDER=mock`; anyone holding the unguessable ref can settle that payment, so mock must never be the provider in production. |
+| Image optimiser | `dangerouslyAllowLocalIP` is enabled only when the configured Supabase host is `127.0.0.1`/`localhost` (local dev and CI), never for a hosted project. |
+
 ## HTTP hardening (Phase 3)
 API: helmet defaults (CSP `default-src 'self'`, HSTS, nosniff, frame-ancestors self), CORS allow-list with credentials, Redis-backed rate limit (300/min/IP, fails open if Redis is down), 1 MB JSON body limit, request ids, no `x-powered-by`, log redaction of `authorization`/`cookie`. Next.js apps: nosniff, referrer policy, frame options, permissions policy; admin is `noindex`.

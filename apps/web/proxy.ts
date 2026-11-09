@@ -1,20 +1,20 @@
 import { refreshSession } from '@greenscape/auth/next';
 import { NextResponse, type NextRequest } from 'next/server';
-import { LEGACY_STORY_PATHS } from './lib/legacy-redirects';
+import { LEGACY_PRODUCT_PATHS, LEGACY_STORY_PATHS } from './lib/legacy-redirects';
 
 const PROTECTED = ['/account'];
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
-/** Old story links carried Firestore ids (`story.html?id=…`, `/share/story?id=…`): resolve to the new slug. */
-async function legacyStory(request: NextRequest) {
+/** Old story and product links carried Firestore ids (`story.html?id=…`, `product-detail?id=…`): resolve to the new slug. */
+async function legacyById(request: NextRequest, lookup: string, base: string) {
   const id = request.nextUrl.searchParams.get('id');
-  let to = '/stories';
+  let to = base;
   if (id && /^[\w-]{6,40}$/.test(id)) {
     try {
-      const res = await fetch(`${API}/v1/cms/articles/legacy/${id}`, { signal: AbortSignal.timeout(3000) });
-      if (res.ok) to = `/stories/${(await res.json()).slug}`;
+      const res = await fetch(`${API}${lookup}/${id}`, { signal: AbortSignal.timeout(3000) });
+      if (res.ok) to = `${base}/${(await res.json()).slug}`;
     } catch {
-      /* API down: fall back to the stories index rather than an error */
+      /* API down: fall back to the index rather than an error */
     }
   }
   return NextResponse.redirect(new URL(to, request.url), 301);
@@ -22,7 +22,8 @@ async function legacyStory(request: NextRequest) {
 
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
-  if (LEGACY_STORY_PATHS.has(pathname)) return legacyStory(request);
+  if (LEGACY_STORY_PATHS.has(pathname)) return legacyById(request, '/v1/cms/articles/legacy', '/stories');
+  if (LEGACY_PRODUCT_PATHS.has(pathname)) return legacyById(request, '/v1/shop/legacy', '/shop');
 
   const isProtected = PROTECTED.some((p) => pathname === p || pathname.startsWith(`${p}/`));
   const { response, user } = await refreshSession(request);

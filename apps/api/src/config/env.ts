@@ -19,6 +19,14 @@ export const EnvSchema = z.object({
   // Shared with the web app: lets the API trigger revalidation and read drafts for preview (server-to-server only).
   REVALIDATE_SECRET: z.string().min(16).optional().or(z.literal('').transform(() => undefined)),
   PREVIEW_SECRET: z.string().min(16).optional().or(z.literal('').transform(() => undefined)),
+  // Payments (Phase 8). Live keys are refused unless PAYMENTS_LIVE_APPROVED=true (never set in this repository).
+  PAYMENT_PROVIDER: z.enum(['mock', 'stripe_test']).default('mock'),
+  STRIPE_SECRET_KEY: z.string().optional().or(z.literal('').transform(() => undefined)),
+  STRIPE_WEBHOOK_SECRET: z.string().optional().or(z.literal('').transform(() => undefined)),
+  PAYMENTS_LIVE_APPROVED: z.enum(['true', 'false']).default('false').transform((v) => v === 'true'),
+  MOCK_PAYMENT_SECRET: z.string().min(16).optional().or(z.literal('').transform(() => undefined)),
+  RESERVATION_MINUTES: z.coerce.number().int().min(5).max(24 * 60).default(30),
+  ORDER_NOTIFY_TO: csv,
   FORM_RATE_LIMIT_PER_HOUR: z.coerce.number().int().positive().default(10),
   CACHE_PREFIX: z.string().default('gs:dev'),
   CORS_ORIGINS: csv,

@@ -17,6 +17,8 @@ import { mediaRoutes } from './modules/media/routes.ts';
 import { inquiryRoutes } from './modules/inquiries/routes.ts';
 import { quotationRoutes } from './modules/quotations/routes.ts';
 import { userRoutes } from './modules/users/routes.ts';
+import { shopAdminRoutes } from './modules/shop/admin-routes.ts';
+import { catalogRoutes, shopRoutes, webhookRoutes } from './modules/shop/routes.ts';
 
 export function createApp(deps: Deps) {
   const { env, log } = deps;
@@ -50,6 +52,9 @@ export function createApp(deps: Deps) {
   // Public CMS reads: cached, read-only, low-cardinality params; mounted before the per-IP limiter because the
   // web server renders (and builds) every page through them from one IP. Writes are all behind the limiter.
   app.use('/v1/cms', cmsRoutes(deps));
+  app.use('/v1/shop', catalogRoutes(deps));
+  // Provider webhooks: raw body (signature check), never throttled, no session.
+  app.use('/v1/payments/webhooks', webhookRoutes(deps));
   app.use('/v1', apiRateLimit(deps.redis, env.CACHE_PREFIX, env.RATE_LIMIT_PER_MIN));
   app.use(express.json({ limit: '1mb' }));
 
@@ -66,6 +71,8 @@ export function createApp(deps: Deps) {
   app.use('/v1/cms-admin', cmsAdminRoutes(deps));
   app.use('/v1/media', mediaRoutes(deps));
   app.use('/v1', inquiryRoutes(deps));
+  app.use('/v1/shop-admin', shopAdminRoutes(deps));
+  app.use('/v1', shopRoutes(deps));
 
   app.use(notFound);
   app.use(errorHandler);

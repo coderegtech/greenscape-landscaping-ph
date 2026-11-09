@@ -4,6 +4,7 @@ import { createTokenVerifier, type TokenVerifier } from '@greenscape/auth/server
 import { createPrismaClient, type Db } from '@greenscape/database';
 import { createStorage, type Storage } from '@greenscape/storage';
 import { createMailer, type Mailer } from './mailer.ts';
+import { createMockProvider, createStripeProvider, type PaymentProvider } from '../modules/shop/payments.ts';
 import type { MongoClient, MongoDb } from '@greenscape/content';
 import type { Env } from '../config/env.ts';
 import type { Logger } from './logger.ts';
@@ -19,6 +20,13 @@ export interface Deps {
   verifyToken: TokenVerifier;
   storage: Storage;
   mailer: Mailer;
+  payments: PaymentProvider;
+}
+
+export function createPayments(env: Env, redis: Redis): PaymentProvider {
+  if (env.PAYMENT_PROVIDER === 'stripe_test') return createStripeProvider({ secretKey: env.STRIPE_SECRET_KEY, webhookSecret: env.STRIPE_WEBHOOK_SECRET, liveApproved: env.PAYMENTS_LIVE_APPROVED });
+  if (!env.MOCK_PAYMENT_SECRET) throw new Error('PAYMENT_PROVIDER=mock needs MOCK_PAYMENT_SECRET (16+ characters)');
+  return createMockProvider({ secret: env.MOCK_PAYMENT_SECRET, webUrl: env.WEB_URL, redis, prefix: env.CACHE_PREFIX });
 }
 
 export async function createDeps(env: Env, log: Logger): Promise<Deps> {
@@ -34,6 +42,7 @@ export async function createDeps(env: Env, log: Logger): Promise<Deps> {
     verifyToken: createTokenVerifier(env.SUPABASE_URL),
     storage: createStorage(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY),
     mailer: createMailer(env.SMTP_URL, env.MAIL_FROM, log),
+    payments: createPayments(env, redis),
   };
 }
 

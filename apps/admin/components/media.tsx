@@ -86,7 +86,8 @@ function useLibrary() {
 }
 
 /** Choose (or upload) an image for a field. */
-export function MediaPicker({ value, onChange, label, invalid }: { value?: MediaRef | null; onChange: (v: MediaRef | null) => void; label: string; invalid?: boolean }) {
+/** `onAsset` also receives the library asset (with its id), for places that link to media rows rather than URLs. */
+export function MediaPicker({ value, onChange, onAsset, label, invalid }: { value?: MediaRef | null; onChange: (v: MediaRef | null) => void; onAsset?: (a: Asset) => void; label: string; invalid?: boolean }) {
   const [open, setOpen] = useState(false);
   const lib = useLibrary();
   return (
@@ -118,7 +119,7 @@ export function MediaPicker({ value, onChange, label, invalid }: { value?: Media
               <ul className="grid max-h-[50svh] grid-cols-3 gap-2 overflow-y-auto sm:grid-cols-5 md:grid-cols-6" aria-label="Library">
                 {lib.items.map((a) => (
                   <li key={a.id}>
-                    <button type="button" onClick={() => { onChange(toRef(a)); setOpen(false); }} className="group relative block aspect-square w-full overflow-clip border border-rule hover:border-signal" aria-label={`Use ${a.alt || 'image'}`}>
+                    <button type="button" onClick={() => { onChange(toRef(a)); onAsset?.(a); setOpen(false); }} className="group relative block aspect-square w-full overflow-clip border border-rule hover:border-signal" aria-label={`Use ${a.alt || 'image'}`}>
                       <Thumb src={a.url} />
                     </button>
                   </li>

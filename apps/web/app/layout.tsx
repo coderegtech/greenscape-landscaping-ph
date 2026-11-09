@@ -42,7 +42,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <a href="/api/preview/exit" className="font-bold">Exit preview</a>
             </div>
           )}
-          <SiteHeader items={site?.nav.main ?? []} />
+          <SiteHeader items={site?.nav.main ?? []} cartCountUrl="/api/cart/count" />
           {children}
           <SiteFooter
             columns={(site?.nav.footer ?? []).map((n) => ({ title: n.label, links: n.children ?? [] }))}

@@ -59,6 +59,11 @@ export function createStorage(url: string, secretKey: string) {
     },
 
     /** Whole object as bytes (callers cap sizes); null when missing. */
+    /** Server-side upload (imports and generated files). Never overwrites. */
+    async put(bucket: BucketId, path: string, bytes: Uint8Array, contentType: string) {
+      const { error } = await sb.storage.from(bucket).upload(path, bytes, { contentType, upsert: false, cacheControl: '31536000' });
+      if (error) throw new Error(`storage put ${bucket}/${path}: ${error.message}`);
+    },
     async download(bucket: BucketId, path: string): Promise<Uint8Array | null> {
       const { data, error } = await sb.storage.from(bucket).download(path);
       if (error || !data) return null;

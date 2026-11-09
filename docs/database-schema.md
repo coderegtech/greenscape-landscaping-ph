@@ -27,10 +27,12 @@ The authoritative schema is [`packages/database/prisma/schema.prisma`](../packag
 Model groups: identity & access (User, Role, Permission, RolePermission, UserRole, AuditLog) · customers (Customer, Address) · catalog & inventory (Category, Product, ProductVariant, ProductImage, InventoryLevel, StockMovement) · commerce (Cart, CartItem, Order, OrderItem, OrderEvent, Payment, Refund, WebhookEvent) · inquiries (Quotation, QuotationAttachment, QuotationNote, Conversation, Message, ContactInquiry) · media (MediaAsset) · workforce (Department, Employee, WorkSchedule, ScheduleShift, ScheduleAssignment, AttendanceRecord, TimePunch, AttendanceCorrection, LeaveType, LeaveBalance, LeaveRequest, Holiday, Announcement).
 
 ### Concurrency rules
-- **Checkout**: one transaction, `SELECT … FOR UPDATE` on `InventoryLevel` rows ordered by `variantId` (deadlock-safe), check `onHand - reserved >= qty`, increment `reserved`, create `Order`+`OrderItem` with server prices, write `StockMovement(RESERVE)`. On payment success → `onHand -= qty, reserved -= qty`, `SALE`. On expiry/failure → `RELEASE`.
+- **Checkout**: one transaction; per line, ordered by `variantId` (deadlock-safe), a conditional `UPDATE "InventoryLevel" SET reserved = reserved + qty WHERE onHand - reserved >= qty` (0 rows = out of stock, the whole order rolls back), create `Order`+`OrderItem` with server prices, write `StockMovement(RESERVE)`. On payment success → `onHand -= qty, reserved -= qty`, `SALE`. On expiry/failure → `RELEASE`.
 - **Webhooks**: insert `WebhookEvent` by provider event id first; unique-violation = already processed → 200.
 - **Clock-in**: `@@unique([employeeId, workDate])` + an open-punch check inside a transaction prevents double clock-in.
 - **Leave approval**: transaction updates `LeaveRequest.status` and `LeaveBalance.used` together; balance check uses `FOR UPDATE`.
+
+Phase 8 migration `20261110090000_shop` adds `DeliveryZone` (fee per municipality; CHECK: active ⇒ fee set, fee ≥ 0), `Order.reservationExpiresAt` and `accessKeyHash` (index on status + expiry), `MediaAsset.sourceUrl` (idempotent imports) and a non-negative amounts CHECK on `Order`.
 
 ### Excluded on purpose
 `dailyRate`, `foodAllowance`, `uniformBond`, `sss`, `philhealth`, `pagibig` exist in the current Firestore `employees` collection. They are payroll / government-ID data and are **not modeled** (see `docs/audit/migration-risks.md`).

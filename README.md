@@ -57,6 +57,9 @@ pnpm content:indexes
 pnpm content:seed
 ```
 ```bash
+pnpm shop:seed
+```
+```bash
 pnpm storage:setup
 ```
 ```bash

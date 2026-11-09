@@ -1,7 +1,6 @@
 'use client';
 import { Button } from '@greenscape/ui/components/button';
 import { toast } from '@greenscape/ui/components/sonner';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { createDoc } from '@/app/(console)/cms/actions';
 import { CONTENT_TYPES, clean, setIn, type TypeKey } from '@/lib/content-types';
@@ -14,7 +13,6 @@ const slugify = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ
 export function NewDocForm({ type }: { type: TypeKey }) {
   const def = CONTENT_TYPES[type];
   const templates = Object.entries(def.templates) as [string, { label: string; body: () => Obj }][];
-  const router = useRouter();
   const [tpl, setTpl] = useState(templates[0]![0]);
   const [body, setBody] = useState<Obj>(() => templates[0]![1].body());
   const [slug, setSlug] = useState('');
@@ -37,10 +35,6 @@ export function NewDocForm({ type }: { type: TypeKey }) {
     setBusy(true);
     const res = await createDoc(type, slug, clean(body), {});
     setBusy(false);
-    if (res.ok) {
-      toast.success('Draft created');
-      return router.push(`/cms/${type}/${slug}`);
-    }
     if (res.status === 400 && Array.isArray(res.details)) {
       setErrors(Object.fromEntries((res.details as { path: string; message: string }[]).map((d) => [d.path.replace(/^body\./, ''), d.message])));
       toast.error('Some fields need attention');

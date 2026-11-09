@@ -8,12 +8,15 @@ import { MeResponse, MyQuotation, QUOTATION_STATUS_LABELS, QUOTE_SERVICES, z } f
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { longDate } from '@/lib/cms';
+import { peso } from '@/lib/money';
 
 export const metadata: Metadata = { title: 'My account', robots: { index: false } };
 
-// Identity and quote requests. Orders and addresses arrive with the shop (Phase 8).
+const MyOrder = z.object({ number: z.string(), statusLabel: z.string(), fulfillmentLabel: z.string(), status: z.string(), total: z.string(), placedAt: z.string(), itemCount: z.number() });
+
+// Identity, orders and quote requests.
 export default async function AccountPage({ searchParams }: { searchParams: Promise<{ reset?: string }> }) {
-  const [{ reset }, me, quotes] = await Promise.all([searchParams, api('/v1/auth/me', MeResponse), api('/v1/quotations/mine', z.array(MyQuotation))]);
+  const [{ reset }, me, quotes, orders] = await Promise.all([searchParams, api('/v1/auth/me', MeResponse), api('/v1/quotations/mine', z.array(MyQuotation)), api('/v1/orders/mine', z.array(MyOrder))]);
   return (
     <main id="main" className="container-page py-16 md:py-24">
       <div className="mx-auto flex max-w-[48rem] flex-col gap-12">
@@ -29,6 +32,29 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             { term: 'Account type', detail: <span data-testid="account-roles">{me.roles.join(', ')}</span> },
           ]}
         />
+        <section aria-labelledby="orders" className="flex flex-col gap-6">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h2 id="orders" className="text-3xl">Your orders</h2>
+            <Button asChild variant="secondary" size="sm">
+              <Link href="/shop" className="no-underline">Shop</Link>
+            </Button>
+          </div>
+          {orders.length ? (
+            <ul className="border-t border-rule" data-testid="my-orders">
+              {orders.map((o) => (
+                <li key={o.number} className="flex flex-wrap items-center justify-between gap-4 border-b border-rule py-4">
+                  <div className="flex min-w-0 flex-col">
+                    <Link href={`/orders/${o.number}`} className="figure text-lg text-ink">{o.number}</Link>
+                    <span className="text-sm text-muted">{o.itemCount === 1 ? '1 item' : `${o.itemCount} items`}, {peso(o.total)}. Placed {longDate(o.placedAt)}</span>
+                  </div>
+                  <Badge variant={o.status === 'PAID' || o.status === 'COMPLETED' ? 'signal' : 'outline'}>{o.status === 'PAID' ? o.fulfillmentLabel : o.statusLabel}</Badge>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-base text-ink-2">No orders yet.</p>
+          )}
+        </section>
         <section aria-labelledby="quotes" className="flex flex-col gap-6">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 id="quotes" className="text-3xl">Your quote requests</h2>

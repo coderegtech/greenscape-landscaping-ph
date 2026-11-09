@@ -9,9 +9,9 @@ const IA: { title: string; items: Item[] }[] = [
   {
     title: 'Shop',
     items: [
-      { label: 'Orders', href: '/orders', permission: 'orders.read', ready: false },
-      { label: 'Products', href: '/products', permission: 'products.read', ready: false },
-      { label: 'Inventory', href: '/inventory', permission: 'inventory.read', ready: false },
+      { label: 'Orders', href: '/orders', permission: 'orders.read', ready: true },
+      { label: 'Products', href: '/products', permission: 'products.read', ready: true },
+      { label: 'Inventory', href: '/inventory', permission: 'inventory.read', ready: true },
       { label: 'Customers', href: '/customers', permission: 'customers.read', ready: false },
     ],
   },
@@ -49,6 +49,7 @@ const IA: { title: string; items: Item[] }[] = [
     items: [
       { label: 'Reports', href: '/reports', permission: 'reports.sales', ready: false },
       { label: 'Users & roles', href: '/users', permission: 'users.read', ready: false },
+      { label: 'Delivery areas', href: '/settings/delivery', permission: 'settings.read', ready: true },
       { label: 'Settings', href: '/settings', permission: 'settings.read', ready: false },
     ],
   },

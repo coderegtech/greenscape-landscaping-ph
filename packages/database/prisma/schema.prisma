@@ -236,6 +236,17 @@ enum StockMovementType {
   DAMAGE
 }
 
+/// Delivery fee by municipality (D7). Inactive until the business sets a real fee.
+model DeliveryZone {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique
+  province  String   @default("Palawan")
+  fee       Decimal? @db.Decimal(12, 2)
+  isActive  Boolean  @default(false)
+  sortOrder Int      @default(0)
+  updatedAt DateTime @updatedAt
+}
+
 // ───────────── Cart, orders, payments ─────────────
 
 model Cart {
@@ -284,6 +295,10 @@ model Order {
   shippingAddress Json
   notes           String?
   idempotencyKey  String?           @unique
+  /// Stock stays reserved for an unpaid order until this time; then the order is cancelled and stock released.
+  reservationExpiresAt DateTime?
+  /// sha256 of the secret in the guest's order link (signed-in customers use their account instead).
+  accessKeyHash   String?
   items           OrderItem[]
   payments        Payment[]
   events          OrderEvent[]
@@ -292,6 +307,7 @@ model Order {
 
   @@index([customerId, placedAt])
   @@index([status, placedAt])
+  @@index([status, reservationExpiresAt])
 }
 
 enum OrderStatus {
@@ -501,6 +517,8 @@ model MediaAsset {
   alt                  String?
   blurDataUrl          String?
   checksum             String?
+  /// Original URL when imported from the old site (idempotent re-imports).
+  sourceUrl            String?               @unique
   uploadedById         String?               @db.Uuid
   refCount             Int                   @default(0)
   createdAt            DateTime              @default(now())

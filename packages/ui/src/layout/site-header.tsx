@@ -2,6 +2,7 @@
 import { ChevronDown, Menu, ShoppingBag, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { Button } from '../components/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/dropdown-menu';
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '../components/sheet';
@@ -39,7 +40,24 @@ const linkClass =
  * Sticky site header: wordmark, one line of links (menus for groups), one quiet action, account and cart.
  * Below 64rem the links move into a sheet. Data comes from the CMS `navigation` document (Phase 6).
  */
-export function SiteHeader({ items, cartCount, quoteHref = '/quote', accountHref = '/account', cartHref = '/cart' }: { items: NavItem[]; cartCount?: number; quoteHref?: string; accountHref?: string; cartHref?: string }) {
+/** Cart count fetched after load (pages stay static and cacheable); refreshed on navigation and on a `gs:cart` event. */
+function useCartCount(url?: string) {
+  const pathname = usePathname();
+  const [n, setN] = useState<number | undefined>();
+  useEffect(() => {
+    if (!url) return;
+    const ctrl = new AbortController();
+    const load = () => fetch(url, { signal: ctrl.signal, cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).then((d) => d && setN(d.count)).catch(() => undefined);
+    void load();
+    window.addEventListener('gs:cart', load);
+    return () => { ctrl.abort(); window.removeEventListener('gs:cart', load); };
+  }, [url, pathname]);
+  return n;
+}
+
+export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHref = '/quote', accountHref = '/account', cartHref = '/cart' }: { items: NavItem[]; cartCount?: number; cartCountUrl?: string; quoteHref?: string; accountHref?: string; cartHref?: string }) {
+  const fetched = useCartCount(fixedCount === undefined ? cartCountUrl : undefined);
+  const cartCount = fixedCount ?? fetched;
   const path = usePathname() ?? '/';
   return (
     <>

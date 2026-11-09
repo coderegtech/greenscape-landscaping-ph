@@ -11,10 +11,10 @@ import type { z } from 'zod';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
-export function ContactForm() {
+export function ContactForm({ subject }: { subject?: string }) {
   const [sent, setSent] = useState(false);
   const [serverError, setServerError] = useState<string>();
-  const { register, handleSubmit, formState } = useForm<z.input<typeof ContactRequest>, unknown, z.output<typeof ContactRequest>>({ resolver: zodResolver(ContactRequest), defaultValues: { website: '' } });
+  const { register, handleSubmit, formState } = useForm<z.input<typeof ContactRequest>, unknown, z.output<typeof ContactRequest>>({ resolver: zodResolver(ContactRequest), defaultValues: { website: '', subject: subject?.slice(0, 120) } });
   const e = formState.errors;
 
   const onSubmit = handleSubmit(async (values) => {

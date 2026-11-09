@@ -5,7 +5,8 @@ import { PageHeader, loadPage, pageMetadata } from '@/lib/page';
 export const revalidate = 300;
 export const generateMetadata = () => pageMetadata('contact', '/contact');
 
-export default async function ContactPage() {
+export default async function ContactPage({ searchParams }: { searchParams: Promise<{ subject?: string }> }) {
+  const { subject } = await searchParams;
   const page = await loadPage('contact');
   return (
     <main id="main">
@@ -17,7 +18,7 @@ export default async function ContactPage() {
         </section>
         <section aria-labelledby="write" className="flex flex-col gap-6 border-t border-rule pt-6">
           <h2 id="write" className="text-2xl">Send a message</h2>
-          <ContactForm />
+          <ContactForm subject={typeof subject === 'string' ? subject : undefined} />
         </section>
       </div>
     </main>
