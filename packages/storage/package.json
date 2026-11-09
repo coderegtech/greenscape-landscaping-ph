@@ -1,0 +1,20 @@
+{
+  "name": "@greenscape/storage",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "buckets": "tsx src/setup.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.119.0"
+  },
+  "devDependencies": {
+    "@greenscape/config": "workspace:*",
+    "tsx": "^4.23.15"
+  }
+}

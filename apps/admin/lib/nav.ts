@@ -18,7 +18,7 @@ const IA: { title: string; items: Item[] }[] = [
   {
     title: 'Enquiries',
     items: [
-      { label: 'Quotations', href: '/quotations', permission: 'quotations.read', ready: false },
+      { label: 'Quotations', href: '/quotations', permission: 'quotations.read', ready: true },
       { label: 'Messages', href: '/messages', permission: 'messages.read', ready: false },
     ],
   },

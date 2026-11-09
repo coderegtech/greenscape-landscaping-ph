@@ -21,7 +21,9 @@
     "test:e2e": "playwright test",
     "supabase:start": "supabase start -x studio,imgproxy,vector,logflare,supavisor,postgres-meta,realtime,edge-runtime",
     "supabase:env": "node scripts/supabase-env.mjs",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "content:seed": "tsx scripts/migrate/seed-content.ts",
+    "storage:setup": "pnpm --filter @greenscape/storage buckets"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",

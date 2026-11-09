@@ -23,7 +23,7 @@ export function SiteFooter({ columns, contact, socials = [], legal, credits }: {
   ].filter(Boolean) as { term: string; detail: ReactNode }[];
 
   return (
-    <footer className="band-deep mt-24 border-t border-rule">
+    <footer className="band-deep border-t border-rule">
       <div className="container-page py-16 md:py-24">
         <p className="font-display text-4xl text-ink md:text-display-s">Greenscape</p>
         <div className="mt-16 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 lg:grid-cols-[repeat(3,minmax(0,1fr))_minmax(0,1.4fr)]">

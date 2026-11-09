@@ -338,3 +338,20 @@
     transform: scale(1.04);
   }
 }
+
+/* Rendered CMS rich text (apps/web/components/rich-text.tsx). Measure 68ch, Prata subheads, signal-ruled lists. */
+@layer components {
+  .prose-gs { max-width: var(--container-prose); color: var(--gs-ink-2); font-size: var(--text-md); line-height: 1.7; }
+  .prose-gs > * + * { margin-top: 1em; }
+  .prose-gs h2, .prose-gs h3 { margin-top: 2em; font-size: var(--text-2xl); line-height: 1.15; }
+  .prose-gs h3 { font-size: var(--text-xl); }
+  .prose-gs ul, .prose-gs ol { padding-left: 1.25em; }
+  .prose-gs ul { list-style: none; }
+  .prose-gs ul > li { position: relative; }
+  .prose-gs ul > li::before { content: ""; position: absolute; left: -1.1em; top: 0.75em; width: 0.5em; height: 1px; background: var(--gs-signal); }
+  .prose-gs ol { list-style: decimal; }
+  .prose-gs li + li { margin-top: 0.35em; }
+  .prose-gs a { color: var(--gs-ink); text-decoration-line: underline; }
+  .prose-gs strong { color: var(--gs-ink); font-weight: 700; }
+  .prose-gs blockquote { border-left: 1.5px solid var(--gs-signal); padding-left: 1em; font-family: var(--font-display); font-size: var(--text-xl); color: var(--gs-ink); }
+}

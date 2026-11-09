@@ -6,18 +6,28 @@ import { SiteHeader } from '@greenscape/ui/layout/site-header';
 import { JS_FLAG_SCRIPT } from '@greenscape/ui/motion/reveal';
 import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
-import { contact, footerColumns, mainNav, socials } from '@/lib/site';
+import { cms } from '@/lib/cms';
 import './globals.css';
 
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.WEB_URL ?? 'http://localhost:3000'),
-  title: { default: 'Greenscape Landscaping Services | Palawan', template: '%s | Greenscape Palawan' },
-  description: 'Garden design, landscaping, garden maintenance and plants in Puerto Princesa, Palawan.',
-};
+const WEB_URL = process.env.WEB_URL ?? 'http://localhost:3000';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await cms.site();
+  const seo = site?.config ? { title: 'Greenscape Landscaping Services | Palawan', description: 'Garden design, landscaping, garden maintenance and plants in Puerto Princesa, Palawan.' } : {};
+  return {
+    metadataBase: new URL(WEB_URL),
+    title: { default: seo.title ?? 'Greenscape Palawan', template: '%s | Greenscape Palawan' },
+    description: seo.description,
+    openGraph: { siteName: 'Greenscape Landscaping Services', locale: 'en_PH', type: 'website' },
+    alternates: { canonical: './' },
+  };
+}
 
 export const viewport: Viewport = { themeColor: '#14280f', colorScheme: 'dark' };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const site = await cms.site();
+  const c = site?.config;
   return (
     <html lang="en" className={fontVariables} suppressHydrationWarning>
       <head>
@@ -25,14 +35,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <TooltipProvider delayDuration={800}>
-          <SiteHeader items={mainNav} />
+          <SiteHeader items={site?.nav.main ?? []} />
           {children}
           <SiteFooter
-            columns={footerColumns}
-            contact={contact}
-            socials={socials}
+            columns={(site?.nav.footer ?? []).map((n) => ({ title: n.label, links: n.children ?? [] }))}
+            contact={{ address: c?.address, phone: c?.phone, email: c?.email, hours: c?.hours }}
+            socials={[
+              ...(c?.socials.facebook ? [{ label: 'Facebook', href: c.socials.facebook }] : []),
+              ...(c?.socials.instagram ? [{ label: 'Instagram', href: c.socials.instagram }] : []),
+            ]}
             legal={<>© {new Date().getFullYear()} Greenscape Palawan</>}
-            credits={<Link href="/privacy" className="text-muted">Privacy notice</Link>}
+            credits={
+              <Link href="/privacy" className="text-muted">
+                Privacy notice
+              </Link>
+            }
           />
           <Toaster />
         </TooltipProvider>

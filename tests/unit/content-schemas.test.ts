@@ -1,7 +1,7 @@
 import { Page, ProductContent, Section } from '@greenscape/content';
 import { describe, expect, it } from 'vitest';
 
-const img = { bucket: 'public-media' as const, path: 'hero/2026/01/a.webp', alt: 'Lush garden' };
+const img = { url: 'https://example.com/hero.webp', storagePath: 'hero/2026/01/a.webp', alt: 'Lush garden' };
 const now = new Date();
 const uuid = '6f0f3c1e-0d5b-4a39-9f2e-6d9b5b2b8a11';
 

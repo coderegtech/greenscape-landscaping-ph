@@ -1,0 +1,645 @@
+{
+  "scrapedAt": "2026-11-09T14:26:57.429Z",
+  "origin": "https://greenscapelandscapingph.com",
+  "home": {
+    "heroSlides": [
+      "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764522797991_0_Hero%20-%20Maremegmeng.webp?alt=media&token=1128243b-c3c8-49a9-b775-b6a3eb6efc69",
+      "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764522797992_1_hero_1763132715280_0_IMG_5694.webp?alt=media&token=b906427a-a1bb-45fe-9b17-c8fb8cbfca7c",
+      "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764522797992_2_hero_1763133618634_0_unnamed%20(3",
+      "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764522797992_3_hero_1763133618636_2_unnamed%20(1",
+      "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764524403423_0_ezgif-50ffef9f5367ce88.webp?alt=media&token=a8457a34-35af-4762-877f-f69f4b54fe83"
+    ],
+    "heroHeadline": "Green today, greener tomorrow.",
+    "heroSub": "Discover our premium selection of plants, pots, and garden essentials.",
+    "services": [
+      {
+        "cls": "service-card service-design",
+        "href": "pages/services/garden-design/index.html",
+        "image": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/services%2Fgarden-design%2Fgarden-design_1764383609857_0_IMG_4525.jpeg?alt=media&token=265129dc-45b7-4d17-85b5-ec2c283b3c45",
+        "badge": "50+ Projects",
+        "title": "Garden Design",
+        "text": "Bespoke landscape architecture tailored to your vision.",
+        "points": [
+          "Residential Gardens",
+          "Commercial Spaces",
+          "Rooftop Gardens",
+          "Vertical Gardens",
+          "Tropical Landscaping"
+        ]
+      },
+      {
+        "cls": "service-card service-essentials",
+        "href": "pages/services/garden-essential/index.html",
+        "image": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/services%2Fgarden-essential%2Fgarden-essential_1764383663860_0_IMG_5465.jpeg?alt=media&token=8318a71a-5d2b-4570-8254-e1e1c421e02f",
+        "badge": "200+ Products",
+        "title": "Garden Essentials",
+        "text": "Premium tools and supplies for thriving gardens.",
+        "points": [
+          "Gardening Tools",
+          "Soil & Fertilizer",
+          "Plant Pots",
+          "Watering Systems",
+          "Garden Decor"
+        ]
+      },
+      {
+        "cls": "service-card service-landscaping",
+        "href": "pages/services/landscaping/index.html",
+        "image": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/services%2Flandscaping%2Flandscaping_1764383702758_0_IMG_5816.jpeg?alt=media&token=13fa5124-770c-41f9-889b-7c89cb199169",
+        "badge": "100+ Installations",
+        "title": "Landscaping",
+        "text": "Expert installation from concept to completion.",
+        "points": [
+          "Lawn Installation",
+          "Hardscaping",
+          "Irrigation Systems",
+          "Outdoor Lighting",
+          "Water Features"
+        ]
+      },
+      {
+        "cls": "service-card service-maintenance",
+        "href": "pages/services/garden-maintenance/index.html",
+        "image": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/services%2Fgarden-maintenance%2Fgarden-maintenance_1763802717611_1_IMG_2230.jpeg?alt=media&token=da0d2009-4ab4-4757-8fd4-4b1a598ac667",
+        "badge": "150+ Clients",
+        "title": "Garden Maintenance",
+        "text": "Professional care for lasting beauty and health.",
+        "points": [
+          "Regular Lawn Care",
+          "Plant Pruning",
+          "Pest Control",
+          "Seasonal Cleanup",
+          "Garden Consultation"
+        ]
+      }
+    ],
+    "featuredProjects": [
+      {
+        "title": "Lush, Leaning, and Sustainable: Transforming a Beachside Paradise",
+        "description": "Perched on the stunning shores of Maremegmeg Beach, this coastal paradise transforms a steep slope into a lush, functional, and sustainable sanctuary. Native, drought-tolerant plants withstand salty winds while enriching the soil and providing shade and privacy. Lush greenery frames the azure waters, flowering shrubs add vibrant accents, and soft lawns invite relaxation. Every element reflects careful planning, environmental mindfulness, and a commitment to lasting coastal luxury.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Commercial Landscaping"
+          },
+          {
+            "cls": "",
+            "v": "El Nido, Palawan"
+          },
+          {
+            "cls": "",
+            "v": "May 2018"
+          },
+          {
+            "cls": "",
+            "v": "View Project Details"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745511032_1763287684002_IMG_2705.webp?alt=media&token=c931940b-e2a0-4d9a-b899-0592a7c6b914",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745516222_1763287987662_IMG_4408.webp?alt=media&token=d527db6f-97d0-4507-a930-c29a3802aa2b",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745522510_1763287996021_IMG_1945.webp?alt=media&token=b23f694f-31f2-40fe-bb92-61b17af05529",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745527756_1763288004173_IMG_8872.webp?alt=media&token=2e6fd29c-12f0-4e75-a89b-2cee33dbe4a6",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745533520_1763288353196_IMG_4924.webp?alt=media&token=cb24b6a6-1470-4a5d-8a6a-1bb585bcc5c5",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745539287_1763288361148_B6B82973-0E1A-42E3-ADFD-6F9FC4B89044.webp?alt=media&token=1819711c-932e-4051-89c6-cde11ae8de2b"
+        ]
+      },
+      {
+        "title": "Sustainable Landscaping in Action",
+        "description": "Led by professional and technical personnel, the ball-out and tree planting operations in San Vicente are carried out using sustainable landscaping practices and proper transplanting protocols. This ensures high survival rates, minimal environmental impact, and long-term ecological benefits for the site.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Commercial Landscaping"
+          },
+          {
+            "cls": "",
+            "v": "San Vicente, Palawan"
+          },
+          {
+            "cls": "",
+            "v": "Apr 2026"
+          },
+          {
+            "cls": "",
+            "v": "View Project Details"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340678080_403bb52068257bf98e91925bc990ec1b.jpeg?alt=media&token=e59110dc-75cf-4e4a-8462-c764038ea98a",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340787006_2e4899129f598800ebfb5d9f137c6c15.jpeg?alt=media&token=22356fcf-327e-4710-aff0-3f05ae365e48",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340794441_5794d38d798fb5d81ec4a4964e16612b.jpeg?alt=media&token=22a91386-a82f-41d1-a768-438ce4a5f4a6",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340801915_0f1a80702118363d66440db414d48139.jpeg?alt=media&token=5ebc13b2-5422-4e41-8de5-10ba60897cba",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340813860_5ebb2f1aaf41bdcc3179b6fad2bc5c1c.jpeg?alt=media&token=8d5c422f-e721-4c11-80de-bd5d0ddab69a",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340819910_4661bc67ee58d5dac71c99f365e1ef59.jpeg?alt=media&token=d5bafda3-befa-41a7-9535-bb4b78fd91d0",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340826083_63aa7630d7208e73a8306f94393af4e2.jpeg?alt=media&token=12e255b7-0910-4d55-ab9b-e5e69a591aba",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340833933_f6f67d6be44cb9abb0d6b4635b621d2c.jpeg?alt=media&token=908c083d-311d-484d-91b6-fd6f6100e8c2",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340840170_82616d0cdf8333a20f9c8d4ef1bc2e1d.jpeg?alt=media&token=6461cdcd-ead6-4f04-97df-c58e4065b3da",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340846394_4904a7bc15bcd0946a1e0e8b7327dd93.jpeg?alt=media&token=95c9b552-fd2b-4faa-805c-51be628feee1",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340854463_5fae7d2237963ad8e92f6765b4b10eb1.jpeg?alt=media&token=b1063def-da58-43a5-b506-7e651e344aca",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340860485_ea003316ec642ec74291316328a0e749.jpeg?alt=media&token=6fff3528-3ed4-4011-b0ee-4022650e0c79",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340866942_189dbe30feab627ed2695152b3b9fe81.jpeg?alt=media&token=bc68323f-f41b-47d3-b08c-b319848e2c9f"
+        ]
+      },
+      {
+        "title": "Reviving a Botanical Haven: A Garden of Rare Treasures",
+        "description": "The once-outdated landscape has been transformed into a botanical sanctuary that honors its roots while embracing modern sophistication. Preserving what works and replacing what no longer thrives, the garden now features rare species, exotic forms, and collector’s varieties. Layered canopies, understory foliage, and bold specimens create a living museum—an immersive haven where plant enthusiasts and nature lovers can explore a vibrant, revitalized landscape.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Landscape Rehabilitation"
+          },
+          {
+            "cls": "",
+            "v": "Puerto Princesa City"
+          },
+          {
+            "cls": "",
+            "v": "Nov 2023"
+          },
+          {
+            "cls": "",
+            "v": "View Project Details"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744033431_1763360561816_IMG_7933.webp?alt=media&token=0bea3392-3f05-473a-9288-40562a6845df",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744067143_1763360578718_IMG_2451.webp?alt=media&token=4c2aa2c7-667e-4c86-bc7a-b2cfa8c7db2f",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744071139_1763360586903_IMG_6312.webp?alt=media&token=4a97ea7d-d914-4706-9ba0-323239b813ae",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744074972_1763360597449_IMG_5505.webp?alt=media&token=ef7ca0ca-9095-42c0-90b5-62d77ad39d1f"
+        ]
+      },
+      {
+        "title": "A Tropical Escape at Home: The New Face of Residential Landscaping",
+        "description": "Transform your residential garden into a vibrant tropical retreat. Picture a space where palms sway, colorful shrubs brighten the view, and layers of greenery create depth and calm. A soft, open lawn anchors the garden, inviting rest, play, and quiet moments. With curated tropical plants and simple pathways, the design blends beauty and function. Low-maintenance species, natural textures, and earthy tones turn your outdoor space into a soothing escape—perfect for unwinding and reconnecting with nature at home.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Residential Garden"
+          },
+          {
+            "cls": "",
+            "v": "Puerto Princesa City, Palawan"
+          },
+          {
+            "cls": "",
+            "v": "Oct 2021"
+          },
+          {
+            "cls": "",
+            "v": "View Project Details"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744791276_1763286976144_2D4B9E09-D529-4446-92C7-4ED9F0B3A1A0.webp?alt=media&token=bf503c38-4e9e-4f5f-bc02-9e1cbc565039",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744798075_1763286991125_IMG_6880.webp?alt=media&token=7fc5dce2-8b66-48c4-8812-cf530ce659e3",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744802381_1763287000217_IMG_6883.webp?alt=media&token=6b517c8b-dc32-4aec-9c70-f12093bbeffc",
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744806687_1763287330402_IMG_1988.webp?alt=media&token=c0eb2f06-cf39-49f7-816c-317eb484c2a4"
+        ]
+      }
+    ]
+  },
+  "projects": {
+    "residential-garden": [
+      {
+        "title": "Building Comfort and Quality at Home: A Balance of Beauty and Functionality",
+        "description": "A home is more than just a structure, it’s a place where comfort, connection, and everyday life come together. The landscape features a well-maintained open lawn, carefully arranged shrubs, and layered greenery that add depth and balance to the space. Tropical plants soften the overall look, creating a fresh and natural atmosphere around the home. Designed for everyday family use, the layout offers a calm, open environment that is both functional and visually pleasing, enhancing the home’s overall character.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Residential Garden"
+          },
+          {
+            "cls": "",
+            "v": "Puerto Princesa City"
+          },
+          {
+            "cls": "",
+            "v": "Jan 2026"
+          },
+          {
+            "cls": "",
+            "v": "View Project"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1768630328216_9B1DD2ED-3D5E-4BDE-AFA8-992E78202B42.webp?alt=media&token=69987642-a275-4944-991c-71c4d4d64513"
+        ]
+      },
+      {
+        "title": "A Lush Escape at Home: Fresh Take on Modern Tropical Gardens",
+        "description": "This residential garden in Narra, Palawan showcases a clean, tropical landscape with a lush open lawn, neatly shaped shrubs, and clusters of palms that create height and balance. The design highlights simplicity and freshness—combining well-maintained greenery with natural stone accents to bring a relaxing and elegant feel to the space. The layout provides a calm, open atmosphere ideal for family use while maintaining a polished, resort-inspired aesthetic.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Residential Garden"
+          },
+          {
+            "cls": "",
+            "v": "Narra, Palawan"
+          },
+          {
+            "cls": "",
+            "v": "Jun 2025"
+          },
+          {
+            "cls": "",
+            "v": "View Project"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763214482491_11E19AA4-5DAF-415D-8D36-FD35A4787ADF.JPG?alt=media&token=54f272a6-a699-4764-aec1-28f20767a256"
+        ]
+      },
+      {
+        "title": "A Tropical Escape at Home: The New Face of Residential Landscaping",
+        "description": "Transform your residential garden into a vibrant tropical retreat. Picture a space where palms sway, colorful shrubs brighten the view, and layers of greenery create depth and calm. A soft, open lawn anchors the garden, inviting rest, play, and quiet moments. With curated tropical plants and simple pathways, the design blends beauty and function. Low-maintenance species, natural textures, and earthy tones turn your outdoor space into a soothing escape—perfect for unwinding and reconnecting with nature at home.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Residential Garden"
+          },
+          {
+            "cls": "",
+            "v": "Puerto Princesa City, Palawan"
+          },
+          {
+            "cls": "",
+            "v": "Oct 2021"
+          },
+          {
+            "cls": "",
+            "v": "View Project"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744791276_1763286976144_2D4B9E09-D529-4446-92C7-4ED9F0B3A1A0.webp?alt=media&token=bf503c38-4e9e-4f5f-bc02-9e1cbc565039"
+        ]
+      }
+    ],
+    "commercial-landscaping": [
+      {
+        "title": "Lush, Leaning, and Sustainable: Transforming a Beachside Paradise",
+        "description": "Perched on the stunning shores of Maremegmeg Beach, this coastal paradise transforms a steep slope into a lush, functional, and sustainable sanctuary. Native, drought-tolerant plants withstand salty winds while enriching the soil and providing shade and privacy. Lush greenery frames the azure waters, flowering shrubs add vibrant accents, and soft lawns invite relaxation. Every element reflects careful planning, environmental mindfulness, and a commitment to lasting coastal luxury.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Commercial Landscaping"
+          },
+          {
+            "cls": "",
+            "v": "El Nido, Palawan"
+          },
+          {
+            "cls": "",
+            "v": "May 2018"
+          },
+          {
+            "cls": "",
+            "v": "View Project"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745511032_1763287684002_IMG_2705.webp?alt=media&token=c931940b-e2a0-4d9a-b899-0592a7c6b914"
+        ]
+      },
+      {
+        "title": "Designed for Relaxation: A Tropical Landscape Experience",
+        "description": "A resort landscape should feel like a natural extension of its surroundings. At Lio Lio Villa in El Nido, the landscape was designed to reflect the natural beauty of Palawan while creating a peaceful, resort-style atmosphere. Layered greenery and vibrant plants create depth and texture, while open spaces maintain a relaxed, resort-style atmosphere, offering guests a refreshing environment that blends comfort, nature, and effortless elegance.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Commercial Landscaping"
+          },
+          {
+            "cls": "",
+            "v": "El Nido, Palawan"
+          },
+          {
+            "cls": "",
+            "v": "Mar 2026"
+          },
+          {
+            "cls": "",
+            "v": "View Project"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950229776_5D4CD83D-7403-44F5-8457-25D1A8872CC1_1_102_o.webp?alt=media&token=16a9b890-e3fc-410d-a364-634f743647e4"
+        ]
+      },
+      {
+        "title": "Sustainable Landscaping in Action",
+        "description": "Led by professional and technical personnel, the ball-out and tree planting operations in San Vicente are carried out using sustainable landscaping practices and proper transplanting protocols. This ensures high survival rates, minimal environmental impact, and long-term ecological benefits for the site.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Commercial Landscaping"
+          },
+          {
+            "cls": "",
+            "v": "San Vicente, Palawan"
+          },
+          {
+            "cls": "",
+            "v": "Apr 2026"
+          },
+          {
+            "cls": "",
+            "v": "View Project"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340678080_403bb52068257bf98e91925bc990ec1b.jpeg?alt=media&token=e59110dc-75cf-4e4a-8462-c764038ea98a"
+        ]
+      },
+      {
+        "title": "Tropical Charm and Coastal Calm: The Island's Hidden Gem",
+        "description": "Located on the world’s top island, The Funny Lion Puerto Princesa is a charming bayside resort and the purr-fect gateway to Palawan’s natural wonders. Just 15 minutes from the airport, guests are welcomed into a playful escape where the mighty roar of the lion meets the gentle purr of the feline—offering a unique, unforgettable experience by the sea.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Commercial Landscaping"
+          },
+          {
+            "cls": "",
+            "v": "Puerto Princesa City"
+          },
+          {
+            "cls": "",
+            "v": "Sep 2025"
+          },
+          {
+            "cls": "",
+            "v": "View Project"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763254340183_69D4537F-62BB-4722-9433-8FC518265771.JPG?alt=media&token=4e8d7b62-c731-48a2-ab0b-c280c4aac009"
+        ]
+      },
+      {
+        "title": "More Than a Café: Where Nature, Comfort, and Everyday Moments Meet",
+        "description": "A café is more than just a place for coffee, it’s a space where people pause, connect, and recharge. The landscaping at Starbucks Palawan brings this idea to life through thoughtfully placed greenery that enhances both the indoor and outdoor experience. Lush plants soften the structure, while layered foliage adds depth and balance to the space. Tropical elements introduce a fresh, welcoming atmosphere that reflects Palawan’s natural character. Designed to complement daily routines, the landscape creates a calm, inviting environment that elevates the overall café experience.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Commercial Landscaping"
+          },
+          {
+            "cls": "",
+            "v": "Puerto Princesa City"
+          },
+          {
+            "cls": "",
+            "v": "Dec 2025"
+          },
+          {
+            "cls": "",
+            "v": "View Project"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769925893763_IMG_6385.webp?alt=media&token=b7491f9d-b3d4-4320-a84a-e6c555f0ee1b"
+        ]
+      },
+      {
+        "title": "Where Nature Meets Design: El Nido’s Compact Tropical Garden",
+        "description": "At Piece Lio, a small space becomes a big natural experience. Despite the limited area, the landscape is designed to feel like a mini tropical forest—lush, layered, and alive. Tall palms create height and shade, while dense underplanting of ferns and broad-leaf tropical plants adds richness and depth. Every corner works with purpose, using smart plant selection to keep the space sustainable, low-maintenance, and true to Palawan’s natural beauty. The result is a compact yet immersive hotel garden that offers guests a refreshing escape the moment they step outside.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Commercial Landscaping"
+          },
+          {
+            "cls": "",
+            "v": "El Nido, Palawan"
+          },
+          {
+            "cls": "",
+            "v": "Apr 2024"
+          },
+          {
+            "cls": "",
+            "v": "View Project"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763288851897_IMG_9739.jpeg?alt=media&token=74e08f3c-e7e1-4140-9c49-f32318b973a9"
+        ]
+      }
+    ],
+    "indoor-landscaping": [
+      {
+        "title": "Indoor Greenery for a Refreshing Café Experience",
+        "description": "Indoor landscaping brings nature into interior spaces, from restroom greenery and hotel lobbies to offices and residential indoor plants. A successful indoor garden depends on proper plant selection, lighting, and regular maintenance. We design indoor landscapes that are both beautiful and sustainable, using plants suited for indoor conditions and providing expert care to keep them healthy and vibrant. With the right approach, indoor landscaping enhances aesthetics, improves air quality, and creates a more relaxing environment.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Indoor Landscaping"
+          },
+          {
+            "cls": "",
+            "v": "Puerto Princesa City"
+          },
+          {
+            "cls": "",
+            "v": "Nov 2025"
+          },
+          {
+            "cls": "",
+            "v": "View Project"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1765970445522_IMG_1069.jpeg?alt=media&token=8c412ab9-0864-4709-b10b-c2a611cb22d4"
+        ]
+      }
+    ],
+    "landscape-rehabilitation": [
+      {
+        "title": "Reviving a Botanical Haven: A Garden of Rare Treasures",
+        "description": "The once-outdated landscape has been transformed into a botanical sanctuary that honors its roots while embracing modern sophistication. Preserving what works and replacing what no longer thrives, the garden now features rare species, exotic forms, and collector’s varieties. Layered canopies, understory foliage, and bold specimens create a living museum—an immersive haven where plant enthusiasts and nature lovers can explore a vibrant, revitalized landscape.",
+        "meta": [
+          {
+            "cls": "project-category-tag",
+            "v": "Landscape Rehabilitation"
+          },
+          {
+            "cls": "",
+            "v": "Puerto Princesa City"
+          },
+          {
+            "cls": "",
+            "v": "Nov 2023"
+          },
+          {
+            "cls": "",
+            "v": "View Project"
+          }
+        ],
+        "images": [
+          "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744033431_1763360561816_IMG_7933.webp?alt=media&token=0bea3392-3f05-473a-9288-40562a6845df"
+        ]
+      }
+    ]
+  },
+  "stories": [
+    {
+      "id": "glM1ZU9cZ1Qu9QovFPmi",
+      "title": "Women Who Inspire: Nanay Esther’s Journey at Greenscape",
+      "image": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1773463624045_Nanay%20Esther.webp?alt=media&token=1adb608a-5e14-4202-a3b4-f04cceccfe64",
+      "excerpt": "",
+      "author": "Ken Co/Contributor",
+      "authorRole": "Contributor",
+      "date": "March 14, 2026",
+      "bodyHtml": "",
+      "images": [],
+      "youtube": []
+    },
+    {
+      "id": "uoDP4lEqwBy0jipKYGFa",
+      "title": "Celebrating Milestones and New Beginnings: Greenscape's 2025 Year-End Party",
+      "image": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1767857572348_GSC%20YEP%202025.webp?alt=media&token=0340bffa-a771-4812-86a2-96233838b437",
+      "excerpt": "",
+      "author": "Ken Co/Contributor",
+      "authorRole": "Contributor",
+      "date": "January 8, 2026",
+      "bodyHtml": "",
+      "images": [],
+      "youtube": []
+    },
+    {
+      "id": "EyN1Ib5hZeMMq5EOlLxP",
+      "title": "A New Digital Home: Greenscape Unveils Official Website",
+      "image": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2Fthumbnails%2F1766985979536_GSC%20Website%202-3.webp?alt=media&token=f7eec6da-8f33-4230-b99b-f71b40f71cc0",
+      "excerpt": "",
+      "author": "Ken Co/Contributor",
+      "authorRole": "Contributor",
+      "date": "December 29, 2025",
+      "bodyHtml": "",
+      "images": [],
+      "youtube": []
+    },
+    {
+      "id": "vEYvGEqUKhLn3wISUNel",
+      "title": "Greenscape Scholarship Program: Nurturing the Next Generation of Environmental Leaders",
+      "image": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1765973335792_IMG_4743.jpeg?alt=media&token=1a14ca6d-5a23-4d34-a62b-bae6e9e7c732",
+      "excerpt": "",
+      "author": "Jerzon Favila/Contributor",
+      "authorRole": "Contributor",
+      "date": "December 17, 2025",
+      "bodyHtml": "",
+      "images": [],
+      "youtube": []
+    },
+    {
+      "id": "ObMCeiF8LvQwvCTl1QTr",
+      "title": "A Story of Gratitude and Service: The Retirement of Godofredo De Osio",
+      "image": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2Fthumbnails%2F1766027027614_1766024432937_IMG_7049.jpeg?alt=media&token=4ae360b3-f94f-4618-9ed5-a5768836b829",
+      "excerpt": "",
+      "author": "Lorie L./Contributor",
+      "authorRole": "Contributor",
+      "date": "December 17, 2025",
+      "bodyHtml": "",
+      "images": [],
+      "youtube": []
+    },
+    {
+      "id": "cSZRd9GN3dcomUZnPF8h",
+      "title": "Make Our Mothers Smile: A Mother’s Day Story",
+      "image": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1764830434854_1763284628341_IMG_1946.webp?alt=media&token=9f384251-9fcc-4569-a667-f1d0e539faaa",
+      "excerpt": "",
+      "author": "Ken Co/Contributor",
+      "authorRole": "Contributor",
+      "date": "November 16, 2025",
+      "bodyHtml": "",
+      "images": [],
+      "youtube": []
+    },
+    {
+      "id": "FM4BbQ3knmGUDJM4zsiE",
+      "title": "Luzviminda National High School Students Begin Internship Program at Greenscape Landscaping Services",
+      "image": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1764830484291_1763271063996_IMG_0925.webp?alt=media&token=c7723a34-864d-476a-9794-f714f9944f48",
+      "excerpt": "",
+      "author": "Chris Favila/Contributor",
+      "authorRole": "Contributor",
+      "date": "November 16, 2025",
+      "bodyHtml": "",
+      "images": [],
+      "youtube": []
+    }
+  ],
+  "gallery": [
+    {
+      "src": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764830058360_1763279929820_IMG_6883.webp?alt=media&token=218b40ab-a60d-4031-a1d8-14de954fe472",
+      "alt": "Gallery Image"
+    },
+    {
+      "src": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764830039288_1763279944965_IMG_7267.webp?alt=media&token=31e21e67-0006-4796-9058-920686419203",
+      "alt": "Gallery Image"
+    },
+    {
+      "src": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764830021053_1763279938143_IMG_6887.webp?alt=media&token=381f0861-f558-48d5-a4c6-77cce4c25e8d",
+      "alt": "Gallery Image"
+    },
+    {
+      "src": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764830003856_1763279611442_IMG_4408.webp?alt=media&token=ef92d984-6aaa-42f2-9db5-dcf4e271c4bc",
+      "alt": "Gallery Image"
+    },
+    {
+      "src": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764829984669_1763279604181_IMG_9421.webp?alt=media&token=ca8546f4-1126-47c7-945e-ccee20791c6c",
+      "alt": "Gallery Image"
+    },
+    {
+      "src": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764829970404_1763279595017_IMG_8872.webp?alt=media&token=0a50d2a4-d614-4937-ac7e-8ee8cbd4e0c0",
+      "alt": "Gallery Image"
+    },
+    {
+      "src": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764829953194_1763279585285_IMG_4925.webp?alt=media&token=00d9d3d5-3906-4f46-b294-ce00bd3bd360",
+      "alt": "Gallery Image"
+    },
+    {
+      "src": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764829939126_1763276602587_IMG_9435.webp?alt=media&token=8bf10e1a-40b7-45b6-a668-5551c352f471",
+      "alt": "Gallery Image"
+    }
+  ],
+  "testimonials": [
+    {
+      "text": "Thank you, Greenscape Landscaping, for the excellent work in improving our site. The landscaping is well-planned, neat, and environmentally aligned. Your team was responsive, organized, and easy to coordinate with. Great job!",
+      "name": "Ian F.",
+      "role": "Verified Client",
+      "rating": 5,
+      "cardCls": "testimonial-card"
+    },
+    {
+      "text": "We would like to extend our appreciation to Greenscape Landscaping for the quality of work delivered on our project. The team demonstrated professionalism, attention to detail, and commitment to maintaining the natural character of the area. The slope protection measures, plant selection, and overall site management were executed efficiently and aligned with our project goals.\n\nWe look forward to continuing our partnership and sustaining the landscape’s long-term health and aesthetics.",
+      "name": "Jovey F.",
+      "role": "Verified Client",
+      "rating": 5,
+      "cardCls": "testimonial-card"
+    }
+  ],
+  "faq": [
+    {
+      "question": "What services do you offer?",
+      "answer": "We provide a full range of landscaping services including garden design and installation, lawn care and maintenance, tree and shrub planting, irrigation system setup, hardscaping (patios, walkways, retaining walls), and ongoing property maintenance for residential and commercial clients."
+    },
+    {
+      "question": "How much does landscaping cost?",
+      "answer": "Pricing depends on the scope of work, property size, materials used, and project complexity. We provide free site assessments and detailed quotations so you know exactly what to expect before any work begins."
+    },
+    {
+      "question": "How long will my project take to complete?",
+      "answer": "Timeline varies based on the project. A simple garden bed installation might take a day or two, while a full landscape renovation could take several weeks. We'll give you a realistic schedule during the planning phase and keep you updated throughout."
+    },
+    {
+      "question": "Do you provide maintenance after the project is finished?",
+      "answer": "Yes, we offer regular maintenance packages that include lawn mowing, pruning, fertilizing, pest control, and seasonal cleanups to keep your landscape looking its best"
+    },
+    {
+      "question": "What areas do you serve?",
+      "answer": "We serve clients throughout Palawan, with facilities in Puerto Princesa City, Aborlan, and Taytay. We also take on projects for resorts and businesses on nearby islands—just reach out to discuss your location."
+    }
+  ]
+}

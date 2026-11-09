@@ -1,0 +1,1096 @@
+{
+  "fetchedAt": "2026-11-09T14:31:14.230Z",
+  "projects": [
+    {
+      "id": "0pDUlHu8g9dAiay3EI8J",
+      "createTime": "2026-01-17T06:06:41.867483Z",
+      "updateTime": "2026-02-01T06:35:08.537001Z",
+      "description": "A home is more than just a structure, it’s a place where comfort, connection, and everyday life come together. The landscape features a well-maintained open lawn, carefully arranged shrubs, and layered greenery that add depth and balance to the space. Tropical plants soften the overall look, creating a fresh and natural atmosphere around the home. Designed for everyday family use, the layout offers a calm, open environment that is both functional and visually pleasing, enhancing the home’s overall character.",
+      "createdAt": "2026-01-17T06:06:41.824Z",
+      "location": "Puerto Princesa City",
+      "title": "Building Comfort and Quality at Home: A Balance of Beauty and Functionality",
+      "isFeatured": false,
+      "updatedAt": "2026-02-01T06:35:08.509Z",
+      "date": "2026-01",
+      "imageUrls": [
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1768630328216_9B1DD2ED-3D5E-4BDE-AFA8-992E78202B42.webp?alt=media&token=69987642-a275-4944-991c-71c4d4d64513",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1768630348005_IMG_6075.webp?alt=media&token=3f615d41-ee08-42a7-90f0-2f853aa003ba",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1768630353863_FBF68D10-2244-4B5F-9713-DB411D0811B8.webp?alt=media&token=c1bd7012-9f36-449e-b394-9644f9a6c235",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1768630360314_73720BEE-2BFC-48AD-8F6C-02115FFC9131.webp?alt=media&token=24e7dbae-1477-48a7-93fa-ec42a9314f20",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1768630366665_3C8DC51D-E5D7-4AC5-98E8-A2199A7C7D0E.webp?alt=media&token=bd928704-2642-4c79-967b-e71f31735a40",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1768630372558_0B23C709-D32A-4D87-A027-81CFD147CA02.webp?alt=media&token=ed5fbe70-31a8-45d8-8851-4b7ece853b61"
+      ],
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1768630328216_9B1DD2ED-3D5E-4BDE-AFA8-992E78202B42.webp?alt=media&token=69987642-a275-4944-991c-71c4d4d64513",
+      "category": "residential"
+    },
+    {
+      "id": "25yjL2jH2xd7QduwA22C",
+      "createTime": "2025-11-16T01:35:45.174385Z",
+      "updateTime": "2025-12-03T07:05:58.451686Z",
+      "category": "commercial",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745511032_1763287684002_IMG_2705.webp?alt=media&token=c931940b-e2a0-4d9a-b899-0592a7c6b914",
+      "imageUrls": [
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745511032_1763287684002_IMG_2705.webp?alt=media&token=c931940b-e2a0-4d9a-b899-0592a7c6b914",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745516222_1763287987662_IMG_4408.webp?alt=media&token=d527db6f-97d0-4507-a930-c29a3802aa2b",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745522510_1763287996021_IMG_1945.webp?alt=media&token=b23f694f-31f2-40fe-bb92-61b17af05529",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745527756_1763288004173_IMG_8872.webp?alt=media&token=2e6fd29c-12f0-4e75-a89b-2cee33dbe4a6",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745533520_1763288353196_IMG_4924.webp?alt=media&token=cb24b6a6-1470-4a5d-8a6a-1bb585bcc5c5",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745539287_1763288361148_B6B82973-0E1A-42E3-ADFD-6F9FC4B89044.webp?alt=media&token=1819711c-932e-4051-89c6-cde11ae8de2b"
+      ],
+      "date": "2018-05",
+      "title": "Lush, Leaning, and Sustainable: Transforming a Beachside Paradise",
+      "isFeatured": true,
+      "description": "Perched on the stunning shores of Maremegmeg Beach, this coastal paradise transforms a steep slope into a lush, functional, and sustainable sanctuary. Native, drought-tolerant plants withstand salty winds while enriching the soil and providing shade and privacy. Lush greenery frames the azure waters, flowering shrubs add vibrant accents, and soft lawns invite relaxation. Every element reflects careful planning, environmental mindfulness, and a commitment to lasting coastal luxury.",
+      "createdAt": "2025-11-16T01:35:45.129Z",
+      "location": "El Nido, Palawan",
+      "updatedAt": "2025-12-03T07:05:58.409Z"
+    },
+    {
+      "id": "2HXyPNVf1x6OsHMz3mxL",
+      "createTime": "2026-03-08T05:48:20.055071Z",
+      "updateTime": "2026-03-08T06:12:45.321615Z",
+      "category": "commercial",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950229776_5D4CD83D-7403-44F5-8457-25D1A8872CC1_1_102_o.webp?alt=media&token=16a9b890-e3fc-410d-a364-634f743647e4",
+      "imageUrls": [
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950229776_5D4CD83D-7403-44F5-8457-25D1A8872CC1_1_102_o.webp?alt=media&token=16a9b890-e3fc-410d-a364-634f743647e4",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950235226_A9F49137-5AE9-47EF-B41E-8CFDADE1F41F_1_102_a.webp?alt=media&token=94de605d-c71a-4d16-ba81-4e1390582a17",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950240762_5E39168D-216E-4761-AA9A-B31243C28229_1_102_a.webp?alt=media&token=27684a25-c020-479a-abc5-018b8d2a2725",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950246497_A93F47B5-106E-47EB-8879-9CBEC63DA86C_1_102_o.webp?alt=media&token=cd633af6-ced7-4290-83fb-fc1a0638bc45",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950311423_C72E3CB8-162F-4DF1-B62B-4FF570192932_1_102_o.webp?alt=media&token=a3103bb8-a090-4da6-a0bd-58bd833f6871",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950316643_634A1C71-A4D1-4D23-8E94-0FD56F4A9C0B_1_102_o.webp?alt=media&token=bd101b57-4f4b-49ce-9029-a02999544040",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950322015_434439C5-AD7C-469E-84AE-1C0B83A3DAC9_1_102_a.webp?alt=media&token=0f3da91e-a6de-494a-8ea6-40c6afafe666",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950327496_98BCDCF9-1124-47E6-8A98-F93D542F7246_1_102_a.webp?alt=media&token=63e0f840-c48e-4806-b96b-51b722fd8baf",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950333027_C1F99995-E315-41AD-A096-A4C8F462EF9C_1_102_a.webp?alt=media&token=3f7877c1-885d-4673-9bb7-c1890af7c1ed",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950338353_A2420602-1814-4315-87BD-82CE236C5F2D_1_102_a.webp?alt=media&token=4ad4fbbf-7174-45a5-81a2-2cddefe912f5",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950343676_468E3DC0-FD76-4F40-968E-FE08AFB18E21_1_102_a.webp?alt=media&token=0d935dd1-824f-4221-9f74-8ff4c12488f5",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950349105_9AD7D711-2B22-485E-8F07-59630FC3F65D_1_102_a.webp?alt=media&token=2fdce834-2d51-46a7-b6ab-54462f412dba"
+      ],
+      "isFeatured": false,
+      "location": "El Nido, Palawan",
+      "createdAt": "2026-03-08T05:48:20.005Z",
+      "date": "2026-03",
+      "updatedAt": "2026-03-08T06:12:45.269Z",
+      "description": "A resort landscape should feel like a natural extension of its surroundings. At Lio Lio Villa in El Nido, the landscape was designed to reflect the natural beauty of Palawan while creating a peaceful, resort-style atmosphere. Layered greenery and vibrant plants create depth and texture, while open spaces maintain a relaxed, resort-style atmosphere, offering guests a refreshing environment that blends comfort, nature, and effortless elegance.",
+      "title": "Designed for Relaxation: A Tropical Landscape Experience"
+    },
+    {
+      "id": "9Uh2pdS6iE8c9vqSimp2",
+      "createTime": "2026-04-28T01:42:41.907534Z",
+      "updateTime": "2026-04-28T01:48:36.936797Z",
+      "createdAt": "2026-04-28T01:42:41.849Z",
+      "title": "Sustainable Landscaping in Action",
+      "description": "Led by professional and technical personnel, the ball-out and tree planting operations in San Vicente are carried out using sustainable landscaping practices and proper transplanting protocols. This ensures high survival rates, minimal environmental impact, and long-term ecological benefits for the site.",
+      "date": "2026-04",
+      "category": "commercial",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340678080_403bb52068257bf98e91925bc990ec1b.jpeg?alt=media&token=e59110dc-75cf-4e4a-8462-c764038ea98a",
+      "isFeatured": true,
+      "updatedAt": "2026-04-28T01:48:36.886Z",
+      "location": "San Vicente, Palawan",
+      "imageUrls": [
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340678080_403bb52068257bf98e91925bc990ec1b.jpeg?alt=media&token=e59110dc-75cf-4e4a-8462-c764038ea98a",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340787006_2e4899129f598800ebfb5d9f137c6c15.jpeg?alt=media&token=22356fcf-327e-4710-aff0-3f05ae365e48",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340794441_5794d38d798fb5d81ec4a4964e16612b.jpeg?alt=media&token=22a91386-a82f-41d1-a768-438ce4a5f4a6",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340801915_0f1a80702118363d66440db414d48139.jpeg?alt=media&token=5ebc13b2-5422-4e41-8de5-10ba60897cba",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340813860_5ebb2f1aaf41bdcc3179b6fad2bc5c1c.jpeg?alt=media&token=8d5c422f-e721-4c11-80de-bd5d0ddab69a",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340819910_4661bc67ee58d5dac71c99f365e1ef59.jpeg?alt=media&token=d5bafda3-befa-41a7-9535-bb4b78fd91d0",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340826083_63aa7630d7208e73a8306f94393af4e2.jpeg?alt=media&token=12e255b7-0910-4d55-ab9b-e5e69a591aba",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340833933_f6f67d6be44cb9abb0d6b4635b621d2c.jpeg?alt=media&token=908c083d-311d-484d-91b6-fd6f6100e8c2",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340840170_82616d0cdf8333a20f9c8d4ef1bc2e1d.jpeg?alt=media&token=6461cdcd-ead6-4f04-97df-c58e4065b3da",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340846394_4904a7bc15bcd0946a1e0e8b7327dd93.jpeg?alt=media&token=95c9b552-fd2b-4faa-805c-51be628feee1",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340854463_5fae7d2237963ad8e92f6765b4b10eb1.jpeg?alt=media&token=b1063def-da58-43a5-b506-7e651e344aca",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340860485_ea003316ec642ec74291316328a0e749.jpeg?alt=media&token=6fff3528-3ed4-4011-b0ee-4022650e0c79",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340866942_189dbe30feab627ed2695152b3b9fe81.jpeg?alt=media&token=bc68323f-f41b-47d3-b08c-b319848e2c9f"
+      ]
+    },
+    {
+      "id": "CmOag8X0mRoLYxovZwRd",
+      "createTime": "2025-11-15T13:51:04.016007Z",
+      "updateTime": "2025-11-30T16:43:06.683983Z",
+      "title": "A Lush Escape at Home: Fresh Take on Modern Tropical Gardens",
+      "createdAt": "2025-11-15T13:51:03.982Z",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763214482491_11E19AA4-5DAF-415D-8D36-FD35A4787ADF.JPG?alt=media&token=54f272a6-a699-4764-aec1-28f20767a256",
+      "category": "residential",
+      "date": "2025-06",
+      "isFeatured": false,
+      "updatedAt": "2025-11-30T16:43:06.652Z",
+      "description": "This residential garden in Narra, Palawan showcases a clean, tropical landscape with a lush open lawn, neatly shaped shrubs, and clusters of palms that create height and balance. The design highlights simplicity and freshness—combining well-maintained greenery with natural stone accents to bring a relaxing and elegant feel to the space. The layout provides a calm, open atmosphere ideal for family use while maintaining a polished, resort-inspired aesthetic.",
+      "location": "Narra, Palawan",
+      "imageUrls": [
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763214482491_11E19AA4-5DAF-415D-8D36-FD35A4787ADF.JPG?alt=media&token=54f272a6-a699-4764-aec1-28f20767a256",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763214489408_IMG_5715.jpeg?alt=media&token=170acae0-68d2-4991-aaaf-f0748e062a76",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763371472553_IMG_5735.jpeg?alt=media&token=1740fd6d-0365-40f5-881e-9facf3fc0e6a",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763371479200_IMG_5737.jpeg?alt=media&token=2c712d67-8da7-4b18-b22b-d2293bcc5488",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763371486625_IMG_5742.jpeg?alt=media&token=a8eac45d-0845-462a-8f8f-736277410ccc",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763371494538_IMG_5744.jpeg?alt=media&token=65dd1c5a-8fcf-44fd-b422-6b9e34d9134d"
+      ]
+    },
+    {
+      "id": "PLl9HOGge9HhRUbOcE0k",
+      "createTime": "2025-11-16T00:52:47.251916Z",
+      "updateTime": "2025-11-30T16:42:47.921479Z",
+      "createdAt": "2025-11-16T00:52:47.207Z",
+      "location": "Puerto Princesa City",
+      "date": "2025-09",
+      "updatedAt": "2025-11-30T16:42:47.893Z",
+      "title": "Tropical Charm and Coastal Calm: The Island's Hidden Gem",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763254340183_69D4537F-62BB-4722-9433-8FC518265771.JPG?alt=media&token=4e8d7b62-c731-48a2-ab0b-c280c4aac009",
+      "category": "commercial",
+      "description": "Located on the world’s top island, The Funny Lion Puerto Princesa is a charming bayside resort and the purr-fect gateway to Palawan’s natural wonders. Just 15 minutes from the airport, guests are welcomed into a playful escape where the mighty roar of the lion meets the gentle purr of the feline—offering a unique, unforgettable experience by the sea.",
+      "imageUrls": [
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763254340183_69D4537F-62BB-4722-9433-8FC518265771.JPG?alt=media&token=4e8d7b62-c731-48a2-ab0b-c280c4aac009",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763254344706_2285FBAB-D8E9-4175-8783-73436F15B94F.JPG?alt=media&token=cba0a2b5-54bb-4f41-ac05-53ed57c05e11",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763254356041_8BB5A175-4FAB-40B4-9FA2-F6DE2948E97A.JPG?alt=media&token=523a3e9f-a452-46b5-8596-ae6d0a79ebf2"
+      ],
+      "isFeatured": false
+    },
+    {
+      "id": "UJsHTFzlRJTM8wME2xFD",
+      "createTime": "2026-02-01T06:06:05.557303Z",
+      "updateTime": "2026-02-01T06:28:02.964798Z",
+      "description": "A café is more than just a place for coffee, it’s a space where people pause, connect, and recharge. The landscaping at Starbucks Palawan brings this idea to life through thoughtfully placed greenery that enhances both the indoor and outdoor experience. Lush plants soften the structure, while layered foliage adds depth and balance to the space. Tropical elements introduce a fresh, welcoming atmosphere that reflects Palawan’s natural character. Designed to complement daily routines, the landscape creates a calm, inviting environment that elevates the overall café experience.",
+      "date": "2025-12",
+      "isFeatured": false,
+      "imageUrls": [
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769925893763_IMG_6385.webp?alt=media&token=b7491f9d-b3d4-4320-a84a-e6c555f0ee1b",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769926924876_IMG_2676.webp?alt=media&token=4cbb7436-2427-4bd1-8320-9efcf4f6fe42",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769926931204_IMG_2677.webp?alt=media&token=13332240-2cae-4bab-b86c-052729b6c419",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769927090414_IMG_2672.webp?alt=media&token=1091aa26-7aaa-4da3-90db-4b5396427067",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769927119762_IMG_2674.webp?alt=media&token=ffc86ec2-8add-4d72-aa48-00f4cdf5a973",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769927125261_IMG_6417.webp?alt=media&token=fadac08d-8b02-420a-a8a2-6f5b78afd7e2",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769927131300_IMG_2685.webp?alt=media&token=eb5b5ca5-35a2-495a-801c-9416e28d72ef",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769927136720_IMG_6389.webp?alt=media&token=0d7a0935-30ec-4eb1-ba06-35d455d2489a",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769927142558_IMG_1069.webp?alt=media&token=609b5b93-e3f0-4bb3-9c28-59a1b94e0410"
+      ],
+      "category": "commercial",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769925893763_IMG_6385.webp?alt=media&token=b7491f9d-b3d4-4320-a84a-e6c555f0ee1b",
+      "title": "More Than a Café: Where Nature, Comfort, and Everyday Moments Meet",
+      "createdAt": "2026-02-01T06:06:05.521Z",
+      "updatedAt": "2026-02-01T06:28:02.925Z",
+      "location": "Puerto Princesa City"
+    },
+    {
+      "id": "Yax3qzIDDw7xXVMudj81",
+      "createTime": "2025-11-17T06:23:41.921143Z",
+      "updateTime": "2025-12-03T06:41:25.060189Z",
+      "imageUrls": [
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744033431_1763360561816_IMG_7933.webp?alt=media&token=0bea3392-3f05-473a-9288-40562a6845df",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744067143_1763360578718_IMG_2451.webp?alt=media&token=4c2aa2c7-667e-4c86-bc7a-b2cfa8c7db2f",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744071139_1763360586903_IMG_6312.webp?alt=media&token=4a97ea7d-d914-4706-9ba0-323239b813ae",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744074972_1763360597449_IMG_5505.webp?alt=media&token=ef7ca0ca-9095-42c0-90b5-62d77ad39d1f"
+      ],
+      "title": "Reviving a Botanical Haven: A Garden of Rare Treasures",
+      "date": "2023-11",
+      "category": "rehabilitation",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744033431_1763360561816_IMG_7933.webp?alt=media&token=0bea3392-3f05-473a-9288-40562a6845df",
+      "isFeatured": true,
+      "updatedAt": "2025-12-03T06:41:25.016Z",
+      "description": "The once-outdated landscape has been transformed into a botanical sanctuary that honors its roots while embracing modern sophistication. Preserving what works and replacing what no longer thrives, the garden now features rare species, exotic forms, and collector’s varieties. Layered canopies, understory foliage, and bold specimens create a living museum—an immersive haven where plant enthusiasts and nature lovers can explore a vibrant, revitalized landscape.",
+      "location": "Puerto Princesa City",
+      "createdAt": "2025-11-17T06:23:41.890Z"
+    },
+    {
+      "id": "aTV0QvgWjc0iCPnRwUW4",
+      "createTime": "2025-11-16T10:28:34.787546Z",
+      "updateTime": "2026-03-08T05:54:20.820890Z",
+      "date": "2024-04",
+      "createdAt": "2025-11-16T10:28:34.761Z",
+      "isFeatured": false,
+      "updatedAt": "2026-03-08T05:54:20.781Z",
+      "location": "El Nido, Palawan",
+      "title": "Where Nature Meets Design: El Nido’s Compact Tropical Garden",
+      "description": "At Piece Lio, a small space becomes a big natural experience. Despite the limited area, the landscape is designed to feel like a mini tropical forest—lush, layered, and alive. Tall palms create height and shade, while dense underplanting of ferns and broad-leaf tropical plants adds richness and depth.\n\nEvery corner works with purpose, using smart plant selection to keep the space sustainable, low-maintenance, and true to Palawan’s natural beauty. The result is a compact yet immersive hotel garden that offers guests a refreshing escape the moment they step outside.",
+      "imageUrls": [
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763288851897_IMG_9739.jpeg?alt=media&token=74e08f3c-e7e1-4140-9c49-f32318b973a9",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763288860965_IMG_0770.jpeg?alt=media&token=3fac20b1-a432-4812-89a4-beb04efb2f79",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763288869254_IMG_0645.jpeg?alt=media&token=eb9923ec-bb46-4c73-8258-d62ca374b586",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763288878364_IMG_9058.jpeg?alt=media&token=9f7bd887-ec73-46e9-9f0c-65c7db303e10",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763288886035_IMG_2656.jpeg?alt=media&token=90bd7c02-1541-4361-bb1e-f7c7085135a9"
+      ],
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763288851897_IMG_9739.jpeg?alt=media&token=74e08f3c-e7e1-4140-9c49-f32318b973a9",
+      "category": "commercial"
+    },
+    {
+      "id": "hi8iDa3qYB9lWsBj6PUA",
+      "createTime": "2025-11-16T09:57:14.512946Z",
+      "updateTime": "2025-12-03T06:53:40.197974Z",
+      "location": "Puerto Princesa City, Palawan",
+      "createdAt": "2025-11-16T09:57:14.486Z",
+      "updatedAt": "2025-12-03T06:53:40.167Z",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744791276_1763286976144_2D4B9E09-D529-4446-92C7-4ED9F0B3A1A0.webp?alt=media&token=bf503c38-4e9e-4f5f-bc02-9e1cbc565039",
+      "category": "residential",
+      "date": "2021-10",
+      "isFeatured": true,
+      "title": "A Tropical Escape at Home: The New Face of Residential Landscaping",
+      "imageUrls": [
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744791276_1763286976144_2D4B9E09-D529-4446-92C7-4ED9F0B3A1A0.webp?alt=media&token=bf503c38-4e9e-4f5f-bc02-9e1cbc565039",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744798075_1763286991125_IMG_6880.webp?alt=media&token=7fc5dce2-8b66-48c4-8812-cf530ce659e3",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744802381_1763287000217_IMG_6883.webp?alt=media&token=6b517c8b-dc32-4aec-9c70-f12093bbeffc",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744806687_1763287330402_IMG_1988.webp?alt=media&token=c0eb2f06-cf39-49f7-816c-317eb484c2a4"
+      ],
+      "description": "Transform your residential garden into a vibrant tropical retreat. Picture a space where palms sway, colorful shrubs brighten the view, and layers of greenery create depth and calm. A soft, open lawn anchors the garden, inviting rest, play, and quiet moments.\nWith curated tropical plants and simple pathways, the design blends beauty and function. Low-maintenance species, natural textures, and earthy tones turn your outdoor space into a soothing escape—perfect for unwinding and reconnecting with nature at home."
+    },
+    {
+      "id": "zdG7oySWvqkhTSCiCvp7",
+      "createTime": "2025-12-17T11:22:51.305353Z",
+      "updateTime": "2025-12-17T11:25:50.435684Z",
+      "imageUrls": [
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1765970445522_IMG_1069.jpeg?alt=media&token=8c412ab9-0864-4709-b10b-c2a611cb22d4",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1765970680533_IMG_2875.jpeg?alt=media&token=9a26ddde-fc36-45fa-a467-37c6700ac330",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1765970729415_IMG_5401.jpeg?alt=media&token=73f794e3-7e85-466e-bc10-3a9f35083369",
+        "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1765970735923_IMG_5376.jpeg?alt=media&token=34e6884e-857f-486f-b194-087d22584f74"
+      ],
+      "category": "indoor",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1765970445522_IMG_1069.jpeg?alt=media&token=8c412ab9-0864-4709-b10b-c2a611cb22d4",
+      "updatedAt": "2025-12-17T11:25:50.405Z",
+      "isFeatured": false,
+      "title": "Indoor Greenery for a Refreshing Café Experience",
+      "description": "Indoor landscaping brings nature into interior spaces, from restroom greenery and hotel lobbies to offices and residential indoor plants. A successful indoor garden depends on proper plant selection, lighting, and regular maintenance.\n\nWe design indoor landscapes that are both beautiful and sustainable, using plants suited for indoor conditions and providing expert care to keep them healthy and vibrant. With the right approach, indoor landscaping enhances aesthetics, improves air quality, and creates a more relaxing environment.",
+      "location": "Puerto Princesa City",
+      "createdAt": "2025-12-17T11:22:51.270Z",
+      "date": "2025-11"
+    }
+  ],
+  "stories": [
+    {
+      "id": "EyN1Ib5hZeMMq5EOlLxP",
+      "createTime": "2025-12-29T05:11:28.337427Z",
+      "updateTime": "2026-11-09T11:43:58.026694Z",
+      "thumbnailUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2Fthumbnails%2F1766985979536_GSC%20Website%202-3.webp?alt=media&token=f7eec6da-8f33-4230-b99b-f71b40f71cc0",
+      "imageUrl": null,
+      "views": 158,
+      "author": "Ken Co",
+      "excerpt": "Greenscape officially unveils its new website, marking a major milestone in the company’s growth.\nMore than just an online platform, the website serves as Greenscape’s new digital home, a place where clients, partners, and the community can explore our services, view project highlights, and learn more about Greenscape.",
+      "createdAt": "2025-12-29T05:11:28.304Z",
+      "youtubeUrl": "https://youtu.be/iOPXhSIwwkc",
+      "title": "A New Digital Home: Greenscape Unveils Official Website",
+      "updatedAt": "2025-12-29T05:56:46.616Z",
+      "content": "Greenscape proudly unveils its official website, marking an exciting milestone in the company’s journey. More than just an online platform, the website serves as Greenscape’s new digital home, a space where clients, partners, and the wider community can easily learn about the company, its services, and its commitment to quality landscaping.\n\nFor years, Greenscape has been delivering reliable and sustainable landscaping solutions, from design and execution to ongoing maintenance and care. The launch of the website reflects this same dedication, presenting Greenscape’s expertise in a clear, accessible, and modern way. Visitors can explore service offerings, view project highlights, and gain a better understanding of the company’s approach, all through a user-friendly and streamlined experience.\n\nDesigned with simplicity in mind, the website makes it easy for users to find relevant information whether they are browsing on desktop or mobile. It provides a transparent overview of Greenscape’s capabilities while reinforcing trust and professionalism. This platform also supports stronger connections by giving clients a convenient way to engage with the brand.\n\nLooking ahead, the website plays an important role in Greenscape’s growth. It will serve as a hub for updates, project features, and insights through a dedicated blog, allowing the company to share knowledge, highlight achievements, and stay connected with its audience.\nLaunching the website alongside the year-end celebration makes this moment especially meaningful. It represents both a reflection of how far Greenscape has come and a confident step toward the future.\n\nGreenscape invites everyone to explore and share the new website as the company enters this next chapter. Welcome to Greenscape online, where greener spaces and stronger connections begin."
+    },
+    {
+      "id": "FM4BbQ3knmGUDJM4zsiE",
+      "createTime": "2025-11-16T05:30:20.411591Z",
+      "updateTime": "2026-11-09T11:46:05.859103Z",
+      "content": "Greenscape Landscaping Services proudly welcomes students from Luzviminda National High School for their Student Internship Program, marking an important step in bridging classroom learning with real-world experience.\n\nThe internship program provides students with hands-on exposure to the landscaping industry, allowing them to apply their knowledge in a professional work environment. Under the guidance of Greenscape’s experienced team, interns are introduced to basic landscaping principles, plant care, site preparation, and proper work ethics essential in the field.\n\nThrough this program, students gain valuable skills such as teamwork, discipline, time management, and environmental awareness. They are also given opportunities to observe actual project operations—from nursery management and plant propagation to on-site landscape maintenance and installation.\n\nGreenscape Landscaping Services believes in supporting education and nurturing young talent by sharing practical knowledge and industry experience. This partnership with Luzviminda National High School reflects Greenscape’s commitment to community development and its advocacy for a greener and more sustainable future.\n\nThe company looks forward to guiding and mentoring these students as they grow, learn, and prepare for their future careers.\n\nGreen today, greener tomorrow.",
+      "title": "Luzviminda National High School Students Begin Internship Program at Greenscape Landscaping Services",
+      "youtubeUrl": null,
+      "createdAt": "2025-11-16T05:30:20.375Z",
+      "views": 29,
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1764830484291_1763271063996_IMG_0925.webp?alt=media&token=c7723a34-864d-476a-9794-f714f9944f48",
+      "author": "Chris Favila",
+      "updatedAt": "2025-12-17T11:33:06.052Z",
+      "excerpt": "Greenscape Landscaping Services welcomed Luzviminda National High School students for their internship program, providing hands-on landscaping experience while supporting education and community development."
+    },
+    {
+      "id": "ObMCeiF8LvQwvCTl1QTr",
+      "createTime": "2025-12-17T11:46:11.646983Z",
+      "updateTime": "2026-11-09T11:45:41.163330Z",
+      "author": "Lorie L.",
+      "imageUrl": null,
+      "content": "After nine years of dedicated service at the Greenscape Farm, Mr. Godofredo De Osio, a hardworking and respected farmer, officially enters his well-deserved retirement.\n\nThroughout his years at the farm,Tatay Godofredo showed unwavering commitment, discipline, and love for agriculture. His knowledge of farming, care for plants, and willingness to help others greatly contributed to the growth and success of the Greenscape Farm. He was not only a reliable worker but also a source of inspiration to his fellow farmers.\n\nThrough his steady employment at Greenscape, Tatay Godofredo was able to support his family and send his son to university, fulfilling a lifelong dream of providing a better future through education. This achievement stands as a testament to his perseverance and dedication.\n\nAs he retires, Tatay Godofredo expressed his deep gratitude to Greenscape Landscaping Services for the opportunity, trust, and support given to him over the years. He shared that working at the Greenscape Farm was more than a job—it was a place where he felt valued, respected, and part of a family.\n\nGreenscape proudly honors and thanks Tatay Godofredo De Osio for his years of service and wishes him good health, happiness, and a peaceful retirement. His legacy of hard work and dedication will continue to inspire the Greenscape community.\n\nGreen today, greener tomorrow.",
+      "excerpt": "After 9 years of dedicated service at Greenscape Farm, Tatay Godofredo De Osio retires, grateful for the opportunity that allowed him to support his family and send his son to university.",
+      "thumbnailUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2Fthumbnails%2F1766027027614_1766024432937_IMG_7049.jpeg?alt=media&token=4ae360b3-f94f-4618-9ed5-a5768836b829",
+      "youtubeUrl": "https://youtu.be/ZD7HrqsXYjQ?feature=shared",
+      "updatedAt": "2025-12-18T03:04:42.823Z",
+      "views": 62,
+      "createdAt": "2025-12-17T11:46:11.618Z",
+      "title": "A Story of Gratitude and Service: The Retirement of Godofredo De Osio"
+    },
+    {
+      "id": "cSZRd9GN3dcomUZnPF8h",
+      "createTime": "2025-11-16T09:17:20.701467Z",
+      "updateTime": "2026-11-09T11:45:54.387477Z",
+      "excerpt": "Every May, the world pauses to honor the women who nurture life with patience, strength, and love. This year, Greenscape Landscaping Services decided to celebrate Mother’s Day in a different way—not with flowers in bouquets, but with flowers that mothers could grow with their own hands.",
+      "updatedAt": "2025-12-11T23:30:22.090Z",
+      "author": "Ken Co",
+      "views": 67,
+      "createdAt": "2025-11-16T09:17:20.660Z",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1764830434854_1763284628341_IMG_1946.webp?alt=media&token=9f384251-9fcc-4569-a667-f1d0e539faaa",
+      "title": "Make Our Mothers Smile: A Mother’s Day Story",
+      "content": "A Mother’s Day Story: How a Simple Training Bloomed Into a Community of Gardeners\n\nEvery May, the world pauses to honor the women who nurture life with patience, strength, and love. This year, Greenscape Landscaping Services decided to celebrate Mother’s Day in a different way—not with flowers in bouquets, but with flowers that mothers could grow with their own hands.\n\nIn celebration of Mother's Day, Camella Homes has launched an initiative program called Make Our Mothers Smile (MOMS) to help mothers in the community learn about plant propagation and garden maintenance. To provide expert knowledge, Greenscape was invited to collaborate as guest speakers, led by, Jerzon Favila, COO.\n\nThe program covered topics such as soil preparation, composting, pest management, and identifying common garden plants. Mothers will now have the opportunity to learn from experts and interact with other moms, sharing their experiences and learning from each other.\n\nThe initiative aims to promote sustainable living and empower mothers to create beautiful gardens in their homes. By doing so, they can also contribute to a greener environment and a healthier community."
+    },
+    {
+      "id": "glM1ZU9cZ1Qu9QovFPmi",
+      "createTime": "2026-03-14T04:48:25.554080Z",
+      "updateTime": "2026-11-09T11:43:33.290502Z",
+      "author": "Ken Co",
+      "youtubeUrl": null,
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1773463624045_Nanay%20Esther.webp?alt=media&token=1adb608a-5e14-4202-a3b4-f04cceccfe64",
+      "createdAt": "2026-03-14T04:48:25.497Z",
+      "thumbnailUrl": null,
+      "content": "Nanay Esther began her journey in 2018 with Blessies Garden, before it eventually became Greenscape. At 66 years old, she took on the responsibility of managing the Aborlan plant nursery. While many would consider that an age to slow down, Nanay Esther proved that passion and purpose have no age limit.\n\nHer years at the nursery were filled with colorful experiences, both challenging and rewarding. Through it all, she remained committed to her work and the people around her.\n\nNanay Esther retired December of 2025 at the age of 73, something she humbly described as an extended stay that she is deeply grateful for. She expressed heartfelt thanks to Sir Jerzon, Sir Beloy, and Ma’am Malou for trusting and believing in her despite her age. For her, the opportunity to work meant the chance to support herself and remain active in a community she grew to love.\n\nWhile grateful for her retirement, Nanay Esther admits she will miss the garden boys she managed and the playful camaraderie they shared at work. She hopes the people she worked with learned from her as much as she learned from them.\n\nHer colleagues remember her with warmth and respect, describing her as kind, helpful, and always willing to guide them in the garden.\n\nA devoted mother and loving wife, Nanay Esther balanced family and work with quiet strength and grace.\n\nHer story reminds us that empowerment often blooms through perseverance, humility, and the willingness to keep growing at any stage of life.",
+      "views": 51,
+      "excerpt": "This Women’s Month, Greenscape honors Nanay Esther, whose dedication, kindness, and resilience helped nurture both people and plants during her years of service.",
+      "updatedAt": "2026-03-14T04:50:11.971Z",
+      "title": "Women Who Inspire: Nanay Esther’s Journey at Greenscape"
+    },
+    {
+      "id": "uoDP4lEqwBy0jipKYGFa",
+      "createTime": "2026-01-08T07:34:11.714985Z",
+      "updateTime": "2026-11-09T11:43:45.192739Z",
+      "createdAt": "2026-01-08T07:34:11.672Z",
+      "updatedAt": "2026-01-08T07:36:12.547Z",
+      "youtubeUrl": null,
+      "title": "Celebrating Milestones and New Beginnings: Greenscape's 2025 Year-End Party",
+      "excerpt": "Greenscape concluded 2025 with a memorable Year-End Party celebrating people, milestones, and progress. The event honored two retirees for their years of dedicated service, recognized employees for their outstanding performance, and marked an important milestone with the official launch of Greenscape’s website.",
+      "author": "Ken Co",
+      "views": 153,
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1767857572348_GSC%20YEP%202025.webp?alt=media&token=0340bffa-a771-4812-86a2-96233838b437",
+      "content": "Greenscape wrapped up 2025 with a meaningful Year-End Party that brought employees together to celebrate achievements, honor dedication, and welcome new beginnings. The event reflected the company’s strong culture of appreciation, teamwork, and growth.\n\nA highlight of the evening was the recognition of two retirees whose years of service and commitment played an important role in shaping Greenscape’s success. Their contributions were honored with heartfelt tributes and sincere appreciation from the entire organization.\n\nThe program also featured the recognition of employees who demonstrated exemplary performance throughout the year. These awards celebrated individuals who consistently went above and beyond, reinforcing Greenscape’s commitment to excellence and employee development.\n\nAdding to the significance of the event was the official launch of Greenscape’s website. The new platform serves as the company’s digital home, offering a clearer view of its services, values, and vision, and marking an important step forward in strengthening its online presence.\nMore than a celebration, the 2025 Year-End Party was a moment of reflection and gratitude. \n\nAs Greenscape moves into the new year, the company remains focused on growth, innovation, and the people who continue to drive its success.",
+      "thumbnailUrl": null
+    },
+    {
+      "id": "vEYvGEqUKhLn3wISUNel",
+      "createTime": "2025-12-17T12:09:07.896470Z",
+      "updateTime": "2026-11-09T11:45:27.587756Z",
+      "author": "Jerzon Favila",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1765973335792_IMG_4743.jpeg?alt=media&token=1a14ca6d-5a23-4d34-a62b-bae6e9e7c732",
+      "createdAt": "2025-12-17T12:09:07.859Z",
+      "youtubeUrl": null,
+      "content": "Greenscape Landscaping Services has always believed that the future of our environment depends on the education and passion of young minds. That’s why we are proud to launch the Greenscape Scholarship Program, a special initiative designed to support senior high school students who aspire to pursue careers in Architecture, Engineering, and Agriculture.\n\nThrough this program, selected scholars are given the unique opportunity to continue their studies at Palawan State University and Western Philippines University, two of the region’s leading institutions. But the scholarship is more than just financial support — it is also a hands-on internship program, where students gain real-world experience in landscaping, environmental planning, and sustainable agriculture under the mentorship of Greenscape’s seasoned professionals.\n\nThe program targets senior high school students, helping them transition smoothly into college while building skills that will prepare them for future careers in shaping Palawan’s green spaces. Interns work on actual projects, from designing sustainable gardens to implementing innovative agricultural techniques, ensuring that their classroom lessons come alive in practical settings.\n\nFor Greenscape, this program is not just an investment in education; it’s an investment in the future of Palawan’s environment and communities. By equipping young scholars with the knowledge, skills, and experience they need, Greenscape is helping cultivate a generation of leaders who will champion sustainability and green innovation.\n\nThrough the Greenscape Scholarship Program, dreams take root, skills blossom, and a greener future begins to grow.",
+      "thumbnailUrl": null,
+      "title": "Greenscape Scholarship Program: Nurturing the Next Generation of Environmental Leaders",
+      "updatedAt": "2026-01-08T07:37:04.275Z",
+      "excerpt": "Grow Your Future with Greenscape! \nScholarships for Senior High Students in Architecture, Engineering & Agriculture\nStudy at Palawan State University & Western Philippines University\nIntern with Greenscape Landscaping Services and gain real-world experience!",
+      "views": 32
+    }
+  ],
+  "gallery": [
+    {
+      "id": "65vc1E2IyVGMKvKTih8E",
+      "createTime": "2025-12-04T06:32:58.421227Z",
+      "updateTime": "2025-12-04T06:32:58.421227Z",
+      "updatedAt": "2025-12-04T06:32:58.375Z",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764829970404_1763279595017_IMG_8872.webp?alt=media&token=0a50d2a4-d614-4937-ac7e-8ee8cbd4e0c0",
+      "category": null,
+      "createdAt": "2025-12-04T06:32:58.375Z",
+      "title": null
+    },
+    {
+      "id": "DpjGMGTrx3Lp5TV1YW2B",
+      "createTime": "2025-12-04T06:33:32.011991Z",
+      "updateTime": "2025-12-04T06:33:32.011991Z",
+      "category": null,
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764830003856_1763279611442_IMG_4408.webp?alt=media&token=ef92d984-6aaa-42f2-9db5-dcf4e271c4bc",
+      "title": null,
+      "createdAt": "2025-12-04T06:33:31.975Z",
+      "updatedAt": "2025-12-04T06:33:31.975Z"
+    },
+    {
+      "id": "FCMMR2uJSZ3gM4BZoczt",
+      "createTime": "2025-12-04T06:33:49.629065Z",
+      "updateTime": "2025-12-04T06:33:49.629065Z",
+      "createdAt": "2025-12-04T06:33:49.598Z",
+      "updatedAt": "2025-12-04T06:33:49.598Z",
+      "title": null,
+      "category": null,
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764830021053_1763279938143_IMG_6887.webp?alt=media&token=381f0861-f558-48d5-a4c6-77cce4c25e8d"
+    },
+    {
+      "id": "SWkhxZDK0z3Hk8S0TVXi",
+      "createTime": "2025-12-04T06:34:07.433627Z",
+      "updateTime": "2025-12-04T06:34:07.433627Z",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764830039288_1763279944965_IMG_7267.webp?alt=media&token=31e21e67-0006-4796-9058-920686419203",
+      "category": null,
+      "createdAt": "2025-12-04T06:34:07.426Z",
+      "updatedAt": "2025-12-04T06:34:07.426Z",
+      "title": null
+    },
+    {
+      "id": "TIyZOF8yF1kqbYNXxqKL",
+      "createTime": "2025-12-04T06:32:26.538481Z",
+      "updateTime": "2025-12-04T06:32:26.538481Z",
+      "title": null,
+      "updatedAt": "2025-12-04T06:32:26.501Z",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764829939126_1763276602587_IMG_9435.webp?alt=media&token=8bf10e1a-40b7-45b6-a668-5551c352f471",
+      "category": null,
+      "createdAt": "2025-12-04T06:32:26.501Z"
+    },
+    {
+      "id": "ZC7SPx8i8xbwt0y2DvkM",
+      "createTime": "2025-12-04T06:34:26.544801Z",
+      "updateTime": "2025-12-04T06:34:26.544801Z",
+      "category": null,
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764830058360_1763279929820_IMG_6883.webp?alt=media&token=218b40ab-a60d-4031-a1d8-14de954fe472",
+      "createdAt": "2025-12-04T06:34:26.503Z",
+      "title": null,
+      "updatedAt": "2025-12-04T06:34:26.503Z"
+    },
+    {
+      "id": "dUHUHuIinN1BLzWQ8I43",
+      "createTime": "2025-12-04T06:33:13.458468Z",
+      "updateTime": "2025-12-04T06:33:13.458468Z",
+      "category": null,
+      "title": null,
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764829984669_1763279604181_IMG_9421.webp?alt=media&token=ca8546f4-1126-47c7-945e-ccee20791c6c",
+      "createdAt": "2025-12-04T06:33:13.429Z",
+      "updatedAt": "2025-12-04T06:33:13.429Z"
+    },
+    {
+      "id": "gCRLVHDIoVapE4MIERHL",
+      "createTime": "2025-12-04T06:32:41.146195Z",
+      "updateTime": "2025-12-04T06:32:41.146195Z",
+      "createdAt": "2025-12-04T06:32:41.119Z",
+      "updatedAt": "2025-12-04T06:32:41.119Z",
+      "category": null,
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764829953194_1763279585285_IMG_4925.webp?alt=media&token=00d9d3d5-3906-4f46-b294-ce00bd3bd360",
+      "title": null
+    }
+  ],
+  "faqs": [
+    {
+      "id": "HJ4HELATQT6wiIk9i2C1",
+      "createTime": "2025-11-27T10:44:11.095351Z",
+      "updateTime": "2025-11-27T10:44:11.095351Z",
+      "answer": "We provide a full range of landscaping services including garden design and installation, lawn care and maintenance, tree and shrub planting, irrigation system setup, hardscaping (patios, walkways, retaining walls), and ongoing property maintenance for residential and commercial clients.",
+      "category": null,
+      "active": true,
+      "order": 1,
+      "updatedAt": "2025-11-27T10:44:09.539Z",
+      "createdAt": "2025-11-27T10:44:09.540Z",
+      "question": "What services do you offer?"
+    },
+    {
+      "id": "PDby3Kgfvgy5B6p6lhiP",
+      "createTime": "2025-11-27T10:44:27.363095Z",
+      "updateTime": "2025-11-27T10:44:27.363095Z",
+      "answer": "Pricing depends on the scope of work, property size, materials used, and project complexity. We provide free site assessments and detailed quotations so you know exactly what to expect before any work begins.",
+      "active": true,
+      "order": 2,
+      "category": null,
+      "createdAt": "2025-11-27T10:44:27.172Z",
+      "question": "How much does landscaping cost?",
+      "updatedAt": "2025-11-27T10:44:27.172Z"
+    },
+    {
+      "id": "kbnWMOyE7jwQTDxlYn1f",
+      "createTime": "2025-11-27T10:45:13.239713Z",
+      "updateTime": "2025-11-27T10:45:13.239713Z",
+      "active": true,
+      "order": 5,
+      "answer": "We serve clients throughout Palawan, with facilities in Puerto Princesa City, Aborlan, and Taytay. We also take on projects for resorts and businesses on nearby islands—just reach out to discuss your location.",
+      "question": "What areas do you serve?",
+      "updatedAt": "2025-11-27T10:45:13.039Z",
+      "createdAt": "2025-11-27T10:45:13.039Z",
+      "category": null
+    },
+    {
+      "id": "ozsCSbiVj9Otmei4zTIe",
+      "createTime": "2025-11-27T10:44:56.677189Z",
+      "updateTime": "2025-11-27T10:44:56.677189Z",
+      "answer": "Yes, we offer regular maintenance packages that include lawn mowing, pruning, fertilizing, pest control, and seasonal cleanups to keep your landscape looking its best",
+      "category": null,
+      "active": true,
+      "order": 4,
+      "updatedAt": "2025-11-27T10:44:56.472Z",
+      "createdAt": "2025-11-27T10:44:56.472Z",
+      "question": "Do you provide maintenance after the project is finished?"
+    },
+    {
+      "id": "tb7m0gMM8bPkGeseeNML",
+      "createTime": "2025-11-27T10:44:41.748529Z",
+      "updateTime": "2025-11-27T10:44:41.748529Z",
+      "question": "How long will my project take to complete?",
+      "createdAt": "2025-11-27T10:44:40.705Z",
+      "updatedAt": "2025-11-27T10:44:40.705Z",
+      "order": 3,
+      "answer": "Timeline varies based on the project. A simple garden bed installation might take a day or two, while a full landscape renovation could take several weeks. We'll give you a realistic schedule during the planning phase and keep you updated throughout.",
+      "active": true,
+      "category": null
+    }
+  ],
+  "services": [
+    {
+      "id": "garden-design",
+      "createTime": "2025-11-14T16:22:34.488345Z",
+      "updateTime": "2025-11-29T02:33:43.138135Z",
+      "updatedAt": "2025-11-29T02:33:42.929Z",
+      "description": "Bespoke landscape architecture tailored to your vision.",
+      "title": "Garden Design",
+      "items": [
+        "Residential Gardens",
+        "Commercial Spaces",
+        "Rooftop Gardens",
+        "Vertical Gardens",
+        "Tropical Landscaping"
+      ],
+      "images": [
+        {
+          "url": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/services%2Fgarden-design%2Fgarden-design_1764383609857_0_IMG_4525.jpeg?alt=media&token=265129dc-45b7-4d17-85b5-ec2c283b3c45",
+          "path": "services/garden-design/garden-design_1764383609857_0_IMG_4525.jpeg",
+          "uploadedAt": "2025-11-29T02:33:36.206Z"
+        }
+      ],
+      "badge": "50+ Projects"
+    },
+    {
+      "id": "garden-essential",
+      "createTime": "2025-11-14T16:27:15.349483Z",
+      "updateTime": "2025-11-29T02:34:35.047797Z",
+      "title": "Garden Essentials",
+      "items": [
+        "Gardening Tools",
+        "Soil & Fertilizer",
+        "Plant Pots",
+        "Watering Systems",
+        "Garden Decor"
+      ],
+      "updatedAt": "2025-11-29T02:34:34.846Z",
+      "badge": "200+ Products",
+      "description": "Premium tools and supplies for thriving gardens.",
+      "images": [
+        {
+          "url": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/services%2Fgarden-essential%2Fgarden-essential_1764383663860_0_IMG_5465.jpeg?alt=media&token=8318a71a-5d2b-4570-8254-e1e1c421e02f",
+          "path": "services/garden-essential/garden-essential_1764383663860_0_IMG_5465.jpeg",
+          "uploadedAt": "2025-11-29T02:34:30.650Z"
+        }
+      ]
+    },
+    {
+      "id": "garden-maintenance",
+      "createTime": "2025-11-14T15:56:39.684911Z",
+      "updateTime": "2025-11-29T02:36:17.813620Z",
+      "updatedAt": "2025-11-29T02:36:16.100Z",
+      "images": [
+        {
+          "url": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/services%2Fgarden-maintenance%2Fgarden-maintenance_1763802717611_1_IMG_2230.jpeg?alt=media&token=da0d2009-4ab4-4757-8fd4-4b1a598ac667",
+          "uploadedAt": "2025-11-22T09:12:14.866Z",
+          "path": "services/garden-maintenance/garden-maintenance_1763802717611_1_IMG_2230.jpeg"
+        },
+        {
+          "url": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/services%2Fgarden-maintenance%2Fgarden-maintenance_1764383771897_0_IMG_6411.jpeg?alt=media&token=6b001439-970d-4e7f-8ffd-a0971d696afd",
+          "path": "services/garden-maintenance/garden-maintenance_1764383771897_0_IMG_6411.jpeg",
+          "uploadedAt": "2025-11-29T02:36:16.100Z"
+        }
+      ],
+      "description": "Professional care for lasting beauty and health.",
+      "badge": "150+ Clients",
+      "items": [
+        "Regular Lawn Care",
+        "Plant Pruning",
+        "Pest Control",
+        "Seasonal Cleanup",
+        "Garden Consultation"
+      ],
+      "title": "Garden Maintenance"
+    },
+    {
+      "id": "landscaping",
+      "createTime": "2025-11-14T16:11:36.438607Z",
+      "updateTime": "2025-11-29T02:35:14.476039Z",
+      "images": [
+        {
+          "url": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/services%2Flandscaping%2Flandscaping_1764383702758_0_IMG_5816.jpeg?alt=media&token=13fa5124-770c-41f9-889b-7c89cb199169",
+          "path": "services/landscaping/landscaping_1764383702758_0_IMG_5816.jpeg",
+          "uploadedAt": "2025-11-29T02:35:09.275Z"
+        }
+      ],
+      "badge": "100+ Installations",
+      "description": "Expert installation from concept to completion.",
+      "items": [
+        "Lawn Installation",
+        "Hardscaping",
+        "Irrigation Systems",
+        "Outdoor Lighting",
+        "Water Features"
+      ],
+      "title": "Landscaping",
+      "updatedAt": "2025-11-29T02:35:14.254Z"
+    }
+  ],
+  "hero": {
+    "id": "hero",
+    "createTime": "2025-11-14T14:47:37.572402Z",
+    "updateTime": "2025-11-30T17:40:13.303913Z",
+    "title": "Green today, greener tomorrow.",
+    "images": [
+      {
+        "url": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764522797991_0_Hero%20-%20Maremegmeng.webp?alt=media&token=1128243b-c3c8-49a9-b775-b6a3eb6efc69",
+        "path": "hero-images/hero_1764522797991_0_Hero - Maremegmeng.webp",
+        "uploadedAt": "2025-11-30T17:13:22.133Z"
+      },
+      {
+        "url": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764522797992_1_hero_1763132715280_0_IMG_5694.webp?alt=media&token=b906427a-a1bb-45fe-9b17-c8fb8cbfca7c",
+        "path": "hero-images/hero_1764522797992_1_hero_1763132715280_0_IMG_5694.webp",
+        "uploadedAt": "2025-11-30T17:13:22.313Z"
+      },
+      {
+        "url": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764522797992_2_hero_1763133618634_0_unnamed%20(3).webp?alt=media&token=38c11520-3ef3-4fc0-a710-f5f06949f8a3",
+        "path": "hero-images/hero_1764522797992_2_hero_1763133618634_0_unnamed (3).webp",
+        "uploadedAt": "2025-11-30T17:13:19.887Z"
+      },
+      {
+        "url": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764522797992_3_hero_1763133618636_2_unnamed%20(1).webp?alt=media&token=94dbc47d-bd6f-4c95-a32f-bbd8f42cf11f",
+        "path": "hero-images/hero_1764522797992_3_hero_1763133618636_2_unnamed (1).webp",
+        "uploadedAt": "2025-11-30T17:13:22.219Z"
+      },
+      {
+        "url": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764524403423_0_ezgif-50ffef9f5367ce88.webp?alt=media&token=a8457a34-35af-4762-877f-f69f4b54fe83",
+        "path": "hero-images/hero_1764524403423_0_ezgif-50ffef9f5367ce88.webp",
+        "uploadedAt": "2025-11-30T17:40:08.092Z"
+      }
+    ],
+    "updatedAt": "2025-11-30T17:40:12.744Z",
+    "description": "Discover our premium selection of plants, pots, and garden essentials."
+  },
+  "policies": null,
+  "about": {
+    "id": "about-greenscape",
+    "createTime": "2025-11-21T07:38:03.295896Z",
+    "updateTime": "2025-12-04T09:12:04.184833Z",
+    "headerTitle": "About Us",
+    "sections": [
+      {
+        "id": "who-we-are",
+        "isDivider": false,
+        "isPhotoExhibit": false,
+        "icon": "",
+        "title": "Who we are?",
+        "subtitle": "",
+        "paragraph1": "Greenscape is an enterprise that is an expert in providing Quality service in the field of landscaping: with a wide variety Of plant resources and supply and a group of highly- skilled and knowledgeable gardeners. Our main objective is delivering High-caliber sustainable outputs spanning from design and execution to maintenance and care.",
+        "paragraph2": "Through the collaboration of our farms: a 3.2 Hectare nursery plant production in Aborlan and a 7.3 Hectare ornamental plant production in Taytay, and with our main hub in Puerto Princesa that serve as our epicenter, we are able to cater to multiple resorts and business across the province, from north, all the way down to the south, and even to the nearby island and islets around mainland.\n\nWe aim to cultivate and nurture our inovative sparks to widen our scope and range while remaining genuine to the core that stands as our cornerstone.",
+        "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/about-greenscape-sections%2Fwho-we-are-1763712118486.jpg?alt=media&token=22bf7276-3ad9-4cad-99ec-4da5a7335f52",
+        "imageFocalX": "47.8",
+        "imageFocalY": "25.6",
+        "imagePosition": "left",
+        "imageSize": "standard",
+        "background": "white",
+        "textAlign": "right",
+        "width": "contained"
+      },
+      {
+        "id": "photo-1763881922198",
+        "isDivider": false,
+        "isPhotoExhibit": true,
+        "icon": "",
+        "title": "Our Footprint",
+        "subtitle": "",
+        "paragraph1": "",
+        "paragraph2": "",
+        "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/about-greenscape-sections%2Fphoto-1763881922198-1763882611243.png?alt=media&token=a0182f7e-3c5f-4470-a756-b2a27ae3ca81",
+        "imageFocalX": "50",
+        "imageFocalY": "50",
+        "imagePosition": "none",
+        "imageSize": "large",
+        "background": "white",
+        "textAlign": "center",
+        "width": "full"
+      },
+      {
+        "id": "divider-1763715778220",
+        "isDivider": true,
+        "isPhotoExhibit": false,
+        "icon": "",
+        "title": "Our commitment ",
+        "subtitle": "At Greenscape, we believe in the transformative power of education, training, and support to uplift communities and foster a sustainable future. Through our comprehensive community and social responsibility initiatives, we strive to make a meaningful impact on the lives of individuals and the environment they inhabit. Here's a glimpse into our efforts:",
+        "paragraph1": "",
+        "paragraph2": "",
+        "imageUrl": "",
+        "imageFocalX": "50",
+        "imageFocalY": "50",
+        "imagePosition": "none",
+        "imageSize": "standard",
+        "background": "gray",
+        "textAlign": "center",
+        "width": "contained"
+      },
+      {
+        "id": "section-1763717645371",
+        "isDivider": false,
+        "isPhotoExhibit": false,
+        "icon": "",
+        "title": "Scholarship Program",
+        "subtitle": "",
+        "paragraph1": "Education is the cornerstone of progress, and we are proud to offer scholarships to deserving students pursuing any course of duty. We recognize that many talented individuals lack the financial means to support their education aspirations, which is why we extend a helping hand to those in need. Our scholarship program aims to remove barriers to education, enabling students to unlock their full potential and pursue their dreams.",
+        "paragraph2": "",
+        "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/about-greenscape-sections%2Fsection-1763717645371-1763717709253.jpg?alt=media&token=e7562f69-63ff-497d-b0a7-4adb2d677e28",
+        "imageFocalX": "64.3",
+        "imageFocalY": "41.6",
+        "imagePosition": "right",
+        "imageSize": "standard",
+        "background": "white",
+        "textAlign": "right",
+        "width": "contained"
+      },
+      {
+        "id": "section-1763716049614",
+        "isDivider": false,
+        "isPhotoExhibit": false,
+        "icon": "",
+        "title": "Internship Opportunities",
+        "subtitle": "",
+        "paragraph1": "As a part of our commitment to nurturing future talent, we offer internship opportunities in landscaping and garden maintenance to students enrolled in the K-12 program of the department of education. Through hands-on experience and mentorship, interns gain valuable skills that will serve as their edge throughout their respective careers of choice in the future.",
+        "paragraph2": "",
+        "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/about-greenscape-sections%2Fsection-1763716049614-1763716211160.jpg?alt=media&token=b20b24ae-b557-473d-bd46-adce00809cb7",
+        "imageFocalX": "93.5",
+        "imageFocalY": "0.0",
+        "imagePosition": "left",
+        "imageSize": "standard",
+        "background": "white",
+        "textAlign": "left",
+        "width": "contained"
+      },
+      {
+        "id": "section-1763717824441",
+        "isDivider": false,
+        "isPhotoExhibit": false,
+        "icon": "",
+        "title": "Trainings Initiatives",
+        "subtitle": "",
+        "paragraph1": "We believe in the power of empowerment through education and skills development. That's why we offer landscaping and garden maintenance training programs specifically tailored for women in the community, the public sector, and select government offices. By providing access to training opportunities, we empower the community and economic independence.",
+        "paragraph2": "",
+        "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/about-greenscape-sections%2Fsection-1763717824441-1763717942186.jpg?alt=media&token=456ea52c-e6ed-4ed3-90d5-dd80fbaf3549",
+        "imageFocalX": "73.2",
+        "imageFocalY": "100.0",
+        "imagePosition": "right",
+        "imageSize": "standard",
+        "background": "white",
+        "textAlign": "right",
+        "width": "contained"
+      },
+      {
+        "id": "section-1763717944911",
+        "isDivider": false,
+        "isPhotoExhibit": false,
+        "icon": "",
+        "title": "Support for Livelihood",
+        "subtitle": "",
+        "paragraph1": "We understand the importance of supporting local entrepreneurs and fostering sustainable livelihoods within our communities. That's why we partner with small-scale and backyard gardeners, offering support and resources to help their businesses thrive. We purchase plants and other garden products from these entrepreneurs, providing them with a steady source of income and helping them to expand their operations. Through this partnership, we promote economic resilience and encourage sustainable practices in gardening and agriculture.",
+        "paragraph2": "",
+        "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/about-greenscape-sections%2Fsection-1763717944911-1764839515891.webp?alt=media&token=f9f28a0d-b839-4bf1-b69b-4631d1a069e2",
+        "imageFocalX": "67.8",
+        "imageFocalY": "100.0",
+        "imagePosition": "left",
+        "imageSize": "standard",
+        "background": "white",
+        "textAlign": "left",
+        "width": "contained"
+      }
+    ],
+    "updatedAt": "2025-12-04T09:12:03.769Z",
+    "headerSubtitle": "Greenscape is a premier landscaping enterprise delivering sustainable, high-quality design, execution, and maintenance services, backed by extensive plant resources and a team of skilled landscaping experts."
+  },
+  "pageCovers": {
+    "id": "pageCovers",
+    "createTime": "2025-11-17T16:57:57.275782Z",
+    "updateTime": "2025-12-18T07:08:41.344973Z",
+    "contact_focalY": 50,
+    "service-landscaping": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fservice-landscaping-1764925623903.webp?alt=media&token=6fc08d2d-f9ad-4f42-98ca-9fc3f5c944be",
+    "service-garden-essentials": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fservice-garden-essentials-1764925515467.webp?alt=media&token=a951cc1b-a309-4e1a-9395-82edc2e129c0",
+    "project-indoor-landscaping_focalY": 50,
+    "client-feedback_focalY": 50,
+    "faq_focalX": 50,
+    "service-garden-maintenance": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fservice-garden-maintenance-1764925654965.webp?alt=media&token=a39dd074-511e-494c-b317-7fdfd2658541",
+    "project-indoor-landscaping_focalX": 50,
+    "delivery-terms": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fdelivery-terms-1766041327336.jpeg?alt=media&token=0dd67bc1-f180-4326-8797-e1dd87189fc3",
+    "privacy-notice_focalX": 50,
+    "service-garden-maintenance_focalX": 51.3,
+    "project-commercial-landscaping": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fproject-commercial-landscaping-1763520742373.jpeg?alt=media&token=29973c7c-fc73-4362-b139-ec9ad1e1b943",
+    "service-products_focalX": 60.4,
+    "delivery-terms_focalX": 50,
+    "project-landscape-rehabilitation_subtitle": "A Second Chance for Every Landscape",
+    "service-garden-design": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fservice-garden-design-1764925409255.webp?alt=media&token=8e526860-bf23-4737-8ad3-6ef5e2d11ba7",
+    "project-indoor-landscaping": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fproject-indoor-landscaping-1764221374292.jpeg?alt=media&token=2f71e14e-f624-47f4-9868-ccdc61f9858f",
+    "service-products_focalY": 30.6,
+    "privacy-notice_focalY": 50,
+    "null": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fabout-greenscape-1763398666124.PNG?alt=media&token=5fc31c10-e114-4cf2-a98c-be316d91a755",
+    "our-stories": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Four-stories-1766041715328.jpeg?alt=media&token=ae0a5d9c-8591-4fd4-b32d-b975f159eacd",
+    "service-products_subtitle": "Premium Garden Supplies for Every Need",
+    "service-garden-essentials_subtitle": "Everything Your Garden Needs to Thrive.",
+    "service-garden-essentials_focalX": 100,
+    "gallery_focalY": 81.2,
+    "client-feedback": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fclient-feedback-1766030074135.jpeg?alt=media&token=6e8468a4-fe04-4102-a9cd-537ebc5d2479",
+    "service-garden-design_focalX": 100,
+    "service-products": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fservice-products-1764925686423.webp?alt=media&token=01b6062d-f1d3-4781-900e-1beffaab5bb3",
+    "project-residential-garden_subtitle": "Beautiful Gardens for Happy Homes",
+    "service-garden-design_focalY": 58.1,
+    "about-greenscape_focalX": 50,
+    "home": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fhome-1763711978241.jpeg?alt=media&token=b7467f75-3337-4dea-8577-f88c8222b32d",
+    "service-garden-maintenance_subtitle": "Expert Care for a Thriving Landscape",
+    "service-garden-essentials_focalY": 63.8,
+    "project-landscape-rehabilitation": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fproject-landscape-rehabilitation-1764221439962.jpeg?alt=media&token=af0a64a0-a8cd-4b20-94d3-0b6310630ea6",
+    "gallery": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fgallery-1764223427664.jpeg?alt=media&token=778ebefc-e7be-4299-9597-d3429231f8ba",
+    "service-garden-design_subtitle": "Transforming Spaces into Green Sanctuaries.",
+    "our-stories_focalX": 50,
+    "project-landscape-rehabilitation_focalY": 50,
+    "project-residential-garden_focalX": 50,
+    "updatedAt": "2025-12-18T07:08:41.091Z",
+    "about-greenscape_focalY": 50,
+    "gallery_focalX": 99.7,
+    "service-garden-maintenance_focalY": 58.8,
+    "client-feedback_focalX": 50,
+    "project-residential-garden": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fproject-residential-garden-1764221324940.jpeg?alt=media&token=9b25ba52-32f3-4207-8e53-af5b5afa2ca9",
+    "contact": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fcontact-1764830662271.webp?alt=media&token=ba7ab0e5-0c61-4f9f-9da7-362b1ece858e",
+    "gallery_subtitle": "See Our Passion in Every Project",
+    "service-landscaping_focalY": 60.6,
+    "service-landscaping_focalX": 51,
+    "our-stories_focalY": 50,
+    "faq_focalY": 50,
+    "contact_focalX": 50,
+    "about-greenscape": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fabout-greenscape-1766038905832.jpeg?alt=media&token=0e73108e-5374-4bae-b422-5f0632e38baa",
+    "delivery-terms_focalY": 50,
+    "service-landscaping_subtitle": "Professional Landscaping, Lasting Impressions",
+    "faq": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Ffaq-1766029577265.jpeg?alt=media&token=28d29201-4712-42cc-8e89-2b92950bce81",
+    "project-residential-garden_focalY": 50,
+    "privacy-notice": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fprivacy-notice-1766040798277.jpeg?alt=media&token=9da47eb9-a466-47f0-ad01-f09ee4b199fd",
+    "project-indoor-landscaping_subtitle": "Bringing Nature Inside Your Space",
+    "project-landscape-rehabilitation_focalX": 50,
+    "our-stories_subtitle": "The Journey Behind Every Garden We Create"
+  },
+  "gardenEssentials": {
+    "id": "gardenEssentials",
+    "createTime": "2025-11-23T08:23:05.068188Z",
+    "updateTime": "2025-11-27T05:38:01.880203Z",
+    "updatedAt": "2025-11-27T05:38:00.198Z",
+    "articles": {
+      "article-1763901695544": {
+        "order": 2,
+        "authorRole": "Content Contributor",
+        "title": "New AI-Ready Robotic Mower Platform: Revolutionizing Lawn Care for Busy People",
+        "isFeatured": false,
+        "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-essentials%2Farticle-1763901691327?alt=media&token=ea2bf689-b7f7-4d27-94cd-b4ebc6c7e778",
+        "synopsis": "Lawn maintenance has long been a time-consuming chore that competes with countless other responsibilities in modern life. Whether you're a busy professional juggling career demands, a parent managing family activities, or simply someone who'd rather spend leisure time doing something enjoyable, traditional lawn mowing represents hours of physical labor that could be better invested elsewhere. Husqvarna's new AI-ready robotic mower platform represents a paradigm shift in how homeowners approach lawn care. These intelligent machines combine cutting-edge artificial intelligence with sophisticated automation to deliver consistently manicured lawns with virtually no human intervention. For busy people seeking to reclaim time and reduce physical labor, AI-powered robotic mowers have emerged as one of the most practical home technology innovations in recent years.",
+        "content": "Lawn mowing has remained largely unchanged for decades. Whether using a push mower, riding mower, or contractor service, someone had to actively engage in the process regularly. Each approach had significant drawbacks: push mowers require physical exertion and time, riding mowers are expensive and cumbersome, and contractor services are costly and inflexible.\nRobotic mowers have existed for several years, but earlier generations operated with limited intelligence. They followed predetermined patterns, struggled with complex yard layouts, required frequent manual adjustment, and delivered inconsistent results.\nHusqvarna's new AI-ready platform represents a fundamental leap forward. By integrating artificial intelligence with advanced sensors and connectivity, these machines now understand yard topology, adapt to changing conditions, optimize cutting patterns, and communicate with users through smartphone apps. The result is a genuinely autonomous system that handles lawn care with minimal human involvement.\n\nHow AI-Ready Robotic Mowers Work\nUnderstanding the technology reveals why these machines are so effective for busy people.\nGPS and Mapping Technology: Modern robotic mowers use GPS combined with boundary wire systems to create precise digital maps of your yard. The AI processes this information to understand terrain, obstacles, slope, and optimal cutting routes. Unlike earlier models that simply follow programmed patterns, AI mowers can adapt to unique yard characteristics and optimize efficiency.\nIntelligent Scheduling: The AI learns your preferences and yard conditions. It understands that different seasons require different cutting frequencies and heights. During spring growth surges, the system increases cutting frequency. During slower growth periods, it reduces mowing. Rainy conditions that would bog down traditional mowers? The AI recognizes wet conditions and delays mowing until the yard is appropriate for cutting, preventing soil compaction.\nAdaptive Cutting Patterns: Rather than following rigid predetermined paths, AI mowers optimize cutting patterns in real-time based on grass growth patterns, weather conditions, and yard topography. The system learns which areas grow faster and adjusts cutting intensity accordingly. Edge areas that require frequent attention receive it automatically.\nSmartphone Connectivity and Remote Control: Husqvarna's platform integrates with dedicated mobile apps that provide real-time monitoring, scheduling adjustments, and troubleshooting. You can check on your mower's status, adjust cutting height, change schedules, or receive alerts—all from anywhere with internet connection. Some models even allow remote intervention if adjustments are needed while you're away.\nWeather Integration: The system connects to weather data to make intelligent decisions. Approaching rain? The mower completes its cycle before precipitation arrives. Excessive heat that stresses turf? Cutting heights adjust to protect grass during heat stress. This dynamic responsiveness ensures optimal lawn health regardless of weather patterns.\nSelf-Charging and Continuous Operation: Modern robotic mowers return to their base stations to recharge automatically. The AI optimizes charging schedules around preferred operating times. The system can operate continuously throughout the week, maintaining consistent lawn appearance without requiring any weekly ritual from the homeowner.\n\nTime-Saving Benefits for Busy People\nThe time savings are the most immediately obvious benefit for busy professionals and active families.\nElimination of Weekly Mowing: A typical homeowner spends 1-2 hours weekly on lawn mowing, plus time on equipment maintenance, fueling, and storage. Over a year, that's 50-100+ hours devoted to this single task. Robotic mowers eliminate this entirely. The machine handles mowing while you attend to work, family, exercise, hobbies, or simply rest.\nNo Seasonal Equipment Management: Traditional mowing requires seasonal maintenance—spring startup, mid-season maintenance, fall cleanup, and winter storage. For people with limited time, this represents additional hassle and expense. Robotic mowers operate autonomously with minimal seasonal intervention.\nReduced Decision-Making: No more determining whether conditions are appropriate for mowing, whether the grass is too wet, whether the height is correct, or whether you have time this weekend. The AI handles these decisions, operating when conditions are optimal.\nFlexible Lifestyle: Busy people often struggle to maintain consistent lawn care around work travel, family obligations, and social commitments. A robotic mower maintains the lawn consistently regardless of your schedule. Going away for a week? The lawn continues receiving appropriate maintenance. Working long hours? The system adapts without requiring your involvement.\nNo Physical Labor: For older homeowners, those with physical limitations, or anyone who simply prefers not to do physical labor, robotic mowers eliminate the physical demand. The machine performs the work regardless of your physical capacity.\nProfessional Appearance Maintained: Perhaps the most subtle but important benefit: robotic mowers maintain yard appearance with such consistency that your lawn always looks professionally maintained. There's no period of overgrowth followed by dramatic cutting. The grass remains at consistent, attractive height throughout the growing season.\n\nEffectiveness and Performance\nBeyond time savings, these AI systems deliver genuinely superior lawn care performance compared to traditional approaches.\nConsistent Cutting Quality: Human mowing patterns vary—you might miss spots, cut less uniformly, or vary cutting heights based on mood or available time. Robotic mowers deliver utterly consistent cutting quality every single time. This consistency promotes healthier turf and more attractive appearance.\nMulching Benefits: Most robotic mowers use mulching technology, finely chopping clippings and returning them to the lawn. This adds organic matter and nutrients back to soil, reducing fertilizer requirements. Traditional mowing removes clippings, which means nutrients leave your property. Robotic mowers actually improve soil over time through this mulching effect.\nNoise Reduction: Robotic mowers operate at significantly lower noise levels than traditional mowers (typically 60-70 decibels compared to 85-95 for conventional mowers). Early morning or evening mowing becomes possible without disturbing neighbors. Busier hours of the day don't require interruption for yard work.\nPrecise Height Control: AI systems maintain exact cutting heights that you program. No variation, no operator error, no inconsistency. Grass grows healthier when cut to consistent, appropriate heights. The AI maintains these parameters perfectly.\nWeather Responsiveness: The system operates only during appropriate conditions. Too wet? The mower waits. Too hot? Cutting heights adjust to protect stressed turf. Approaching rain? The system completes work before precipitation. This intelligent weather response optimizes both lawn health and mowing effectiveness.\nEdge and Obstacle Navigation: Modern AI mowers skillfully navigate around garden beds, trees, decorative elements, and property boundaries. They trim edges consistently and avoid damaging obstacles. Earlier robotic mowers struggled with this; AI-equipped systems handle complex yard layouts elegantly.\n",
+        "author": "Ian Royce T. Favila",
+        "date": "2025-11-23",
+        "isEditorsChoice": true,
+        "photoCredit": "",
+        "label": "Hand Tools "
+      },
+      "article-1763895490513": {
+        "author": "Ian Royce T. Favila",
+        "label": "SOIL & NUTRIENTS",
+        "content": "When it comes to creating a thriving, productive garden, the foundation matters just as much as sunlight and water. The growing medium you choose directly influences plant health, yield, and your overall gardening success. Cocopeat has emerged as an exceptional choice for gardeners seeking to maximize productivity while minimizing effort and environmental impact. This versatile, plant-derived material is transforming how both home gardeners and commercial operations approach vegetable production, ornamental cultivation, and landscape restoration. Whether you're growing tomatoes on a balcony or managing acres of crops, cocopeat offers practical solutions that deliver measurable results.\nWhy Growing Medium Matters\nThe growing medium is far more than just dirt—it's the ecosystem where plant roots thrive. A quality growing medium must balance moisture retention with drainage, provide structural support for root development, and ideally contribute nutrients or create an environment where nutrients are readily available to plants. Poor growing medium choices lead to common problems: waterlogged roots, compacted soil that inhibits growth, excessive watering needs, and nutrient deficiencies that stunt plant development.\nTraditional soil often presents challenges. Compacted garden soil becomes dense and restrictive, particularly in areas with heavy clay content. Peat moss, long considered the gold standard, is increasingly recognized as environmentally problematic due to the habitat destruction associated with peat bog extraction. Cocopeat solves these problems elegantly, offering a renewable, effective alternative that supports genuinely productive gardening.\nUnderstanding Cocopeat's Structure\nCocopeat's effectiveness stems from its unique physical structure. The material is composed of fine, fibrous particles with an inherently porous composition. When you examine cocopeat under magnification, you see a complex matrix of tiny spaces—this is what makes it so functionally superior to many other growing media.\nThese microscopic air spaces serve multiple purposes simultaneously. They hold water in the material itself (an average of 8-12 times the weight of water per unit of cocopeat), while still maintaining adequate oxygen availability for plant roots. This is the crucial balance that productive gardening requires. Most materials compromise—they either hold water but create anaerobic conditions or drain so quickly that plants suffer moisture stress.\nCocopeat achieves both moisture retention and aeration efficiency, which translates directly into healthier plants that produce more fruit, flowers, or foliage with less intervention from the gardener.\nMoisture Management and Water Efficiency\nWater management is one of the most practical advantages cocopeat offers productive gardeners. In regions where water is scarce or expensive, or simply for busy gardeners who can't maintain daily watering schedules, cocopeat's moisture-holding capacity is genuinely transformative.\nA garden bed or container filled with cocopeat-based medium retains moisture far longer than conventional soil or sand-based mixes. Plants experience less water stress during hot weather or between watering sessions. For commercial growers, this means consistent plant performance and reduced crop loss from drought stress. For home gardeners, it means healthier plants with fewer watering chores.\nThe water retention isn't passive—it's dynamic and plant-available. The water held in cocopeat's structure is accessible to roots, not locked away in a way that prevents uptake. This is why vegetable crops grown in cocopeat consistently demonstrate improved yields compared to water-stressed plants in less effective growing media.\nIn practical terms, a garden bed amended with cocopeat may require watering only every two to three days during hot weather, compared to daily watering for traditional soil mixes. For container gardens, the reduction in watering frequency is even more dramatic.\nSuperior Root Development\nProductive gardens are built on healthy root systems. Cocopeat actively encourages superior root development in ways that affect final yield and plant vigor.\nThe medium's loose, particle structure allows roots to penetrate easily without meeting resistance. Unlike compacted soil that requires roots to expend energy forcing their way through dense material, cocopeat provides a welcoming environment where roots expand naturally. This expanded root system translates to greater water and nutrient absorption, supporting more vigorous growth and higher productivity.\nAdditionally, cocopeat doesn't compact over time the way soil does. Repeated watering, foot traffic, and seasonal cycles gradually compress traditional soil into an increasingly hostile environment for roots. Cocopeat maintains its structure season after season, meaning your growing beds or containers remain optimally functional year after year without requiring complete replacement or intensive soil amendment.\nThis structural integrity is particularly valuable in container gardening, where root-bound conditions can severely limit productivity. Plants in cocopeat containers show fewer signs of root stress and often continue producing longer into the season than those in conventional potting soil.\nNutrient Availability and Plant Feeding\nWhile cocopeat itself contains minimal nutrients, it creates an excellent environment for nutrient availability and uptake. The material's slightly acidic to neutral pH and its ability to hold nutrients in readily available forms make it compatible with any feeding strategy—conventional fertilizers, organic amendments, or hydroponic nutrient solutions.\nFor vegetable gardeners, this means you control exactly what nutrients your plants receive. You can optimize feeding for specific crops: higher nitrogen for leafy greens, higher phosphorus and potassium for fruiting crops like tomatoes and peppers, trace minerals for disease resistance. This precision feeding is one reason commercial growers have adopted cocopeat so enthusiastically.\nHome gardeners often blend cocopeat with compost or aged manure, creating a self-fertile growing medium that requires minimal supplemental feeding. A 60% cocopeat and 40% compost mix produces excellent results for most vegetables, providing both the structural benefits of cocopeat and the nutrient contribution of compost.\nFor container gardening specifically, cocopeat's ability to hold nutrients (rather than allowing them to leach away with water drainage) means you can apply fertilizer less frequently while maintaining consistent nutrient levels.\nProven Performance Across Crop Types\nReal-world results across diverse crops demonstrate cocopeat's productivity advantage. Commercial vegetable operations growing in greenhouse systems report yield increases of 15-25% when switching from traditional soil or inferior growing media to quality cocopeat-based mixes. These aren't marginal improvements—they're significant productivity gains that directly impact profitability.\nTomato growers have seen particularly impressive results. Tomato plants in cocopeat demonstrate faster early growth, earlier flowering, and extended fruiting periods. A typical commercial operation might harvest 5-10 additional weeks of production from the same greenhouse space. Home gardeners report similarly extended harvests from container-grown tomatoes.\nPepper production shows similar patterns. The moisture consistency that cocopeat provides prevents the blossom-end rot that often affects peppers grown in inconsistent moisture conditions. Fruiting is more uniform and abundant.\nEven ornamental crops benefit measurably. Cut flower growers report higher quality blooms with longer vase life. Potted plant producers achieve faster crop turnover and fewer plant losses, both critical for commercial viability.\nFor root crops like carrots, beets, and radishes, cocopeat's loose structure allows straighter, more uniform growth and easier harvesting compared to traditional soil growing.\nDisease and Pest Management Advantages\nBeyond productivity, cocopeat offers practical disease and pest management benefits. The material is naturally sterile when properly processed—free from soil-borne pathogens, weed seeds, and harmful insects that often come with conventional garden soil.\nThis is particularly valuable for beginning gardeners or those working with sensitive crops. Starting seedlings in cocopeat dramatically reduces damping-off disease and other seedling pathogens. Many commercial nurseries exclusively use cocopeat-based mixes for this very reason.\nFor gardeners transitioning from disease-prone garden soil to containers, cocopeat provides a fresh start. Combined with proper sanitation practices, cocopeat growing media significantly reduces disease pressure and the need for fungicidal treatments.\nPractical Applications in Productive Gardens\nVegetable Gardens: Raised beds amended with cocopeat or filled entirely with cocopeat-based mixes produce superior vegetables. The improved moisture management reduces bolting in leafy greens and cracking in tomatoes. Root vegetable production is enhanced by the loose, friable structure that encourages straight growth and easy harvesting.\nContainer Gardens: Balcony gardeners, apartment dwellers, and those with limited space achieve impressive productivity in containers filled with cocopeat-based potting mix. A single 5-gallon container can reliably produce 10-15 pounds of tomatoes or sufficient vegetables to meaningfully supplement household food supply.\nGreenhouse Production: Commercial and serious hobby greenhouse operators use cocopeat as their primary growing medium. Consistency, predictability, and high productivity make cocopeat the logical choice for protected cultivation where every square foot of space must perform optimally.\nHydroponic and Soilless Systems: Vertical gardening systems, NFT (Nutrient Film Technique) setups, and other soilless methods often use cocopeat as the rooting medium. These space-efficient systems paired with cocopeat enable extraordinary productivity from minimal space.\nPerennial Plantings: Raspberry, blackberry, and other cane fruit production benefits from cocopeat-amended soil. The improved drainage in wet climates and moisture retention in dry climates supports healthier plants and better fruit production.\nTransplant Production: Nurserymen and seed-starting specialists use cocopeat almost exclusively. The consistency produces uniform seedlings, which translates to uniform transplants and, ultimately, uniform mature plants and harvests.\nMaking the Transition to Cocopeat Growing\nSwitching to cocopeat-based growing is straightforward. For existing garden beds, work cocopeat into the top 6-8 inches of soil, improving the existing medium rather than requiring complete soil replacement. A ratio of 25-40% cocopeat by volume significantly improves performance.\nFor new beds or containers, fill with a prepared cocopeat-based mix. Many commercial options are available, but mixing your own is economical: combine 60% cocopeat with 30% compost and 10% perlite or coconut chips for a versatile, highly productive growing medium.\nMoisten cocopeat thoroughly before planting. Dry cocopeat can be slow to rehydrate once in place. Most gardeners prepare their medium a day before planting to ensure complete hydration.\nCost-Effectiveness and Value\nWhile quality cocopeat may cost slightly more per unit volume than conventional soil, the productivity improvements and reduced maintenance more than compensate. Lower watering costs, reduced disease pressure, improved yields, and the medium's longevity (it remains functional for many seasons without replacement) create genuine economic advantage, particularly for commercial growers.\nFor home gardeners, the practical advantage is equally significant: more vegetables from the same garden space, fewer gardening hours spent on watering and troubleshooting, and more reliable harvests. These benefits quickly justify the investment.\nSustainability as Productivity\nAn often-overlooked aspect of cocopeat's effectiveness is that its environmental sustainability actually enhances productivity. You're not sacrificing performance for environmental responsibility—you're achieving both simultaneously. Using a renewable, waste-derived product demonstrates that gardening productivity and ecological responsibility are complementary, not contradictory.\nThis matters increasingly to gardeners who value knowing their food comes from genuinely sustainable systems. Gardens built on cocopeat represent genuine sustainability in practice, not just principle.\nReal-World Success Stories\nAcross diverse climates and growing conditions, gardeners report dramatically improved results after switching to cocopeat. In arid regions, the reduced watering requirement has enabled production where water scarcity previously limited options. In humid regions prone to root diseases, the improved drainage and sterile growing medium have eliminated recurring problems.\nSmall-scale commercial growers have built successful operations entirely on cocopeat growing systems. Urban rooftop gardens, balcony operations, and peri-urban intensive systems all leverage cocopeat's characteristics to achieve remarkable productivity from limited space.\nHome gardeners consistently report that switching to cocopeat represents one of the most impactful improvements they've made, trailing only location and sunlight as factors affecting garden success.\nConclusion\nProductive gardens don't happen by accident—they result from thoughtful attention to fundamentals, and the growing medium is fundamental. Cocopeat offers home gardeners and commercial growers alike a proven, effective solution that consistently delivers superior results.\nWhether you're seeking to maximize yield from a small container garden, expand production capacity in a commercial greenhouse, or simply create a more efficient, lower-maintenance vegetable garden, cocopeat provides the foundation for success. Its combination of practical advantages—moisture retention, aeration, disease resistance, and structural longevity—makes it the logical choice for anyone serious about productive gardening.\nThe transition to cocopeat growing is straightforward, and the results are measurable. More vegetables, more flowers, healthier plants, and less work represent the practical promise that cocopeat delivers. In choosing cocopeat, you're not just selecting a growing medium—you're making an investment in genuine gardening productivity and success.\nStart with a single container or raised bed if you're new to cocopeat, observe the results, and expand from there. Most gardeners discover that once they've experienced the productivity benefits of quality cocopeat-based growing, they never return to conventional approaches. Join the growing community of productive gardeners who've discovered what makes cocopeat such a game-changing growing medium.",
+        "authorRole": "Content Contributor/Agriculturist ",
+        "order": 1,
+        "date": "2025-11-23",
+        "photoCredit": "",
+        "title": "Cocopeat: An Effective Growing Medium for Productive Gardens",
+        "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-essentials%2Farticle-1763895487284?alt=media&token=06f61b60-dee7-468b-a7c9-6e85b42de1df",
+        "isFeatured": true,
+        "isEditorsChoice": false,
+        "synopsis": "When it comes to creating a thriving, productive garden, the foundation matters just as much as sunlight and water. The growing medium you choose directly influences plant health, yield, and your overall gardening success."
+      }
+    },
+    "featured": {
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-essentials%2Ffeatured-1763889042115?alt=media&token=359e1bae-1ffa-4ee9-ac20-9334f298f141",
+      "title": "Using Coco Pith as a Soil Amendment and Fertilizer: A Complete Guide"
+    },
+    "masthead": {
+      "issueNumber": "#001",
+      "subtitle": "Essential Tips & Recommendations"
+    },
+    "createdAt": "2025-11-23T08:23:03.450Z"
+  },
+  "transformations": [
+    {
+      "id": "Fm1Uk1NzRvH69gPuw5ks",
+      "createTime": "2025-12-29T08:28:57.156093Z",
+      "updateTime": "2025-12-29T08:32:12.932738Z",
+      "createdAt": "2025-12-29T08:28:57.131Z",
+      "title": "Sustainable Coastal Landscape",
+      "updatedAt": "2025-12-29T08:32:12.868Z",
+      "description": "A coastal landscape designed with native, salt-tolerant plants and sustainable grasses that thrive in seaside conditions while reducing water use and maintenance.",
+      "location": "Puerto Princesa City",
+      "afterImage": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fafter_1766997127142_IMG_1803.jpeg?alt=media&token=78484655-c6c1-4769-9b98-c238907b5814",
+      "status": "published",
+      "beforeImage": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fbefore_1766996927454_IMG_5670.jpeg?alt=media&token=7922785a-4eaa-4e79-a689-96f8339f7e8c"
+    },
+    {
+      "id": "TSJbxHaOnsTvAemnMMrL",
+      "createTime": "2025-12-29T08:44:18.065480Z",
+      "updateTime": "2025-12-29T08:47:53.911800Z",
+      "description": "A minimalist residential landscape featuring greenery that complements the home while remaining practical and easy to maintain.",
+      "afterImage": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fafter_1766997852016_IMG_7350.jpeg?alt=media&token=f79dc1b2-8c36-4c63-91a6-e305affce557",
+      "location": "Puerto Princesa City",
+      "title": "Minimalist Residential landscaping",
+      "status": "published",
+      "updatedAt": "2025-12-29T08:47:53.885Z",
+      "beforeImage": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fbefore_1766998066478_IMG_3039.jpeg?alt=media&token=4653f046-d1fa-4d22-9829-873e95e8aa0a",
+      "createdAt": "2025-12-29T08:44:18.031Z"
+    },
+    {
+      "id": "jSs5h0JdPG5eOwWVxDvL",
+      "createTime": "2025-12-12T10:58:29.275594Z",
+      "updateTime": "2025-12-18T06:46:03.519191Z",
+      "title": "Rare Plants for Stunning Home Gardens",
+      "status": "published",
+      "afterImage": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fafter_1765539878080_9b1b299b-8407-45a8-9830-63ed0286df51.jpg?alt=media&token=ba346415-dd23-4bab-b320-38e35b5af7db",
+      "createdAt": "2025-12-12T10:58:29.250Z",
+      "beforeImage": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fbefore_1765537094061_IMG_5043.jpeg?alt=media&token=7e67c2a1-88d8-46e6-a13a-c8b68dfabf0c",
+      "updatedAt": "2025-12-18T06:46:03.485Z",
+      "location": "Puerto Princesa City",
+      "description": "The residential landscape was transformed using rare and carefully selected plants, creating a distinctive and refined outdoor environment that enhances visual interest, exclusivity, and overall aesthetic value while maintaining balance, functionality, and harmony with the surrounding space."
+    },
+    {
+      "id": "roJERhhSxiiiX98XKJkI",
+      "createTime": "2025-12-05T09:22:02.963027Z",
+      "updateTime": "2025-12-12T11:56:23.088258Z",
+      "status": "published",
+      "description": "This residential project involved the design, supply, and installation of plants and garden accessories in their outdoor area. As we provided our landscaping services, we took into account the client & owner’s preferences and the unique features of the location. The team also supplied a variety of plants and accessories, carefully chosen to complement the design and thrive in the local climate.",
+      "title": "Simple Residential Landscaping Project",
+      "afterImage": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fafter_1765540581016_eb255fed-1e8c-4727-bb08-06402affdf95.jpg?alt=media&token=112c167c-da97-4dc5-bd3d-7c2900e8d356",
+      "updatedAt": "2025-12-12T11:56:23.059Z",
+      "beforeImage": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fbefore_1765540579233_7802c191-45a6-4c4e-a155-1dfe1de70077.jpg?alt=media&token=6d3ccf61-fb00-4df6-a747-a904eefe01f2",
+      "location": "Narra, Palawan",
+      "createdAt": "2025-12-05T09:22:02.924Z"
+    },
+    {
+      "id": "vOlJP9wwKsY81cJ2az3r",
+      "createTime": "2025-12-12T11:49:12.871378Z",
+      "updateTime": "2025-12-18T06:44:27.958441Z",
+      "beforeImage": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fbefore_1765540149118_5797a1c5-5b52-4b0d-8418-08914580373b.jpg?alt=media&token=848afd9e-2d12-4656-9911-ff89762c41e5",
+      "description": "The City Cemetery landscape is designed to provide a peaceful, orderly, and respectful environment. Tree-lined pathways offer shade and comfort, while open lawn areas and low-maintenance plants enhance cleanliness and serenity. Native trees, shrubs, and groundcovers are used to ensure sustainability, proper drainage, and ease of maintenance, creating a calm space for reflection and remembrance.",
+      "title": "Honoring Spaces",
+      "afterImage": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fafter_1765540150946_34004730-d719-4e3e-a9e4-892938bb1ad1.jpg?alt=media&token=6ad4be61-e143-49ea-b3af-2aa33b751e46",
+      "createdAt": "2025-12-12T11:49:12.842Z",
+      "location": "Puerto Princesa City",
+      "updatedAt": "2025-12-18T06:44:27.930Z",
+      "status": "published"
+    }
+  ],
+  "maintenancePackages": [
+    {
+      "id": "lite",
+      "createTime": "2025-11-15T12:17:04.206089Z",
+      "updateTime": "2025-12-12T12:12:16.124042Z",
+      "frequency": "One Time Maintenance",
+      "price": 5250,
+      "image": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/maintenance%2Flite_1765541535410_7802c191-45a6-4c4e-a155-1dfe1de70077.jpg?alt=media&token=e56e6ec0-7b6c-4839-86e0-3a3fdf2b75f4",
+      "features": [
+        "Lawn Mowing",
+        "Lawn Fertilization",
+        "Bush and Hedge Trimming",
+        "Garden Bed Edging",
+        "sdsds"
+      ],
+      "name": "Lite",
+      "updatedAt": "2025-12-12T12:12:17.106Z",
+      "color": "#163d08",
+      "area": "50 Smq Area",
+      "featured": false
+    },
+    {
+      "id": "premium",
+      "createTime": "2025-12-12T12:07:45.776645Z",
+      "updateTime": "2025-12-12T12:07:45.776645Z",
+      "features": [
+        "Lawn Mowing",
+        "Lawn Fertilization",
+        "Bush and Hedge Trimming",
+        "Garden Bed Edging",
+        "Garden Pest Control",
+        "Garden Fungus Treatment",
+        "Minor Tree Trimming",
+        "Garden Waste Disposal"
+      ],
+      "frequency": "20 Days/month Maintenance",
+      "color": "#163d08",
+      "featured": false,
+      "price": 16820,
+      "name": "Premium",
+      "area": "500 Smq Area",
+      "updatedAt": "2025-12-12T12:07:45.137Z",
+      "image": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/maintenance%2Fpremium_1765541263293_34004730-d719-4e3e-a9e4-892938bb1ad1.jpg?alt=media&token=85688d28-7df6-4766-b02b-e037a347229e"
+    },
+    {
+      "id": "standard",
+      "createTime": "2025-12-12T12:12:07.256367Z",
+      "updateTime": "2025-12-12T12:12:07.256367Z",
+      "price": 8850,
+      "featured": true,
+      "frequency": "Twice/month Maintenance",
+      "image": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/maintenance%2Fstandard_1765541525253_1b1bd971-47bc-4e76-97e3-2e9ec6e1b690.jpg?alt=media&token=13407f12-85fe-4b9e-bc59-38f487287214",
+      "name": "Standard",
+      "updatedAt": "2025-12-12T12:12:06.897Z",
+      "features": [
+        "Lawn Mowing",
+        "Lawn Fertilization",
+        "Bush and Hedge Trimming",
+        "Garden Bed Edging",
+        "Garden Pest Control",
+        "Garden Fungus Treatment",
+        "Minor Tree Trimming",
+        "Garden Waste Disposal"
+      ],
+      "color": "#163d08",
+      "area": "100 Smq Area"
+    }
+  ],
+  "landscapingHeader": null,
+  "landscapingSteps": [
+    {
+      "id": "V0IabJqpFWCTctJsc7pu",
+      "createTime": "2025-12-07T15:31:46.237309Z",
+      "updateTime": "2026-01-08T07:52:11.633426Z",
+      "order": 4,
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/landscaping%2F1767858702566_1765969362688_IMG_4226.webp?alt=media&token=8f3ac9e0-bb19-4515-b3b7-f53f9145c9a4",
+      "updatedAt": "2026-01-08T07:52:11.590Z",
+      "createdAt": "2025-12-07T15:31:46.199Z",
+      "excerpt": "Introduce a maintenance plan covering watering, pruning, fertilizing, and garden pest control, to maintain the functionality, beauty and sustainability of the garden.",
+      "content": "To maintain the functionality, beauty, and sustainability of your garden, we introduce a comprehensive maintenance plan. This covers essential care including watering schedules, pruning, fertilizing, and garden pest control. Regular maintenance ensures your landscape investment continues to thrive and enhance your property for years to come.",
+      "title": "Step 4. Landscape Maintenance"
+    },
+    {
+      "id": "VYw0I7LPMUZCQuuYpfvG",
+      "createTime": "2025-12-07T15:31:45.725251Z",
+      "updateTime": "2026-01-08T07:55:19.800889Z",
+      "excerpt": "Prepare a conceptual design with perspectives and detailed Bill of Quantities.",
+      "content": "Greenscape then prepares a conceptual design, complete with perspectives and a detailed 'Bill of Quantities',  and select plants and materials that ensure an optimal balance between aesthetic appeal and low maintenance. This is followed by presenting the design for client review and incorporate feedback to finalize the proposal. The design fee for residential properties not exceeding 150 sqm starts at P15,000.00.",
+      "order": 2,
+      "updatedAt": "2026-01-08T07:55:19.756Z",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/landscaping%2F1767858554309_1765968873427_IMG_7083.webp?alt=media&token=a0de39e7-74b8-4bd0-aa2f-efc298d450db",
+      "createdAt": "2025-12-07T15:31:45.691Z",
+      "title": "Step 2. Design & Planning"
+    },
+    {
+      "id": "WuYOx4F5iF3cRs10mJig",
+      "createTime": "2025-12-07T15:31:45.978315Z",
+      "updateTime": "2026-01-08T07:51:28.306913Z",
+      "createdAt": "2025-12-07T15:31:45.948Z",
+      "updatedAt": "2026-01-08T07:51:28.267Z",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/landscaping%2F1767858644769_1765968989316_IMG_5816.webp?alt=media&token=de49bd44-69ea-4be9-bbe9-19da3c2773ec",
+      "order": 3,
+      "excerpt": "Install hardscape elements, prepare land, plant greenery, and set up systems.",
+      "content": "Next is the installation of hardscape elements and land preparations, followed by planting of trees, shrubs, and ground cover then Set up lighting and irrigation system. The landscaping installation cost starts at P1,560 per sqm, with the final price varying based on design complexity, materials, specifications, location, and schedule.",
+      "title": "Step 3. Landscape Installation"
+    },
+    {
+      "id": "vT4Ny5WCV7AvQbOOMGxy",
+      "createTime": "2025-12-07T15:31:45.214841Z",
+      "updateTime": "2026-01-08T08:11:59.663278Z",
+      "title": "Step 1. Site Visit and Consultation",
+      "content": "First, Greenscape assesses the area, discuss the clients vision, budget, materials, and maintenance needs, evaluate natural conditions like soil condition, sunlight orientation, water supply and drainage. Site visits within the city are free. For locations within 60 km from our office, the site visit fee starts at 3,000 pesos.",
+      "excerpt": "Transform your outdoor space with our proven landscaping process.",
+      "updatedAt": "2026-01-08T08:11:59.626Z",
+      "createdAt": "2025-12-07T15:31:45.173Z",
+      "order": 1,
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/landscaping%2F1767859905390_473403995_605658062173650_935370825745676784_n.webp?alt=media&token=eca8547d-dbfc-4a30-a949-505809bc76e9"
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "56oMIpy8E6RN9yIm41oJ",
+      "createTime": "2025-11-16T08:16:05.360139Z",
+      "updateTime": "2025-11-16T08:23:11.933773Z",
+      "name": "Jovey Ann Flores",
+      "role": "Verified Client",
+      "text": "We would like to extend our appreciation to Greenscape Landscaping for the quality of work delivered on our project. The team demonstrated professionalism, attention to detail, and commitment to maintaining the natural character of the area. The slope protection measures, plant selection, and overall site management were executed efficiently and aligned with our project goals.\n\nWe look forward to continuing our partnership and sustaining the landscape’s long-term health and aesthetics.",
+      "rating": 5,
+      "createdAt": "2025-11-16T08:16:05.329Z",
+      "status": "approved",
+      "updatedAt": "2025-11-16T08:23:11.906Z"
+    },
+    {
+      "id": "ccQmkVJIXYZ0wJm8NY3p",
+      "createTime": "2025-11-16T08:51:12.622130Z",
+      "updateTime": "2025-11-16T08:51:48.485633Z",
+      "name": "Ian Royce Favila",
+      "role": "Verified Client",
+      "text": "Thank you, Greenscape Landscaping, for the excellent work in improving our site. The landscaping is well-planned, neat, and environmentally aligned. Your team was responsive, organized, and easy to coordinate with. Great job!",
+      "rating": 5,
+      "createdAt": "2025-11-16T08:51:12.600Z",
+      "status": "approved",
+      "updatedAt": "2025-11-16T08:51:48.452Z"
+    }
+  ]
+}

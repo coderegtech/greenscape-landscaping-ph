@@ -10,7 +10,10 @@ import { apiRateLimit } from './middleware/rate-limit.ts';
 import { requestId } from './middleware/request-id.ts';
 import { authenticate } from './middleware/auth.ts';
 import { authRoutes } from './modules/auth/routes.ts';
+import { cmsRoutes } from './modules/cms/routes.ts';
 import { healthRoutes } from './modules/health/routes.ts';
+import { inquiryRoutes } from './modules/inquiries/routes.ts';
+import { quotationRoutes } from './modules/quotations/routes.ts';
 import { userRoutes } from './modules/users/routes.ts';
 
 export function createApp(deps: Deps) {
@@ -42,6 +45,9 @@ export function createApp(deps: Deps) {
 
   // Health is mounted before the rate limiter so probes are never throttled.
   app.use('/v1/health', healthRoutes(deps));
+  // Public CMS reads: cached, read-only, low-cardinality params; mounted before the per-IP limiter because the
+  // web server renders (and builds) every page through them from one IP. Writes are all behind the limiter.
+  app.use('/v1/cms', cmsRoutes(deps));
   app.use('/v1', apiRateLimit(deps.redis, env.CACHE_PREFIX, env.RATE_LIMIT_PER_MIN));
   app.use(express.json({ limit: '1mb' }));
 
@@ -54,6 +60,8 @@ export function createApp(deps: Deps) {
   app.use('/v1', authenticate(deps));
   app.use('/v1/auth', authRoutes(deps));
   app.use('/v1', userRoutes(deps));
+  app.use('/v1/quotations', quotationRoutes(deps));
+  app.use('/v1', inquiryRoutes(deps));
 
   app.use(notFound);
   app.use(errorHandler);
