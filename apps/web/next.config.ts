@@ -25,7 +25,8 @@ const config: NextConfig = {
         return false;
       }
     })(),
-    // Current site's public photos until migration moves them to Supabase Storage (Phase 11).
+    // Old Firebase photos: content no longer uses them once `pnpm media:migrate --apply` has run on that environment
+    // (`pnpm assets:check` proves it). Remove this entry after the production migration.
     remotePatterns: [
       { protocol: 'https', hostname: 'firebasestorage.googleapis.com', pathname: '/v0/b/greenscape-palawan.firebasestorage.app/**' },
       // CMS media library (Supabase Storage public bucket), from the configured project URL.

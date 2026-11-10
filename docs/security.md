@@ -71,5 +71,14 @@ Living document; each phase adds its section. Threat model and DPA notes are in 
 | Messages | Only the signed-in customer sees their conversation; staff need `messages.read` to view and `messages.reply` to answer; customer sends are rate-limited (30/hour) and staff are emailed once per unread batch, not per message. |
 | Notification recipients | Stored in `AppSetting` (no secrets there), validated as email addresses, audited; the env values stay as fallback so a misconfiguration never silences notifications entirely. |
 
+## Migration (Phase 11)
+| Concern | Implementation |
+|---|---|
+| Source system | Read only: public file downloads for images; for private data, GET requests with an owner-issued token. Nothing is ever written to Firebase. |
+| Personal data in exports | The extractor refuses to write inside the repository; the import report stays next to the export; the runbook says to delete the folder after import (RA 10173). |
+| Excluded data | Pay, allowance, deduction and government-ID fields, clock-in photos, avatars, emails on feedback and password hashes are dropped by field name; reports show only the field names and counts, never values (tested). |
+| Accounts | Imported accounts get the customer role only; staff roles from the old admin list are granted by a person in Users & roles. Disabled Firebase users are imported suspended. |
+| Integrity | Each export file's SHA-256 is in the report; copied images keep the source SHA-256 and are checked against the dry run. Imports are idempotent (legacy ids), so a repeat cannot duplicate records. |
+
 ## HTTP hardening (Phase 3)
 API: helmet defaults (CSP `default-src 'self'`, HSTS, nosniff, frame-ancestors self), CORS allow-list with credentials, Redis-backed rate limit (300/min/IP, fails open if Redis is down), 1 MB JSON body limit, request ids, no `x-powered-by`, log redaction of `authorization`/`cookie`. Next.js apps: nosniff, referrer policy, frame options, permissions policy; admin is `noindex`.

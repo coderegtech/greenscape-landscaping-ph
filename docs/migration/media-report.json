@@ -1,0 +1,1656 @@
+{
+  "mode": "apply",
+  "at": "2026-11-10T00:32:36.942Z",
+  "perCollection": {
+    "pages": {
+      "docs": 30,
+      "withRefs": 2,
+      "refs": 24
+    },
+    "services": {
+      "docs": 4,
+      "withRefs": 4,
+      "refs": 42
+    },
+    "projects": {
+      "docs": 11,
+      "withRefs": 11,
+      "refs": 144
+    },
+    "articles": {
+      "docs": 9,
+      "withRefs": 9,
+      "refs": 18
+    },
+    "galleryItems": {
+      "docs": 8,
+      "withRefs": 8,
+      "refs": 8
+    },
+    "siteConfig": {
+      "docs": 1,
+      "withRefs": 0,
+      "refs": 0
+    },
+    "navigation": {
+      "docs": 2,
+      "withRefs": 0,
+      "refs": 0
+    },
+    "faqs": {
+      "docs": 5,
+      "withRefs": 0,
+      "refs": 0
+    },
+    "testimonials": {
+      "docs": 2,
+      "withRefs": 0,
+      "refs": 0
+    },
+    "productContent": {
+      "docs": 97,
+      "withRefs": 0,
+      "refs": 0
+    },
+    "pageRevisions": {
+      "docs": 82,
+      "withRefs": 0,
+      "refs": 0
+    }
+  },
+  "uniqueImages": 122,
+  "ok": 122,
+  "failed": 0,
+  "sourceBytesDownloaded": 138887201,
+  "docsChanged": 34,
+  "refsChanged": 236,
+  "firebaseRefsRemaining": 0,
+  "images": [
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764522797991_0_Hero%20-%20Maremegmeng.webp?alt=media&token=1128243b-c3c8-49a9-b775-b6a3eb6efc69",
+      "usedBy": [
+        "pages/home"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "0c4c30fa858ff3e861514de852206365f9b2ceab52d4647384919edb7931b2c4",
+      "sourceBytes": 555642,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/hero-images-hero_1764522797991_0_Hero---Maremegmeng-WI2ZWZjNjk.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764522797992_1_hero_1763132715280_0_IMG_5694.webp?alt=media&token=b906427a-a1bb-45fe-9b17-c8fb8cbfca7c",
+      "usedBy": [
+        "pages/home"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "dc3750ad318b829e8ccc7256484922a0bb06f9aa31a042146cdc0da38b21d4e3",
+      "sourceBytes": 542854,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/ro-images-hero_1764522797992_1_hero_1763132715280_0_IMG_5694-hjYmZjYTdj.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764522797992_2_hero_1763133618634_0_unnamed%20(3).webp?alt=media&token=38c11520-3ef3-4fc0-a710-f5f06949f8a3",
+      "usedBy": [
+        "pages/home"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "df634f06aa041e887a2c8893fdf9e4f646262936515a82bd7a4cb96af71b154d",
+      "sourceBytes": 209994,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/-images-hero_1764522797992_2_hero_1763133618634_0_unnamed-3--jk0OWY4YTM.webp",
+      "width": 2000,
+      "height": 1125
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764522797992_3_hero_1763133618636_2_unnamed%20(1).webp?alt=media&token=94dbc47d-bd6f-4c95-a32f-bbd8f42cf11f",
+      "usedBy": [
+        "pages/home"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "e34f23e963c6d237ea4ee51d611bf44b867a6132a8009dca21371881037ed835",
+      "sourceBytes": 716208,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/-images-hero_1764522797992_3_hero_1763133618636_2_unnamed-1--jQyY2YxMWY.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/hero-images%2Fhero_1764524403423_0_ezgif-50ffef9f5367ce88.webp?alt=media&token=a8457a34-35af-4762-877f-f69f4b54fe83",
+      "usedBy": [
+        "pages/home"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "6ecca98ffb5eb064f9fee33101156b9647550253098c4f80879957cdf79d6ca5",
+      "sourceBytes": 963284,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/hero-images-hero_1764524403423_0_ezgif-50ffef9f5367ce88-GI1NGZlODM.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fabout-greenscape-1766038905832.jpeg?alt=media&token=0e73108e-5374-4bae-b422-5f0632e38baa",
+      "usedBy": [
+        "pages/about"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "4258708bd5d37a891bb50675c9d5617e3f5f47dbe3465fd2c26c4d5e854f6389",
+      "sourceBytes": 439334,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/page-covers-about-greenscape-1766038905832-MmUzOGJhYQ.webp",
+      "width": 1498,
+      "height": 672
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/about-greenscape-sections%2Fwho-we-are-1763712118486.jpg?alt=media&token=22bf7276-3ad9-4cad-99ec-4da5a7335f52",
+      "usedBy": [
+        "pages/about"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "b8d05c7a29aaa5ab7fa5475cb2a77e73f1834b68c23b6a86ecf972925f891357",
+      "sourceBytes": 751859,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/about-greenscape-sections-who-we-are-1763712118486-TczMzVmNTI.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/about-greenscape-sections%2Fphoto-1763881922198-1763882611243.png?alt=media&token=a0182f7e-3c5f-4470-a756-b2a27ae3ca81",
+      "usedBy": [
+        "pages/about"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "ad064221029e472ba31c1bb57f515449f3cfe5f3ca93d36273bc3a3ca64f9c41",
+      "sourceBytes": 756114,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/about-greenscape-sections-photo-1763881922198-1763882611243-2FlM2NhODE.webp",
+      "width": 2000,
+      "height": 1414
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/about-greenscape-sections%2Fsection-1763717645371-1763717709253.jpg?alt=media&token=e7562f69-63ff-497d-b0a7-4adb2d677e28",
+      "usedBy": [
+        "pages/about"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "ad73942c5226bf9be2e522feb7b06dae1161bec432e7d80ca0427da65573486c",
+      "sourceBytes": 486427,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/bout-greenscape-sections-section-1763717645371-1763717709253-ZDY3N2UyOA.webp",
+      "width": 2000,
+      "height": 1230
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/about-greenscape-sections%2Fsection-1763716049614-1763716211160.jpg?alt=media&token=b20b24ae-b557-473d-bd46-adce00809cb7",
+      "usedBy": [
+        "pages/about"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "ebe2ade803e373b3bc765cb4f8a851f07effbd170a9b1326dc4f7ddeee726ba7",
+      "sourceBytes": 1250306,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/bout-greenscape-sections-section-1763716049614-1763716211160-MDgwOWNiNw.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/about-greenscape-sections%2Fsection-1763717824441-1763717942186.jpg?alt=media&token=456ea52c-e6ed-4ed3-90d5-dd80fbaf3549",
+      "usedBy": [
+        "pages/about"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "b6cd0ee65d0f8b8a2d0475d07e73bece376d709799c868696788d38a8f5308e9",
+      "sourceBytes": 1566049,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/bout-greenscape-sections-section-1763717824441-1763717942186-YmFmMzU0OQ.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/about-greenscape-sections%2Fsection-1763717944911-1764839515891.webp?alt=media&token=f9f28a0d-b839-4bf1-b69b-4631d1a069e2",
+      "usedBy": [
+        "pages/about"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "f958642097360ea0cff2c69dbf6196db10f128f5025af50ce6ea4ea470fe363f",
+      "sourceBytes": 555132,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/bout-greenscape-sections-section-1763717944911-1764839515891-DFhMDY5ZTI.webp",
+      "width": 1502,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fservice-garden-design-1764925409255.webp?alt=media&token=8e526860-bf23-4737-8ad3-6ef5e2d11ba7",
+      "usedBy": [
+        "services/garden-design"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "de93f5f81c7e573b470bb2642bc4cd51edbe7a1af7ee98a2773916a7613df4ca",
+      "sourceBytes": 490076,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/page-covers-service-garden-design-1764925409255-UyZDExYmE3.webp",
+      "width": 1284,
+      "height": 852
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fbefore_1766996927454_IMG_5670.jpeg?alt=media&token=7922785a-4eaa-4e79-a689-96f8339f7e8c",
+      "usedBy": [
+        "services/garden-design"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "0bfb2bf65e09661d66d5985c48221127d5bd35e6ca0b711ee9989e28710237d4",
+      "sourceBytes": 1925800,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/garden-design-before_1766996927454_IMG_5670-zM5ZjdlOGM.webp",
+      "width": 1414,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fafter_1766997127142_IMG_1803.jpeg?alt=media&token=78484655-c6c1-4769-9b98-c238907b5814",
+      "usedBy": [
+        "services/garden-design"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "3bbf9024f2ab152e6427250659857d10726f53c5563ff152807fff079baa0c88",
+      "sourceBytes": 1647475,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/garden-design-after_1766997127142_IMG_1803-MDdiNTgxNA.webp",
+      "width": 1881,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fbefore_1766998066478_IMG_3039.jpeg?alt=media&token=4653f046-d1fa-4d22-9829-873e95e8aa0a",
+      "usedBy": [
+        "services/garden-design"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "a12acef55377261e162344464a7b02b7cbc119b9c8c7d6aeaf3abbf8c23b18e4",
+      "sourceBytes": 2608562,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/garden-design-before_1766998066478_IMG_3039-TVlOGFhMGE.webp",
+      "width": 2000,
+      "height": 1591
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fafter_1766997852016_IMG_7350.jpeg?alt=media&token=f79dc1b2-8c36-4c63-91a6-e305affce557",
+      "usedBy": [
+        "services/garden-design"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "9797cef3eebdfda08e3206cfc942f0a1ed68968882f0bdec1ea08fdd33a49c47",
+      "sourceBytes": 2921908,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/garden-design-after_1766997852016_IMG_7350-ZmZjZTU1Nw.webp",
+      "width": 1875,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fbefore_1765537094061_IMG_5043.jpeg?alt=media&token=7e67c2a1-88d8-46e6-a13a-c8b68dfabf0c",
+      "usedBy": [
+        "services/garden-design"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "cae177c3afc091e58b301b795edd4e4e214ea4109260a3e953629918f56c060a",
+      "sourceBytes": 2075931,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/garden-design-before_1765537094061_IMG_5043-GRmYWJmMGM.webp",
+      "width": 1651,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fafter_1765539878080_9b1b299b-8407-45a8-9830-63ed0286df51.jpg?alt=media&token=ba346415-dd23-4bab-b320-38e35b5af7db",
+      "usedBy": [
+        "services/garden-design"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "07315d144eed79d44543a7ae24c6994aa5bf2ef842e16f1e3aa13f647066894c",
+      "sourceBytes": 288915,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/ign-after_1765539878080_9b1b299b-8407-45a8-9830-63ed0286df51-YjVhZjdkYg.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fbefore_1765540579233_7802c191-45a6-4c4e-a155-1dfe1de70077.jpg?alt=media&token=6d3ccf61-fb00-4df6-a747-a904eefe01f2",
+      "usedBy": [
+        "services/garden-design"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "b8d5bb62391701668db088753248326ae2b24ce1ccdaf5e0dee1bb394a82d990",
+      "sourceBytes": 106495,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/gn-before_1765540579233_7802c191-45a6-4c4e-a155-1dfe1de70077-WVmZTAxZjI.webp",
+      "width": 960,
+      "height": 720
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fafter_1765540581016_eb255fed-1e8c-4727-bb08-06402affdf95.jpg?alt=media&token=112c167c-da97-4dc5-bd3d-7c2900e8d356",
+      "usedBy": [
+        "services/garden-design"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "7ce83e5a8df722b46ea19ede8bdb182cd15013dae4146edd7bf5266c09a2b5bd",
+      "sourceBytes": 309603,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/ign-after_1765540581016_eb255fed-1e8c-4727-bb08-06402affdf95-MGU4ZDM1Ng.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fbefore_1765540149118_5797a1c5-5b52-4b0d-8418-08914580373b.jpg?alt=media&token=848afd9e-2d12-4656-9911-ff89762c41e5",
+      "usedBy": [
+        "services/garden-design"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "1731f0f1d692f86f265510fbb989fe125e3baa3bc60bc691229e85d00debbf22",
+      "sourceBytes": 321531,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/gn-before_1765540149118_5797a1c5-5b52-4b0d-8418-08914580373b-zYyYzQxZTU.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-design%2Fafter_1765540150946_34004730-d719-4e3e-a9e4-892938bb1ad1.jpg?alt=media&token=6ad4be61-e143-49ea-b3af-2aa33b751e46",
+      "usedBy": [
+        "services/garden-design"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "6749fa675cdd78ead87d4be2029245143c33bd205e4b07e0e3e009474552fd36",
+      "sourceBytes": 375886,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/ign-after_1765540150946_34004730-d719-4e3e-a9e4-892938bb1ad1-Yjc1MWU0Ng.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fservice-garden-essentials-1764925515467.webp?alt=media&token=a951cc1b-a309-4e1a-9395-82edc2e129c0",
+      "usedBy": [
+        "services/garden-essentials"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "4305f65c03049946f60ae90b83def3acd5e9b9bf6b1c9414ca77b5346ed0ca78",
+      "sourceBytes": 659616,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/page-covers-service-garden-essentials-1764925515467-MmUxMjljMA.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fservice-garden-maintenance-1764925654965.webp?alt=media&token=a39dd074-511e-494c-b317-7fdfd2658541",
+      "usedBy": [
+        "services/garden-maintenance"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "61e1715debb0a36c5ba6569be9705d65274c66cb885f1d4d3ac88357ac2b87ff",
+      "sourceBytes": 545240,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/page-covers-service-garden-maintenance-1764925654965-DI2NTg1NDE.webp",
+      "width": 1374,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/maintenance%2Flite_1765541535410_7802c191-45a6-4c4e-a155-1dfe1de70077.jpg?alt=media&token=e56e6ec0-7b6c-4839-86e0-3a3fdf2b75f4",
+      "usedBy": [
+        "services/garden-maintenance"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "b8d5bb62391701668db088753248326ae2b24ce1ccdaf5e0dee1bb394a82d990",
+      "sourceBytes": 106495,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/ance-lite_1765541535410_7802c191-45a6-4c4e-a155-1dfe1de70077-ZjJiNzVmNA.webp",
+      "width": 960,
+      "height": 720
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/maintenance%2Fstandard_1765541525253_1b1bd971-47bc-4e76-97e3-2e9ec6e1b690.jpg?alt=media&token=13407f12-85fe-4b9e-bc59-38f487287214",
+      "usedBy": [
+        "services/garden-maintenance"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "7aace6646690748045c40d4efaadcca613c197829c79ee9709185b10dbb39f98",
+      "sourceBytes": 314886,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/-standard_1765541525253_1b1bd971-47bc-4e76-97e3-2e9ec6e1b690-DcyODcyMTQ.webp",
+      "width": 1652,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/maintenance%2Fpremium_1765541263293_34004730-d719-4e3e-a9e4-892938bb1ad1.jpg?alt=media&token=85688d28-7df6-4766-b02b-e037a347229e",
+      "usedBy": [
+        "services/garden-maintenance"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "6749fa675cdd78ead87d4be2029245143c33bd205e4b07e0e3e009474552fd36",
+      "sourceBytes": 375886,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/e-premium_1765541263293_34004730-d719-4e3e-a9e4-892938bb1ad1-MzQ3MjI5ZQ.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/page-covers%2Fservice-landscaping-1764925623903.webp?alt=media&token=6fc08d2d-f9ad-4f42-98ca-9fc3f5c944be",
+      "usedBy": [
+        "services/landscaping"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "6ca4d5c6c218705b021b64d5f3c9e5a7d9d3398f5d61f8201eb4224bed3fdbb6",
+      "sourceBytes": 550626,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/page-covers-service-landscaping-1764925623903-NWM5NDRiZQ.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/landscaping%2F1767859905390_473403995_605658062173650_935370825745676784_n.webp?alt=media&token=eca8547d-dbfc-4a30-a949-505809bc76e9",
+      "usedBy": [
+        "services/landscaping"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "2c09debf83c0d9dde59f4e88f04560402a8eb0b149e4022440d57656e1b67099",
+      "sourceBytes": 944910,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/1767859905390_473403995_605658062173650_935370825745676784_n-OWJjNzZlOQ.webp",
+      "width": 1064,
+      "height": 798
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/landscaping%2F1767858554309_1765968873427_IMG_7083.webp?alt=media&token=a0de39e7-74b8-4bd0-aa2f-efc298d450db",
+      "usedBy": [
+        "services/landscaping"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "f287e452c3f64e3318650fb727ae4ca0e9119c692f1e307e3abac521d46270e5",
+      "sourceBytes": 739880,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/landscaping-1767858554309_1765968873427_IMG_7083-OGQ0NTBkYg.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/landscaping%2F1767858644769_1765968989316_IMG_5816.webp?alt=media&token=de49bd44-69ea-4be9-bbe9-19da3c2773ec",
+      "usedBy": [
+        "services/landscaping"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "f3870b3fbeef7a72f7eb643b2ad2e09e5761e8d71f68bbbfb63dd09399536fc8",
+      "sourceBytes": 1246058,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/landscaping-1767858644769_1765968989316_IMG_5816-YzI3NzNlYw.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/landscaping%2F1767858702566_1765969362688_IMG_4226.webp?alt=media&token=8f3ac9e0-bb19-4515-b3b7-f53f9145c9a4",
+      "usedBy": [
+        "services/landscaping"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "78eed567f20c3083a8981c8ca07a16762c89a6f989534d632ad655f7894885e7",
+      "sourceBytes": 1096106,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/landscaping-1767858702566_1765969362688_IMG_4226-MTQ1YzlhNA.webp",
+      "width": 2000,
+      "height": 1745
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1768630328216_9B1DD2ED-3D5E-4BDE-AFA8-992E78202B42.webp?alt=media&token=69987642-a275-4944-991c-71c4d4d64513",
+      "usedBy": [
+        "projects/building-comfort-and-quality-at-home-a-balance-of-beauty-and-functionality"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "8370f980e9527b78d9aac0c2e1f5e26c1a2b7fe7c7fd899efebdfb650f93babf",
+      "sourceBytes": 355746,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1768630328216_9B1DD2ED-3D5E-4BDE-AFA8-992E78202B42-Q0ZDY0NTEz.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1768630348005_IMG_6075.webp?alt=media&token=3f615d41-ee08-42a7-90f0-2f853aa003ba",
+      "usedBy": [
+        "projects/building-comfort-and-quality-at-home-a-balance-of-beauty-and-functionality"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "9f4354794738f0a4bc2d0d7f886b011be7e4078ef1ba7f54626386c0a82c3049",
+      "sourceBytes": 911072,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1768630348005_IMG_6075-2FhMDAzYmE.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1768630353863_FBF68D10-2244-4B5F-9713-DB411D0811B8.webp?alt=media&token=c1bd7012-9f36-449e-b394-9644f9a6c235",
+      "usedBy": [
+        "projects/building-comfort-and-quality-at-home-a-balance-of-beauty-and-functionality"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "7c21bbf2760a9c2b3d038a47b20aada11c1ce4c21dd4ecd42b6b4ab6389766c6",
+      "sourceBytes": 919508,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1768630353863_FBF68D10-2244-4B5F-9713-DB411D0811B8-Y5YTZjMjM1.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1768630360314_73720BEE-2BFC-48AD-8F6C-02115FFC9131.webp?alt=media&token=24e7dbae-1477-48a7-93fa-ec42a9314f20",
+      "usedBy": [
+        "projects/building-comfort-and-quality-at-home-a-balance-of-beauty-and-functionality"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "878abd734d1964a0a2ee5ba613825cb613908fc3081550702b72051cc5bf9b62",
+      "sourceBytes": 969790,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1768630360314_73720BEE-2BFC-48AD-8F6C-02115FFC9131-E5MzE0ZjIw.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1768630366665_3C8DC51D-E5D7-4AC5-98E8-A2199A7C7D0E.webp?alt=media&token=bd928704-2642-4c79-967b-e71f31735a40",
+      "usedBy": [
+        "projects/building-comfort-and-quality-at-home-a-balance-of-beauty-and-functionality"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "551615530449183ba00482a9b757bbca2e238febef05e2b88865fd101af555da",
+      "sourceBytes": 734458,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1768630366665_3C8DC51D-E5D7-4AC5-98E8-A2199A7C7D0E-MxNzM1YTQw.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1768630372558_0B23C709-D32A-4D87-A027-81CFD147CA02.webp?alt=media&token=ed5fbe70-31a8-45d8-8851-4b7ece853b61",
+      "usedBy": [
+        "projects/building-comfort-and-quality-at-home-a-balance-of-beauty-and-functionality"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "f846a9832fc9158f410f1b8d0dc7bec6cfbbedc6f304f9896e5cc56b842505f4",
+      "sourceBytes": 964448,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1768630372558_0B23C709-D32A-4D87-A027-81CFD147CA02-NlODUzYjYx.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745511032_1763287684002_IMG_2705.webp?alt=media&token=c931940b-e2a0-4d9a-b899-0592a7c6b914",
+      "usedBy": [
+        "projects/lush-leaning-and-sustainable-transforming-a-beachside-paradise"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "d4dcca0fd686d35d114d83c458d333baa903c1101c5ddaf59e0e0f4293e7957c",
+      "sourceBytes": 569444,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1764745511032_1763287684002_IMG_2705-N2M2YjkxNA.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745516222_1763287987662_IMG_4408.webp?alt=media&token=d527db6f-97d0-4507-a930-c29a3802aa2b",
+      "usedBy": [
+        "projects/lush-leaning-and-sustainable-transforming-a-beachside-paradise"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "69a94e2a5cf063284ba9a722cba711f9e4f7cf02a1204010449f72ef21a472dc",
+      "sourceBytes": 672914,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1764745516222_1763287987662_IMG_4408-ODAyYWEyYg.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745522510_1763287996021_IMG_1945.webp?alt=media&token=b23f694f-31f2-40fe-bb92-61b17af05529",
+      "usedBy": [
+        "projects/lush-leaning-and-sustainable-transforming-a-beachside-paradise"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "ddf3f0a2e60399c2a60e2efae8e01552956ada98c3360974fb4a72ae2ae21181",
+      "sourceBytes": 698414,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1764745522510_1763287996021_IMG_1945-YWYwNTUyOQ.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745527756_1763288004173_IMG_8872.webp?alt=media&token=2e6fd29c-12f0-4e75-a89b-2cee33dbe4a6",
+      "usedBy": [
+        "projects/lush-leaning-and-sustainable-transforming-a-beachside-paradise"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "7809ba7f5c4e624961f71c5f8ce47a4e370636870c31bbd096dbd32cf927b1b8",
+      "sourceBytes": 603240,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1764745527756_1763288004173_IMG_8872-M2RiZTRhNg.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745533520_1763288353196_IMG_4924.webp?alt=media&token=cb24b6a6-1470-4a5d-8a6a-1bb585bcc5c5",
+      "usedBy": [
+        "projects/lush-leaning-and-sustainable-transforming-a-beachside-paradise"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "899b54a65790ff7e2a6f40b0d2c1c403c6084a3b1ba28edc04dad9099ee48e68",
+      "sourceBytes": 570680,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1764745533520_1763288353196_IMG_4924-NWJjYzVjNQ.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764745539287_1763288361148_B6B82973-0E1A-42E3-ADFD-6F9FC4B89044.webp?alt=media&token=1819711c-932e-4051-89c6-cde11ae8de2b",
+      "usedBy": [
+        "projects/lush-leaning-and-sustainable-transforming-a-beachside-paradise"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "29ac8aab07392a48a42c0d201e306a31b4335d49de3da7a667201c4bae6ce8b8",
+      "sourceBytes": 700690,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/745539287_1763288361148_B6B82973-0E1A-42E3-ADFD-6F9FC4B89044-WFlOGRlMmI.webp",
+      "width": 1600,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950229776_5D4CD83D-7403-44F5-8457-25D1A8872CC1_1_102_o.webp?alt=media&token=16a9b890-e3fc-410d-a364-634f743647e4",
+      "usedBy": [
+        "projects/designed-for-relaxation-a-tropical-landscape-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "e4991d1e8eeec03bf1b0dadc3ccb140077501733c3449757e538ed7a19140b4b",
+      "sourceBytes": 496140,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/s-1772950229776_5D4CD83D-7403-44F5-8457-25D1A8872CC1_1_102_o-zQzNjQ3ZTQ.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950235226_A9F49137-5AE9-47EF-B41E-8CFDADE1F41F_1_102_a.webp?alt=media&token=94de605d-c71a-4d16-ba81-4e1390582a17",
+      "usedBy": [
+        "projects/designed-for-relaxation-a-tropical-landscape-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "605563576dfe4e758a5c91b7a78990c667d43fc5520eeb22abd42cc6736a0af7",
+      "sourceBytes": 535024,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/s-1772950235226_A9F49137-5AE9-47EF-B41E-8CFDADE1F41F_1_102_a-TA1ODJhMTc.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950240762_5E39168D-216E-4761-AA9A-B31243C28229_1_102_a.webp?alt=media&token=27684a25-c020-479a-abc5-018b8d2a2725",
+      "usedBy": [
+        "projects/designed-for-relaxation-a-tropical-landscape-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "412180aed04cdb9787bc66e7145f6031897cbfc4cfc4acd9a90366addffcb225",
+      "sourceBytes": 482384,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/s-1772950240762_5E39168D-216E-4761-AA9A-B31243C28229_1_102_a-GQyYTI3MjU.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950246497_A93F47B5-106E-47EB-8879-9CBEC63DA86C_1_102_o.webp?alt=media&token=cd633af6-ced7-4290-83fb-fc1a0638bc45",
+      "usedBy": [
+        "projects/designed-for-relaxation-a-tropical-landscape-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "ee69a067cd61f6bfb2ccf4f5c1aa17039e33345471bffb991a5da7006ab3b20f",
+      "sourceBytes": 551152,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/s-1772950246497_A93F47B5-106E-47EB-8879-9CBEC63DA86C_1_102_o-DYzOGJjNDU.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950311423_C72E3CB8-162F-4DF1-B62B-4FF570192932_1_102_o.webp?alt=media&token=a3103bb8-a090-4da6-a0bd-58bd833f6871",
+      "usedBy": [
+        "projects/designed-for-relaxation-a-tropical-landscape-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "55d7e666b23b8c68265fe41107fafcbd1a56f11437c873baa228c38f42ed926e",
+      "sourceBytes": 570324,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/s-1772950311423_C72E3CB8-162F-4DF1-B62B-4FF570192932_1_102_o-DMzZjY4NzE.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950316643_634A1C71-A4D1-4D23-8E94-0FD56F4A9C0B_1_102_o.webp?alt=media&token=bd101b57-4f4b-49ce-9029-a02999544040",
+      "usedBy": [
+        "projects/designed-for-relaxation-a-tropical-landscape-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "08a2745de191d5886e34d9f4d49121b1acdce6bca08e37f80dd73e936025b990",
+      "sourceBytes": 474778,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/s-1772950316643_634A1C71-A4D1-4D23-8E94-0FD56F4A9C0B_1_102_o-Tk1NDQwNDA.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950322015_434439C5-AD7C-469E-84AE-1C0B83A3DAC9_1_102_a.webp?alt=media&token=0f3da91e-a6de-494a-8ea6-40c6afafe666",
+      "usedBy": [
+        "projects/designed-for-relaxation-a-tropical-landscape-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "decd6b3a98ff3fb3fcc9b01e3922aec47290a597617c4d5673b8ccba7bfa0526",
+      "sourceBytes": 482302,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/s-1772950322015_434439C5-AD7C-469E-84AE-1C0B83A3DAC9_1_102_a-WZhZmU2NjY.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950327496_98BCDCF9-1124-47E6-8A98-F93D542F7246_1_102_a.webp?alt=media&token=63e0f840-c48e-4806-b96b-51b722fd8baf",
+      "usedBy": [
+        "projects/designed-for-relaxation-a-tropical-landscape-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "48e4548227966a969e0f69adb049b86136e114cb755a15e9de9d4de244ff49c5",
+      "sourceBytes": 426396,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/s-1772950327496_98BCDCF9-1124-47E6-8A98-F93D542F7246_1_102_a-jJmZDhiYWY.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950333027_C1F99995-E315-41AD-A096-A4C8F462EF9C_1_102_a.webp?alt=media&token=3f7877c1-885d-4673-9bb7-c1890af7c1ed",
+      "usedBy": [
+        "projects/designed-for-relaxation-a-tropical-landscape-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "50cee51c095e41afa6cc6860d0e5d0188a5015fb9eb1165241e5494bc28e94d7",
+      "sourceBytes": 515976,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/s-1772950333027_C1F99995-E315-41AD-A096-A4C8F462EF9C_1_102_a-GFmN2MxZWQ.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950338353_A2420602-1814-4315-87BD-82CE236C5F2D_1_102_a.webp?alt=media&token=4ad4fbbf-7174-45a5-81a2-2cddefe912f5",
+      "usedBy": [
+        "projects/designed-for-relaxation-a-tropical-landscape-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "a219f548969c222659f6486eafb34efc8b804419f5892bb4c11cd06b72c46f11",
+      "sourceBytes": 552148,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/s-1772950338353_A2420602-1814-4315-87BD-82CE236C5F2D_1_102_a-WZlOTEyZjU.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950343676_468E3DC0-FD76-4F40-968E-FE08AFB18E21_1_102_a.webp?alt=media&token=0d935dd1-824f-4221-9f74-8ff4c12488f5",
+      "usedBy": [
+        "projects/designed-for-relaxation-a-tropical-landscape-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "954072b522b06b2ffdebe44bd3d5480c3cf540cad9add06a678fb69330be3493",
+      "sourceBytes": 484702,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/s-1772950343676_468E3DC0-FD76-4F40-968E-FE08AFB18E21_1_102_a-zEyNDg4ZjU.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1772950349105_9AD7D711-2B22-485E-8F07-59630FC3F65D_1_102_a.webp?alt=media&token=2fdce834-2d51-46a7-b6ab-54462f412dba",
+      "usedBy": [
+        "projects/designed-for-relaxation-a-tropical-landscape-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "a9e032189d8f238afdf65dec02f2a87d89895d9e1811f4e02462ae5b33bd5684",
+      "sourceBytes": 583360,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/s-1772950349105_9AD7D711-2B22-485E-8F07-59630FC3F65D_1_102_a-mY0MTJkYmE.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340678080_403bb52068257bf98e91925bc990ec1b.jpeg?alt=media&token=e59110dc-75cf-4e4a-8462-c764038ea98a",
+      "usedBy": [
+        "projects/sustainable-landscaping-in-action"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "9b0c7db6b6d6315f8958d1e21f9a8afaac39d5c0b15a40d28f19caa1c0efce23",
+      "sourceBytes": 906019,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1777340678080_403bb52068257bf98e91925bc990ec1b-DM4ZWE5OGE.webp",
+      "width": 2000,
+      "height": 1125
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340787006_2e4899129f598800ebfb5d9f137c6c15.jpeg?alt=media&token=22356fcf-327e-4710-aff0-3f05ae365e48",
+      "usedBy": [
+        "projects/sustainable-landscaping-in-action"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "b10b5af0a872a2d01b11ee96ed764f1e5e665d7afe05d4a1e172db17aac6ad91",
+      "sourceBytes": 825084,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1777340787006_2e4899129f598800ebfb5d9f137c6c15-WUzNjVlNDg.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340794441_5794d38d798fb5d81ec4a4964e16612b.jpeg?alt=media&token=22a91386-a82f-41d1-a768-438ce4a5f4a6",
+      "usedBy": [
+        "projects/sustainable-landscaping-in-action"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "5b73a2be624229b06b6d5e56da476a18ad4bd3a029e942e83e23aa8b56fb2714",
+      "sourceBytes": 885792,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1777340794441_5794d38d798fb5d81ec4a4964e16612b-TRhNWY0YTY.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340801915_0f1a80702118363d66440db414d48139.jpeg?alt=media&token=5ebc13b2-5422-4e41-8de5-10ba60897cba",
+      "usedBy": [
+        "projects/sustainable-landscaping-in-action"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "d0d274eeb2ecb5da5d3d03584a5c2e05b08377ffa76863a26752cb3726131407",
+      "sourceBytes": 963946,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1777340801915_0f1a80702118363d66440db414d48139-jA4OTdjYmE.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340813860_5ebb2f1aaf41bdcc3179b6fad2bc5c1c.jpeg?alt=media&token=8d5c422f-e721-4c11-80de-bd5d0ddab69a",
+      "usedBy": [
+        "projects/sustainable-landscaping-in-action"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "f5321d7e04439c430520639bcfa4a1eb8d5cbf4e2213b7563c2d58ed3cdd8b14",
+      "sourceBytes": 739987,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1777340813860_5ebb2f1aaf41bdcc3179b6fad2bc5c1c-GRkYWI2OWE.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340819910_4661bc67ee58d5dac71c99f365e1ef59.jpeg?alt=media&token=d5bafda3-befa-41a7-9535-bb4b78fd91d0",
+      "usedBy": [
+        "projects/sustainable-landscaping-in-action"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "c6f2623a92b69a414a3d35a631c12ebbc66320408d0c712109b6e1e72b1bf6b0",
+      "sourceBytes": 619606,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1777340819910_4661bc67ee58d5dac71c99f365e1ef59-zhmZDkxZDA.webp",
+      "width": 1125,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340826083_63aa7630d7208e73a8306f94393af4e2.jpeg?alt=media&token=12e255b7-0910-4d55-ab9b-e5e69a591aba",
+      "usedBy": [
+        "projects/sustainable-landscaping-in-action"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "cd6fd36ff48fe2749e8d57baf36d6b30e96882298b7cb121dcbf28d13190f86f",
+      "sourceBytes": 982831,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1777340826083_63aa7630d7208e73a8306f94393af4e2-WE1OTFhYmE.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340833933_f6f67d6be44cb9abb0d6b4635b621d2c.jpeg?alt=media&token=908c083d-311d-484d-91b6-fd6f6100e8c2",
+      "usedBy": [
+        "projects/sustainable-landscaping-in-action"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "6e2014931723388598a4d32c5e4e2536551bd3575f9e5981d502b9f881c3419d",
+      "sourceBytes": 670582,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1777340833933_f6f67d6be44cb9abb0d6b4635b621d2c-jEwMGU4YzI.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340840170_82616d0cdf8333a20f9c8d4ef1bc2e1d.jpeg?alt=media&token=6461cdcd-ead6-4f04-97df-c58e4065b3da",
+      "usedBy": [
+        "projects/sustainable-landscaping-in-action"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "37be19685c2caff8c89683b0bdc7b9f18c7a757756249861c6d600f2c9b45f14",
+      "sourceBytes": 740641,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1777340840170_82616d0cdf8333a20f9c8d4ef1bc2e1d-DA2NWIzZGE.webp",
+      "width": 1125,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340846394_4904a7bc15bcd0946a1e0e8b7327dd93.jpeg?alt=media&token=95c9b552-fd2b-4faa-805c-51be628feee1",
+      "usedBy": [
+        "projects/sustainable-landscaping-in-action"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "5f8d44d6b345007989cc46940b3802e4598dfa81e008c8ccec82e5958615f88e",
+      "sourceBytes": 990780,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1777340846394_4904a7bc15bcd0946a1e0e8b7327dd93-jI4ZmVlZTE.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340854463_5fae7d2237963ad8e92f6765b4b10eb1.jpeg?alt=media&token=b1063def-da58-43a5-b506-7e651e344aca",
+      "usedBy": [
+        "projects/sustainable-landscaping-in-action"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "cd164d1308d45d194a3ad6c376ea1ff005a62165c52788d32bb91893d2101354",
+      "sourceBytes": 421986,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1777340854463_5fae7d2237963ad8e92f6765b4b10eb1-WUzNDRhY2E.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340860485_ea003316ec642ec74291316328a0e749.jpeg?alt=media&token=6fff3528-3ed4-4011-b0ee-4022650e0c79",
+      "usedBy": [
+        "projects/sustainable-landscaping-in-action"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "c0c94f1f2acf4b45fa06599195bb7697ccae260b9563aeed53b657c80308ea0c",
+      "sourceBytes": 699340,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1777340860485_ea003316ec642ec74291316328a0e749-jUwZTBjNzk.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1777340866942_189dbe30feab627ed2695152b3b9fe81.jpeg?alt=media&token=bc68323f-f41b-47d3-b08c-b319848e2c9f",
+      "usedBy": [
+        "projects/sustainable-landscaping-in-action"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "c298f98e079cba6ca492e96451b0fca1e87e5e67fffd1ddb3d8b1e5357b13005",
+      "sourceBytes": 978311,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1777340866942_189dbe30feab627ed2695152b3b9fe81-DQ4ZTJjOWY.webp",
+      "width": 1125,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763214482491_11E19AA4-5DAF-415D-8D36-FD35A4787ADF.JPG?alt=media&token=54f272a6-a699-4764-aec1-28f20767a256",
+      "usedBy": [
+        "projects/a-lush-escape-at-home-fresh-take-on-modern-tropical-gardens"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "f905af668d823e6f918f4d315d097f4b4453c1c45f70d4626a262150c38752dd",
+      "sourceBytes": 659829,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1763214482491_11E19AA4-5DAF-415D-8D36-FD35A4787ADF-Dc2N2EyNTY.webp",
+      "width": 1440,
+      "height": 1080
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763214489408_IMG_5715.jpeg?alt=media&token=170acae0-68d2-4991-aaaf-f0748e062a76",
+      "usedBy": [
+        "projects/a-lush-escape-at-home-fresh-take-on-modern-tropical-gardens"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "376be276969289216832b194eb1312d45ad9ce1412cee1ecab520ef03339cc4e",
+      "sourceBytes": 4858253,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1763214489408_IMG_5715-GUwNjJhNzY.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763371472553_IMG_5735.jpeg?alt=media&token=1740fd6d-0365-40f5-881e-9facf3fc0e6a",
+      "usedBy": [
+        "projects/a-lush-escape-at-home-fresh-take-on-modern-tropical-gardens"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "50ed7cf49c602c1c89d018d1cabef1ec8a560d02f2c0fe8277ce1a39b02562d2",
+      "sourceBytes": 2959897,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1763371472553_IMG_5735-jNmYzBlNmE.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763371479200_IMG_5737.jpeg?alt=media&token=2c712d67-8da7-4b18-b22b-d2293bcc5488",
+      "usedBy": [
+        "projects/a-lush-escape-at-home-fresh-take-on-modern-tropical-gardens"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "65c1ac6a8fed63b75bfe6f9a45c2cb182428d1168bacbba7eed07d1ad34b465e",
+      "sourceBytes": 4713389,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1763371479200_IMG_5737-2JjYzU0ODg.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763371486625_IMG_5742.jpeg?alt=media&token=a8eac45d-0845-462a-8f8f-736277410ccc",
+      "usedBy": [
+        "projects/a-lush-escape-at-home-fresh-take-on-modern-tropical-gardens"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "ebf66327c49e2c3d07f9dbbaf65305908dfdb15447fe09f3cf8a422d709f1487",
+      "sourceBytes": 5036319,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1763371486625_IMG_5742-zc0MTBjY2M.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763371494538_IMG_5744.jpeg?alt=media&token=65dd1c5a-8fcf-44fd-b422-6b9e34d9134d",
+      "usedBy": [
+        "projects/a-lush-escape-at-home-fresh-take-on-modern-tropical-gardens"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "bcf174fa4be9eb0e389f9199aec92482b1821fee85a8b48024b94b089ac676ec",
+      "sourceBytes": 4088424,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1763371494538_IMG_5744-zRkOTEzNGQ.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763254340183_69D4537F-62BB-4722-9433-8FC518265771.JPG?alt=media&token=4e8d7b62-c731-48a2-ab0b-c280c4aac009",
+      "usedBy": [
+        "projects/tropical-charm-and-coastal-calm-the-islands-hidden-gem"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "a3830fb363107bd85ea99d1753ccc662cf7e1e789f9039e9b98caf608edb9721",
+      "sourceBytes": 611989,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1763254340183_69D4537F-62BB-4722-9433-8FC518265771-zRhYWMwMDk.webp",
+      "width": 1440,
+      "height": 1800
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763254344706_2285FBAB-D8E9-4175-8783-73436F15B94F.JPG?alt=media&token=cba0a2b5-54bb-4f41-ac05-53ed57c05e11",
+      "usedBy": [
+        "projects/tropical-charm-and-coastal-calm-the-islands-hidden-gem"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "47cc6949f2a178fe8c640e947f021be6648f834f9ef277908c615d72ba17b96a",
+      "sourceBytes": 702826,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1763254344706_2285FBAB-D8E9-4175-8783-73436F15B94F-TdjMDVlMTE.webp",
+      "width": 1440,
+      "height": 1800
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763254356041_8BB5A175-4FAB-40B4-9FA2-F6DE2948E97A.JPG?alt=media&token=523a3e9f-a452-46b5-8596-ae6d0a79ebf2",
+      "usedBy": [
+        "projects/tropical-charm-and-coastal-calm-the-islands-hidden-gem"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "be393c46e9650f59e98c7e4bb4009cc57191840ff1f68263737549650d2b5d2a",
+      "sourceBytes": 795772,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1763254356041_8BB5A175-4FAB-40B4-9FA2-F6DE2948E97A-GE3OWViZjI.webp",
+      "width": 1440,
+      "height": 1800
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769925893763_IMG_6385.webp?alt=media&token=b7491f9d-b3d4-4320-a84a-e6c555f0ee1b",
+      "usedBy": [
+        "projects/more-than-a-cafe-where-nature-comfort-and-everyday-moments-meet"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "1faf8713ff3bfb7b2e91568782638adc107af3742f8d54832ee74c44faaa0047",
+      "sourceBytes": 751456,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1769925893763_IMG_6385-TVmMGVlMWI.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769926924876_IMG_2676.webp?alt=media&token=4cbb7436-2427-4bd1-8320-9efcf4f6fe42",
+      "usedBy": [
+        "projects/more-than-a-cafe-where-nature-comfort-and-everyday-moments-meet"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "78e89cf4a1ebabb21746f4503bb17d329dca1431f66a93fcb786471d2d0ec2d3",
+      "sourceBytes": 517464,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1769926924876_IMG_2676-jRmNmZlNDI.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769926931204_IMG_2677.webp?alt=media&token=13332240-2cae-4bab-b86c-052729b6c419",
+      "usedBy": [
+        "projects/more-than-a-cafe-where-nature-comfort-and-everyday-moments-meet"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "e9f71aae538e23ae3f1ff419a5064f510e07f01db9b52af252a9c1b91e264507",
+      "sourceBytes": 563866,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1769926931204_IMG_2677-jliNmM0MTk.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769927090414_IMG_2672.webp?alt=media&token=1091aa26-7aaa-4da3-90db-4b5396427067",
+      "usedBy": [
+        "projects/more-than-a-cafe-where-nature-comfort-and-everyday-moments-meet"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "0bef7ba0d22d5b2312ea64552cb50effef3721e1e800d1454f78580bd37769c9",
+      "sourceBytes": 639830,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1769927090414_IMG_2672-TY0MjcwNjc.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769927119762_IMG_2674.webp?alt=media&token=ffc86ec2-8add-4d72-aa48-00f4cdf5a973",
+      "usedBy": [
+        "projects/more-than-a-cafe-where-nature-comfort-and-everyday-moments-meet"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "d6f501ef30130686d70fe344c9f90a2a78c824339fc2ec0a218bb2775daa62cd",
+      "sourceBytes": 685110,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1769927119762_IMG_2674-2RmNWE5NzM.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769927125261_IMG_6417.webp?alt=media&token=fadac08d-8b02-420a-a8a2-6f5b78afd7e2",
+      "usedBy": [
+        "projects/more-than-a-cafe-where-nature-comfort-and-everyday-moments-meet"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "258442fdb535d2a9eac686c82fe718677690075e50683d17ad999d1d5b64a801",
+      "sourceBytes": 737870,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1769927125261_IMG_6417-zhhZmQ3ZTI.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769927131300_IMG_2685.webp?alt=media&token=eb5b5ca5-35a2-495a-801c-9416e28d72ef",
+      "usedBy": [
+        "projects/more-than-a-cafe-where-nature-comfort-and-everyday-moments-meet"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "945f2590a410e3f0c862980dc9c54a1792199cb7611a8bfa62a2b2f2319517d2",
+      "sourceBytes": 534974,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1769927131300_IMG_2685-TI4ZDcyZWY.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769927136720_IMG_6389.webp?alt=media&token=0d7a0935-30ec-4eb1-ba06-35d455d2489a",
+      "usedBy": [
+        "projects/more-than-a-cafe-where-nature-comfort-and-everyday-moments-meet"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "29d80b3fcc171e42273fab9de8f4273bc5d885940273b5dfe6fd1f18bcccaaa4",
+      "sourceBytes": 541834,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1769927136720_IMG_6389-TVkMjQ4OWE.webp",
+      "width": 1395,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1769927142558_IMG_1069.webp?alt=media&token=609b5b93-e3f0-4bb3-9c28-59a1b94e0410",
+      "usedBy": [
+        "projects/more-than-a-cafe-where-nature-comfort-and-everyday-moments-meet"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "ad69b8ff4147a7ca50704986cf6ebeff57d68aba7df559f55cbdafbebd6dc732",
+      "sourceBytes": 748682,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1769927142558_IMG_1069-jk0ZTA0MTA.webp",
+      "width": 686,
+      "height": 813
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744033431_1763360561816_IMG_7933.webp?alt=media&token=0bea3392-3f05-473a-9288-40562a6845df",
+      "usedBy": [
+        "projects/reviving-a-botanical-haven-a-garden-of-rare-treasures"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "4426d7fa96f20172eaf54612aa10dda7e9e40fcdebe1d9965bffaa71d161fa61",
+      "sourceBytes": 745400,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1764744033431_1763360561816_IMG_7933-YTY4NDVkZg.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744067143_1763360578718_IMG_2451.webp?alt=media&token=4c2aa2c7-667e-4c86-bc7a-b2cfa8c7db2f",
+      "usedBy": [
+        "projects/reviving-a-botanical-haven-a-garden-of-rare-treasures"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "9363fc71eaf438b07a482420d1c6d538b894a41e1d55a583ae195d3c79d1b5b9",
+      "sourceBytes": 314696,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1764744067143_1763360578718_IMG_2451-OGM3ZGIyZg.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744071139_1763360586903_IMG_6312.webp?alt=media&token=4a97ea7d-d914-4706-9ba0-323239b813ae",
+      "usedBy": [
+        "projects/reviving-a-botanical-haven-a-garden-of-rare-treasures"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "9193bc4efba8df2a1a04f851d32a75782f51b2d6cce539ddb2aacbf1be84e2b0",
+      "sourceBytes": 772020,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1764744071139_1763360586903_IMG_6312-OWI4MTNhZQ.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744074972_1763360597449_IMG_5505.webp?alt=media&token=ef7ca0ca-9095-42c0-90b5-62d77ad39d1f",
+      "usedBy": [
+        "projects/reviving-a-botanical-haven-a-garden-of-rare-treasures"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "48cb0e4476ced1ca85b24154077b9d12ec7cb978952a293bdf96b0223b74ce5d",
+      "sourceBytes": 745736,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1764744074972_1763360597449_IMG_5505-YWQzOWQxZg.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763288851897_IMG_9739.jpeg?alt=media&token=74e08f3c-e7e1-4140-9c49-f32318b973a9",
+      "usedBy": [
+        "projects/where-nature-meets-design-el-nidos-compact-tropical-garden"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "8d3ccb91678336903d718fff60cbea014fd74f36fec6371bd3b34e6c74b5cefe",
+      "sourceBytes": 5519831,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1763288851897_IMG_9739-ThiOTczYTk.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763288860965_IMG_0770.jpeg?alt=media&token=3fac20b1-a432-4812-89a4-beb04efb2f79",
+      "usedBy": [
+        "projects/where-nature-meets-design-el-nidos-compact-tropical-garden"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "3f57ab409fb3a5d45e7eac68b9f3ea1c6fb655f1e92e42f5377e0dff6d679a39",
+      "sourceBytes": 5953053,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1763288860965_IMG_0770-GVmYjJmNzk.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763288869254_IMG_0645.jpeg?alt=media&token=eb9923ec-bb46-4c73-8258-d62ca374b586",
+      "usedBy": [
+        "projects/where-nature-meets-design-el-nidos-compact-tropical-garden"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "4c507e1c72ec033c616fff4b1ff6cdd3c6bb5f0ac4deb4cf3288ccd650dd2a40",
+      "sourceBytes": 7082491,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1763288869254_IMG_0645-TM3NGI1ODY.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763288878364_IMG_9058.jpeg?alt=media&token=9f7bd887-ec73-46e9-9f0c-65c7db303e10",
+      "usedBy": [
+        "projects/where-nature-meets-design-el-nidos-compact-tropical-garden"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "1a43f5d6b5b135543618b1ac1e61e7887109614c3e94fbae2eed353bb0772660",
+      "sourceBytes": 4082777,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1763288878364_IMG_9058-GIzMDNlMTA.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1763288886035_IMG_2656.jpeg?alt=media&token=90bd7c02-1541-4361-bb1e-f7c7085135a9",
+      "usedBy": [
+        "projects/where-nature-meets-design-el-nidos-compact-tropical-garden"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "b1274e28b59f52122f8933be8e68ddb238df1910a94b572f0b231f746dfd2e66",
+      "sourceBytes": 7729066,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1763288886035_IMG_2656-Dg1MTM1YTk.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744791276_1763286976144_2D4B9E09-D529-4446-92C7-4ED9F0B3A1A0.webp?alt=media&token=bf503c38-4e9e-4f5f-bc02-9e1cbc565039",
+      "usedBy": [
+        "projects/a-tropical-escape-at-home-the-new-face-of-residential-landscaping"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "bffc1702d327762c9531f62775acd95ff9e366859400eb77fbb575a64e79bc85",
+      "sourceBytes": 324872,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/744791276_1763286976144_2D4B9E09-D529-4446-92C7-4ED9F0B3A1A0-mM1NjUwMzk.webp",
+      "width": 1440,
+      "height": 1800
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744798075_1763286991125_IMG_6880.webp?alt=media&token=7fc5dce2-8b66-48c4-8812-cf530ce659e3",
+      "usedBy": [
+        "projects/a-tropical-escape-at-home-the-new-face-of-residential-landscaping"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "5c922b2c6e5b00de509cbaf69fdb4ce1bf2fafe52b3a9440188e73f92cfd4518",
+      "sourceBytes": 723060,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1764744798075_1763286991125_IMG_6880-Y2U2NTllMw.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744802381_1763287000217_IMG_6883.webp?alt=media&token=6b517c8b-dc32-4aec-9c70-f12093bbeffc",
+      "usedBy": [
+        "projects/a-tropical-escape-at-home-the-new-face-of-residential-landscaping"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "842bc8b9daed35faef1027c58743b77ead2fd99fe6f92c506fa0d3607d912171",
+      "sourceBytes": 559458,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1764744802381_1763287000217_IMG_6883-M2JiZWZmYw.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1764744806687_1763287330402_IMG_1988.webp?alt=media&token=c0eb2f06-cf39-49f7-816c-317eb484c2a4",
+      "usedBy": [
+        "projects/a-tropical-escape-at-home-the-new-face-of-residential-landscaping"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "9cb83927ed107e4477b079af4bb60323f3d8a5907b4a06b75445681a203ababe",
+      "sourceBytes": 425104,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1764744806687_1763287330402_IMG_1988-NDg0YzJhNA.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1765970445522_IMG_1069.jpeg?alt=media&token=8c412ab9-0864-4709-b10b-c2a611cb22d4",
+      "usedBy": [
+        "projects/indoor-greenery-for-a-refreshing-cafe-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "a35717d139774f6907a463c93640b62b54028d2e20f1d259b8da2b81e354d46c",
+      "sourceBytes": 302660,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1765970445522_IMG_1069-TFjYjIyZDQ.webp",
+      "width": 686,
+      "height": 813
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1765970680533_IMG_2875.jpeg?alt=media&token=9a26ddde-fc36-45fa-a467-37c6700ac330",
+      "usedBy": [
+        "projects/indoor-greenery-for-a-refreshing-cafe-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "9855ac8c4f6fd9970f67f4caddcfc7a278bc4690037e701bf6b8ce9e1c78746b",
+      "sourceBytes": 3618641,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1765970680533_IMG_2875-zAwYWMzMzA.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1765970729415_IMG_5401.jpeg?alt=media&token=73f794e3-7e85-466e-bc10-3a9f35083369",
+      "usedBy": [
+        "projects/indoor-greenery-for-a-refreshing-cafe-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "5e4d0dbb89695b1a4089b614e2d3d22ac22e3baeb2bb9a07759de27a50ce649b",
+      "sourceBytes": 3555095,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1765970729415_IMG_5401-zUwODMzNjk.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/projects%2F1765970735923_IMG_5376.jpeg?alt=media&token=34e6884e-857f-486f-b194-087d22584f74",
+      "usedBy": [
+        "projects/indoor-greenery-for-a-refreshing-cafe-experience"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "c4ca980623e892c5612f5e2e861bec38d7d1278839b15f70b6d24d53ad5e4b66",
+      "sourceBytes": 3425159,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/projects-1765970735923_IMG_5376-jI1ODRmNzQ.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2Fthumbnails%2F1766985979536_GSC%20Website%202-3.webp?alt=media&token=f7eec6da-8f33-4230-b99b-f71b40f71cc0",
+      "usedBy": [
+        "articles/a-new-digital-home-greenscape-unveils-official-website"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "f6a06007711a0d1caccce36989af3f12701f37fdd3eb485a8b72c422c67fa1c2",
+      "sourceBytes": 351596,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/stories-thumbnails-1766985979536_GSC-Website-2-3-MGY3MWNjMA.webp",
+      "width": 1440,
+      "height": 1080
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1764830484291_1763271063996_IMG_0925.webp?alt=media&token=c7723a34-864d-476a-9794-f714f9944f48",
+      "usedBy": [
+        "articles/luzviminda-national-high-school-students-begin-internship-program-at-greenscape"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "668e2343bed3cfe91b076fc8a2779fc5be0eb81993ca86d9f10ce72649c633ae",
+      "sourceBytes": 522532,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/stories-1764830484291_1763271063996_IMG_0925-Y5OTQ0ZjQ4.webp",
+      "width": 2000,
+      "height": 1517
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2Fthumbnails%2F1766027027614_1766024432937_IMG_7049.jpeg?alt=media&token=4ae360b3-f94f-4618-9ed5-a5768836b829",
+      "usedBy": [
+        "articles/a-story-of-gratitude-and-service-the-retirement-of-godofredo-de-osio"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "d718b91fc13477832393f4f8ef41912e0b601150affdffdca141a39c3b549b4e",
+      "sourceBytes": 716055,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/stories-thumbnails-1766027027614_1766024432937_IMG_7049-ODM2YjgyOQ.webp",
+      "width": 2000,
+      "height": 1173
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1764830434854_1763284628341_IMG_1946.webp?alt=media&token=9f384251-9fcc-4569-a667-f1d0e539faaa",
+      "usedBy": [
+        "articles/make-our-mothers-smile-a-mothers-day-story"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "5e028bec95ba5684fa033d58d083fd476782b45af30721952192b7d19ae42f8a",
+      "sourceBytes": 534856,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/stories-1764830434854_1763284628341_IMG_1946-U1MzlmYWFh.webp",
+      "width": 2000,
+      "height": 1333
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1773463624045_Nanay%20Esther.webp?alt=media&token=1adb608a-5e14-4202-a3b4-f04cceccfe64",
+      "usedBy": [
+        "articles/women-who-inspire-nanay-esthers-journey-at-greenscape"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "6a53ba922cfab0ee3bfe8508a0d1b28a76b6fbb43f9cf2f56a520e17d6f9d02b",
+      "sourceBytes": 515388,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/stories-1773463624045_Nanay-Esther-ZWNjZmU2NA.webp",
+      "width": 1365,
+      "height": 768
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1767857572348_GSC%20YEP%202025.webp?alt=media&token=0340bffa-a771-4812-86a2-96233838b437",
+      "usedBy": [
+        "articles/celebrating-milestones-and-new-beginnings-greenscapes-2025-year-end-party"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "593dfb311612aacecb722400bca76dc21e163cbbc4d8d792ea5e499713a549ba",
+      "sourceBytes": 1012846,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/stories-1767857572348_GSC-YEP-2025-M4MzhiNDM3.webp",
+      "width": 2000,
+      "height": 1333
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/stories%2F1765973335792_IMG_4743.jpeg?alt=media&token=1a14ca6d-5a23-4d34-a62b-bae6e9e7c732",
+      "usedBy": [
+        "articles/greenscape-scholarship-program-nurturing-the-next-generation-of-environmental-le"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "d9c17785ab924b5b93c470578e63798a4e05d0e5fefc426461bc321c17d63fd7",
+      "sourceBytes": 1117518,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/stories-1765973335792_IMG_4743-OWU3YzczMg.webp",
+      "width": 2000,
+      "height": 1160
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-essentials%2Farticle-1763901691327?alt=media&token=ea2bf689-b7f7-4d27-94cd-b4ebc6c7e778",
+      "usedBy": [
+        "articles/new-ai-ready-robotic-mower-platform-revolutionizing-lawn-care-for-busy-people"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "c18cd6b43acf64ce8f4266ac749af8f3969a1098845d97da09bf9d548f3efb7f",
+      "sourceBytes": 180603,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/garden-essentials-article-1763901691327-zZjN2U3Nzg.webp",
+      "width": 800,
+      "height": 533
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/garden-essentials%2Farticle-1763895487284?alt=media&token=06f61b60-dee7-468b-a7c9-6e85b42de1df",
+      "usedBy": [
+        "articles/cocopeat-an-effective-growing-medium-for-productive-gardens"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "7c912f11c70c27534ec186a4e34a094309d3ab22db69efab473bb303bac8f9c4",
+      "sourceBytes": 74437,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/garden-essentials-article-1763895487284-jQyZGUxZGY.webp",
+      "width": 1200,
+      "height": 675
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764829970404_1763279595017_IMG_8872.webp?alt=media&token=0a50d2a4-d614-4937-ac7e-8ee8cbd4e0c0",
+      "usedBy": [
+        "galleryItems/6af1d9a2beee9850ea5a7c4c"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "52efc23c47a44b2809064b72ab0833a5333ea117a872568c27f9929fd11a3f36",
+      "sourceBytes": 600780,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/gallery-1764829970404_1763279595017_IMG_8872-NiZDRlMGMw.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764830003856_1763279611442_IMG_4408.webp?alt=media&token=ef92d984-6aaa-42f2-9db5-dcf4e271c4bc",
+      "usedBy": [
+        "galleryItems/6af1d9a2beee9850ea5a7c4d"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "52f02faf38462f394187850a6ed313b13038432119ddd97f103ba552e8f6443d",
+      "sourceBytes": 554934,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/gallery-1764830003856_1763279611442_IMG_4408-UyNzFjNGJj.webp",
+      "width": 2000,
+      "height": 1500
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764830021053_1763279938143_IMG_6887.webp?alt=media&token=381f0861-f558-48d5-a4c6-77cce4c25e8d",
+      "usedBy": [
+        "galleryItems/6af1d9a2beee9850ea5a7c4e"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "5f5731a96ff263914e32722bece8b46b1353bc5103f4c7d8a0c35283eab0948d",
+      "sourceBytes": 692774,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/gallery-1764830021053_1763279938143_IMG_6887-U0YzI1ZThk.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764830039288_1763279944965_IMG_7267.webp?alt=media&token=31e21e67-0006-4796-9058-920686419203",
+      "usedBy": [
+        "galleryItems/6af1d9a2beee9850ea5a7c4f"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "b9017cffce7869c42d41703f9321e6bae55d222710e7b8d328bd77bc21841d16",
+      "sourceBytes": 558430,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/gallery-1764830039288_1763279944965_IMG_7267-g2NDE5MjAz.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764829939126_1763276602587_IMG_9435.webp?alt=media&token=8bf10e1a-40b7-45b6-a668-5551c352f471",
+      "usedBy": [
+        "galleryItems/6af1d9a2beee9850ea5a7c50"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "ec83b9ef89d2861eadb68aa94a5b0354d5fea626a2521720d4669811c37eac6b",
+      "sourceBytes": 479062,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/gallery-1764829939126_1763276602587_IMG_9435-MzNTJmNDcx.webp",
+      "width": 1502,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764830058360_1763279929820_IMG_6883.webp?alt=media&token=218b40ab-a60d-4031-a1d8-14de954fe472",
+      "usedBy": [
+        "galleryItems/6af1d9a2beee9850ea5a7c51"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "5661568d7b9408f8c0ec61faec76305ce13c22c22ae7f0a7340e0c0cd2652513",
+      "sourceBytes": 264872,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/gallery-1764830058360_1763279929820_IMG_6883-k1NGZlNDcy.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764829984669_1763279604181_IMG_9421.webp?alt=media&token=ca8546f4-1126-47c7-945e-ccee20791c6c",
+      "usedBy": [
+        "galleryItems/6af1d9a2beee9850ea5a7c52"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "59bee47faf3a3d839aaedecb3af9b9dc81c6b5c582c9e050afc64cab1eb641e6",
+      "sourceBytes": 457210,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/gallery-1764829984669_1763279604181_IMG_9421-IwNzkxYzZj.webp",
+      "width": 1500,
+      "height": 2000
+    },
+    {
+      "source": "https://firebasestorage.googleapis.com/v0/b/greenscape-palawan.firebasestorage.app/o/gallery%2F1764829953194_1763279585285_IMG_4925.webp?alt=media&token=00d9d3d5-3906-4f46-b294-ce00bd3bd360",
+      "usedBy": [
+        "galleryItems/6af1d9a2beee9850ea5a7c53"
+      ],
+      "ok": true,
+      "reused": false,
+      "sha256": "af8f8b47131a0f5eda9f87cd22e943dc0007f837ab2971c3c5a3f402c411b4af",
+      "sourceBytes": 531322,
+      "newUrl": "http://127.0.0.1:54321/storage/v1/object/public/public-media/cms/legacy/gallery-1764829953194_1763279585285_IMG_4925-JkM2JkMzYw.webp",
+      "width": 1500,
+      "height": 2000
+    }
+  ]
+}

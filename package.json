@@ -24,6 +24,9 @@
     "lint": "eslint .",
     "content:seed": "tsx scripts/migrate/seed-content.ts",
     "shop:seed": "tsx scripts/migrate/seed-shop.ts",
+    "media:migrate": "tsx scripts/migrate/media-to-supabase.ts",
+    "assets:check": "tsx scripts/migrate/check-assets.ts",
+    "data:import": "tsx scripts/migrate/import-export.ts",
     "storage:setup": "pnpm --filter @greenscape/storage buckets",
     "media:sweep": "tsx scripts/sweep-orphans.ts"
   },

@@ -9,9 +9,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ProductContent, collections, connectContentDb } from '@greenscape/content';
 import { createPrismaClient } from '@greenscape/database';
-import { BUCKETS, createStorage, sniffMime } from '@greenscape/storage';
+import { createStorage } from '@greenscape/storage';
 import { PLANT_TYPES, SHOP_CATEGORIES } from '@greenscape/validation';
-import sharp from 'sharp';
+import { importImage } from './lib/images.ts';
 
 try { process.loadEnvFile(path.resolve(import.meta.dirname, '../../.env')); } catch { /* CI env */ }
 
@@ -27,26 +27,10 @@ const PALAWAN = ['Puerto Princesa City', 'Aborlan', 'Agutaya', 'Araceli', 'Balab
 const db = createPrismaClient(process.env.DATABASE_URL!);
 const mongo = await connectContentDb(process.env.MONGODB_URL!, process.env.MONGODB_DB ?? 'greenscape');
 const storage = createStorage(process.env.SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!);
-const BUCKET = BUCKETS.publicMedia.id;
 
 const slugify = (s: string) => s.normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[’'"]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80).replace(/-$/, '');
 const clean = (s?: string | null) => (s ?? '').replace(/\r/g, '').trim();
 const rich = (src: string) => ({ type: 'doc' as const, content: src.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean).map((p) => ({ type: 'paragraph', content: p.split('\n').flatMap((line, i) => (i ? [{ type: 'hardBreak' }, { type: 'text', text: line }] : [{ type: 'text', text: line }])) })) });
-
-async function importImage(url: string, key: string, alt: string) {
-  const existing = await db.mediaAsset.findUnique({ where: { sourceUrl: url } });
-  if (existing) return existing;
-  const res = await fetch(url, { signal: AbortSignal.timeout(60_000) });
-  if (!res.ok) throw new Error(`${res.status}`);
-  const bytes = new Uint8Array(await res.arrayBuffer());
-  if (!sniffMime(bytes.slice(0, 32))?.startsWith('image/')) throw new Error('not an image');
-  const img = sharp(bytes, { animated: false }).rotate();
-  const out = await img.clone().resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true }).webp({ quality: 80 }).toBuffer({ resolveWithObject: true });
-  const blur = await img.clone().resize(16).webp({ quality: 40 }).toBuffer();
-  const p = `products/legacy/${key}.webp`;
-  await storage.put(BUCKET, p, out.data, 'image/webp').catch((e: Error) => { if (!/exists/i.test(e.message)) throw e; });
-  return db.mediaAsset.create({ data: { bucket: BUCKET, path: p, mimeType: 'image/webp', sizeBytes: out.data.length, width: out.info.width, height: out.info.height, alt, blurDataUrl: `data:image/webp;base64,${blur.toString('base64')}`, sourceUrl: url, refCount: 1 } });
-}
 
 // ── categories and zones ──
 const cats = new Map<string, string>();
@@ -87,7 +71,7 @@ for (const lp of products) {
     let n = 0;
     for (const [i, url] of urls.entries()) {
       try {
-        const m = await importImage(url, `${lp.id}-${i}`, name);
+        const { asset: m } = await importImage(db, storage, url, { path: `products/legacy/${lp.id}-${i}.webp`, alt: name, maxPx: 1600 });
         await db.productImage.create({ data: { productId: product.id, mediaId: m.id, alt: name, sortOrder: n++ } });
         images++;
       } catch (e) {

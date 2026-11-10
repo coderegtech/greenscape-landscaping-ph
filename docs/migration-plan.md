@@ -1,6 +1,8 @@
 # Migration Plan
 
-Status: **public content migrated (Phase 6)**: `scripts/migrate/` extracts what the public pages show (rendered pages plus the same unauthenticated Firestore reads the pages make; identity fields stripped; approved testimonials only) and seeds MongoDB (`pnpm content:seed`). Images still load from Firebase Storage; copying them to Supabase Storage, products, quotations history, users and employees wait for authorized exports (D3) and Phase 11. URL redirects are live (`apps/web/lib/legacy-redirects.ts` + proxy for story ids); product URLs redirect since Phase 8. **Products (Phase 8)**: `fetch-public-products.mjs` makes the same unauthenticated `products` read as the public catalogue page (never the `likes` subcollection; `payment` text dropped) and `pnpm shop:seed` imports 97 products with their photos into Supabase Storage. The data has **no prices, no stock and no SKUs**, so no variants are created; prices, sizes, stock counts and delivery fees must come from the business.
+Status (Phase 11):
+- **Public content: migrated.** Pages, services, projects, stories, gallery, FAQ and approved feedback (Phase 6), the product catalogue (Phase 8), and now **every image**: the 122 photos the content still loaded from Firebase Storage are in Supabase Storage, and all references point there (`pnpm media:migrate`, reports in [`docs/migration/`](migration/)). `pnpm assets:check`: 301 image URLs, **0 not loading, 0 Firebase links left**, 122/122 checksums equal to the dry run.
+- **Private data: tooling ready, not run.** Users, quotation history, chats, employees, time logs, leave, unapproved feedback and announcements need an authorised read-only export (D3), which this project does not have. The extractor, importer and their dry-run report are built and tested against a synthetic export; run them with the owner using the runbook below.
 
 ## Source inventory (from public client code + rendered pages)
 
@@ -61,3 +63,21 @@ Firebase project `greenscape-palawan` (Firestore default DB, Firebase Storage bu
 | `/pages/delivery-policy.html`, `/pages/privacy-policy.html` | `/delivery-policy`, `/privacy` |
 
 Full list regenerated from `docs/audit/routes.md` at Phase 11.
+
+## Runbook (Phase 11 tooling)
+
+### A. Images (public; safe to run any time, idempotent)
+1. `pnpm media:migrate` (dry run): downloads each referenced image from Firebase Storage (read only), verifies it is an image, records its SHA-256, writes `docs/migration/media-report.md`. Nothing changes. Keep a copy as `media-report.dry-run.{md,json}`.
+2. `pnpm media:migrate --apply`: re-encodes to WebP (≤ 2000 px), uploads to `public-media/cms/legacy/`, records each in the media library with its source URL and checksum, rewrites references in live content, drafts and saved versions (adding width, height and blur placeholders), clears caches and asks the website to refresh.
+3. `pnpm assets:check`: every image URL the site can show must return 200, no Firebase links may remain, and copied checksums must equal the dry run. Exits non-zero otherwise; result in `docs/migration/asset-check.md`.
+4. After the production run passes, remove the Firebase entry from `images.remotePatterns` in `apps/web/next.config.ts`.
+
+### B. Private data (needs the owner's authorised access, D3)
+1. Owner signs in with an account that has read access: `gcloud auth login`.
+2. Extract to a folder **outside the repository** (the script refuses an in-repo path): `node scripts/migrate/extract-firestore.mjs --out ../greenscape-export --token "$(gcloud auth print-access-token)"`. GET requests only.
+3. Users: `firebase auth:export ../greenscape-export/auth-users.json --format=json --project greenscape-palawan`.
+4. Dry run: `pnpm data:import --dir ../greenscape-export`. Read `import-report.md` in that folder: counts per collection (in file / valid / would create / already here / rejected), SHA-256 of each file, rejected records with reasons, fields not copied (names and counts only, never values), and the **mappings to confirm** (quotation and leave statuses, service names, employee status). Change `MAPPINGS` in `scripts/migrate/lib/transform.ts` if the business disagrees, then dry-run again.
+5. Apply on staging first: `pnpm data:import --dir ../greenscape-export --apply`. Re-running skips everything already imported (legacy ids), so a final delta run after freezing the old admin is safe.
+6. Afterwards: set allowances for any leave types the import created (0 days), assign schedules, grant staff roles in Users & roles (the old admin list is **not** turned into roles automatically), then delete the export folder.
+
+What the importer does not copy: pay, allowance and government-ID fields (D5), clock-in photos (D6), avatars and emails on feedback, password hashes (the old site used Google sign-in only; people sign in with Google or use "Forgot password"), analytics, notes and version notes.

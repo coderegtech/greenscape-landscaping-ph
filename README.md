@@ -60,6 +60,9 @@ pnpm content:seed
 pnpm shop:seed
 ```
 ```bash
+pnpm media:migrate --apply
+```
+```bash
 pnpm storage:setup
 ```
 ```bash

@@ -19,6 +19,8 @@ model User {
   displayName   String?
   avatarPath    String?
   status        UserStatus @default(ACTIVE)
+  /// Firebase Auth uid from the old site (migration links chats, quotes and feedback to the right person).
+  legacyUid     String?    @unique
   roles         UserRole[]
   customer      Customer?
   employee      Employee?
@@ -762,5 +764,6 @@ model Announcement {
   priority    String    @default("normal")
   expiresAt   DateTime?
   createdById String    @db.Uuid
+  legacyId    String?   @unique
   createdAt   DateTime  @default(now())
 }
