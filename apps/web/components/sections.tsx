@@ -29,10 +29,12 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
       // One still slide: auto-rotating carousels hurt accessibility and LCP (Hallmark floor); extra slides feed the gallery.
       const slide = s.slides[0]!;
       if (slug === 'home' && i === 0) {
-        // The home page's botanical hero: the portrait slide in the arch, another slide in the inset circle.
-        const photo = s.slides.find((x) => (x.image.height ?? 0) > (x.image.width ?? 0))?.image ?? slide.image;
-        const inset = s.slides.map((x) => x.image).find((m) => m.url !== photo.url);
-        return <BotanicalHero title={slide.headline} lead={slide.subheadline} photo={photo} inset={inset} />;
+        // The home page's botanical hero: every slide photo (the old site's carousel) slides through the arch, the
+        // portrait one first since it fits the arch best; another slide sits in the inset circle.
+        const images = s.slides.map((x) => x.image);
+        const photo = images.find((m) => (m.height ?? 0) > (m.width ?? 0)) ?? slide.image;
+        const inset = images.find((m) => m.url !== photo.url);
+        return <BotanicalHero title={slide.headline} lead={slide.subheadline} photos={[photo, ...images.filter((m) => m.url !== photo.url)]} inset={inset} />;
       }
       return (
         <PageHero

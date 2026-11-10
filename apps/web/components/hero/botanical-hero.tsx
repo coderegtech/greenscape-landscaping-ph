@@ -4,10 +4,12 @@ import Link from 'next/link';
 import type { CSSProperties, ReactNode } from 'react';
 import type { MediaRef } from '@/lib/cms';
 import { BLOOMS, Blob, Branch, Fern, Flower, GREENS, SplitLeaf, TropicalLeaf, Vine } from './botanicals';
+import { HeroCarousel } from './hero-carousel';
 import { HeroPointer } from './hero-pointer';
 
 /**
- * Home hero: the headline, sentence and two actions beside an arched photograph, inside a small botanical garden of
+ * Home hero: the headline, sentence and one action (the quote CTA lives in the header) beside an arched photo carousel
+ * of every hero slide (HeroCarousel), inside a small botanical garden of
  * drawn leaves, flowers, a fern, a branch and a vine on three depth layers.
  * All motion is CSS (app/globals.css, "Botanical hero"):
  *   - entrance: decorations fade in, the headline rises word by word, then the sentence, the actions and the photo;
@@ -80,7 +82,7 @@ function Decoration({ deco, i }: { deco: Deco; i: number }) {
   );
 }
 
-export function BotanicalHero({ title, lead, photo, inset }: { title: string; lead?: string; photo: MediaRef; inset?: MediaRef }) {
+export function BotanicalHero({ title, lead, photos, inset }: { title: string; lead?: string; photos: MediaRef[]; inset?: MediaRef }) {
   const words = title.split(/\s+/).filter(Boolean);
   return (
     <header data-hero className="bh relative isolate z-10 pt-8 pb-24 md:pt-14 md:pb-32 [overflow-x:clip]">
@@ -99,9 +101,6 @@ export function BotanicalHero({ title, lead, photo, inset }: { title: string; le
           {lead && <p className="bh-rise max-w-[38ch] text-lg text-ink-2 md:text-xl" style={{ '--at': '760ms' } as CSSProperties}>{lead}</p>}
           <div className="bh-rise mt-2 flex flex-wrap gap-3" style={{ '--at': '900ms' } as CSSProperties}>
             <Button asChild data-magnetic>
-              <Link href="/quote" className="no-underline">Request a quote</Link>
-            </Button>
-            <Button asChild variant="secondary" data-magnetic>
               <Link href="/projects" className="no-underline">See our projects</Link>
             </Button>
           </div>
@@ -109,7 +108,7 @@ export function BotanicalHero({ title, lead, photo, inset }: { title: string; le
 
         <div className="bh-visual relative mx-auto w-full max-w-[30rem] lg:max-w-[33rem]">
           <div className="bh-photo relative aspect-[4/5] overflow-clip rounded-t-[999px] rounded-b-[2rem] bg-paper-3 shadow-lift">
-            <Image src={photo.url} alt={photo.alt} fill priority sizes="(min-width: 64rem) 34rem, 90vw" placeholder={photo.blurDataUrl ? 'blur' : 'empty'} blurDataURL={photo.blurDataUrl} className="object-cover" />
+            <HeroCarousel photos={photos} />
           </div>
           {inset && (
             <div className="bh-inset absolute -bottom-10 -left-8 size-32 overflow-clip rounded-full border-[6px] border-paper bg-paper-3 shadow-lift md:size-44">
