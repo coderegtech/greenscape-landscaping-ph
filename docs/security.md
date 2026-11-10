@@ -62,5 +62,14 @@ Living document; each phase adds its section. Threat model and DPA notes are in 
 | Balances | Approval locks the balance row (`FOR UPDATE`) and refuses to go over; requests count waiting requests too. Allotments cannot go below days already used. |
 | Who is an employee | Determined server-side by `Employee.userId`. Linking happens only by matching an existing account's email and is audited; ending employment removes the `employee` role at once. |
 
+## Admin console (Phase 10)
+| Concern | Implementation |
+|---|---|
+| Least privilege in the UI | The menu, every page and every dashboard tile are filtered by permission; the API enforces the same permissions independently. An e2e matrix checks all 8 roles: the menu equals the permission set, allowed pages open, everything else redirects to the overview. |
+| Role changes | `roles.manage`; granting super admin needs `roles.manage_super`; nobody changes their own roles or status; changes audited and applied within one request (permission cache invalidated). |
+| Customer data | Customer list and detail need `customers.read`; quotes and chats inside it need their own permissions. Search input is parameterised (no string-built SQL). |
+| Messages | Only the signed-in customer sees their conversation; staff need `messages.read` to view and `messages.reply` to answer; customer sends are rate-limited (30/hour) and staff are emailed once per unread batch, not per message. |
+| Notification recipients | Stored in `AppSetting` (no secrets there), validated as email addresses, audited; the env values stay as fallback so a misconfiguration never silences notifications entirely. |
+
 ## HTTP hardening (Phase 3)
 API: helmet defaults (CSP `default-src 'self'`, HSTS, nosniff, frame-ancestors self), CORS allow-list with credentials, Redis-backed rate limit (300/min/IP, fails open if Redis is down), 1 MB JSON body limit, request ids, no `x-powered-by`, log redaction of `authorization`/`cookie`. Next.js apps: nosniff, referrer policy, frame options, permissions policy; admin is `noindex`.

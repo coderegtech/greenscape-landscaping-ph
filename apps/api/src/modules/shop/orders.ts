@@ -8,6 +8,7 @@ import { createHash, randomBytes } from 'node:crypto';
 import { Prisma } from '@greenscape/database';
 import { FULFILLMENT_LABELS, type CheckoutForm, type FulfillmentStatus } from '@greenscape/validation';
 import type { Deps } from '../../lib/deps.ts';
+import { notifyTo } from '../../lib/notify.ts';
 import { AppError } from '../../lib/errors.ts';
 import { emailHtml, emailText } from '../../lib/mailer.ts';
 import type { NormalizedPaymentEvent } from './payments.ts';
@@ -331,7 +332,7 @@ async function notifyPaid(deps: Deps, orderId: string, lowVariantIds: string[]) 
     ['Deliver to', [a.recipient, a.line1, a.line2, a.barangay, `${a.city}, ${a.province}`].filter(Boolean).join(', ')],
   ];
   const to = a.email ?? o.customer.email;
-  const staff = env.ORDER_NOTIFY_TO.length ? env.ORDER_NOTIFY_TO : env.QUOTE_NOTIFY_TO;
+  const staff = await notifyTo(deps, 'orders');
   await Promise.all([
     mailer.send({
       to,
@@ -350,7 +351,7 @@ async function notifyPaid(deps: Deps, orderId: string, lowVariantIds: string[]) 
     const vs = await db.productVariant.findMany({ where: { id: { in: lowVariantIds } }, include: { product: { select: { name: true } }, inventory: true } });
     const lowRows = vs.map((v): [string, string] => [`${v.product.name} (${v.sku})`, `${(v.inventory?.onHand ?? 0) - (v.inventory?.reserved ?? 0)} left`]);
     await mailer.send({
-      to: staff,
+      to: await notifyTo(deps, 'stock'),
       subject: `Low stock: ${vs.map((v) => v.sku).join(', ')}`,
       text: emailText('Low stock', ['These items reached their low-stock level after an order.'], lowRows, { label: 'Open inventory', href: `${env.ADMIN_URL}/inventory?low=1` }),
       html: emailHtml('Low stock', ['These items reached their low-stock level after an order.'], lowRows, { label: 'Open inventory', href: `${env.ADMIN_URL}/inventory?low=1` }),

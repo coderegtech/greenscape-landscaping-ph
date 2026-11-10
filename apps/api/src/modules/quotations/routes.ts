@@ -7,6 +7,7 @@ import {
 import { Router } from 'express';
 import { audit } from '../../lib/audit.ts';
 import type { Deps } from '../../lib/deps.ts';
+import { notifyTo } from '../../lib/notify.ts';
 import { AppError } from '../../lib/errors.ts';
 import { emailHtml, emailText } from '../../lib/mailer.ts';
 import { registry } from '../../lib/openapi.ts';
@@ -99,7 +100,7 @@ export function quotationRoutes(deps: Deps) {
       ['Attachments', String(assets.length)],
     ];
     const notify = {
-      to: env.QUOTE_NOTIFY_TO,
+      to: await notifyTo(deps, 'quotes'),
       replyTo: q.email,
       subject: `New quote request ${quotation.number} from ${q.name}`,
       text: emailText('New quote request', [`${q.name}, ${q.phone}, ${q.email}`, q.details], rows, { label: 'Open in admin', href: `${env.ADMIN_URL}/quotations/${quotation.id}` }),

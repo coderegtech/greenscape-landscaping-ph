@@ -494,14 +494,37 @@ model Message {
 }
 
 model ContactInquiry {
-  id        String   @id @default(uuid()) @db.Uuid
+  id        String         @id @default(uuid()) @db.Uuid
   name      String
   email     String
   phone     String?
   subject   String?
   body      String
-  status    String   @default("new")
-  createdAt DateTime @default(now())
+  status    String         @default("new") // new | replied | closed
+  replies   InquiryReply[]
+  createdAt DateTime       @default(now())
+
+  @@index([status, createdAt])
+}
+
+/// A staff reply to a contact-form message, sent by email.
+model InquiryReply {
+  id           String         @id @default(uuid()) @db.Uuid
+  inquiryId    String         @db.Uuid
+  inquiry      ContactInquiry @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  senderUserId String         @db.Uuid
+  body         String
+  sentAt       DateTime       @default(now())
+
+  @@index([inquiryId, sentAt])
+}
+
+/// Small admin-editable settings (e.g. who receives notification emails). Secrets never live here.
+model AppSetting {
+  key         String   @id
+  value       Json
+  updatedById String?  @db.Uuid
+  updatedAt   DateTime @updatedAt
 }
 
 // ───────────── Media metadata (bytes live in Supabase Storage) ─────────────

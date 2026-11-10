@@ -4,7 +4,7 @@ import type { MeResponse } from '@greenscape/validation';
 type Item = { label: string; href: string; permission: string; ready: boolean };
 
 // Full admin information architecture. `ready` flips as each phase ships its pages, so the menu never links to a 404.
-const IA: { title: string; items: Item[] }[] = [
+export const ADMIN_IA: { title: string; items: Item[] }[] = [
   { title: 'Overview', items: [{ label: 'Dashboard', href: '/', permission: 'admin.access', ready: true }] },
   {
     title: 'Shop',
@@ -12,14 +12,14 @@ const IA: { title: string; items: Item[] }[] = [
       { label: 'Orders', href: '/orders', permission: 'orders.read', ready: true },
       { label: 'Products', href: '/products', permission: 'products.read', ready: true },
       { label: 'Inventory', href: '/inventory', permission: 'inventory.read', ready: true },
-      { label: 'Customers', href: '/customers', permission: 'customers.read', ready: false },
+      { label: 'Customers', href: '/customers', permission: 'customers.read', ready: true },
     ],
   },
   {
     title: 'Enquiries',
     items: [
       { label: 'Quotations', href: '/quotations', permission: 'quotations.read', ready: true },
-      { label: 'Messages', href: '/messages', permission: 'messages.read', ready: false },
+      { label: 'Messages', href: '/messages', permission: 'messages.read', ready: true },
     ],
   },
   {
@@ -48,14 +48,13 @@ const IA: { title: string; items: Item[] }[] = [
     title: 'System',
     items: [
       { label: 'Attendance report', href: '/reports/attendance', permission: 'reports.attendance', ready: true },
-      { label: 'Reports', href: '/reports', permission: 'reports.sales', ready: false },
-      { label: 'Users & roles', href: '/users', permission: 'users.read', ready: false },
-      { label: 'Delivery areas', href: '/settings/delivery', permission: 'settings.read', ready: true },
-      { label: 'Settings', href: '/settings', permission: 'settings.read', ready: false },
+      { label: 'Sales report', href: '/reports/sales', permission: 'reports.sales', ready: true },
+      { label: 'Users & roles', href: '/users', permission: 'users.read', ready: true },
+      { label: 'Settings', href: '/settings', permission: 'settings.read', ready: true },
     ],
   },
 ];
 
 export function navFor(me: MeResponse): AdminNavGroup[] {
-  return IA.map((g) => ({ title: g.title, items: g.items.filter((i) => i.ready && me.permissions.includes(i.permission)) })).filter((g) => g.items.length > 0);
+  return ADMIN_IA.map((g) => ({ title: g.title, items: g.items.filter((i) => i.ready && me.permissions.includes(i.permission)) })).filter((g) => g.items.length > 0);
 }

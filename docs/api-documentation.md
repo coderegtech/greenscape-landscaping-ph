@@ -102,4 +102,15 @@ Dates are `YYYY-MM-DD` in Asia/Manila; times are ISO instants. The server clock 
 | GET / POST / DELETE | `/v1/hr/holidays[?year]`, `/v1/hr/holidays/{id}` | `attendance.read` / `employees.manage` | Holidays (regular, special non-working, special working) |
 | GET | `/v1/hr/reports/attendance?from&to&format=json\|csv\|xlsx` | `reports.attendance` | Per employee: days worked, hours, late, undertime, overtime (recorded only), absences, missing time out, leave days; ≤ 1 year |
 
+## Admin console (Phase 10)
+| Method | Path | Permission | Purpose |
+|---|---|---|---|
+| GET | `/v1/admin/overview` | `admin.access` | Dashboard; each section included only with its own permission (`reports.sales`, `orders.read`, `inventory.read`, `quotations.read`, `messages.read`, `attendance.read`, `leave.read`, `testimonials.moderate`) |
+| GET | `/v1/admin/customers?q&sort=recent\|spent\|orders\|name&page`, `/v1/admin/customers/{id}` | `customers.read` | Customers with paid orders, total paid, quotes, latest order; detail with orders (quotes and chat only with their own permissions) |
+| GET / POST / PATCH | `/v1/admin/conversations[?status]`, `/conversations/{id}`, `/conversations/{id}/messages`, `/conversations/{id}` | `messages.read` / `messages.reply` | Chat inbox (unread counts); opening a thread marks it read; reply (customer emailed); open/close |
+| GET / POST / PATCH | `/v1/admin/inquiries[?status]`, `/inquiries/{id}/reply`, `/inquiries/{id}` | `messages.read` / `messages.reply` | Contact-form inbox; reply by email (audited); new / replied / closed |
+| GET / PUT | `/v1/admin/settings/notifications` | `settings.read` / `settings.manage` | Recipients per kind (quotes, orders, messages, stock); empty list = deployment default (`QUOTE_NOTIFY_TO` / `ORDER_NOTIFY_TO`); audited |
+| GET | `/v1/admin/reports/sales?from&to&format=json\|csv\|xlsx` | `reports.sales` | Summary, by day, best sellers, by area; CSV = order lines, XLSX = four sheets; flags test payments |
+| GET / POST | `/v1/me/messages` | signed in | The customer's own conversation (staff messages marked read on view) / send (30 per hour; staff emailed once per unread batch) |
+
 Every write that changes public content deletes the Redis tags `cms:{type}` and `cms:{type}:{slug}` and POSTs them to `WEB_URL/api/revalidate` (header `x-revalidate-secret`). Public reads with `x-preview-secret: PREVIEW_SECRET` return the draft, uncached.

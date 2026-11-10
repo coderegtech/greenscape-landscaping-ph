@@ -34,6 +34,8 @@ Model groups: identity & access (User, Role, Permission, RolePermission, UserRol
 
 Phase 8 migration `20261110090000_shop` adds `DeliveryZone` (fee per municipality; CHECK: active ⇒ fee set, fee ≥ 0), `Order.reservationExpiresAt` and `accessKeyHash` (index on status + expiry), `MediaAsset.sourceUrl` (idempotent imports) and a non-negative amounts CHECK on `Order`.
 
+Phase 10 migration `20261111090000_admin` adds `InquiryReply` (staff email replies to contact-form messages), `AppSetting` (small admin-editable settings such as notification recipients; never secrets) and an index on `ContactInquiry(status, createdAt)`.
+
 ### Excluded on purpose
 `dailyRate`, `foodAllowance`, `uniformBond`, `sss`, `philhealth`, `pagibig` exist in the current Firestore `employees` collection. They are payroll / government-ID data and are **not modeled** (see `docs/audit/migration-risks.md`).
 

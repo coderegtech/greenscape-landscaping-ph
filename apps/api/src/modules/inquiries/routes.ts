@@ -2,6 +2,7 @@ import { collections } from '@greenscape/content';
 import { ContactRequest, TestimonialRequest } from '@greenscape/validation';
 import { Router } from 'express';
 import type { Deps } from '../../lib/deps.ts';
+import { notifyTo } from '../../lib/notify.ts';
 import { emailHtml, emailText } from '../../lib/mailer.ts';
 import { registry } from '../../lib/openapi.ts';
 import { currentAuth, requireAuth } from '../../middleware/auth.ts';
@@ -16,7 +17,8 @@ const shortName = (n: string) => {
   return rest.length ? `${first} ${rest.at(-1)![0]!.toUpperCase()}.` : (first ?? 'Client');
 };
 
-export function inquiryRoutes({ db, mongo, mailer, env, redis }: Deps) {
+export function inquiryRoutes(deps: Deps) {
+  const { db, mongo, mailer, env, redis } = deps;
   const r = Router();
 
   r.post('/contact', formLimit(redis, env.CACHE_PREFIX, 'contact', env.FORM_RATE_LIMIT_PER_HOUR), async (req, res) => {
@@ -24,7 +26,7 @@ export function inquiryRoutes({ db, mongo, mailer, env, redis }: Deps) {
     if (m.website) return res.status(201).json({ received: true }); // honeypot
     const row = await db.contactInquiry.create({ data: { name: m.name, email: m.email, phone: m.phone, subject: m.subject, body: m.message } });
     const rows: [string, string][] = [['From', `${m.name} <${m.email}>`], ['Phone', m.phone ?? 'Not given'], ['Subject', m.subject ?? 'General']];
-    await mailer.send({ to: env.QUOTE_NOTIFY_TO, replyTo: m.email, subject: `Website message from ${m.name}`, text: emailText('New website message', [m.message], rows), html: emailHtml('New website message', [m.message], rows) });
+    await mailer.send({ to: await notifyTo(deps, 'messages'), replyTo: m.email, subject: `Website message from ${m.name}`, text: emailText('New website message', [m.message], rows), html: emailHtml('New website message', [m.message], rows) });
     res.status(201).json({ received: true, id: row.id });
   });
 
