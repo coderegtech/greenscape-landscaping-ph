@@ -1,7 +1,6 @@
-/* Hallmark · v2.0.0 · theme: hedgerow (dealt 1/3, seed premium-landscaping-garden-maintenance-ff80·d24e6890·2026-11-09·r0) · colourway hedge, greens rotated 158→140 onto brand #163d08 · genre editorial · posture drenched · scope: design system (web + admin) */
-/* critique: a field guide to a tropical garden, Prata names over Manrope on leaf green, one chartreuse signal; risk is monotony on long pages, answered by cream and deep bands (two a page) and real photography */
-/* waive craft§5-parallax, craft§5-one-reveal: the client brief asks for scroll reveals, stagger, a subtle hero parallax and animated statistics; all are transform/opacity, IntersectionObserver-driven, off under reduced motion, content visible without JS */
-/* waive theme-motion-still: same reason; hover/state motion stays at --dur-short on --ease-out as the theme says */
+/* Greenscape white botanical theme (2026-11 redesign). Supersedes the Hallmark "hedgerow" dark theme: white ground, botanical
+ * green #315C3B for actions, sage and lime as accents only (decorative: never text on white), Prata headings over Manrope,
+ * rounded photo frames, soft shadows. Motion stays CSS-first (transform/opacity, off under reduced motion). */
 
 /*
  * Imported by each app's globals.css right after `@import "tailwindcss";`.
@@ -10,31 +9,36 @@
  */
 
 :root {
-  /* paper: the ground and its steps (dark, leaf green on the brand hue) */
-  --gs-paper: oklch(24% 0.058 142);
-  --gs-paper-2: oklch(19.5% 0.05 142);
-  --gs-paper-3: oklch(29.5% 0.055 142);
-  --gs-brand: oklch(32% 0.091 139); /* #163d08, the current Greenscape green */
+  /* paper: the white ground and its steps */
+  --gs-paper: #ffffff;
+  --gs-paper-2: #f8faf7; /* secondary background */
+  --gs-paper-3: #eef3ec; /* photo frames while loading, quiet fills */
+  --gs-brand: #315c3b; /* botanical green */
   /* ink */
-  --gs-ink: oklch(93% 0.022 88);
-  --gs-ink-2: oklch(81% 0.035 135);
-  --gs-muted: oklch(70% 0.045 135);
-  --gs-rule: oklch(35% 0.05 142);
-  --gs-rule-strong: oklch(48% 0.05 140);
-  /* the one signal */
-  --gs-signal: oklch(87% 0.19 118);
-  --gs-signal-2: oklch(92% 0.13 118);
-  --gs-signal-deep: oklch(46% 0.12 128);
-  --gs-signal-ink: oklch(22% 0.05 142);
-  --gs-focus: oklch(92% 0.13 118);
+  --gs-ink: #202820;
+  --gs-ink-2: #3a453c;
+  --gs-muted: #6b756d; /* 4.8:1 on white */
+  --gs-rule: #e5ebe3;
+  --gs-rule-strong: #cfd9cc;
+  /* actions: botanical green; accents: sage and lime (decorative only, never text on white) */
+  --gs-signal: #315c3b;
+  --gs-signal-2: #264a2f;
+  --gs-signal-deep: #315c3b;
+  --gs-signal-ink: #ffffff;
+  --gs-sage: #8ca68a;
+  --gs-lime: #c9e64a;
+  --gs-focus: #315c3b;
   /* states (never the only signal: always paired with text or an icon) */
-  --gs-danger: oklch(74% 0.14 35);
-  --gs-danger-ink: oklch(22% 0.05 35);
+  --gs-danger: #b3261e;
+  --gs-danger-ink: #ffffff;
   --gs-success: var(--gs-signal);
-  /* overlays */
-  --gs-scrim: oklch(20% 0.05 142 / 0.7);
-  --gs-scrim-soft: oklch(20% 0.05 142 / 0.35);
-  --gs-photo-ring: oklch(93% 0.022 88 / 0.08);
+  /* overlays: only on photo cards, as a soft bottom gradient for captions */
+  --gs-scrim: rgb(18 28 20 / 0.62);
+  --gs-scrim-soft: rgb(18 28 20 / 0.18);
+  --gs-photo-ring: rgb(32 40 32 / 0.06);
+  /* depth */
+  --gs-shadow-soft: 0 1px 2px rgb(32 40 32 / 0.04), 0 10px 30px -14px rgb(32 40 32 / 0.18);
+  --gs-shadow-lift: 0 2px 4px rgb(32 40 32 / 0.05), 0 22px 44px -18px rgb(32 40 32 / 0.28);
 
   /* motion */
   --dur-micro: 120ms;
@@ -63,21 +67,9 @@
   --gs-danger-ink: oklch(98% 0.01 30);
 }
 
-/* The cream band inside the green site: text and controls swap in the same rule. */
+/* Section bands on the white site: a soft sage-tinted step and the off-white step. Same ink, so nothing else swaps. */
 .band-cream {
-  --gs-paper: oklch(93% 0.022 88);
-  --gs-paper-2: oklch(89% 0.026 88);
-  --gs-paper-3: oklch(96% 0.016 88);
-  --gs-ink: oklch(24% 0.058 142);
-  --gs-ink-2: oklch(30% 0.05 142);
-  --gs-muted: oklch(42% 0.04 142);
-  --gs-rule: oklch(80% 0.03 100);
-  --gs-signal: oklch(32% 0.091 139);
-  --gs-signal-2: oklch(38% 0.1 139);
-  --gs-signal-ink: oklch(93% 0.022 88);
-  --gs-focus: oklch(46% 0.12 128);
-  background-color: var(--gs-paper);
-  color: var(--gs-ink-2);
+  background-color: #eef3ea;
 }
 .band-deep {
   background-color: var(--gs-paper-2);
@@ -101,6 +93,8 @@
   --color-danger: var(--gs-danger);
   --color-danger-ink: var(--gs-danger-ink);
   --color-scrim: var(--gs-scrim);
+  --color-sage: var(--gs-sage);
+  --color-lime: var(--gs-lime);
 
   --font-display: var(--font-prata), 'Prata', Georgia, serif;
   --font-body: var(--font-manrope), 'Manrope', ui-sans-serif, system-ui, sans-serif;
@@ -137,9 +131,13 @@
   --container-prose: 68ch;
   --container-admin: 96rem;
 
-  --radius-card: 0px;
-  --radius-control: 0px;
+  --radius-card: 1.25rem;
+  --radius-control: 0.75rem;
+  --radius-photo: 1.25rem;
   --radius-pill: 999px;
+
+  --shadow-soft: var(--gs-shadow-soft);
+  --shadow-lift: var(--gs-shadow-lift);
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
@@ -171,7 +169,7 @@
   --color-border: var(--gs-rule);
   --color-input: var(--gs-muted);
   --color-ring: var(--gs-focus);
-  --radius: 0px;
+  --radius: 0.75rem;
 }
 
 @layer base {
@@ -179,7 +177,7 @@
     overflow-x: clip;
     scroll-padding-top: 5rem;
     -webkit-text-size-adjust: 100%;
-    color-scheme: dark;
+    color-scheme: light;
   }
   html[data-theme='admin'] {
     color-scheme: light;
@@ -221,7 +219,7 @@
   /* Links underline by default (WCAG 1.4.1: not colour alone); nav, buttons and cards opt out with no-underline. */
   a {
     text-decoration-line: underline;
-    text-decoration-color: var(--gs-signal);
+    text-decoration-color: var(--gs-sage);
     text-underline-offset: 0.2em;
     text-decoration-thickness: 1px;
   }
@@ -235,8 +233,8 @@
     outline-offset: -2px;
   }
   ::selection {
-    background: var(--gs-signal);
-    color: var(--gs-signal-ink);
+    background: var(--gs-lime);
+    color: var(--gs-ink);
   }
   img,
   video {
@@ -270,6 +268,7 @@
   .photo-frame {
     outline: 1px solid var(--gs-photo-ring);
     outline-offset: -1px;
+    border-radius: var(--radius-photo);
   }
   .container-page {
     width: 100%;
@@ -372,3 +371,122 @@
 /* Cart count and similar badges: the new number slides in. Reduced motion: the global rule above stops it. */
 @keyframes gs-swap-in { from { transform: translateY(100%); opacity: 0; } }
 .gs-swap-in { display: inline-block; animation: gs-swap-in var(--dur-short) var(--ease-out); }
+
+/* ───────────────────────── White botanical redesign: shared CSS, no JavaScript ───────────────────────── */
+
+/* Smooth in-page scrolling. Next.js turns it off during route changes when <html data-scroll-behavior="smooth">. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-scroll-behavior='smooth'] { scroll-behavior: smooth; }
+}
+
+/*
+ * Masonry (components/gallery/masonry-grid.tsx). Pure CSS Grid: rows are 1/40 of a column wide, so a card's row span
+ * is fixed by its image's aspect ratio (computed on the server: round(40 × h / w) + 3). The browser's ordinary
+ * auto-placement then drops each card into the column that frees up first, which is exactly masonry, while the DOM
+ * (and keyboard / screen-reader order) stays the order of the data. No measuring, no layout JS, no shift.
+ *   u = column width / 40, gap = 3u   ⇒   u = container width / (43 × cols − 3)
+ */
+.masonry-wrap { container-type: inline-size; }
+.masonry {
+  --cols: 2;
+  --u: calc(100cqi / (43 * var(--cols) - 3));
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  grid-auto-rows: var(--u);
+  column-gap: calc(var(--u) * 3);
+  align-items: start;
+}
+@container (min-width: 40rem) { .masonry { --cols: 3; } }
+@container (min-width: 56rem) { .masonry { --cols: 4; } }
+@container (min-width: 84rem) { .masonry[data-max='5'] { --cols: 5; } }
+.masonry[data-max='3'] { --cols: 2; }
+@container (min-width: 40rem) { .masonry[data-max='3'] { --cols: 3; } }
+.masonry > * { grid-row-end: span var(--span, 36); min-width: 0; }
+
+/* Photo frames shimmer softly until the image paints over them (pure CSS skeleton; keeps moving under reduced motion
+   only as a static tint). */
+@keyframes gs-shimmer { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+.frame-shimmer {
+  background-color: var(--gs-paper-3);
+  background-image: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.55) 50%, transparent 70%);
+  background-size: 200% 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .frame-shimmer { animation: gs-shimmer 1.6s linear infinite; }
+}
+
+/* Photo cards: gentle zoom, caption lift and arrow nudge on hover (fine pointers only); captions always shown on touch
+   and when the card has keyboard focus. */
+.photo-card .photo-card-img { transition: transform var(--dur-long) var(--ease-out); }
+.photo-card .photo-card-cap { transition: opacity var(--dur-short) var(--ease-out), transform var(--dur-short) var(--ease-out); }
+.photo-card .photo-card-arrow { transition: transform var(--dur-short) var(--ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .photo-card .photo-card-cap { opacity: 0; transform: translateY(8px); }
+  .photo-card:hover .photo-card-img { transform: scale(1.04); }
+  .photo-card:hover .photo-card-cap,
+  .photo-card:focus-within .photo-card-cap { opacity: 1; transform: none; }
+  .photo-card:hover .photo-card-arrow { transform: translate(2px, -2px); }
+}
+
+/* Lifted cards (services, products, testimonials): a 2px rise and a softer, larger shadow on hover. */
+.lift-card { transition: transform var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .lift-card:hover { transform: translateY(-2px); box-shadow: var(--gs-shadow-lift); }
+  .lift-card:hover .lift-card-img { transform: scale(1.03); }
+}
+.lift-card-img { transition: transform var(--dur-long) var(--ease-out); }
+
+/* Header: transparent edge at the top of the page, a hairline and soft shadow once the page has scrolled 64px
+   (scroll-driven, no listener). Browsers without scroll timelines keep the hairline. */
+.site-header { box-shadow: 0 1px 0 var(--gs-rule); }
+@supports (animation-timeline: scroll()) {
+  @keyframes gs-header-raise { from { box-shadow: 0 0 0 transparent; } to { box-shadow: 0 1px 0 var(--gs-rule), 0 8px 24px -16px rgb(32 40 32 / 0.25); } }
+  .site-header { animation: gs-header-raise linear both; animation-timeline: scroll(root); animation-range: 0 64px; }
+}
+
+/* Nav links: an underline that grows from the left on hover; the current page keeps it. */
+.nav-link { position: relative; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0.75rem;
+  bottom: 0.4rem;
+  height: 1.5px;
+  background: var(--gs-signal);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-short) var(--ease-out);
+}
+.nav-link[aria-current='page']::after { transform: scaleX(1); }
+@media (hover: hover) and (pointer: fine) {
+  .nav-link:hover::after { transform: scaleX(1); }
+}
+
+/* Hero entrance: headline, sentence and actions rise in turn; the photo opens upward. CSS animations start with the
+   first paint (no hydration wait). Reduced motion: the global rule makes them instant. */
+@keyframes gs-rise-in { from { opacity: 0.001; transform: translateY(16px); } }
+@keyframes gs-photo-in { from { clip-path: inset(12% 0 0 0 round var(--radius-photo)); transform: scale(1.04); } to { clip-path: inset(0 0 0 0 round var(--radius-photo)); } }
+.hero-in { animation: gs-rise-in 640ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 90ms); }
+.hero-photo-in { animation: gs-photo-in 900ms var(--ease-out) both; }
+
+/* Page transition: each route fades up a touch as it arrives (app/template.tsx). */
+@keyframes gs-page-in { from { opacity: 0.001; transform: translateY(6px); } }
+.page-in { animation: gs-page-in 320ms var(--ease-out) both; }
+
+/* Reading progress for long stories: a lime hairline under the header that fills with the page (scroll-driven). */
+.read-progress { position: fixed; inset: 4rem 0 auto 0; height: 3px; z-index: 290; background: var(--gs-lime); transform-origin: left; transform: scaleX(0); }
+@supports (animation-timeline: scroll()) {
+  @keyframes gs-read { to { transform: scaleX(1); } }
+  .read-progress { animation: gs-read linear both; animation-timeline: scroll(root); }
+}
+@supports not (animation-timeline: scroll()) { .read-progress { display: none; } }
+
+/* Hero accent: the lime glow drifts a few percent over 18 s (transform only); still under reduced motion. */
+@keyframes gs-drift { to { transform: translate(-4%, 6%) scale(1.06); } }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-glow { animation: gs-drift 18s var(--ease-in-out) infinite alternate; }
+}
+.lift-card .photo-card-arrow { transition: transform var(--dur-short) var(--ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .lift-card:hover .photo-card-arrow { transform: translateX(3px); }
+}

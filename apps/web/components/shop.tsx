@@ -27,11 +27,11 @@ export function ProductCard({ p, priority }: { p: Card; priority?: boolean }) {
     <article className="group relative flex min-w-0 flex-col gap-3">
       <div className="relative">
         {p.image ? (
-          <Photo src={p.image.url} alt={p.image.alt} blurDataUrl={p.image.blurDataUrl ?? undefined} ratio="4 / 5" priority={priority} sizes="(min-width: 64rem) 25vw, (min-width: 40rem) 33vw, 50vw" className="transition-transform duration-(--dur-long) ease-out group-hover:scale-[1.03]" />
+          <Photo src={p.image.url} alt={p.image.alt} blurDataUrl={p.image.blurDataUrl ?? undefined} ratio="4 / 5" priority={priority} sizes="(min-width: 64rem) 25vw, (min-width: 40rem) 33vw, 50vw" frameClassName="frame-shimmer" className="transition-transform duration-(--dur-long) ease-out group-hover:scale-[1.03]" />
         ) : (
-          <div className="grid aspect-[4/5] place-items-center bg-paper-3 text-muted"><ImageOff aria-hidden className="size-6" /></div>
+          <div className="grid aspect-[4/5] place-items-center rounded-[var(--radius-photo)] bg-paper-3 text-muted"><ImageOff aria-hidden className="size-6" /></div>
         )}
-        {tag && <span className="absolute top-2 left-2 rounded-pill bg-paper px-2.5 py-1 text-xs font-bold text-ink">{tag}</span>}
+        {tag && <span className="absolute top-3 left-3 rounded-pill bg-lime px-2.5 py-1 text-xs font-bold text-ink shadow-soft">{tag}</span>}
       </div>
       <div className="flex flex-col gap-1">
         <h3 className="text-lg leading-snug">

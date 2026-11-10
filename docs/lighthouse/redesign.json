@@ -1,0 +1,96 @@
+{
+  "ranAt": "2026-11-10T04:54:13.955Z",
+  "base": "http://localhost:3000",
+  "rows": [
+    {
+      "page": "/",
+      "performance": 83,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "79/83/90",
+      "lcp": "2.9 s",
+      "cls": "0",
+      "tbt": "500 ms",
+      "weight": "Total size was 798 KiB",
+      "lcpElement": "\"<img alt=\\\"Resort landscape at Maremegmeg Beach, El Nido\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover\\\" style=\\\"position: absolute; height: 100",
+      "lcpPhases": "TTFB:468ms Load Delay:222ms Load Time:178ms Render Delay:2022ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    },
+    {
+      "page": "/gallery",
+      "performance": 76,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "68/76/88",
+      "lcp": "4.0 s",
+      "cls": "0",
+      "tbt": "480 ms",
+      "weight": "Total size was 888 KiB",
+      "lcpElement": "\"<img alt=\\\"\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover\\\" style=\\\"position: absolute; height: 100%; width: 100%; inset: 0px;\\\" sizes=\\\"(min-wi",
+      "lcpPhases": "TTFB:464ms Load Delay:383ms Load Time:64ms Render Delay:3042ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    },
+    {
+      "page": "/projects",
+      "performance": 85,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "72/85/88",
+      "lcp": "3.8 s",
+      "cls": "0",
+      "tbt": "210 ms",
+      "weight": "Total size was 664 KiB",
+      "lcpElement": "\"<img alt=\\\"\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover\\\" style=\\\"position: absolute; height: 100%; width: 100%; inset: 0px;\\\" sizes=\\\"(min-wi",
+      "lcpPhases": "TTFB:463ms Load Delay:362ms Load Time:136ms Render Delay:2868ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    },
+    {
+      "page": "/stories",
+      "performance": 80,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "75/80/80",
+      "lcp": "2.8 s",
+      "cls": "0",
+      "tbt": "610 ms",
+      "weight": "Total size was 615 KiB",
+      "lcpElement": "\"<img alt=\\\"Women Who Inspire: Nanay Esther’s Journey at Greenscape\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover transition-transform duration-(",
+      "lcpPhases": "TTFB:474ms Load Delay:48ms Load Time:108ms Render Delay:2186ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    },
+    {
+      "page": "/shop",
+      "performance": 87,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "85/87/89",
+      "lcp": "3.1 s",
+      "cls": "0",
+      "tbt": "300 ms",
+      "weight": "Total size was 708 KiB",
+      "lcpElement": "\"<p class=\\\"max-w-[46ch] text-lg text-ink-2\\\">\"",
+      "lcpPhases": "TTFB:463ms Load Delay:0ms Load Time:0ms Render Delay:2624ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    }
+  ]
+}

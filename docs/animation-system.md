@@ -45,3 +45,15 @@ The dealt theme (*Hedgerow*) keeps motion still, and Hallmark's craft rules forb
 
 ## Tests
 `tests/e2e/design-system.spec.ts`: reveals are visible with JS off; reduced motion shows end states without scrolling; below-the-fold reveals start hidden and appear when scrolled to; axe runs on end states.
+
+## White botanical redesign (2026-11)
+New CSS-only primitives in `theme.css`, all off or instant under reduced motion:
+- `.hero-in` (staggered rise with `--i`) and `.hero-photo-in` (clip-path open)
+- `.page-in` (route fade via `app/template.tsx`)
+- `.site-header` (scroll-timeline shadow), `.nav-link` (underline grows from the left)
+- `.photo-card` (hover zoom, caption rise, arrow nudge; fine pointers only)
+- `.lift-card` (2px rise, larger shadow)
+- `.frame-shimmer` (image skeleton), `.hero-glow` (18 s drift)
+- `.read-progress` (scroll-timeline progress bar)
+
+The masonry cards reuse `[data-reveal]` and `.gs-parallax`. Details and decisions: `docs/design/redesign-white-botanical.md`.

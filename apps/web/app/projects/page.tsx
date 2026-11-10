@@ -1,59 +1,54 @@
-import { Reveal } from '@greenscape/ui/motion/reveal';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ProjectCard } from '@/components/cards';
+import { GalleryFilters } from '@/components/gallery/gallery-filters';
+import { MasonryCard } from '@/components/gallery/masonry-card';
+import { MasonryGrid, MasonryItem, ratioOf } from '@/components/gallery/masonry-grid';
 import { PROJECT_CATEGORIES, cms } from '@/lib/cms';
+import { placeName, projectCard, slugify } from '@/lib/gallery';
 import { PageHeader, loadPage, pageMetadata } from '@/lib/page';
 
-export async function generateMetadata({ searchParams }: { searchParams: Promise<{ category?: string }> }): Promise<Metadata> {
+type SP = { category?: string; place?: string };
+
+export async function generateMetadata({ searchParams }: { searchParams: Promise<SP> }): Promise<Metadata> {
   const { category } = await searchParams;
   const base = await pageMetadata('projects', '/projects');
   return category && PROJECT_CATEGORIES[category] ? { ...base, title: `${PROJECT_CATEGORIES[category]} projects`, alternates: { canonical: `/projects?category=${category}` } } : base;
 }
 
-const filterClass =
-  'inline-flex h-10 items-center rounded-pill border px-4 text-sm font-medium no-underline transition-colors duration-(--dur-short) border-rule-strong text-ink-2 hover:border-ink-2 hover:text-ink aria-[current=page]:border-signal aria-[current=page]:bg-signal aria-[current=page]:text-signal-ink';
-
-export default async function ProjectsPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
-  const { category: raw } = await searchParams;
-  const category = raw && PROJECT_CATEGORIES[raw] ? raw : undefined;
-  const [page, projects] = await Promise.all([loadPage('projects'), cms.projects({ category, limit: 100 })]);
-  const used = new Set((await cms.projects({ limit: 100 })).map((p) => p.category));
-  const filters = Object.entries(PROJECT_CATEGORIES).filter(([k]) => used.has(k));
+/** The portfolio: every project as a masonry card at its cover's natural proportions, filterable by kind and place. */
+export default async function ProjectsPage({ searchParams }: { searchParams: Promise<SP> }) {
+  const sp = await searchParams;
+  const [page, all] = await Promise.all([loadPage('projects'), cms.projects({ limit: 100 })]);
+  const categories = Object.entries(PROJECT_CATEGORIES).filter(([k]) => all.some((p) => p.category === k)).map(([key, label]) => ({ key, label }));
+  const places = [...new Map(all.map((p) => placeName(p.location)).filter(Boolean).map((l) => [slugify(l!), l!])).entries()].map(([key, label]) => ({ key, label })).sort((a, b) => a.label.localeCompare(b.label));
+  const category = categories.some((c) => c.key === sp.category) ? sp.category : undefined;
+  const place = places.some((p) => p.key === sp.place) ? sp.place : undefined;
+  const projects = all.filter((p) => (!category || p.category === category) && (!place || slugify(placeName(p.location) ?? '') === place));
+  const href = (q: { category?: string; place?: string }) => {
+    const p = new URLSearchParams(Object.entries(q).filter(([, v]) => v !== undefined) as [string, string][]);
+    return p.size ? `/projects?${p}` : '/projects';
+  };
 
   return (
     <main id="main">
       <PageHeader title={category ? PROJECT_CATEGORIES[category] : page.title} lead={page.lead}>
-        <nav aria-label="Project categories" className="mt-4">
-          <ul className="flex flex-wrap gap-2">
-            <li>
-              <Link href="/projects" className={filterClass} aria-current={!category ? 'page' : undefined}>
-                All projects
-              </Link>
-            </li>
-            {filters.map(([k, label]) => (
-              <li key={k}>
-                <Link href={`/projects?category=${k}`} className={filterClass} aria-current={category === k ? 'page' : undefined}>
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <div className="mt-4">
+          <GalleryFilters categories={categories} places={places} category={category} place={place} href={href} />
+        </div>
       </PageHeader>
       <section aria-labelledby="project-list" className="container-page pb-24">
         <h2 id="project-list" className="sr-only">Projects</h2>
         {projects.length ? (
-          <div className="grid grid-cols-1 gap-x-6 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+          <MasonryGrid label="Projects">
             {projects.map((p, i) => (
-              <Reveal key={p.slug} index={i % 3}>
-                <ProjectCard p={p} priority={i < 3} />
-              </Reveal>
+              <MasonryItem key={p.slug} ratio={ratioOf(p.cover.width, p.cover.height)} index={i}>
+                <MasonryCard photo={projectCard(p)} priority={i < 4} parallax={i % 4 === 1} sizes="(min-width: 64rem) 25vw, (min-width: 40rem) 33vw, 50vw" />
+              </MasonryItem>
             ))}
-          </div>
+          </MasonryGrid>
         ) : (
           <p className="text-lg text-ink-2">
-            No projects in this category yet. <Link href="/projects">See all projects</Link>.
+            No projects match yet. <Link href="/projects">See all projects</Link>.
           </p>
         )}
       </section>
