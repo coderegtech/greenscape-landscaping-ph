@@ -10,6 +10,7 @@ import { cms } from '@/lib/cms';
 import { ArticleCard, ProjectFeature, ServiceCard, TestimonialCard } from './cards';
 import { MasonryPhotos } from './gallery/masonry-photos';
 import { ContactDetails } from './contact-details';
+import { BotanicalHero } from './hero/botanical-hero';
 import { RichText } from './rich-text';
 
 const linkButton = (href: string, label: string, variant: 'primary' | 'secondary' = 'primary') => (
@@ -21,12 +22,18 @@ const linkButton = (href: string, label: string, variant: 'primary' | 'secondary
 );
 
 /** Renders one CMS section. Each section owns its heading id so the page outline stays h1 → h2 → h3. */
-async function RenderSection({ s, i, pageTitle }: { s: Section; i: number; pageTitle: string }) {
+async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number; pageTitle: string; slug?: string }) {
   const hid = `s${i}-${s.type}`;
   switch (s.type) {
     case 'hero': {
       // One still slide: auto-rotating carousels hurt accessibility and LCP (Hallmark floor); extra slides feed the gallery.
       const slide = s.slides[0]!;
+      if (slug === 'home' && i === 0) {
+        // The home page's botanical hero: the portrait slide in the arch, another slide in the inset circle.
+        const photo = s.slides.find((x) => (x.image.height ?? 0) > (x.image.width ?? 0))?.image ?? slide.image;
+        const inset = s.slides.map((x) => x.image).find((m) => m.url !== photo.url);
+        return <BotanicalHero title={slide.headline} lead={slide.subheadline} photo={photo} inset={inset} />;
+      }
       return (
         <PageHero
           title={slide.headline}
@@ -193,11 +200,11 @@ export function QuoteBand({ id, headline, body }: { id: string; headline?: strin
   );
 }
 
-export async function Sections({ sections, pageTitle }: { sections: Section[]; pageTitle: string }) {
+export async function Sections({ sections, pageTitle, slug }: { sections: Section[]; pageTitle: string; slug?: string }) {
   return (
     <>
       {sections.map((s, i) => (
-        <RenderSection key={i} s={s} i={i} pageTitle={pageTitle} />
+        <RenderSection key={i} s={s} i={i} pageTitle={pageTitle} slug={slug} />
       ))}
     </>
   );

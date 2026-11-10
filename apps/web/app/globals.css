@@ -2,3 +2,60 @@
 @import "tw-animate-css";
 @import "@greenscape/ui/styles/theme.css";
 @source "../../../packages/ui/src";
+
+/* ─────────── Botanical hero (components/hero/botanical-hero.tsx). transform/opacity only. ─────────── */
+.bh { --pd: 1; }
+@media (max-width: 63.99rem) { .bh { --pd: 0.55; } }
+@media (max-width: 47.99rem) { .bh { --pd: 0.3; } }
+
+/* A decoration: positioned once; leans with the pointer (translate) and drifts with scroll (transform); its artwork
+   floats on its own (transform on the child), so the three never fight. */
+.bh-deco {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  translate: calc(var(--mx, 0px) * var(--d)) calc(var(--my, 0px) * var(--d));
+  transition: translate 900ms var(--ease-out);
+}
+.bh-front { z-index: 20; }
+.bh-deco > svg { display: block; width: 100%; height: auto; transform: rotate(var(--r0, 0deg)); transform-origin: var(--origin, 50% 85%); }
+.bh-visual > .bh-deco.bh-mid { z-index: 2; }
+.bh-photo, .bh-inset { position: relative; z-index: 1; }
+
+@keyframes bh-appear { from { opacity: 0; } }
+@keyframes bh-breeze {
+  0% { transform: translate(0, 0) rotate(calc(var(--r0, 0deg) - var(--sway, 4deg))) scale(1); }
+  50% { transform: translate(var(--fx, 4px), var(--fy, -10px)) rotate(var(--r0, 0deg)) scale(var(--breathe, 1.03)); }
+  100% { transform: translate(calc(var(--fx, 4px) * -0.6), calc(var(--fy, -10px) * 0.4)) rotate(calc(var(--r0, 0deg) + var(--sway, 4deg))) scale(1); }
+}
+@keyframes bh-drift { to { transform: translate3d(0, calc(var(--d) * var(--pd) * -110px), 0) rotate(var(--spin, 0deg)); } }
+@keyframes bh-word { from { opacity: 0.001; transform: translateY(0.45em) rotate(1.5deg); } }
+@keyframes bh-photo-in { from { opacity: 0.001; transform: scale(1.06) translateY(12px); } }
+@keyframes bh-text-out { to { opacity: 0.2; transform: translateY(calc(var(--pd) * -56px)); } }
+@keyframes bh-visual-out { to { transform: translateY(calc(var(--pd) * -36px)); } }
+
+.bh-word { display: inline-block; white-space: pre; }
+.bh-rise { animation: gs-rise-in 760ms var(--ease-out) both; animation-delay: var(--at, 0ms); }
+.bh-word { animation: bh-word 760ms var(--ease-out) both; animation-delay: calc(260ms + var(--w, 0) * 85ms); }
+.bh-photo { animation: bh-photo-in 1100ms var(--ease-out) 380ms both; transition: box-shadow var(--dur-long) var(--ease-out), translate var(--dur-long) var(--ease-out); }
+.bh-inset { animation: bh-photo-in 1100ms var(--ease-out) 620ms both; }
+[data-magnetic] { transition-property: background-color, border-color, color, transform, translate; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .bh-deco { animation: bh-appear 1400ms var(--ease-out) var(--in, 0ms) both; }
+  .bh-deco > svg { animation: bh-breeze var(--dur, 9s) ease-in-out var(--dl, 0s) infinite alternate; }
+  @media (hover: hover) and (pointer: fine) {
+    .bh-photo:hover { translate: 0 -4px; box-shadow: 0 4px 8px rgb(32 40 32 / 0.06), 0 36px 60px -24px rgb(32 40 32 / 0.35); }
+  }
+  @supports (animation-timeline: scroll()) {
+    .bh-deco {
+      animation: bh-appear 1400ms var(--ease-out) var(--in, 0ms) both, bh-drift linear both;
+      animation-timeline: auto, scroll(root);
+      animation-range: normal, 0 110vh;
+    }
+    .bh-text { animation: bh-text-out linear both; animation-timeline: scroll(root); animation-range: 0 85vh; }
+    .bh-visual { animation: bh-visual-out linear both; animation-timeline: scroll(root); animation-range: 0 100vh; }
+  }
+}
+/* Touch screens: no pointer lean (it would only fire on taps). */
+@media (hover: none) { .bh-deco { translate: none; } }

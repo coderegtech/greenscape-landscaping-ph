@@ -490,3 +490,39 @@
 @media (hover: hover) and (pointer: fine) {
   .lift-card:hover .photo-card-arrow { transform: translateX(3px); }
 }
+
+/* Forest band (the site footer): the one deep-green anchor on the white site. Ink, muted text, rules and the focus
+   ring swap inside it (cream 11.8:1, sage 6.6:1, lime 8.8:1 on #1E3A28). */
+.band-forest {
+  --gs-paper: #1e3a28;
+  --gs-paper-2: #24452f;
+  --gs-paper-3: #2b5037;
+  --gs-ink: #f8faf5;
+  --gs-ink-2: #d9e0d7;
+  --gs-muted: #a8c5a0;
+  --gs-rule: rgb(248 250 245 / 0.14);
+  --gs-rule-strong: rgb(248 250 245 / 0.28);
+  --gs-signal: #c9e64a;
+  --gs-signal-ink: #1e3a28;
+  --gs-focus: #c9e64a;
+  --gs-sage: #a8c5a0;
+  /* Tailwind's colour utilities read --color-*, which :root computed from the old --gs-* values; recompute them here. */
+  --color-paper: var(--gs-paper);
+  --color-paper-2: var(--gs-paper-2);
+  --color-paper-3: var(--gs-paper-3);
+  --color-ink: var(--gs-ink);
+  --color-ink-2: var(--gs-ink-2);
+  --color-muted: var(--gs-muted);
+  --color-rule: var(--gs-rule);
+  --color-rule-strong: var(--gs-rule-strong);
+  --color-signal: var(--gs-signal);
+  --color-signal-ink: var(--gs-signal-ink);
+  --color-focus: var(--gs-focus);
+  --color-sage: var(--gs-sage);
+  --color-border: var(--gs-rule);
+  --color-ring: var(--gs-focus);
+  background-color: var(--gs-paper);
+  color: var(--gs-ink-2);
+}
+.band-forest a { text-decoration-color: rgb(201 230 74 / 0.55); }
+.band-forest ::selection { background: var(--gs-lime); color: #1e3a28; }

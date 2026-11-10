@@ -85,3 +85,15 @@ Prata (serif) headings over Manrope (sans) body are unchanged. Radii: 20px photo
 - Desktop captions appear on hover or focus, as the brief asks; the title is always in the card's accessible name.
 - `/gallery` is rendered per request (filters and `?show=`); its data calls are cached. With 80 photos the first view is the heaviest public page (Lighthouse 76). Pre-sized images from a CDN would help most.
 - In tests, the image optimiser's first AVIF encodes of 2000px photos are slow when many tests load galleries in parallel.
+
+## Botanical home hero, forest footer, shop-only cart (2026-11-11)
+- **Hero** (`apps/web/components/hero/`): the headline rises word by word, the sentence and actions follow, the CMS's portrait photo opens in a tall arch, and a second CMS photo sits in an overlapping circle. 14 drawn decorations (`botanicals.tsx`: tropical and broad leaves, fern, five-petal flowers in pink, lavender and yellow, a leafy branch, a hanging vine, soft shapes) sit on three depth layers.
+  - **Breeze**: each decoration floats, sways and breathes on its own period and deterministic delay (CSS keyframes).
+  - **Scroll**: layers drift up at different speeds and the text fades and lifts (CSS scroll timelines; native scrolling, no pinning). Parallax distances shrink on tablets and phones.
+  - **Pointer**: decorations lean a few pixels towards the cursor and the two actions are gently magnetic (`hero-pointer.tsx`, fine pointers only, rAF-batched, cleaned up on unmount).
+  - **Transition**: two foreground leaves reach ≤ 5rem into the next section, clear of its heading.
+  - **Phones**: fewer decorations; no pointer effects on touch. Reduced motion: everything still.
+  - **Why not GSAP**: the same effects need no new dependency and run off the main thread, without the hydration cost that Phase 12 removed.
+- **Footer**: the "forest" band (`.band-forest`, #1E3A28): cream text 11.8:1, sage labels 6.6:1, lime focus and hover; a leaf silhouette; pill social links. The band re-declares the `--color-*` variables, because Tailwind computes them once at `:root`.
+- **Cart icon**: shown only on `/shop`, `/cart`, `/checkout` and `/orders` (and the count is only requested there).
+- **Tests**: `tests/e2e/hero.spec.ts`, 16 passed (content and actions; decorations hidden from assistive tech; breeze, scroll drift and text fade; pointer lean on desktop only; reduced motion still; no overflow and actions on the first screen at 390/768/1440; forest footer; cart only in the shop). Screenshots of the top, middle and bottom of the hero: `docs/screenshots/hero/`.

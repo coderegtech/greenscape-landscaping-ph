@@ -47,7 +47,7 @@ export async function CmsPageView({ slug, children, after }: { slug: string; chi
     <main id="main">
       {!hasHero && <PageHeader title={page.title} lead={page.lead} />}
       {children}
-      <Sections sections={page.sections} pageTitle={page.title} />
+      <Sections sections={page.sections} pageTitle={page.title} slug={slug} />
       {after}
     </main>
   );

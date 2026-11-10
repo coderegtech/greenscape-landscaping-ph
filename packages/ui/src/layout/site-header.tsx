@@ -21,6 +21,8 @@ export interface NavItem extends NavLink {
 // Phone menu dialog: fetched on the first tap, not shipped with every page.
 const MobileMenu = dynamic(() => import('./mobile-menu'), { ssr: false });
 
+const SHOP_PATHS = ['/shop', '/cart', '/checkout', '/orders'];
+
 const isActive = (path: string, href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`));
 
 export function Wordmark({ className }: { className?: string }) {
@@ -55,9 +57,11 @@ function useCartCount(url?: string) {
 }
 
 export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHref = '/quote', accountHref = '/account', cartHref = '/cart' }: { items: NavItem[]; cartCount?: number; cartCountUrl?: string; quoteHref?: string; accountHref?: string; cartHref?: string }) {
-  const fetched = useCartCount(fixedCount === undefined ? cartCountUrl : undefined);
-  const cartCount = fixedCount ?? fetched;
   const path = usePathname() ?? '/';
+  // The cart lives with the shop: its icon (and the count request) only appear on shop, cart, checkout and order pages.
+  const shopping = SHOP_PATHS.some((p) => path === p || path.startsWith(`${p}/`));
+  const fetched = useCartCount(fixedCount === undefined && shopping ? cartCountUrl : undefined);
+  const cartCount = fixedCount ?? fetched;
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuLoaded, setMenuLoaded] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
@@ -111,7 +115,7 @@ export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHr
                 <UserRound />
               </Link>
             </Button>
-            <Button asChild variant="ghost" size="icon-sm" className="relative">
+            {shopping && <Button asChild variant="ghost" size="icon-sm" className="relative">
               <Link href={cartHref} aria-label={`Cart, ${cartCount ?? 0} items`} className="no-underline">
                 <ShoppingBag />
                 {!!cartCount && (
@@ -121,7 +125,7 @@ export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHr
                   </span>
                 )}
               </Link>
-            </Button>
+            </Button>}
 
             <Button ref={menuButton} variant="ghost" size="icon-sm" className="lg:hidden" aria-label="Open menu" aria-haspopup="dialog" aria-expanded={menuOpen} onClick={() => { setMenuLoaded(true); setMenuOpen(true); }}>
               <Menu />
