@@ -1,5 +1,5 @@
 import { Photo } from '@greenscape/ui/components/photo';
-import { ArrowRight, Star } from 'lucide-react';
+import { ArrowRight, CalendarDays, Images, MapPin, Star } from 'lucide-react';
 import Link from 'next/link';
 import type { ArticleSummary, ProjectSummary, ServiceSummary, Testimonial } from '@/lib/cms';
 import { PROJECT_CATEGORIES, longDate, monthYear } from '@/lib/cms';
@@ -27,6 +27,42 @@ export function ProjectCard({ p, priority }: { p: ProjectSummary; priority?: boo
           </Link>
         </h3>
         {p.completedOn && <p className="text-sm text-muted">Completed {monthYear(p.completedOn)}</p>}
+      </div>
+    </article>
+  );
+}
+
+/**
+ * Featured project, split: the photo on one side (alternating with `flip`), the story on the other. The whole card is
+ * one link (the title is its name); place and date are a fact line with icons, never dot-joined.
+ */
+export function ProjectFeature({ p, flip, priority }: { p: ProjectSummary; flip?: boolean; priority?: boolean }) {
+  const category = PROJECT_CATEGORIES[p.category] ?? p.category;
+  return (
+    <article className="lift-card group relative grid min-w-0 overflow-clip rounded-[var(--radius-card)] border border-rule bg-paper shadow-soft md:grid-cols-2">
+      <div className={`relative ${flip ? 'md:order-2' : ''}`}>
+        <Photo src={p.cover.url} alt={p.cover.alt} blurDataUrl={p.cover.blurDataUrl} ratio="4 / 3" priority={priority} sizes="(min-width: 48rem) 40rem, 100vw" frameClassName="!rounded-none frame-shimmer h-full md:!aspect-auto md:min-h-[24rem]" className="lift-card-img" />
+        <span className="absolute top-4 left-4 rounded-pill bg-signal px-3 py-1.5 text-xs font-bold text-signal-ink shadow-soft">{category}</span>
+        {p.imageCount > 1 && (
+          <span className="absolute right-4 bottom-4 inline-flex items-center gap-1.5 rounded-pill bg-ink/70 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+            <Images aria-hidden className="size-3.5" /> {p.imageCount} photos
+          </span>
+        )}
+      </div>
+      <div className="flex min-w-0 flex-col justify-center gap-4 p-6 md:p-10">
+        <h3 className="text-2xl md:text-3xl">
+          <Link href={`/projects/${p.slug}`} className="no-underline after:absolute after:inset-0 group-hover:text-signal">
+            {p.title}
+          </Link>
+        </h3>
+        <p className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-muted">
+          {p.location && <span className="inline-flex items-center gap-1.5"><MapPin aria-hidden className="size-4 text-signal" />{p.location}</span>}
+          {p.completedOn && <span className="inline-flex items-center gap-1.5"><CalendarDays aria-hidden className="size-4 text-signal" />Completed {monthYear(p.completedOn)}</span>}
+        </p>
+        {p.excerpt && <p className="line-clamp-4 text-base text-ink-2">{p.excerpt}</p>}
+        <span aria-hidden className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-signal">
+          View project details <ArrowRight className="photo-card-arrow size-4" />
+        </span>
       </div>
     </article>
   );

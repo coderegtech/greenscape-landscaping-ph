@@ -47,8 +47,8 @@ Prata (serif) headings over Manrope (sans) body are unchanged. Radii: 20px photo
 |---|---|
 | `/projects` (the portfolio) | Masonry of every project's cover, linking to the project; category and place filters |
 | `/gallery` (project gallery) | All 80 photos: 72 project photos plus 8 curated gallery photos, with project title, category and place. Category and place filters, lightbox, and **24 at a time** with a "Show more photographs" link (server pagination via `?show=`, so the first request never loads the whole library and earlier photos keep their place) |
-| Home, "Gardens we have built" | Small masonry: the featured projects first, topped up with the latest to 8 cards |
-| Home, "From our sites" | A sideways film strip at natural proportions (one height, varying widths), opening the lightbox. A second masonry right below the first would repeat itself |
+| Home, "Gardens we have built" | Split feature cards (`ProjectFeature` in `cards.tsx`): the photo on one side with a category pill and a photo count, alternating sides. The other side has the title, place and completion date with icons, a 4-line excerpt and "View project details →". The whole card is one link; it lifts on hover and stacks on phones. Featured projects only (CMS `limit`). Shown on owner request, modelled on the original site's featured-projects layout |
+| Home, "From our sites" | Masonry with lightbox (`MasonryPhotos`): the curated gallery photos at natural proportions (changed from a sideways film strip on owner request) |
 | Project pages, CMS `photos` sections | `MasonryPhotos` with lightbox |
 | `/stories` | Editorial: the newest story as a large lead, the rest in an aligned grid. Titles stay easy to scan, so it is not masonry |
 | `/shop` | Aligned product grid (comparison and buying) |

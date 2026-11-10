@@ -121,7 +121,8 @@ export async function placeOrder(
       await reserve(tx, lines.filter((l) => l.tracked), o.id);
       await tx.cart.update({ where: { id: cart.id }, data: { status: 'CONVERTED' } });
       return o;
-    });
+      // Under load, wait for a pooled connection rather than failing the sale (Prisma's default wait is 2 s).
+    }, { maxWait: 10_000, timeout: 15_000 });
   } catch (err) {
     // Two submits with the same key raced: the loser returns the winner's order.
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
