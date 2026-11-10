@@ -2,3 +2,7 @@
 @import "tw-animate-css";
 @import "@greenscape/ui/styles/theme.css";
 @source "../../../packages/ui/src";
+
+/* Route loading bar (components/nav-progress.tsx): grows slowly while the next page renders, fades when it lands. */
+.gs-progress { position: fixed; inset: 0 0 auto; z-index: 500; height: 2px; background: var(--gs-signal); transform-origin: left; transform: scaleX(0); opacity: 0; pointer-events: none; transition: opacity 300ms var(--ease-out) 100ms, transform 0s 450ms; }
+.gs-progress[data-on] { opacity: 1; transform: scaleX(0.85); transition: opacity 150ms var(--ease-out), transform 8s cubic-bezier(0.1, 0.7, 0.2, 1); }

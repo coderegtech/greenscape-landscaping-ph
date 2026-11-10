@@ -43,7 +43,8 @@ test.describe('motion is optional', () => {
 
   test('reveals hide below the fold and appear when scrolled to', async ({ page }) => {
     await page.goto(`${WEB}/design`);
-    const item = page.locator('#index').locator('xpath=ancestor::section').locator('li[data-reveal]').first();
+    // The last item: the split hero (2026-11 redesign) is shorter, so the first one can start on screen.
+    const item = page.locator('#index').locator('xpath=ancestor::section').locator('li[data-reveal]').last();
     expect(Number(await item.evaluate((el) => getComputedStyle(el).opacity))).toBeLessThan(1);
     await item.scrollIntoViewIfNeeded();
     await expect(item).toHaveCSS('opacity', '1');

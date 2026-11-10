@@ -5,6 +5,8 @@ import { SiteHeader } from '@greenscape/ui/layout/site-header';
 import { JS_FLAG_SCRIPT } from '@greenscape/ui/motion/reveal';
 import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
+import { Suspense } from 'react';
+import { NavProgress } from '@/components/nav-progress';
 import { draftMode } from 'next/headers';
 import { cms } from '@/lib/cms';
 import './globals.css';
@@ -56,6 +58,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </Link>
             }
           />
+          {/* Suspense: the bar reads search params; its fallback is nothing, so no page content waits on it. */}
+          <Suspense fallback={null}>
+            <NavProgress />
+          </Suspense>
           <Toaster />
       </body>
     </html>
