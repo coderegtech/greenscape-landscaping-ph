@@ -14,7 +14,8 @@ function map(err: unknown): Mapped {
   if (e?.type === 'entity.parse.failed') return { status: 400, code: 'INVALID_JSON', message: 'Malformed JSON body' };
   if (e?.type === 'entity.too.large') return { status: 413, code: 'PAYLOAD_TOO_LARGE', message: 'Request body too large' };
   // Prisma known request errors
-  if (e?.code === 'P2002') return { status: 409, code: 'CONFLICT', message: 'A record with these values already exists', details: e.meta };
+  // No Prisma `meta`: it names tables, columns and constraints (security audit L-2).
+  if (e?.code === 'P2002') return { status: 409, code: 'CONFLICT', message: 'A record with these values already exists' };
   if (e?.code === 'P2025') return { status: 404, code: 'NOT_FOUND', message: 'Record not found' };
   if (e?.code === 'P2003') return { status: 409, code: 'CONFLICT', message: 'Related record constraint failed' };
   return { status: 500, code: 'INTERNAL', message: 'Something went wrong' };

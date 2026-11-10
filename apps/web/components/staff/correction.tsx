@@ -31,7 +31,7 @@ export function CorrectionButton({ workDate, label, asLink }: { workDate: string
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {asLink ? <button type="button" className="font-medium text-ink underline decoration-signal underline-offset-[0.2em]">Ask for a correction</button> : <Button size="sm" variant="ghost" aria-label={`Ask for a correction for ${label}`}>Correct</Button>}
+        {asLink ? <button type="button" className="font-medium text-ink underline decoration-signal underline-offset-[0.2em]">Ask for a correction</button> : <Button size="sm" variant="ghost">Correct<span className="sr-only"> {label}</span></Button>}
       </DialogTrigger>
       <DialogContent className="max-h-[90svh] overflow-y-auto border-rule bg-paper p-6">
         <DialogTitle className="text-2xl">Correct {workDate ? label : 'a day'}</DialogTitle>

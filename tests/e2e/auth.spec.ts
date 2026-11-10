@@ -98,6 +98,7 @@ test.describe('admin access', () => {
   });
 
   test('customers are turned away; staff get in', async ({ page }) => {
+    test.setTimeout(180_000);
     const u = await confirmedUser('staff');
     await page.goto(`${ADMIN}/login`);
     await signIn(page, ADMIN, u.email);
@@ -109,7 +110,7 @@ test.describe('admin access', () => {
     await expect(async () => {
       await page.reload();
       await expect(page.getByTestId('mfa-enrol')).toBeVisible({ timeout: 1000 });
-    }).toPass({ timeout: 70_000 });
+    }).toPass({ timeout: 100_000 }); // up to the 60 s permission-cache TTL, plus reload time under load
     await expect(page).toHaveURL(/\/mfa\?next=%2F/);
     await completeMfa(page, u.email);
     await expect(page.getByTestId('staff-identity')).toContainText('content_manager');

@@ -2,6 +2,7 @@ import { PROTECTED_ROLES, ROLE_KEYS, type RoleKey } from '@greenscape/database/r
 import { RoleSummary, SetRolesBody, SetStatusBody, UserSummary, UsersQuery, paginated, z } from '@greenscape/validation';
 import { Router } from 'express';
 import { audit } from '../../lib/audit.ts';
+import { logSecurity } from '../../lib/security-log.ts';
 import type { Deps } from '../../lib/deps.ts';
 import { AppError } from '../../lib/errors.ts';
 import { registry } from '../../lib/openapi.ts';
@@ -42,7 +43,8 @@ const toSummary = (u: Row): UserSummary => ({
 });
 const isProtected = (k: string) => PROTECTED_ROLES.includes(k as RoleKey);
 
-export function userRoutes({ db, cache }: Deps) {
+export function userRoutes(deps: Deps) {
+  const { db, cache, identities } = deps;
   const r = Router();
 
   r.get('/users', requirePermission('users.read'), async (req, res) => {
@@ -82,6 +84,7 @@ export function userRoutes({ db, cache }: Deps) {
       return tx.user.findUniqueOrThrow({ where: { id }, select: userSelect });
     });
     await cache.invalidateTags([authzCacheKey(id)]); // effective on the target's next request, not after the TTL
+    logSecurity(deps, req, res, 'security.roles_changed', { target: id, roles: wanted.join(' ') });
     res.json(toSummary(updated));
   });
 
@@ -98,10 +101,20 @@ export function userRoutes({ db, cache }: Deps) {
         throw AppError.forbidden('Only a super administrator can suspend a super administrator');
       }
       await audit(tx, req, res, { action: 'user.status.set', entityType: 'User', entityId: id, before: { status: target.status }, after: { status } });
-      return tx.user.update({ where: { id }, data: { status }, select: userSelect });
+      return tx.user.update({ where: { id }, data: { status }, select: { ...userSelect, authUserId: true } });
     });
     await cache.invalidateTags([authzCacheKey(id)]);
-    res.json(toSummary(updated));
+    // The API refuses a suspended user at once; banning at Supabase also stops new sign-ins and session refreshes
+    // (security audit M-3). Retrying the same request is safe if this step fails.
+    if (updated.authUserId) {
+      try {
+        await identities.setBanned(updated.authUserId, status !== 'ACTIVE');
+      } catch {
+        throw new AppError(502, 'IDENTITY_UPDATE_FAILED', 'The account status was saved, but sign-in could not be blocked at the identity provider yet. Please try again.');
+      }
+    }
+    const { authUserId: _omit, ...summary } = updated;
+    res.json(toSummary(summary));
   });
 
   r.get('/roles', requirePermission('users.read'), async (_req, res) => {

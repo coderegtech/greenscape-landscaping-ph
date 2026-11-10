@@ -8,3 +8,9 @@ onlyBuiltDependencies:
   - esbuild
   - sharp
   - mongodb-memory-server
+# Supply-chain guards (security audit, Semgrep pnpm rules): a release must be a day old before it can be installed
+# (most malicious publishes are caught within hours), a package may not lose its publish provenance between versions,
+# and transitive dependencies may not come from git/tarball URLs.
+minimumReleaseAge: 1440
+trustPolicy: no-downgrade
+blockExoticSubdeps: true

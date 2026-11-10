@@ -8,7 +8,8 @@
     "./next": "./src/next.ts",
     "./browser": "./src/browser.ts",
     "./api": "./src/api.ts",
-    "./preview": "./src/preview.ts"
+    "./preview": "./src/preview.ts",
+    "./admin": "./src/admin.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
@@ -29,5 +30,13 @@
   "peerDependencies": {
     "next": ">=16",
     "react": ">=19"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
   }
 }

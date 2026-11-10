@@ -83,21 +83,25 @@ export function cmsAdminRoutes(deps: Deps) {
     r.post(`/collections/${name}`, can('cms.write'), async (req, res) => {
       const doc = schema.parse({ ...req.body, updatedAt: new Date() });
       const { insertedId } = await c().insertOne(doc as any);
+      await audit(db, req, res, { action: `cms.${name}.create`, entityType: name, entityId: String(insertedId), after: doc });
       await invalidate(deps, tagsFor(name));
       res.status(201).json({ id: String(insertedId), ...doc });
     });
     r.patch(`/collections/${name}/:id`, can('cms.write'), async (req, res) => {
       const { id } = ObjectIdParam.parse(req.params);
       const patch = Partial.parse(req.body);
+      const before = await c().findOne({ _id: new ObjectId(id) }, { projection: { _id: 0 } });
       const out = await c().findOneAndUpdate({ _id: new ObjectId(id) }, { $set: { ...patch, ...(name === 'galleryItems' ? { updatedAt: new Date() } : {}) } }, { returnDocument: 'after' });
       if (!out) throw AppError.notFound();
+      await audit(db, req, res, { action: `cms.${name}.update`, entityType: name, entityId: id, before, after: patch });
       await invalidate(deps, tagsFor(name));
       const { _id, ...rest } = out;
       res.json({ id: String(_id), ...rest });
     });
     r.delete(`/collections/${name}/:id`, can('cms.write'), async (req, res) => {
       const { id } = ObjectIdParam.parse(req.params);
-      await c().deleteOne({ _id: new ObjectId(id) });
+      const before = await c().findOneAndDelete({ _id: new ObjectId(id) }, { projection: { _id: 0 } });
+      if (before) await audit(db, req, res, { action: `cms.${name}.delete`, entityType: name, entityId: id, before });
       await invalidate(deps, tagsFor(name));
       res.status(204).end();
     });

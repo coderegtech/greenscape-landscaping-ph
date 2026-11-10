@@ -99,7 +99,7 @@ test.describe('with HR', () => {
     const staff = await webSession(browser, emp.email);
     await staff.getByRole('button', { name: 'Clock in' }).click();
     await expect(staff.getByTestId('clock-status')).toContainText('Clocked in since');
-    await staff.getByRole('button', { name: 'Ask for a correction' }).click();
+    await staff.getByRole('button', { name: 'Ask for a correction', exact: true }).click(); // a per-day "Correct …" button also exists once a past day is on the list
     const dialog = staff.getByRole('dialog');
     await dialog.getByLabel('Day', { exact: true }).fill(manila(-1));
     await dialog.getByLabel('What happened').fill('Phone battery died, worked the full day at the resort site');

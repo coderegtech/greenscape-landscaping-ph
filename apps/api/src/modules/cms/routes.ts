@@ -5,6 +5,7 @@ import { Router } from 'express';
 import type { Deps } from '../../lib/deps.ts';
 import { AppError } from '../../lib/errors.ts';
 import { registry } from '../../lib/openapi.ts';
+import { safeEqual } from '../../middleware/client.ts';
 
 // Public, read-only CMS endpoints. Only `published` content is ever returned; drafts/preview come with Phase 7.
 // Cached in Redis (cache-aside + stampede lock) and tagged so publishing can invalidate precisely.
@@ -52,7 +53,7 @@ export function cmsRoutes({ mongo, cache, env }: Deps) {
   // Public content: let browsers/CDN cache briefly; Next.js revalidates via tags.
   r.use((req, res, next) => {
     // Preview: the web server (never a browser) sends the shared secret to read drafts, uncached.
-    res.locals.preview = !!env.PREVIEW_SECRET && req.get('x-preview-secret') === env.PREVIEW_SECRET;
+    res.locals.preview = !!env.PREVIEW_SECRET && safeEqual(req.get('x-preview-secret') ?? '', env.PREVIEW_SECRET);
     res.set('cache-control', res.locals.preview ? 'no-store' : 'public, max-age=60, stale-while-revalidate=300');
     next();
   });

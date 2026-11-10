@@ -1,0 +1,153 @@
+# Production-shaped stack (docs/security/infrastructure-security.md). Not a deployment: no deploy happens without
+# approval. Validate with `docker compose -f docker/compose.prod.yml --env-file <secrets.env> config`.
+#
+# - Postgres, Mongo and Redis sit on an internal network: no host ports, no route to the internet.
+# - Only a TLS-terminating proxy in front of web/admin/api should be public (HTTPS + HSTS); it is environment-specific
+#   and not defined here.
+# - Secrets come from an env file kept outside the repository (or the platform's secret store), never from images.
+# - Every app container: non-root, read-only root filesystem, all Linux capabilities dropped, no privilege escalation,
+#   memory/CPU limits, health checks.
+# - Supabase (Auth + Storage) is the hosted project; its service-role key is given to the API only.
+
+x-app: &app
+  restart: unless-stopped
+  read_only: true
+  tmpfs: [/tmp]
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  networks: [edge, data]
+  deploy:
+    resources:
+      limits: { cpus: '1.0', memory: 768M }
+
+services:
+  api:
+    <<: *app
+    image: ${REGISTRY:-greenscape}/api:${TAG:-latest}
+    environment:
+      NODE_ENV: production
+      API_PORT: 4000
+      DATABASE_URL: postgresql://greenscape_app:${POSTGRES_APP_PASSWORD:?set POSTGRES_APP_PASSWORD}@postgres:5432/greenscape?sslmode=disable
+      MONGODB_URL: mongodb://greenscape_app:${MONGO_APP_PASSWORD:?set MONGO_APP_PASSWORD}@mongo:27017/greenscape?authSource=greenscape
+      MONGODB_DB: greenscape
+      REDIS_URL: redis://greenscape_app:${REDIS_APP_PASSWORD:?set REDIS_APP_PASSWORD}@redis:6379
+      SUPABASE_URL: ${SUPABASE_URL:?set SUPABASE_URL}
+      SUPABASE_SECRET_KEY: ${SUPABASE_SECRET_KEY:?set SUPABASE_SECRET_KEY}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:?set INTERNAL_API_KEY}
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET:?set REVALIDATE_SECRET}
+      PREVIEW_SECRET: ${PREVIEW_SECRET:?set PREVIEW_SECRET}
+      PAYMENT_PROVIDER: ${PAYMENT_PROVIDER:-stripe_test}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      PAYMENTS_LIVE_APPROVED: 'false'
+      REQUIRE_STAFF_MFA: 'true'
+      CACHE_PREFIX: gs:prod
+      CORS_ORIGINS: ${WEB_URL:?set WEB_URL},${ADMIN_URL:?set ADMIN_URL}
+      WEB_URL: ${WEB_URL:?set WEB_URL}
+      ADMIN_URL: ${ADMIN_URL:?set ADMIN_URL}
+      API_PUBLIC_URL: ${API_PUBLIC_URL:?set API_PUBLIC_URL}
+      SMTP_URL: ${SMTP_URL}
+      SENTRY_DSN: ${SENTRY_DSN}
+    depends_on:
+      postgres: { condition: service_healthy }
+      mongo: { condition: service_healthy }
+      redis: { condition: service_healthy }
+
+  migrate:
+    # One-off per release: `docker compose run --rm migrate`. The only service with DDL rights.
+    image: ${REGISTRY:-greenscape}/migrate:${TAG:-latest}
+    profiles: [migrate]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    networks: [data]
+    environment:
+      DATABASE_URL: postgresql://greenscape_migrate:${POSTGRES_MIGRATE_PASSWORD:?set POSTGRES_MIGRATE_PASSWORD}@postgres:5432/greenscape
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  web:
+    <<: *app
+    image: ${REGISTRY:-greenscape}/web:${TAG:-latest}
+    tmpfs: [/tmp, /app/apps/web/.next/cache]
+    networks: [edge]
+    environment:
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:?set INTERNAL_API_KEY}
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET:?set REVALIDATE_SECRET}
+      PREVIEW_SECRET: ${PREVIEW_SECRET:?set PREVIEW_SECRET}
+      WEB_URL: ${WEB_URL:?set WEB_URL}
+      TRUSTED_PROXY_HOPS: ${TRUSTED_PROXY_HOPS:-1}
+    depends_on: [api]
+
+  admin:
+    <<: *app
+    image: ${REGISTRY:-greenscape}/admin:${TAG:-latest}
+    tmpfs: [/tmp, /app/apps/admin/.next/cache]
+    networks: [edge]
+    environment:
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:?set INTERNAL_API_KEY}
+      PREVIEW_SECRET: ${PREVIEW_SECRET:?set PREVIEW_SECRET}
+      WEB_URL: ${WEB_URL:?set WEB_URL}
+      TRUSTED_PROXY_HOPS: ${TRUSTED_PROXY_HOPS:-1}
+    depends_on: [api]
+
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    networks: [data]
+    environment:
+      POSTGRES_DB: greenscape
+      POSTGRES_USER: greenscape_owner
+      POSTGRES_PASSWORD: ${POSTGRES_OWNER_PASSWORD:?set POSTGRES_OWNER_PASSWORD}
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+      # read by init/postgres-roles.sh
+      POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD:?set POSTGRES_APP_PASSWORD}
+      POSTGRES_MIGRATE_PASSWORD: ${POSTGRES_MIGRATE_PASSWORD:?set POSTGRES_MIGRATE_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init/postgres-roles.sh:/docker-entrypoint-initdb.d/10-roles.sh:ro
+    healthcheck: { test: [CMD-SHELL, pg_isready -U greenscape_owner -d greenscape], interval: 10s, retries: 5 }
+    deploy: { resources: { limits: { memory: 1G } } }
+
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    networks: [data]
+    command: [--auth, --bind_ip_all]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:?set MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: greenscape
+      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD:?set MONGO_APP_PASSWORD}
+    volumes:
+      - mongodata:/data/db
+      - ./init/mongo-user.js:/docker-entrypoint-initdb.d/10-user.js:ro
+    healthcheck: { test: [CMD, mongosh, --quiet, --eval, 'db.adminCommand("ping").ok'], interval: 10s, retries: 5 }
+    deploy: { resources: { limits: { memory: 1G } } }
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    networks: [data]
+    # No default user. The app user is limited to the gs:prod:* keys and can't run admin or @dangerous commands
+    # (KEYS, FLUSHALL, CONFIG, DEBUG, MONITOR…); Lua stays allowed because the rate limiter uses EVALSHA.
+    # Bounded memory; only keys with a TTL (caches, counters) are evicted.
+    command:
+      - sh
+      - -c
+      - >
+        exec redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy volatile-lru
+        --user default off
+        --user greenscape_app on ">$${REDIS_APP_PASSWORD:?set REDIS_APP_PASSWORD}" "~gs:prod:*" "&*" +@all -@admin -@dangerous
+    environment:
+      REDIS_APP_PASSWORD: ${REDIS_APP_PASSWORD:?set REDIS_APP_PASSWORD}
+    volumes: [redisdata:/data]
+    healthcheck: { test: [CMD-SHELL, 'redis-cli --user greenscape_app --pass "$$REDIS_APP_PASSWORD" ping | grep PONG'], interval: 10s, retries: 5 }
+
+networks:
+  edge: {}
+  data: { internal: true }
+
+volumes:
+  pgdata: {}
+  mongodata: {}
+  redisdata: {}

@@ -1,3 +1,4 @@
+import { logSecurity } from '../../lib/security-log.ts';
 import { timingSafeEqual } from 'node:crypto';
 import { CartLineInput, CartQtyInput, CatalogQuery, CheckoutRequest, FULFILLMENT_LABELS, ORDER_STATUS_LABELS, SHOP_CATEGORIES, z } from '@greenscape/validation';
 import express, { Router, type Request, type Response } from 'express';
@@ -87,7 +88,10 @@ export function webhookRoutes(deps: Deps) {
     try {
       event = await deps.payments.handleWebhook(raw, req.headers);
     } catch (err) {
-      if (err instanceof WebhookSignatureError) throw new AppError(400, 'BAD_SIGNATURE', 'Webhook signature verification failed');
+      if (err instanceof WebhookSignatureError) {
+        logSecurity(deps, req, res, 'security.webhook_bad_signature', { provider: deps.payments.name });
+        throw new AppError(400, 'BAD_SIGNATURE', 'Webhook signature verification failed');
+      }
       throw err;
     }
     if (!event) return res.json({ received: true, ignored: true });

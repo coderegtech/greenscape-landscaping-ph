@@ -40,6 +40,7 @@ export const EnvSchema = z.object({
   REQUIRE_STAFF_MFA: z.enum(['true', 'false']).default('true').transform((v) => v === 'true'),
   SENTRY_DSN: z.string().url().optional().or(z.literal('').transform(() => undefined)),
   APP_VERSION: z.string().default('0.1.0'),
+  API_DOCS: z.enum(['true', 'false']).optional(),
 });
 export type Env = z.infer<typeof EnvSchema>;
 

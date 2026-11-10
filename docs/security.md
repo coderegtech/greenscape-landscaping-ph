@@ -1,5 +1,7 @@
 # Security
 
+> **Security audit and hardening (2026-11):** see [`docs/security/`](security/): [audit](security/security-audit.md), [vulnerability report](security/vulnerability-report.md), [threat model](security/threat-model.md), [authentication](security/authentication-security.md), [authorization matrix](security/authorization-matrix.md), [API](security/api-security.md), [rate limiting](security/rate-limiting.md), [databases](security/database-security.md), [storage](security/storage-security.md), [payments](security/payment-security.md), [infrastructure and secrets](security/infrastructure-security.md), [testing](security/security-testing.md), [incident response](security/incident-response.md), [pre-deployment checklist](security/security-checklist.md). The phase notes below remain as history; where they differ, `docs/security/` is current.
+
 Living document; each phase adds its section. Threat model and DPA notes are in `architecture.md` §10.
 
 ## Authentication (Phase 4)

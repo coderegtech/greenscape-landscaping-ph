@@ -1,0 +1,18 @@
+# Keep build contexts small and secret-free: no dependencies, build output, env files, keys, git history or test output.
+**/node_modules
+**/.next
+**/dist
+.git
+.env
+.env.*
+!.env.example
+supabase/signing_keys.json
+supabase/.temp
+**/*.pem
+**/*.key
+test-results
+playwright-report
+docs
+gitleaks*.json
+semgrep*.json
+osv*.json

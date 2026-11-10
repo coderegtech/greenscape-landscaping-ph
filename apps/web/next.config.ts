@@ -1,3 +1,4 @@
+import path from 'node:path';
 import type { NextConfig } from 'next';
 import { legacyRedirects } from './lib/legacy-redirects';
 
@@ -44,6 +45,8 @@ const securityHeaders = [
 ];
 
 const config: NextConfig = {
+  // Container images (docker/*.Dockerfile) build a self-contained server; local `next start` keeps the default.
+  ...(process.env.NEXT_OUTPUT === 'standalone' ? { output: 'standalone' as const, outputFileTracingRoot: path.join(process.cwd(), '../..') } : {}),
   reactStrictMode: true,
   poweredByHeader: false,
   transpilePackages: ['@greenscape/auth', '@greenscape/ui', '@greenscape/validation'],

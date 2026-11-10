@@ -1,0 +1,9 @@
+node_modules/
+**/node_modules/
+.next/
+**/.next/
+docs/
+scripts/migrate/data/
+scripts/audit/
+*.json
+test-results/

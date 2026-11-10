@@ -17,6 +17,9 @@ describe('CMS schemas', () => {
   it('rejects unknown section types and unsafe links', () => {
     expect(Section.safeParse({ type: 'marquee' }).success).toBe(false);
     expect(Section.safeParse({ type: 'cta', cta: { label: 'x', href: 'javascript:alert(1)' } }).success).toBe(false);
+    // L-3: protocol-relative paths look internal but leave the site
+    for (const href of ['//evil.example', '/\\evil.example']) expect(Section.safeParse({ type: 'cta', cta: { label: 'x', href } }).success, href).toBe(false);
+    for (const href of ['/quote', '/projects?category=x', 'https://greenscapelandscapingph.com', 'tel:+639178443330']) expect(Section.safeParse({ type: 'cta', cta: { label: 'x', href } }).success, href).toBe(true);
   });
 
   it('rejects non-slug slugs', () => {

@@ -23,7 +23,8 @@ export const MediaRef = z.object({
 });
 export type MediaRef = z.infer<typeof MediaRef>;
 
-const Href = z.string().refine((s) => s.startsWith('/') || /^https?:\/\//.test(s) || /^(mailto|tel):/.test(s), 'must be a path, http(s), mailto or tel link');
+// `//host` and `/\host` start with a slash but leave the site (security audit L-3).
+const Href = z.string().refine((s) => (s.startsWith('/') && !/^\/[/\\]/.test(s)) || /^https?:\/\//.test(s) || /^(mailto|tel):/.test(s), 'must be a path, http(s), mailto or tel link');
 export const Cta = z.object({ label: z.string().min(1).max(60), href: Href, variant: z.enum(['primary', 'secondary']).optional() });
 
 /** Tiptap/ProseMirror JSON. Stored as structure, rendered to React — never raw HTML. */

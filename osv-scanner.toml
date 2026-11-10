@@ -1,0 +1,40 @@
+# OSV-Scanner exceptions (CI: .github/workflows/security.yml). Reviewed 2026-11-10, see docs/security/vulnerability-report.md.
+# Every entry below is reachable only through Lighthouse/Puppeteer in scripts/audit (a local measuring tool, a
+# devDependency of the private `audit` package): not in the API, website or admin, and not in any built image (Trivy
+# scans those). Production uses minimatch 3/5/11, zod 4 and its own @sentry/node. Each exception expires; re-review
+# then (upgrade Lighthouse, or renew with a reason).
+
+[[IgnoredVulns]]
+id = "GHSA-8988-4f7v-96qf"
+ignoreUntil = 2027-02-10
+reason = "@opentelemetry/core 1.30.1: dev-only, via lighthouse@12 in scripts/audit; not shipped"
+
+[[IgnoredVulns]]
+id = "GHSA-qqmp-wf37-98f9"
+ignoreUntil = 2027-02-10
+reason = "@opentelemetry/instrumentation-* (knex, mongoose, mysql, mysql2, pg, tedious): dev-only, via lighthouse@12 in scripts/audit; not shipped"
+
+[[IgnoredVulns]]
+id = "GHSA-c475-qrg2-pj4r"
+ignoreUntil = 2027-02-10
+reason = "basic-ftp 5.3.1: dev-only, via lighthouse@12 in scripts/audit; not shipped"
+
+[[IgnoredVulns]]
+id = "GHSA-7pqw-9j4j-h8q3"
+ignoreUntil = 2027-02-10
+reason = "extract-zip 2.0.1: dev-only, via lighthouse@12 in scripts/audit; not shipped"
+
+[[IgnoredVulns]]
+id = "GHSA-jmr9-qjv8-65gv"
+ignoreUntil = 2027-02-10
+reason = "extract-zip 2.0.1: dev-only, via lighthouse@12 in scripts/audit; not shipped"
+
+[[IgnoredVulns]]
+id = "GHSA-g3hv-75wg-m249"
+ignoreUntil = 2027-02-10
+reason = "minimatch 9.0.9 / 10.2.6: dev-only, via lighthouse@12 in scripts/audit; not shipped"
+
+[[IgnoredVulns]]
+id = "GHSA-mrhx-c7xc-m3w5"
+ignoreUntil = 2027-02-10
+reason = "zod 3.25.76: dev-only, via lighthouse@12 in scripts/audit; not shipped"

@@ -30,17 +30,28 @@ const PERM_TTL_SEC = 60; // permissions are never trusted from the token and nev
 export const authzCacheKey = (userId: string) => `authz:user:${userId}`;
 
 /** Map a verified Supabase identity to our User row, creating it (with the default role) on first sight. */
-async function resolveUser({ db }: Deps, authUserId: string, email: string, name?: string) {
+async function resolveUser({ db, identities, log }: Deps, authUserId: string, email: string, name?: string) {
   const existing = await db.user.findUnique({ where: { authUserId }, select: { id: true, status: true, email: true } });
   if (existing) {
     if (existing.email !== email) await db.user.update({ where: { id: existing.id }, data: { email } });
     return existing;
   }
   // Same verified email under a new Supabase identity (re-created account, Firebase→Supabase migration): relink.
-  const byEmail = await db.user.findUnique({ where: { email }, select: { id: true, status: true } });
+  const byEmail = await db.user.findUnique({ where: { email }, select: { id: true, status: true, authUserId: true } });
   if (byEmail) {
-    await db.user.update({ where: { id: byEmail.id }, data: { authUserId } });
-    return { ...byEmail, email };
+    // The account (and its roles) moves to the new identity only if Supabase confirms the new identity owns the
+    // mailbox: never rely on the project's "confirm email" setting alone (security audit M-1).
+    if (!(await identities.emailConfirmed(authUserId))) {
+      log.warn({ channel: 'security', event: 'security.relink_refused', userId: byEmail.id }, 'security.relink_refused');
+      throw new AppError(403, 'EMAIL_NOT_CONFIRMED', 'Confirm your email address, then sign in again.');
+    }
+    await db.$transaction([
+      db.user.update({ where: { id: byEmail.id }, data: { authUserId } }),
+      // also on the security channel: an account changing hands is worth seeing in the log stream
+      db.auditLog.create({ data: { actorId: byEmail.id, action: 'user.identity.relink', entityType: 'User', entityId: byEmail.id, before: { authUserId: byEmail.authUserId }, after: { authUserId } } }),
+    ]);
+    log.warn({ channel: 'security', event: 'security.identity_relinked', userId: byEmail.id }, 'security.identity_relinked');
+    return { id: byEmail.id, status: byEmail.status, email };
   }
   try {
     const role = await db.role.findUniqueOrThrow({ where: { key: DEFAULT_ROLE } });

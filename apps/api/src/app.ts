@@ -8,6 +8,7 @@ import { openApiDocument } from './lib/openapi.ts';
 import { errorHandler, notFound } from './middleware/error-handler.ts';
 import { apiRateLimit } from './middleware/rate-limit.ts';
 import { requestId } from './middleware/request-id.ts';
+import { securityEvents } from './lib/security-log.ts';
 import { authenticate } from './middleware/auth.ts';
 import { authRoutes } from './modules/auth/routes.ts';
 import { cmsAdminRoutes } from './modules/cms-admin/routes.ts';
@@ -42,6 +43,7 @@ export function createApp(deps: Deps) {
     }),
   );
   app.use(helmet());
+  app.use(securityEvents(deps)); // 401/403/429 → security log channel + repeat alerts
   app.use(
     cors({
       origin: (origin, cb) => cb(null, !origin || env.CORS_ORIGINS.includes(origin)), // no Origin = server-to-server
@@ -61,10 +63,13 @@ export function createApp(deps: Deps) {
   app.use('/v1', apiRateLimit(deps.redis, env.CACHE_PREFIX, env.RATE_LIMIT_PER_MIN, env.INTERNAL_API_KEY));
   app.use(express.json({ limit: '1mb' }));
 
-  const doc = openApiDocument(env.API_PUBLIC_URL, env.APP_VERSION);
-  app.get('/v1/openapi.json', (_req, res) => { res.json(doc); });
-  // Swagger UI ships inline scripts; relax CSP for this route only.
-  app.use('/v1/docs', helmet({ contentSecurityPolicy: false }), swaggerUi.serve, swaggerUi.setup(doc));
+  // API docs: on by default outside production (security audit L-5); API_DOCS=true turns them on anywhere.
+  if (env.API_DOCS ? env.API_DOCS === 'true' : env.NODE_ENV !== 'production') {
+    const doc = openApiDocument(env.API_PUBLIC_URL, env.APP_VERSION);
+    app.get('/v1/openapi.json', (_req, res) => { res.json(doc); });
+    // Swagger UI ships inline scripts; relax CSP for this route only.
+    app.use('/v1/docs', helmet({ contentSecurityPolicy: false }), swaggerUi.serve, swaggerUi.setup(doc));
+  }
 
   // Everything below may see a signed-in user; routes decide whether one is required.
   app.use('/v1', authenticate(deps));

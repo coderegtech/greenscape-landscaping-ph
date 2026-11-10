@@ -1,3 +1,4 @@
+import { timingSafeEqual } from 'node:crypto';
 import { revalidateTag } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -7,7 +8,9 @@ const Body = z.object({ tags: z.array(z.string().regex(/^(cms|shop):[\w:-]{1,120
 
 export async function POST(request: NextRequest) {
   const secret = process.env.REVALIDATE_SECRET;
-  if (!secret || request.headers.get('x-revalidate-secret') !== secret) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+  const given = Buffer.from(request.headers.get('x-revalidate-secret') ?? '');
+  const ok = !!secret && given.length === Buffer.byteLength(secret) && timingSafeEqual(given, Buffer.from(secret)); // constant time
+  if (!ok) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
   const parsed = Body.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: 'bad request' }, { status: 400 });
   for (const tag of parsed.data.tags) revalidateTag(tag, { expire: 0 });

@@ -1,3 +1,4 @@
+import { createIdentityAdmin, type IdentityAdmin } from '@greenscape/auth/admin';
 import { createCache, createRedis, type Cache, type Redis } from '@greenscape/cache';
 import { connectContentDb } from '@greenscape/content';
 import { createTokenVerifier, type TokenVerifier } from '@greenscape/auth/server';
@@ -21,6 +22,8 @@ export interface Deps {
   storage: Storage;
   mailer: Mailer;
   payments: PaymentProvider;
+  /** Supabase Auth admin (service role): email confirmation checks and bans. */
+  identities: IdentityAdmin;
 }
 
 export function createPayments(env: Env, redis: Redis): PaymentProvider {
@@ -43,6 +46,7 @@ export async function createDeps(env: Env, log: Logger): Promise<Deps> {
     storage: createStorage(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY),
     mailer: createMailer(env.SMTP_URL, env.MAIL_FROM, log),
     payments: createPayments(env, redis),
+    identities: createIdentityAdmin(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY),
   };
 }
 

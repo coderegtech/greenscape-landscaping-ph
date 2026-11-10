@@ -1,0 +1,21 @@
+# Gitleaks config (CI: .github/workflows/security.yml). Default rules, plus a narrow allowlist reviewed on 2026-11-10
+# (docs/security/vulnerability-report.md, "Secret scan"):
+#   - Firebase Storage download URLs of the public site's images (`?alt=media&token=…`). Every visitor of the live
+#     site receives these; they are content URLs captured by the audit crawl and the migration reports, not credentials
+#     of this system. They stop mattering once production images are migrated (Phase 11) and the old bucket objects
+#     are removed.
+#   - Two test-only values used against local services: the integration tests' internal key and the local test
+#     users' password.
+# Anything else Gitleaks finds fails the build.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "public Firebase image URLs of greenscape-palawan; local test fixtures"
+regexTarget = "line"
+regexes = [
+  '''firebasestorage\.googleapis\.com/v0/b/greenscape-palawan\.firebasestorage\.app/o/[^"'`\s]*token=[0-9a-f-]{36}''',
+  # apps/web/app/design/page.tsx builds the same public URLs from a `${FB}` prefix (the bucket URL above)
+  '''`\$\{FB\}[^`\s]*\?alt=media&token=[0-9a-f-]{36}`''',
+]
+paths = ['''^tests/integration/rate-limit\.test\.ts$''', '''^tests/integration/supabase\.ts$''']

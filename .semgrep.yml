@@ -1,0 +1,43 @@
+# Project rules for Semgrep (CI: .github/workflows/security.yml), on top of the p/typescript, p/nodejs and
+# p/owasp-top-ten community packs. Each rule encodes a decision from docs/security/.
+rules:
+  - id: greenscape-no-unsafe-raw-sql
+    message: Raw SQL must be a Prisma tagged template ($queryRaw`...`), never the *Unsafe variants built from strings.
+    languages: [typescript]
+    severity: ERROR
+    pattern-either:
+      - pattern: $DB.$queryRawUnsafe(...)
+      - pattern: $DB.$executeRawUnsafe(...)
+
+  - id: greenscape-service-key-outside-api
+    message: The Supabase secret (service-role) key belongs to the API and server scripts only, never the Next.js apps.
+    languages: [typescript]
+    severity: ERROR
+    paths:
+      include: [apps/web/, apps/admin/, packages/ui/]
+    pattern: process.env.SUPABASE_SECRET_KEY
+
+  - id: greenscape-no-public-secrets
+    message: NEXT_PUBLIC_ variables are shipped to every browser; secrets must not use that prefix.
+    languages: [typescript]
+    severity: ERROR
+    pattern-regex: NEXT_PUBLIC_[A-Z_]*(SECRET|SERVICE_ROLE|PRIVATE|PASSWORD|WEBHOOK)[A-Z_]*
+
+  - id: greenscape-inner-html-only-json-ld
+    message: dangerouslySetInnerHTML is allowed only for JSON-LD with `<` escaped, or the fixed JS flag script.
+    languages: [typescript]
+    severity: WARNING
+    patterns:
+      - pattern: '<$EL dangerouslySetInnerHTML={{ __html: $X }} />'
+      - pattern-not: '<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify($D).replace(/</g, "\\u003c") }} />'
+      - pattern-not: '<script dangerouslySetInnerHTML={{ __html: JS_FLAG_SCRIPT }} />'
+
+  - id: greenscape-roles-from-token
+    message: Roles and permissions come from Postgres (middleware/auth.ts), never from token claims or the request.
+    languages: [typescript]
+    severity: ERROR
+    pattern-either:
+      - pattern: $PAYLOAD.app_metadata.roles
+      - pattern: $PAYLOAD.user_metadata.role
+      - pattern: req.body.roles
+      - pattern: req.headers['x-role']
