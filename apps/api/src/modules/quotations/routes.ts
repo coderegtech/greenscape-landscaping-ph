@@ -113,6 +113,7 @@ export function quotationRoutes(deps: Deps) {
       html: emailHtml('Thank you, we have your request', [`Hi ${q.name}, we will contact you within one working day to talk about your garden.`, 'If anything changes, reply to this email or call 0917 844 3330.'], rows, auth ? { label: 'Track your request', href: `${env.WEB_URL}/account` } : undefined),
     };
     await Promise.all([mailer.send(notify), mailer.send(confirm)]);
+    await deps.events.emit('quotation.submitted', { quotationId: quotation.id });
 
     res.status(201).json(QuoteReceipt.parse({ number: quotation.number, status: quotation.status, submittedAt: quotation.submittedAt.toISOString() }));
   });
@@ -159,13 +160,17 @@ export function quotationRoutes(deps: Deps) {
   r.patch('/:id', requirePermission('quotations.manage'), async (req, res) => {
     const { id } = IdParam.parse(req.params);
     const body = QuotationUpdate.parse(req.body);
+    let was: { status: string; assignedToId: string | null } | undefined;
     const updated = await db.$transaction(async (tx) => {
       const before = await tx.quotation.findUnique({ where: { id }, select: { status: true, assignedToId: true } });
       if (!before) throw AppError.notFound('Quotation not found');
+      was = before;
       const after = await tx.quotation.update({ where: { id }, data: body, select: { id: true, status: true, assignedToId: true, updatedAt: true } });
       await audit(tx, req, res, { action: 'quotation.update', entityType: 'Quotation', entityId: id, before, after: { status: after.status, assignedToId: after.assignedToId } });
       return after;
     });
+    if (updated.status !== was?.status) await deps.events.emit('quotation.status_changed', { quotationId: id });
+    if (updated.assignedToId && updated.assignedToId !== was?.assignedToId && updated.assignedToId !== currentAuth(res).userId) await deps.events.emit('quotation.assigned', { quotationId: id, assigneeId: updated.assignedToId });
     res.json(updated);
   });
 

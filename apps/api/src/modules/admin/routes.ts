@@ -181,6 +181,7 @@ export function adminRoutes(deps: Deps) {
       text: emailText('You have a reply', [body.slice(0, 1000)], [], { label: 'Open your messages', href: `${env.WEB_URL}/messages` }),
       html: emailHtml('You have a reply', [body.slice(0, 1000)], [], { label: 'Open your messages', href: `${env.WEB_URL}/messages` }),
     });
+    await deps.events.emit('message.from_staff', { customerUserId: c.customerUserId, preview: body });
     res.status(201).json(await thread(id));
   });
   r.patch('/conversations/:id', requirePermission('messages.reply'), async (req, res) => {
@@ -337,6 +338,7 @@ export function customerMessageRoutes(deps: Deps) {
         text: emailText('New customer message', [body.slice(0, 1000)], [], { label: 'Open messages', href: `${env.ADMIN_URL}/messages` }),
         html: emailHtml('New customer message', [body.slice(0, 1000)], [], { label: 'Open messages', href: `${env.ADMIN_URL}/messages` }),
       });
+      await deps.events.emit('message.from_customer', { userId: auth.userId, preview: body });
     }
     res.status(201).json(await view(auth.userId));
   });

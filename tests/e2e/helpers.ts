@@ -3,8 +3,9 @@ import { expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
 import { createPrismaClient } from '@greenscape/database';
 
-export const WEB = 'http://localhost:3000';
-export const ADMIN = 'http://localhost:3001';
+// Override to run against servers on other ports (e.g. while another checkout's dev servers hold 3000/3001).
+export const WEB = process.env.E2E_WEB ?? 'http://localhost:3000';
+export const ADMIN = process.env.E2E_ADMIN ?? 'http://localhost:3001';
 export const PASSWORD = 'Greenscape-E2e-2026';
 export const email = (label: string) => `${label}-${randomUUID().slice(0, 8)}@e2e.greenscape.local`;
 

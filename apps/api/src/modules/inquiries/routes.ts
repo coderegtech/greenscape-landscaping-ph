@@ -27,6 +27,7 @@ export function inquiryRoutes(deps: Deps) {
     const row = await db.contactInquiry.create({ data: { name: m.name, email: m.email, phone: m.phone, subject: m.subject, body: m.message } });
     const rows: [string, string][] = [['From', `${m.name} <${m.email}>`], ['Phone', m.phone ?? 'Not given'], ['Subject', m.subject ?? 'General']];
     await mailer.send({ to: await notifyTo(deps, 'messages'), replyTo: m.email, subject: `Website message from ${m.name}`, text: emailText('New website message', [m.message], rows), html: emailHtml('New website message', [m.message], rows) });
+    await deps.events.emit('inquiry.received', { inquiryId: row.id });
     res.status(201).json({ received: true, id: row.id });
   });
 

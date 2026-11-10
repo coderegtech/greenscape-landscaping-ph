@@ -26,6 +26,7 @@ export const contentSecurityPolicy = [
   `connect-src 'self' ${api} ${supabase}`.trim(),
   'frame-src https://www.youtube-nocookie.com',
   "media-src 'self'",
+  "worker-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

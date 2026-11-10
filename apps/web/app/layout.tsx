@@ -2,6 +2,8 @@ import { LazyToaster as Toaster } from '@greenscape/ui/components/lazy-toaster';
 import { fontVariables } from '@greenscape/ui/fonts';
 import { SiteFooter } from '@greenscape/ui/layout/site-footer';
 import { SiteHeader } from '@greenscape/ui/layout/site-header';
+import { NotificationBell } from '@greenscape/ui/notifications/bell';
+import { NotificationsProvider } from '@greenscape/ui/notifications/provider';
 import { JS_FLAG_SCRIPT } from '@greenscape/ui/motion/reveal';
 import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
@@ -40,8 +42,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <a href="/api/preview/exit" className="font-bold">Exit preview</a>
             </div>
           )}
-          <SiteHeader items={site?.nav.main ?? []} cartCountUrl="/api/cart/count" />
-          {children}
+          <NotificationsProvider app="web" apiUrl={process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}>
+            <SiteHeader items={site?.nav.main ?? []} cartCountUrl="/api/cart/count" notifications={<NotificationBell centerHref="/account/notifications" />} />
+            {children}
+          </NotificationsProvider>
           <SiteFooter
             columns={(site?.nav.footer ?? []).map((n) => ({ title: n.label, links: n.children ?? [] }))}
             contact={{ address: c?.address, phone: c?.phone, email: c?.email, hours: c?.hours }}

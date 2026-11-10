@@ -185,3 +185,4 @@ export type TestimonialRequest = z.infer<typeof TestimonialRequest>;
 export * from './shop.ts';
 export * from './hr.ts';
 export * from './admin.ts';
+export * from './notifications.ts';

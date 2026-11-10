@@ -34,6 +34,7 @@ export const PERMISSIONS = {
   'quotations.manage': 'Update, assign and annotate quotations',
   'messages.read': 'Read customer conversations',
   'messages.reply': 'Reply to customer conversations',
+  'notifications.broadcast': 'Send announcements to staff or customers',
 
   'employees.read': 'View employee records',
   'employees.manage': 'Create/edit employees and schedules',

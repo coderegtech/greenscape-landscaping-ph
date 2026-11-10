@@ -29,6 +29,7 @@
     "data:import": "tsx scripts/migrate/import-export.ts",
     "storage:setup": "pnpm --filter @greenscape/storage buckets",
     "media:sweep": "tsx scripts/sweep-orphans.ts",
+    "vapid:keys": "pnpm --filter @greenscape/api exec web-push generate-vapid-keys",
     "load:test": "tsx scripts/load-test.ts"
   },
   "devDependencies": {

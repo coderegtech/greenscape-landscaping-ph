@@ -372,3 +372,8 @@
 /* Cart count and similar badges: the new number slides in. Reduced motion: the global rule above stops it. */
 @keyframes gs-swap-in { from { transform: translateY(100%); opacity: 0; } }
 .gs-swap-in { display: inline-block; animation: gs-swap-in var(--dur-short) var(--ease-out); }
+/* Notifications: the bell rocks once when something arrives; new rows ease in. Both are covered by the reduced-motion rule above. */
+@keyframes gs-bell { 20% { transform: rotate(14deg); } 40% { transform: rotate(-12deg); } 60% { transform: rotate(8deg); } 80% { transform: rotate(-4deg); } }
+.gs-bell-ring { transform-origin: 50% 0; animation: gs-bell var(--dur-long) var(--ease-out); }
+@keyframes gs-notif-in { from { opacity: 0; transform: translateY(-6px); } }
+.gs-notif-in { animation: gs-notif-in var(--dur-short) var(--ease-out); }

@@ -15,6 +15,7 @@ const deps = await createDeps(env, log);
 const scheduler = startScheduler(deps);
 const shopJobs = startShopJobs(deps);
 const attendanceJobs = startAttendanceJobs(deps);
+const pushJobs = deps.notifications.worker.start();
 const server = createApp(deps).listen(env.API_PORT, () => log.info({ port: env.API_PORT }, 'api listening'));
 
 let closing = false;
@@ -25,6 +26,7 @@ async function shutdown(signal: string) {
   scheduler.stop();
   shopJobs.stop();
   attendanceJobs.stop();
+  pushJobs.stop();
   server.close();
   await closeDeps(deps);
   process.exit(0);

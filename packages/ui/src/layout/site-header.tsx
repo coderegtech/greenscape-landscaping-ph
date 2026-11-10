@@ -3,7 +3,7 @@ import { ChevronDown, Menu, ShoppingBag, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Button } from '../components/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/dropdown-menu';
 import { cn } from '../lib/utils';
@@ -54,7 +54,7 @@ function useCartCount(url?: string) {
   return n;
 }
 
-export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHref = '/quote', accountHref = '/account', cartHref = '/cart' }: { items: NavItem[]; cartCount?: number; cartCountUrl?: string; quoteHref?: string; accountHref?: string; cartHref?: string }) {
+export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHref = '/quote', accountHref = '/account', cartHref = '/cart', notifications }: { items: NavItem[]; cartCount?: number; cartCountUrl?: string; quoteHref?: string; accountHref?: string; cartHref?: string; notifications?: ReactNode }) {
   const fetched = useCartCount(fixedCount === undefined ? cartCountUrl : undefined);
   const cartCount = fixedCount ?? fetched;
   const path = usePathname() ?? '/';
@@ -111,6 +111,7 @@ export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHr
                 <UserRound />
               </Link>
             </Button>
+            {notifications}
             <Button asChild variant="ghost" size="icon-sm" className="relative">
               <Link href={cartHref} aria-label={`Cart, ${cartCount ?? 0} items`} className="no-underline">
                 <ShoppingBag />

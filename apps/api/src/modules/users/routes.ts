@@ -42,7 +42,7 @@ const toSummary = (u: Row): UserSummary => ({
 });
 const isProtected = (k: string) => PROTECTED_ROLES.includes(k as RoleKey);
 
-export function userRoutes({ db, cache }: Deps) {
+export function userRoutes({ db, cache, events }: Deps) {
   const r = Router();
 
   r.get('/users', requirePermission('users.read'), async (req, res) => {
@@ -82,6 +82,7 @@ export function userRoutes({ db, cache }: Deps) {
       return tx.user.findUniqueOrThrow({ where: { id }, select: userSelect });
     });
     await cache.invalidateTags([authzCacheKey(id)]); // effective on the target's next request, not after the TTL
+    await events.emit('user.roles_changed', { userId: id, roles: wanted });
     res.json(toSummary(updated));
   });
 

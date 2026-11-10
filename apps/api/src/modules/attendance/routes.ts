@@ -64,6 +64,7 @@ export function attendanceSelfRoutes(deps: Deps) {
       if (await tx.attendanceCorrection.findFirst({ where: { recordId: rec.id, status: 'PENDING' } })) throw AppError.conflict('A correction for this day is already waiting.');
       return tx.attendanceCorrection.create({ data: { recordId: rec.id, requestedById: currentAuth(res).userId, reason: input.reason, proposed: proposed.map((p) => ({ type: p.type, at: p.at.toISOString() })) } });
     });
+    await deps.events.emit('correction.requested', { correctionId: out.id });
     res.status(201).json({ id: out.id, status: out.status });
   });
 
@@ -86,6 +87,7 @@ export function attendanceSelfRoutes(deps: Deps) {
   r.post('/me/leave', requirePermission('leave.self'), async (req, res) => {
     const e = await me(res);
     const q = await requestLeave(deps, e.id, LeaveRequestInput.parse(req.body));
+    await deps.events.emit('leave.requested', { leaveId: q.id });
     res.status(201).json({ id: q.id, days: Number(q.days), status: q.status });
   });
   r.post('/me/leave/:id/cancel', requirePermission('leave.self'), async (req, res) => {
