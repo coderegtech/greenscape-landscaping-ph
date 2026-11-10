@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-const WEB = 'http://localhost:3000';
-const ADMIN = 'http://localhost:3001';
+const WEB = process.env.E2E_WEB ?? 'http://localhost:3000';
+const ADMIN = process.env.E2E_ADMIN ?? 'http://localhost:3001';
 // Routes that arrive with the shop (Phase 8); their header links may 404 until then.
 const NOT_YET = /\/(shop|cart)(\?|$)/;
 

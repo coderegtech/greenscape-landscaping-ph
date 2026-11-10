@@ -3,8 +3,8 @@ import { Skeleton } from './skeleton';
 /** Product card placeholder at the card's final size (square photo, name, latin name, price). */
 export function ProductCardSkeleton() {
   return (
-    <div className="flex flex-col gap-3" aria-hidden>
-      <Skeleton className="aspect-square w-full" />
+    <div className="flex flex-col gap-3 rounded-card border border-rule p-2" aria-hidden>
+      <Skeleton className="aspect-[4/5] w-full" />
       <Skeleton className="h-6 w-3/4" />
       <Skeleton className="h-4 w-1/2" />
       <Skeleton className="h-5 w-1/4" />
@@ -14,7 +14,7 @@ export function ProductCardSkeleton() {
 
 export function ProductGridSkeleton({ count = 8 }: { count?: number }) {
   return (
-    <div role="status" aria-label="Loading products" className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
+    <div role="status" aria-label="Loading products" className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 lg:grid-cols-4">
       {Array.from({ length: count }, (_, i) => (
         <ProductCardSkeleton key={i} />
       ))}

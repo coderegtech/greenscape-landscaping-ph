@@ -1,5 +1,6 @@
 import { CATALOG_SORTS, CatalogQuery, PLANT_TYPES, SHOP_CATEGORIES } from '@greenscape/validation';
 import type { Metadata } from 'next';
+import { Button } from '@greenscape/ui/components/button';
 import Link from 'next/link';
 import { ProductCard } from '@/components/shop';
 import { PageHeader } from '@/lib/page';
@@ -7,8 +8,8 @@ import { shop } from '@/lib/shop';
 
 type SP = Record<string, string | undefined>;
 const filterClass =
-  'inline-flex h-10 items-center rounded-pill border px-4 text-sm font-medium no-underline transition-colors duration-(--dur-short) border-rule-strong text-ink-2 hover:border-ink-2 hover:text-ink aria-[current=page]:border-signal aria-[current=page]:bg-signal aria-[current=page]:text-signal-ink';
-const fieldClass = 'h-11 border border-rule-strong bg-paper-2 px-3 text-base text-ink';
+  'inline-flex h-10 items-center rounded-pill border px-4 text-sm font-medium no-underline transition-colors duration-(--dur-short) border-rule bg-paper text-ink-2 hover:border-sage hover:text-ink aria-[current=page]:border-signal aria-[current=page]:bg-signal aria-[current=page]:text-signal-ink';
+const fieldClass = 'h-11 rounded-control border border-rule-strong bg-paper px-3 text-base text-ink transition-colors duration-(--dur-short) hover:border-sage';
 
 const parse = (sp: SP) => {
   const r = CatalogQuery.safeParse(sp);
@@ -48,7 +49,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
 
       <section aria-labelledby="product-list" className="container-page flex flex-col gap-8 pb-24">
         <h2 id="product-list" className="sr-only">Products</h2>
-        <form method="get" action="/shop" role="search" className="flex flex-wrap items-end gap-3 border-y border-rule py-4">
+        <form method="get" action="/shop" role="search" className="flex flex-wrap items-end gap-3 rounded-card border border-rule bg-paper-2 p-4">
           {q.category && <input type="hidden" name="category" value={q.category} />}
           <label className="flex min-w-0 flex-1 basis-56 flex-col gap-1 text-sm text-ink-2">
             Search
@@ -69,7 +70,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
               {Object.entries(CATALOG_SORTS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
             </select>
           </label>
-          <button type="submit" className="h-11 rounded-pill border-[1.5px] border-signal px-5 text-sm font-bold text-signal">Show</button>
+          <Button type="submit">Show</Button>
         </form>
 
         <p className="text-sm text-ink-2" role="status">
@@ -78,7 +79,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         </p>
 
         {page.items.length ? (
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 [&>li]:min-w-0" aria-label="Product list">
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 [&>li]:min-w-0" aria-label="Product list">
             {page.items.map((p, i) => <li key={p.slug}><ProductCard p={p} priority={i < 4} /></li>)}
           </ul>
         ) : (

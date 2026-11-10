@@ -25,13 +25,19 @@ export async function pageMetadata(slug: string, path: string): Promise<Metadata
 /** Type-led page header for pages without a hero section. */
 export function PageHeader({ title, lead, children }: { title: ReactNode; lead?: ReactNode; children?: ReactNode }) {
   return (
-    <header className="container-page flex flex-col gap-4 pt-16 pb-10 md:pt-24 md:pb-16">
-      <h1 className="text-display-s">{title}</h1>
+    <header className="container-page flex flex-col gap-5 pt-14 pb-10 md:pt-24 md:pb-14">
+      <h1 className="gs-enter-h text-display-s">{title}</h1>
       {lead && <p className="max-w-[46ch] text-lg text-ink-2">{lead}</p>}
       {children}
     </header>
   );
 }
+
+/** A `show` search param as a whole number of pages of `step` items, between one page and `max`. */
+export const showCount = (raw: string | undefined, step: number, max: number) => {
+  const n = Number(raw);
+  return Number.isInteger(n) && n > step ? Math.min(Math.ceil(n / step) * step, max) : step;
+};
 
 export async function loadPage(slug: string): Promise<CmsPage> {
   const page = await cms.page(slug);

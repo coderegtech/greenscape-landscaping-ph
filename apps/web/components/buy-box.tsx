@@ -3,7 +3,7 @@ import { Button } from '@greenscape/ui/components/button';
 import { Photo } from '@greenscape/ui/components/photo';
 import { toast } from '@greenscape/ui/components/sonner';
 import { cn } from '@greenscape/ui/lib/utils';
-import { ImageOff, Minus, Plus } from 'lucide-react';
+import { Check, ImageOff, Minus, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -34,6 +34,7 @@ export function BuyBox({ variants, productName }: { variants: Variant[]; product
   const [id, setId] = useState(variants[0]!.id);
   const [qty, setQty] = useState(1);
   const [busy, setBusy] = useState(false);
+  const [added, setAdded] = useState(false);
   const v = variants.find((x) => x.id === id)!;
   const s = stock?.[id];
   const max = Math.min(99, s?.available ?? 99);
@@ -45,6 +46,9 @@ export function BuyBox({ variants, productName }: { variants: Variant[]; product
     setBusy(false);
     if (!res.ok) return void toast.error(res.error);
     window.dispatchEvent(new Event('gs:cart'));
+    // Brief confirmation on the button itself (the toast carries the announcement and the cart link).
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1800);
     toast.success(`${qty} × ${productName}${variants.length > 1 ? `, ${v.name}` : ''} added to your cart`, { action: { label: 'View cart', onClick: () => router.push('/cart') } });
   };
 
@@ -74,7 +78,7 @@ export function BuyBox({ variants, productName }: { variants: Variant[]; product
           <Button variant="ghost" size="icon-sm" aria-label="One more" disabled={qty >= max} onClick={() => setQty((q) => Math.min(max, q + 1))}><Plus /></Button>
         </div>
         <Button onClick={add} loading={busy} disabled={soldOut || !stock} className="flex-1 sm:flex-none">
-          {soldOut ? 'Sold out' : `Add to cart, ${peso((Number(v.price) * qty).toFixed(2))}`}
+          {soldOut ? 'Sold out' : added ? <><Check key="tick" aria-hidden className="gs-pop" />Added to cart</> : `Add to cart, ${peso((Number(v.price) * qty).toFixed(2))}`}
         </Button>
       </div>
       <p className="text-sm text-ink-2" aria-live="polite">

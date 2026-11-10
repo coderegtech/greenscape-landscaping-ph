@@ -1,4 +1,5 @@
 import { Button } from '@greenscape/ui/components/button';
+import { MasonryGrid } from '@greenscape/ui/components/masonry';
 import { Photo } from '@greenscape/ui/components/photo';
 import { PageHero } from '@greenscape/ui/layout/page-hero';
 import { Section as Band, SectionHeading } from '@greenscape/ui/layout/primitives';
@@ -7,7 +8,7 @@ import { Reveal } from '@greenscape/ui/motion/reveal';
 import Link from 'next/link';
 import type { Section } from '@/lib/cms';
 import { cms } from '@/lib/cms';
-import { ArticleCard, ProjectCard, ServiceCard, TestimonialCard } from './cards';
+import { ArticleCard, ProjectTile, ServiceCard, TestimonialCard } from './cards';
 import { ContactDetails } from './contact-details';
 import { PhotoGrid } from './lightbox';
 import { RichText } from './rich-text';
@@ -52,7 +53,7 @@ async function RenderSection({ s, i, pageTitle }: { s: Section; i: number; pageT
           <SectionHeading id={hid} title={s.heading} action={linkButton('/services', 'All services', 'secondary')} />
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {items.map((x, k) => (
-              <Reveal key={x.slug} index={k}>
+              <Reveal key={x.slug} index={k} className="h-full">
                 <ServiceCard s={x} index={k} />
               </Reveal>
             ))}
@@ -61,18 +62,17 @@ async function RenderSection({ s, i, pageTitle }: { s: Section; i: number; pageT
       );
     }
     case 'featuredProjects': {
-      const items = await cms.projects({ featured: true, limit: s.limit });
+      // Six to eight tiles: enough to read as a masonry wall on four columns.
+      const items = await cms.projects({ featured: true, limit: Math.min(8, Math.max(6, s.limit)) });
       if (!items.length) return null;
       return (
         <Band band="deep" labelledBy={hid}>
           <SectionHeading id={hid} title={s.heading} action={linkButton('/projects', 'All projects', 'secondary')} />
-          <div className="grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2">
+          <MasonryGrid labelledBy={hid}>
             {items.map((p, k) => (
-              <Reveal key={p.slug} index={k}>
-                <ProjectCard p={p} />
-              </Reveal>
+              <ProjectTile key={p.slug} p={p} index={k} />
             ))}
-          </div>
+          </MasonryGrid>
         </Band>
       );
     }
@@ -82,7 +82,7 @@ async function RenderSection({ s, i, pageTitle }: { s: Section; i: number; pageT
       return (
         <Band labelledBy={hid}>
           <SectionHeading id={hid} title={s.heading} action={linkButton('/gallery', 'Full gallery', 'secondary')} />
-          <PhotoGrid label={s.heading} images={items.map((g) => ({ url: g.image.url, alt: g.image.alt, caption: g.caption, blurDataUrl: g.image.blurDataUrl }))} />
+          <PhotoGrid label={s.heading} images={items.map((g) => ({ ...g.image, caption: g.caption, category: g.category }))} />
         </Band>
       );
     }
@@ -158,7 +158,7 @@ async function RenderSection({ s, i, pageTitle }: { s: Section; i: number; pageT
       return (
         <Band labelledBy={s.heading ? hid : undefined}>
           {s.heading && <SectionHeading id={hid} title={s.heading} />}
-          <PhotoGrid label={s.heading ?? 'Photographs'} images={s.images.map((m) => ({ url: m.url, alt: m.alt, blurDataUrl: m.blurDataUrl }))} />
+          <PhotoGrid label={s.heading ?? 'Photographs'} images={s.images} />
         </Band>
       );
     case 'cta':

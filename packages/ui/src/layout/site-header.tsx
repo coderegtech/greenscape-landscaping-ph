@@ -3,7 +3,7 @@ import { ChevronDown, Menu, ShoppingBag, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Button } from '../components/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/dropdown-menu';
 import { cn } from '../lib/utils';
@@ -27,13 +27,14 @@ export function Wordmark({ className }: { className?: string }) {
   return (
     <Link href="/" className={cn('flex flex-col leading-none text-ink no-underline', className)}>
       <span className="font-display text-xl">Greenscape</span>
-      <span className="mt-[3px] text-xs font-medium text-ink-2">Landscaping services</span>
+      <span className="mt-[3px] text-xs font-medium text-muted">Landscaping services</span>
     </Link>
   );
 }
 
+// Underline grows in on hover and stays under the current page (.gs-navlink in theme.css).
 const linkClass =
-  'inline-flex h-10 items-center gap-1 px-3 text-sm font-medium text-ink-2 no-underline transition-colors duration-(--dur-short) hover:text-ink aria-[current=page]:text-ink aria-[current=page]:underline aria-[current=page]:decoration-signal aria-[current=page]:decoration-[1.5px] aria-[current=page]:underline-offset-[0.45em]';
+  'gs-navlink inline-flex h-10 items-center gap-1 px-3 text-sm font-medium text-ink-2 no-underline transition-colors duration-(--dur-short) hover:text-ink aria-[current=page]:text-ink';
 
 /**
  * Sticky site header: wordmark, one line of links (menus for groups), one quiet action, account and cart.
@@ -54,7 +55,7 @@ function useCartCount(url?: string) {
   return n;
 }
 
-export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHref = '/quote', accountHref = '/account', cartHref = '/cart' }: { items: NavItem[]; cartCount?: number; cartCountUrl?: string; quoteHref?: string; accountHref?: string; cartHref?: string }) {
+export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHref = '/quote', accountHref = '/account', cartHref = '/cart', notifications }: { items: NavItem[]; cartCount?: number; cartCountUrl?: string; quoteHref?: string; accountHref?: string; cartHref?: string; notifications?: ReactNode }) {
   const fetched = useCartCount(fixedCount === undefined ? cartCountUrl : undefined);
   const cartCount = fixedCount ?? fetched;
   const path = usePathname() ?? '/';
@@ -66,8 +67,9 @@ export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHr
       <a href="#main" className="sr-only z-[300] bg-signal px-4 py-3 font-bold text-signal-ink focus:not-sr-only focus:fixed focus:top-2 focus:left-2">
         Skip to content
       </a>
-      <header className="sticky top-0 z-[300] border-b border-rule bg-paper">
-        <div className="container-page flex h-16 items-center gap-4">
+      {/* White and sticky; the shadow fades in once the page scrolls (.gs-header, CSS scroll timeline). */}
+      <header className="gs-header sticky top-0 z-[300] border-b border-rule bg-paper">
+        <div className="container-page flex h-16 items-center gap-4 md:h-[4.5rem]">
           <Wordmark className="mr-auto" />
 
           <nav aria-label="Main" className="hidden lg:block">
@@ -80,9 +82,9 @@ export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHr
                         {item.label}
                         <ChevronDown aria-hidden className="size-4 transition-transform duration-(--dur-short) in-data-[state=open]:rotate-180" />
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start" sideOffset={8} className="min-w-56 border-rule bg-paper-2 p-2">
+                      <DropdownMenuContent align="start" sideOffset={8} className="min-w-56 rounded-control border-rule bg-paper p-2 shadow-(--shadow-lift)">
                         {[{ label: `All ${item.label.toLowerCase()}`, href: item.href }, ...item.children].map((c) => (
-                          <DropdownMenuItem key={c.href} asChild className="h-10 px-3 text-base text-ink-2 focus:bg-paper-3 focus:text-ink">
+                          <DropdownMenuItem key={c.href} asChild className="h-10 rounded-[0.5rem] px-3 text-base text-ink-2 focus:bg-paper-2 focus:text-ink">
                             <Link href={c.href} aria-current={path === c.href ? 'page' : undefined} className="no-underline">
                               {c.label}
                             </Link>
@@ -103,7 +105,7 @@ export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHr
           </nav>
 
           <div className="flex items-center gap-1">
-            <Button asChild variant="secondary" size="sm" className="hidden md:inline-flex">
+            <Button asChild size="sm" className="mr-2 hidden md:inline-flex">
               <Link href={quoteHref} className="no-underline">Request a quote</Link>
             </Button>
             <Button asChild variant="ghost" size="icon-sm">
@@ -111,11 +113,12 @@ export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHr
                 <UserRound />
               </Link>
             </Button>
+            {notifications}
             <Button asChild variant="ghost" size="icon-sm" className="relative">
               <Link href={cartHref} aria-label={`Cart, ${cartCount ?? 0} items`} className="no-underline">
                 <ShoppingBag />
                 {!!cartCount && (
-                  <span className="absolute -top-0.5 -right-0.5 grid min-w-5 place-items-center rounded-pill bg-signal px-[5px] text-xs font-bold text-signal-ink">
+                  <span className="absolute -top-0.5 -right-0.5 grid min-w-5 place-items-center rounded-pill bg-lime px-[5px] text-xs font-bold text-ink">
                     {/* key remounts the number so the CSS slide-in replays when the count changes (no animation library) */}
                     <span key={cartCount} className="gs-swap-in tabular" aria-hidden>{cartCount}</span>
                   </span>

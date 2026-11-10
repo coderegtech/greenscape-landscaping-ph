@@ -13,7 +13,7 @@ export default async function ServicesPage() {
       <section aria-label="Services" className="container-page pb-24">
         <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
           {services.map((s, i) => (
-            <Reveal key={s.slug} index={i}>
+            <Reveal key={s.slug} index={i} className="h-full">
               <ServiceCard s={s} index={i} />
             </Reveal>
           ))}
