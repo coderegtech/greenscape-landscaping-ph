@@ -98,7 +98,7 @@ export function webhookRoutes(deps: Deps) {
 }
 
 export function shopRoutes(deps: Deps) {
-  const { db, env, payments, redis } = deps;
+  const { db, env, payments } = deps;
   const router = Router();
 
   // ── cart ──
@@ -132,7 +132,7 @@ export function shopRoutes(deps: Deps) {
   });
 
   // ── checkout ──
-  router.post('/checkout', formLimit(redis, env.CACHE_PREFIX, 'checkout', env.FORM_RATE_LIMIT_PER_HOUR * 3), async (req, res) => {
+  router.post('/checkout', formLimit(deps, 'checkout', env.FORM_RATE_LIMIT_PER_HOUR * 3), async (req, res) => {
     const input = CheckoutRequest.parse(req.body);
     if (input.website) throw AppError.badRequest('We could not place this order.');
     const cart = await findCart(deps, who(req, res));

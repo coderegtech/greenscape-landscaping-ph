@@ -30,9 +30,9 @@ registry.registerPath({ method: 'post', path: '/v1/quotations/{id}/notes', tags:
 const yearOf = () => new Date(Date.now() + 8 * 3600_000).getUTCFullYear(); // Manila year
 
 export function quotationRoutes(deps: Deps) {
-  const { db, storage, mailer, env, log, redis } = deps;
+  const { db, storage, mailer, env, log } = deps;
   const r = Router();
-  const limit = (name: string) => formLimit(redis, env.CACHE_PREFIX, name, env.FORM_RATE_LIMIT_PER_HOUR);
+  const limit = (name: string) => formLimit(deps, name, env.FORM_RATE_LIMIT_PER_HOUR);
 
   // ── public: attachment slot ──
   r.post('/attachments', limit('quote-upload'), async (req, res) => {

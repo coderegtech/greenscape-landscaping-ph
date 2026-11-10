@@ -12,6 +12,7 @@ const pages = ADMIN_IA.flatMap((g) => g.items).filter((i) => i.ready);
 
 for (const role of Object.keys(ROLES) as RoleKey[]) {
   test(`role: ${role}`, async ({ page }) => {
+    test.setTimeout(180_000); // sign-in + MFA + every admin page; over 90 s under full-suite load
     const perms = new Set<string>(expandGrants(ROLES[role]));
     const u = await staffUser(`perm-${role.replace(/_/g, '')}`, [role]);
     await page.goto(`${ADMIN}/login`);

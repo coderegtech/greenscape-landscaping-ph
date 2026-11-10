@@ -24,3 +24,17 @@ export async function deleteAuthUsers(ids: string[]) {
   const admin = adminClient();
   await Promise.all(ids.map((id) => admin.auth.admin.deleteUser(id)));
 }
+
+/** Like signedInUser, then enrols a TOTP factor and verifies it: the returned token is a multi-factor (aal2) session. */
+export async function mfaSignedInUser(label: string) {
+  const { totp } = await import('../totp.ts');
+  const u = await signedInUser(label);
+  const client = createClient(url(), process.env.SUPABASE_PUBLISHABLE_KEY!, { auth: { persistSession: false, autoRefreshToken: false } });
+  const { error: e1 } = await client.auth.signInWithPassword({ email: u.email, password: TEST_PASSWORD });
+  if (e1) throw e1;
+  const { data: f, error: e2 } = await client.auth.mfa.enroll({ factorType: 'totp' });
+  if (e2) throw e2;
+  const { data: v, error: e3 } = await client.auth.mfa.challengeAndVerify({ factorId: f.id, code: totp(f.totp.secret) });
+  if (e3) throw e3;
+  return { ...u, aal1Token: u.token, token: v.access_token, secret: f.totp.secret };
+}

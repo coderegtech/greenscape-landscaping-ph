@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
 import { createPrismaClient } from '@greenscape/database';
+import { totp } from '../totp';
 
 export const WEB = 'http://localhost:3000';
 export const ADMIN = 'http://localhost:3001';
@@ -63,8 +64,41 @@ export async function staffUser(label: string, roles: string[]) {
   return u;
 }
 
+// Authenticator keys of test users that enrolled MFA in this worker, so a later sign-in can answer the challenge.
+const mfaSecrets = new Map<string, string>();
+
+/**
+ * Staff MFA step in the admin (security H-2), done like a person with an authenticator app: on first use read the key
+ * shown for manual entry and enrol; afterwards enter the current code. Codes can't be reused within their 30 s window,
+ * so a retry waits for the next one.
+ */
+export async function completeMfa(page: import('@playwright/test').Page, userEmail: string) {
+  const step = page.locator('[data-testid=mfa-enrol], [data-testid=mfa-verify]');
+  await expect(step).toBeVisible();
+  if (await page.getByTestId('mfa-enrol').isVisible()) mfaSecrets.set(userEmail, (await page.getByTestId('mfa-secret').textContent())!.trim());
+  const secret = mfaSecrets.get(userEmail);
+  if (!secret) throw new Error(`no authenticator key recorded for ${userEmail}`);
+  const from = page.url();
+  for (let attempt = 0; attempt < 2; attempt++) {
+    await page.getByLabel('Code').fill(totp(secret));
+    await page.getByRole('button', { name: /^(Turn on and continue|Continue)$/ }).click();
+    try {
+      await page.waitForURL((u) => u.href !== from, { timeout: 10_000 });
+      return;
+    } catch {
+      await page.waitForTimeout(31_000 - (Date.now() % 30_000)); // next code window
+    }
+  }
+  throw new Error('MFA code was not accepted');
+}
+
 export async function signIn(page: import('@playwright/test').Page, userEmail: string, password = PASSWORD) {
   await page.getByLabel('Email').fill(userEmail);
   await page.getByLabel('Password', { exact: true }).fill(password);
   await page.getByRole('button', { name: 'Sign in' }).click();
+  if (!page.url().startsWith(ADMIN)) return;
+  // Admin: staff land on the MFA step, others on the console (or its "no access" notice).
+  const landed = page.locator('[data-testid=mfa-enrol], [data-testid=mfa-verify], [data-testid=staff-identity], [data-testid=no-access]');
+  await expect(landed.first()).toBeVisible({ timeout: 30_000 });
+  if (await page.locator('[data-testid=mfa-enrol], [data-testid=mfa-verify]').count()) await completeMfa(page, userEmail);
 }

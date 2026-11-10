@@ -58,7 +58,7 @@ export function createApp(deps: Deps) {
   app.use('/v1/shop', catalogRoutes(deps));
   // Provider webhooks: raw body (signature check), never throttled, no session.
   app.use('/v1/payments/webhooks', webhookRoutes(deps));
-  app.use('/v1', apiRateLimit(deps.redis, env.CACHE_PREFIX, env.RATE_LIMIT_PER_MIN));
+  app.use('/v1', apiRateLimit(deps.redis, env.CACHE_PREFIX, env.RATE_LIMIT_PER_MIN, env.INTERNAL_API_KEY));
   app.use(express.json({ limit: '1mb' }));
 
   const doc = openApiDocument(env.API_PUBLIC_URL, env.APP_VERSION);

@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { createPrismaClient } from '@greenscape/database';
-import { ADMIN, PASSWORD, WEB, confirmedUser, email } from './helpers';
+import { ADMIN, PASSWORD, WEB, completeMfa, confirmedUser, email } from './helpers';
 
 const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64');
 const NOT_YET = /^\/(shop|cart)(\?|$)/; // Phase 8
@@ -160,6 +160,7 @@ test.describe('quote request', () => {
     await page.getByLabel('Email').fill(staff.email);
     await page.getByLabel('Password', { exact: true }).fill(PASSWORD);
     await page.getByRole('button', { name: 'Sign in' }).click();
+    await completeMfa(page, staff.email); // staff MFA, then back to where they were going
     await expect(page).toHaveURL(`${ADMIN}/quotations`);
     await page.getByRole('link', { name: ref }).click();
     await expect(page.getByRole('heading', { name: new RegExp(ref) })).toBeVisible();

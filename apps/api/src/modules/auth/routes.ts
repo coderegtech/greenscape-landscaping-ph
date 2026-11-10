@@ -26,7 +26,7 @@ export function authRoutes({ db }: Deps) {
       await db.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
     }
     const { lastLoginAt: _ignored, ...rest } = user;
-    res.json(MeResponse.parse({ user: rest, roles: auth.roles, permissions: [...auth.permissions].sort() }));
+    res.json(MeResponse.parse({ user: rest, roles: auth.roles, permissions: [...auth.permissions].sort(), mfaRequired: auth.mfaPending, aal: auth.aal }));
   });
   return r;
 }

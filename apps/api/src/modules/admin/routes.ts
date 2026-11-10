@@ -308,7 +308,7 @@ export function adminRoutes(deps: Deps) {
 
 /** The customer's side of "Message us" (any signed-in account). */
 export function customerMessageRoutes(deps: Deps) {
-  const { db, mailer, env, redis } = deps;
+  const { db, mailer, env } = deps;
   const r = Router();
   const view = async (userId: string) => {
     const c = await db.conversation.findFirst({ where: { customerUserId: userId }, include: { messages: { orderBy: { createdAt: 'asc' }, take: 500 } } });
@@ -317,7 +317,7 @@ export function customerMessageRoutes(deps: Deps) {
     return { messages: c.messages.map((m) => ({ id: m.id, fromMe: m.senderUserId === userId, body: m.body, at: m.createdAt.toISOString() })) };
   };
   r.get('/me/messages', requireAuth, async (_req, res) => res.set('cache-control', 'no-store').json(await view(currentAuth(res).userId)));
-  r.post('/me/messages', requireAuth, formLimit(redis, env.CACHE_PREFIX, 'message', 30), async (req, res) => {
+  r.post('/me/messages', requireAuth, formLimit(deps, 'message', 30), async (req, res) => {
     const auth = currentAuth(res);
     const { body } = MessageBody.parse(req.body);
     const { firstUnread } = await db.$transaction(async (tx) => {

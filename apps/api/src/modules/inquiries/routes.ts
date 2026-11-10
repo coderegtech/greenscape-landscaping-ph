@@ -18,10 +18,10 @@ const shortName = (n: string) => {
 };
 
 export function inquiryRoutes(deps: Deps) {
-  const { db, mongo, mailer, env, redis } = deps;
+  const { db, mongo, mailer, env } = deps;
   const r = Router();
 
-  r.post('/contact', formLimit(redis, env.CACHE_PREFIX, 'contact', env.FORM_RATE_LIMIT_PER_HOUR), async (req, res) => {
+  r.post('/contact', formLimit(deps, 'contact', env.FORM_RATE_LIMIT_PER_HOUR), async (req, res) => {
     const m = ContactRequest.parse(req.body);
     if (m.website) return res.status(201).json({ received: true }); // honeypot
     const row = await db.contactInquiry.create({ data: { name: m.name, email: m.email, phone: m.phone, subject: m.subject, body: m.message } });
@@ -30,7 +30,7 @@ export function inquiryRoutes(deps: Deps) {
     res.status(201).json({ received: true, id: row.id });
   });
 
-  r.post('/testimonials', requireAuth, formLimit(redis, env.CACHE_PREFIX, 'testimonial', 5), async (req, res) => {
+  r.post('/testimonials', requireAuth, formLimit(deps, 'testimonial', 5), async (req, res) => {
     const t = TestimonialRequest.parse(req.body);
     const auth = currentAuth(res);
     const user = await db.user.findUniqueOrThrow({ where: { id: auth.userId }, select: { displayName: true, email: true } });

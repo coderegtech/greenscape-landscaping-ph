@@ -19,6 +19,9 @@ export const EnvSchema = z.object({
   // Shared with the web app: lets the API trigger revalidation and read drafts for preview (server-to-server only).
   REVALIDATE_SECRET: z.string().min(16).optional().or(z.literal('').transform(() => undefined)),
   PREVIEW_SECRET: z.string().min(16).optional().or(z.literal('').transform(() => undefined)),
+  // Server-only secret the website and admin servers send with the visitor's address (x-client-ip) so rate limits
+  // count visitors, not our own servers. Also keys the hashed rate-limit/log identifiers. Same value in all three apps.
+  INTERNAL_API_KEY: z.string().min(32).optional().or(z.literal('').transform(() => undefined)),
   // Payments (Phase 8). Live keys are refused unless PAYMENTS_LIVE_APPROVED=true (never set in this repository).
   PAYMENT_PROVIDER: z.enum(['mock', 'stripe_test']).default('mock'),
   STRIPE_SECRET_KEY: z.string().optional().or(z.literal('').transform(() => undefined)),
@@ -32,6 +35,9 @@ export const EnvSchema = z.object({
   CORS_ORIGINS: csv,
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
   RATE_LIMIT_PER_MIN: z.coerce.number().int().positive().default(300),
+  // Staff permissions need a multi-factor (aal2) session. On unless explicitly 'false' (only for test suites that
+  // exercise business logic with password-only tokens; never in staging or production).
+  REQUIRE_STAFF_MFA: z.enum(['true', 'false']).default('true').transform((v) => v === 'true'),
   SENTRY_DSN: z.string().url().optional().or(z.literal('').transform(() => undefined)),
   APP_VERSION: z.string().default('0.1.0'),
 });

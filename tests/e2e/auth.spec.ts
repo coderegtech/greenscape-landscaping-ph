@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { ADMIN, PASSWORD, WEB, confirmedUser, email, grantRoles, linkFromEmail } from './helpers';
+import { ADMIN, PASSWORD, WEB, completeMfa, confirmedUser, email, grantRoles, linkFromEmail } from './helpers';
 
 async function signIn(page: Page, base: string, userEmail: string, password = PASSWORD) {
   await page.getByLabel('Email').fill(userEmail);
@@ -104,10 +104,15 @@ test.describe('admin access', () => {
     await expect(page.getByTestId('no-access')).toBeVisible();
 
     await grantRoles(u.email, ['content_manager']); // user row exists after the first /me call above
+    // Once the role is seen (permission cache TTL is 60 s when changed outside the API), the password-only session is
+    // sent to set up an authenticator before any staff page opens (security H-2).
     await expect(async () => {
       await page.reload();
-      await expect(page.getByTestId('staff-identity')).toContainText('content_manager', { timeout: 1000 });
-    }).toPass({ timeout: 70_000 }); // permission cache TTL is 60 s when changed outside the API
+      await expect(page.getByTestId('mfa-enrol')).toBeVisible({ timeout: 1000 });
+    }).toPass({ timeout: 70_000 });
+    await expect(page).toHaveURL(/\/mfa\?next=%2F/);
+    await completeMfa(page, u.email);
+    await expect(page.getByTestId('staff-identity')).toContainText('content_manager');
     await expect(page.getByTestId('api-status')).toHaveText('ok');
   });
 });

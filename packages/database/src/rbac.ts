@@ -92,3 +92,9 @@ export function expandGrants(role: RoleDef): PermissionKey[] {
   for (const e of role.except ?? []) out.delete(e);
   return [...out].sort();
 }
+
+/**
+ * What a person can do about their own records only (the customer and employee roles). Everything else is a staff
+ * permission and, with REQUIRE_STAFF_MFA, needs a multi-factor session (aal2).
+ */
+export const SELF_SERVICE_PERMISSIONS: ReadonlySet<string> = new Set([...expandGrants(ROLES.customer), ...expandGrants(ROLES.employee)]);

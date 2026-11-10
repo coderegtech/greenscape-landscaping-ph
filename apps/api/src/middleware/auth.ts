@@ -1,5 +1,5 @@
 import { TokenError } from '@greenscape/auth/server';
-import { DEFAULT_ROLE, type PermissionKey } from '@greenscape/database/rbac';
+import { DEFAULT_ROLE, SELF_SERVICE_PERMISSIONS, type PermissionKey } from '@greenscape/database/rbac';
 import type { RequestHandler, Response } from 'express';
 import type { Deps } from '../lib/deps.ts';
 import { AppError } from '../lib/errors.ts';
@@ -10,7 +10,10 @@ export interface AuthContext {
   email: string;
   aal: 'aal1' | 'aal2';
   roles: string[];
+  /** Effective permissions. Without MFA a staff member keeps only the self-service ones (see mfaPending). */
   permissions: Set<string>;
+  /** Holds staff permissions but this session hasn't completed MFA (REQUIRE_STAFF_MFA): staff routes answer MFA_REQUIRED. */
+  mfaPending: boolean;
 }
 
 declare global {
@@ -90,7 +93,10 @@ export function authenticate(deps: Deps): RequestHandler {
     const user = await resolveUser(deps, verified.authUserId, verified.email, verified.name);
     if (user.status !== 'ACTIVE') throw new AppError(403, 'ACCOUNT_SUSPENDED', 'This account is suspended');
     const grants = await loadGrants(deps, user.id);
-    res.locals.auth = { userId: user.id, authUserId: verified.authUserId, email: verified.email, aal: verified.aal, roles: grants.roles, permissions: new Set(grants.permissions) };
+    // Deny by default: until the session is aal2, staff permissions are simply absent, so every check refuses them.
+    const mfaPending = deps.env.REQUIRE_STAFF_MFA && verified.aal !== 'aal2' && grants.permissions.some((p) => !SELF_SERVICE_PERMISSIONS.has(p));
+    const permissions = new Set(mfaPending ? grants.permissions.filter((p) => SELF_SERVICE_PERMISSIONS.has(p)) : grants.permissions);
+    res.locals.auth = { userId: user.id, authUserId: verified.authUserId, email: verified.email, aal: verified.aal, roles: grants.roles, permissions, mfaPending };
     next();
   };
 }
@@ -110,6 +116,7 @@ export function requirePermission(...keys: PermissionKey[]): RequestHandler {
   return (_req, res, next) => {
     const auth = currentAuth(res);
     const missing = keys.filter((k) => !auth.permissions.has(k));
+    if (missing.length && auth.mfaPending) throw new AppError(403, 'MFA_REQUIRED', 'Confirm your sign-in with your authenticator app to use staff tools.');
     if (missing.length) throw new AppError(403, 'FORBIDDEN', 'You do not have permission to do this', { missing });
     next();
   };

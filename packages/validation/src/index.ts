@@ -42,6 +42,9 @@ export const MeResponse = z.object({
   user: z.object({ id: z.string().uuid(), email: z.string().email(), displayName: z.string().nullable(), status: UserStatus }),
   roles: z.array(z.string()),
   permissions: z.array(z.string()),
+  /** Staff member whose session hasn't completed MFA: staff permissions are withheld until it does. */
+  mfaRequired: z.boolean().default(false),
+  aal: z.enum(['aal1', 'aal2']).optional(),
 });
 export type MeResponse = z.infer<typeof MeResponse>;
 

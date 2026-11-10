@@ -1,7 +1,7 @@
 'use server';
 // Shop server actions. Each calls the API with the staff member's own token; the API checks products.*, inventory.*,
 // orders.*, payments.refund and settings.* and writes the audit log.
-import { api, attempt } from '@greenscape/auth/api';
+import { api, attempt, clientHeaders } from '@greenscape/auth/api';
 import { getAccessToken } from '@greenscape/auth/next';
 import { z } from '@greenscape/validation';
 import { revalidatePath } from 'next/cache';
@@ -44,7 +44,7 @@ export async function importStock(csv: string, apply: boolean) {
     const token = await getAccessToken();
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/shop-admin/import/stock${apply ? '?apply=1' : ''}`, {
       method: 'POST',
-      headers: { 'content-type': 'text/csv', ...(token ? { authorization: `Bearer ${token}` } : {}) },
+      headers: { 'content-type': 'text/csv', ...(await clientHeaders()), ...(token ? { authorization: `Bearer ${token}` } : {}) },
       body: z.string().max(1_000_000).parse(csv),
       cache: 'no-store',
       signal: AbortSignal.timeout(30000),

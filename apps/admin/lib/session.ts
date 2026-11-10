@@ -1,6 +1,7 @@
 import 'server-only';
 import { ApiError, api } from '@greenscape/auth/api';
 import { MeResponse } from '@greenscape/validation';
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 
@@ -11,6 +12,7 @@ import { cache } from 'react';
 export const getStaff = cache(async () => {
   try {
     const me = await api('/v1/auth/me', MeResponse);
+    if (me.mfaRequired) redirect(`/mfa?next=${encodeURIComponent((await headers()).get('x-pathname') ?? '/')}`); // staff permissions are withheld until MFA
     return me.permissions.includes('admin.access') ? me : null;
   } catch (err) {
     if (err instanceof ApiError && err.status === 401) redirect('/login');

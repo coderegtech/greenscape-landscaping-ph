@@ -37,6 +37,7 @@ export async function proxy(request: NextRequest) {
   const csp = contentSecurityPolicy(nonce);
   // Next reads the nonce from the request's CSP header and stamps its own scripts with it.
   request.headers.set('content-security-policy', csp);
+  request.headers.set('x-pathname', pathname + search); // lets the MFA redirect (lib/session.ts) come back here
   const withCsp = (res: NextResponse) => (res.headers.set('Content-Security-Policy', csp), res);
   if (PUBLIC.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return withCsp(NextResponse.next({ request }));
   const { response, user } = await refreshSession(request);
