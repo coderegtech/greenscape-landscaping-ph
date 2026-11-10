@@ -7,9 +7,14 @@ import { Reveal } from '@greenscape/ui/motion/reveal';
 import Link from 'next/link';
 import type { Section } from '@/lib/cms';
 import { cms } from '@/lib/cms';
-import { ArticleCard, ProjectCard, ServiceCard, TestimonialCard } from './cards';
+import type { CSSProperties } from 'react';
+import { projectCard } from '@/lib/gallery';
+import { ArticleCard, ServiceCard, TestimonialCard } from './cards';
+import { GalleryLightbox } from './gallery/gallery-lightbox';
+import { MasonryCard } from './gallery/masonry-card';
+import { MasonryGrid, MasonryItem, ratioOf } from './gallery/masonry-grid';
+import { MasonryPhotos } from './gallery/masonry-photos';
 import { ContactDetails } from './contact-details';
-import { PhotoGrid } from './lightbox';
 import { RichText } from './rich-text';
 
 const linkButton = (href: string, label: string, variant: 'primary' | 'secondary' = 'primary') => (
@@ -50,9 +55,9 @@ async function RenderSection({ s, i, pageTitle }: { s: Section; i: number; pageT
       return (
         <Band labelledBy={hid}>
           <SectionHeading id={hid} title={s.heading} action={linkButton('/services', 'All services', 'secondary')} />
-          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {items.map((x, k) => (
-              <Reveal key={x.slug} index={k}>
+              <Reveal key={x.slug} index={k} className="h-full">
                 <ServiceCard s={x} index={k} />
               </Reveal>
             ))}
@@ -61,18 +66,20 @@ async function RenderSection({ s, i, pageTitle }: { s: Section; i: number; pageT
       );
     }
     case 'featuredProjects': {
-      const items = await cms.projects({ featured: true, limit: s.limit });
+      // A small masonry: the featured projects first, topped up with the latest ones to 6–8 cards.
+      const [featured, latest] = await Promise.all([cms.projects({ featured: true, limit: s.limit }), cms.projects({ limit: 12 })]);
+      const items = [...featured, ...latest.filter((p) => !featured.some((f) => f.slug === p.slug))].slice(0, 8);
       if (!items.length) return null;
       return (
         <Band band="deep" labelledBy={hid}>
           <SectionHeading id={hid} title={s.heading} action={linkButton('/projects', 'All projects', 'secondary')} />
-          <div className="grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2">
+          <MasonryGrid label={s.heading}>
             {items.map((p, k) => (
-              <Reveal key={p.slug} index={k}>
-                <ProjectCard p={p} />
-              </Reveal>
+              <MasonryItem key={p.slug} ratio={ratioOf(p.cover.width, p.cover.height)} index={k}>
+                <MasonryCard photo={projectCard(p)} parallax={k % 3 === 1} />
+              </MasonryItem>
             ))}
-          </div>
+          </MasonryGrid>
         </Band>
       );
     }
@@ -82,7 +89,16 @@ async function RenderSection({ s, i, pageTitle }: { s: Section; i: number; pageT
       return (
         <Band labelledBy={hid}>
           <SectionHeading id={hid} title={s.heading} action={linkButton('/gallery', 'Full gallery', 'secondary')} />
-          <PhotoGrid label={s.heading} images={items.map((g) => ({ url: g.image.url, alt: g.image.alt, caption: g.caption, blurDataUrl: g.image.blurDataUrl }))} />
+          {/* A film strip at the photos' natural proportions (one height, varying widths), scrolling sideways. */}
+          <GalleryLightbox label={s.heading} images={items.map((g) => ({ url: g.image.url, alt: g.image.alt, caption: g.caption, blurDataUrl: g.image.blurDataUrl }))}>
+            <ul aria-label={s.heading} className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-3 [--strip-h:15rem] [scrollbar-width:thin] md:-mx-10 md:gap-4 md:px-10 md:[--strip-h:22rem]">
+              {items.map((g, k) => (
+                <li key={g.image.url} className="shrink-0 snap-start" style={{ width: `calc(var(--strip-h) / ${ratioOf(g.image.width, g.image.height).toFixed(4)})` } as CSSProperties}>
+                  <MasonryCard photo={{ url: g.image.url, alt: g.image.alt, width: g.image.width, height: g.image.height, blurDataUrl: g.image.blurDataUrl }} lightboxIndex={k} count={items.length} sizes="(min-width: 48rem) 30rem, 70vw" />
+                </li>
+              ))}
+            </ul>
+          </GalleryLightbox>
         </Band>
       );
     }
@@ -158,7 +174,7 @@ async function RenderSection({ s, i, pageTitle }: { s: Section; i: number; pageT
       return (
         <Band labelledBy={s.heading ? hid : undefined}>
           {s.heading && <SectionHeading id={hid} title={s.heading} />}
-          <PhotoGrid label={s.heading ?? 'Photographs'} images={s.images.map((m) => ({ url: m.url, alt: m.alt, blurDataUrl: m.blurDataUrl }))} />
+          <MasonryPhotos label={s.heading ?? 'Photographs'} images={s.images} max={3} />
         </Band>
       );
     case 'cta':

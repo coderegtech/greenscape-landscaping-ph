@@ -1,5 +1,5 @@
 import { Photo } from '@greenscape/ui/components/photo';
-import { Star } from 'lucide-react';
+import { ArrowRight, Star } from 'lucide-react';
 import Link from 'next/link';
 import type { ArticleSummary, ProjectSummary, ServiceSummary, Testimonial } from '@/lib/cms';
 import { PROJECT_CATEGORIES, longDate, monthYear } from '@/lib/cms';
@@ -52,13 +52,14 @@ export function ArticleCard({ a, priority }: { a: ArticleSummary; priority?: boo
   );
 }
 
+/** White card, rounded photo on top, the whole card one link (title is its name); lifts a touch on hover. */
 export function ServiceCard({ s, index }: { s: ServiceSummary; index: number }) {
   return (
-    <article className="group relative flex min-w-0 flex-col gap-4">
-      <Photo src={s.hero.url} alt={s.hero.alt} blurDataUrl={s.hero.blurDataUrl} ratio="4 / 5" sizes="(min-width: 64rem) 25vw, (min-width: 48rem) 50vw, 100vw" priority={index < 2} className="transition-transform duration-(--dur-long) ease-out group-hover:scale-[1.03]" />
-      <div className="flex flex-col gap-2">
+    <article className="lift-card group relative flex h-full min-w-0 flex-col overflow-clip rounded-[var(--radius-card)] border border-rule bg-paper shadow-soft">
+      <Photo src={s.hero.url} alt={s.hero.alt} blurDataUrl={s.hero.blurDataUrl} ratio="4 / 3" sizes="(min-width: 64rem) 25vw, (min-width: 48rem) 50vw, 100vw" priority={index < 2} frameClassName="!rounded-none frame-shimmer" className="lift-card-img" />
+      <div className="flex flex-1 flex-col gap-2 p-5 md:p-6">
         <h3 className="text-2xl">
-          <Link href={`/services/${s.slug}`} className="no-underline after:absolute after:inset-0 hover:text-signal">
+          <Link href={`/services/${s.slug}`} className="no-underline after:absolute after:inset-0 group-hover:text-signal">
             {s.title}
           </Link>
         </h3>
@@ -68,6 +69,9 @@ export function ServiceCard({ s, index }: { s: ServiceSummary; index: number }) 
             <span className="figure text-lg text-ink">{s.stat.value}</span> {s.stat.label}
           </p>
         )}
+        <span aria-hidden className="mt-auto inline-flex items-center gap-1.5 pt-3 text-sm font-semibold text-signal">
+          View service <ArrowRight className="photo-card-arrow size-4" />
+        </span>
       </div>
     </article>
   );
@@ -85,7 +89,8 @@ export function Stars({ rating }: { rating: number }) {
 
 export function TestimonialCard({ t }: { t: Testimonial }) {
   return (
-    <figure className="flex h-full flex-col justify-between gap-6 border-t border-rule pt-6">
+    <figure className="relative flex h-full flex-col justify-between gap-6 rounded-[var(--radius-card)] border border-rule bg-paper-2 p-6 md:p-8">
+      <span aria-hidden className="absolute top-3 right-6 font-display text-7xl leading-none text-sage/50">“</span>
       <div className="flex flex-col gap-4">
         <Stars rating={t.rating} />
         <blockquote className="font-display text-xl leading-snug text-ink">

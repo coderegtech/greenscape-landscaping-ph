@@ -23,13 +23,13 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const viewport: Viewport = { themeColor: '#14280f', colorScheme: 'dark' };
+export const viewport: Viewport = { themeColor: '#ffffff', colorScheme: 'light' };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const [site, preview] = await Promise.all([cms.site(), draftMode().then((d) => d.isEnabled)]);
   const c = site?.config;
   return (
-    <html lang="en" className={fontVariables} suppressHydrationWarning>
+    <html lang="en" className={fontVariables} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: JS_FLAG_SCRIPT }} />
       </head>

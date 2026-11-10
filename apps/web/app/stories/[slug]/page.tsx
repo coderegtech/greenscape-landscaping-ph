@@ -42,6 +42,8 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
 
   return (
     <main id="main">
+      {/* reading progress: a lime hairline under the header that fills as the story is read (CSS scroll timeline) */}
+      <div className="read-progress" aria-hidden />
       <article>
         <header className="container-page flex flex-col gap-6 pt-16 pb-10 md:pt-24">
           <p className="label">

@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ProjectCard, cardGrid } from '@/components/cards';
-import { PhotoGrid } from '@/components/lightbox';
+import { MasonryPhotos } from '@/components/gallery/masonry-photos';
 import { RichText } from '@/components/rich-text';
 import { QuoteBand } from '@/components/sections';
 import { PROJECT_CATEGORIES, cms, monthYear } from '@/lib/cms';
@@ -54,7 +54,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       {rest.length > 0 && (
         <Section rule labelledBy="photos">
           <SectionHeading id="photos" title="On site" />
-          <PhotoGrid label={`Photos of ${p.title}`} images={rest.map((m) => ({ url: m.url, alt: m.alt, blurDataUrl: m.blurDataUrl }))} />
+          <MasonryPhotos label={`Photos of ${p.title}`} images={rest} />
         </Section>
       )}
       {related.length > 0 && (
