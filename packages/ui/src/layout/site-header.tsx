@@ -2,15 +2,11 @@
 import { ChevronDown, Menu, ShoppingBag, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '../components/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/dropdown-menu';
-import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '../components/sheet';
 import { cn } from '../lib/utils';
-import dynamic from 'next/dynamic';
-
-// Motion is only needed once the cart has items; keep it out of every page's first load.
-const SwapNumber = dynamic(() => import('../motion/presence').then((m) => m.SwapNumber), { loading: () => null });
 
 export interface NavLink {
   label: string;
@@ -21,6 +17,9 @@ export type { FooterColumn } from './site-footer';
 export interface NavItem extends NavLink {
   children?: NavLink[];
 }
+
+// Phone menu dialog: fetched on the first tap, not shipped with every page.
+const MobileMenu = dynamic(() => import('./mobile-menu'), { ssr: false });
 
 const isActive = (path: string, href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`));
 
@@ -59,6 +58,9 @@ export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHr
   const fetched = useCartCount(fixedCount === undefined ? cartCountUrl : undefined);
   const cartCount = fixedCount ?? fetched;
   const path = usePathname() ?? '/';
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuLoaded, setMenuLoaded] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
   return (
     <>
       <a href="#main" className="sr-only z-[300] bg-signal px-4 py-3 font-bold text-signal-ink focus:not-sr-only focus:fixed focus:top-2 focus:left-2">
@@ -114,48 +116,17 @@ export function SiteHeader({ items, cartCount: fixedCount, cartCountUrl, quoteHr
                 <ShoppingBag />
                 {!!cartCount && (
                   <span className="absolute -top-0.5 -right-0.5 grid min-w-5 place-items-center rounded-pill bg-signal px-[5px] text-xs font-bold text-signal-ink">
-                    <SwapNumber value={cartCount} label="items in cart" />
+                    {/* key remounts the number so the CSS slide-in replays when the count changes (no animation library) */}
+                    <span key={cartCount} className="gs-swap-in tabular" aria-hidden>{cartCount}</span>
                   </span>
                 )}
               </Link>
             </Button>
 
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon-sm" className="lg:hidden" aria-label="Open menu">
-                  <Menu />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[min(22rem,100vw)] overflow-y-auto border-rule bg-paper p-6">
-                <SheetTitle className="font-display text-2xl text-ink">Menu</SheetTitle>
-                <SheetDescription className="sr-only">Site navigation</SheetDescription>
-                <nav aria-label="Main" className="mt-6">
-                  <ul className="flex flex-col border-t border-rule">
-                    {items.map((item) => (
-                      <li key={item.href} className="border-b border-rule py-2">
-                        <Link href={item.href} className="flex h-12 items-center font-display text-xl text-ink no-underline" aria-current={isActive(path, item.href) ? 'page' : undefined}>
-                          {item.label}
-                        </Link>
-                        {!!item.children?.length && (
-                          <ul className="mb-2 flex flex-col">
-                            {item.children.map((c) => (
-                              <li key={c.href}>
-                                <Link href={c.href} className="flex h-11 items-center pl-4 text-base text-ink-2 no-underline hover:text-ink" aria-current={path === c.href ? 'page' : undefined}>
-                                  {c.label}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-                <Button asChild className="mt-10 w-full">
-                  <Link href={quoteHref} className="no-underline">Request a quote</Link>
-                </Button>
-              </SheetContent>
-            </Sheet>
+            <Button ref={menuButton} variant="ghost" size="icon-sm" className="lg:hidden" aria-label="Open menu" aria-haspopup="dialog" aria-expanded={menuOpen} onClick={() => { setMenuLoaded(true); setMenuOpen(true); }}>
+              <Menu />
+            </Button>
+            {menuLoaded && <MobileMenu open={menuOpen} onOpenChange={setMenuOpen} items={items} path={path} quoteHref={quoteHref} returnFocus={menuButton} isActive={isActive} />}
           </div>
         </div>
       </header>

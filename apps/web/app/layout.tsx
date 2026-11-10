@@ -1,5 +1,4 @@
 import { LazyToaster as Toaster } from '@greenscape/ui/components/lazy-toaster';
-import { TooltipProvider } from '@greenscape/ui/components/tooltip';
 import { fontVariables } from '@greenscape/ui/fonts';
 import { SiteFooter } from '@greenscape/ui/layout/site-footer';
 import { SiteHeader } from '@greenscape/ui/layout/site-header';
@@ -35,7 +34,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script dangerouslySetInnerHTML={{ __html: JS_FLAG_SCRIPT }} />
       </head>
       <body>
-        <TooltipProvider delayDuration={800}>
           {preview && (
             <div role="status" className="band-cream sticky top-0 z-[400] flex flex-wrap items-center justify-center gap-3 px-4 py-2 text-sm">
               <strong>Preview:</strong> you are seeing unpublished drafts.
@@ -59,7 +57,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             }
           />
           <Toaster />
-        </TooltipProvider>
       </body>
     </html>
   );

@@ -31,7 +31,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   return (
     <main id="main">
-      <PageHero title={p.title} image={{ src: cover!.url, alt: cover!.alt }} size="compact" />
+      <PageHero title={p.title} image={{ src: cover!.url, alt: cover!.alt, blurDataUrl: cover!.blurDataUrl }} size="compact" />
       <Section labelledBy="about-project">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
           <div className="flex min-w-0 flex-col gap-6">
@@ -54,7 +54,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       {rest.length > 0 && (
         <Section rule labelledBy="photos">
           <SectionHeading id="photos" title="On site" />
-          <PhotoGrid label={`Photos of ${p.title}`} images={rest.map((m) => ({ url: m.url, alt: m.alt }))} />
+          <PhotoGrid label={`Photos of ${p.title}`} images={rest.map((m) => ({ url: m.url, alt: m.alt, blurDataUrl: m.blurDataUrl }))} />
         </Section>
       )}
       {related.length > 0 && (

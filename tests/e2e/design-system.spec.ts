@@ -22,7 +22,11 @@ test.describe('motion is optional', () => {
     const ctx = await browser.newContext({ javaScriptEnabled: false });
     const page = await ctx.newPage();
     await page.goto(`${WEB}/design`);
-    for (const el of await page.locator('[data-reveal]').all()) await expect(el).toHaveCSS('opacity', '1');
+    // Reveals are CSS scroll animations: with no JavaScript at all, each one is fully visible once scrolled to.
+    for (const el of await page.locator('[data-reveal]').all()) {
+      await el.scrollIntoViewIfNeeded();
+      await expect(el).toHaveCSS('opacity', '1');
+    }
     await expect(page.getByRole('heading', { name: 'Four ways we work' })).toBeVisible();
     await ctx.close();
   });
@@ -40,9 +44,8 @@ test.describe('motion is optional', () => {
   test('reveals hide below the fold and appear when scrolled to', async ({ page }) => {
     await page.goto(`${WEB}/design`);
     const item = page.locator('#index').locator('xpath=ancestor::section').locator('li[data-reveal]').first();
-    await expect(item).not.toHaveAttribute('data-inview', '');
+    expect(Number(await item.evaluate((el) => getComputedStyle(el).opacity))).toBeLessThan(1);
     await item.scrollIntoViewIfNeeded();
-    await expect(item).toHaveAttribute('data-inview', '');
     await expect(item).toHaveCSS('opacity', '1');
   });
 });

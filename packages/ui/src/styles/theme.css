@@ -310,34 +310,29 @@
 }
 
 /*
- * Scroll reveal (see packages/ui/src/motion/reveal.tsx). Content is visible by default: it is only hidden once
- * JS has run (html.js) and motion is allowed; the shared IntersectionObserver then sets [data-inview].
- * Stagger: set --i on siblings (0, 1, 2 …); capped so a group never takes more than ~500 ms.
+ * Scroll reveal (packages/ui/src/motion/reveal.tsx), CSS only: each [data-reveal] animates against its own view
+ * timeline. Already on screen at load = already at its end state (no LCP delay); below the fold = hidden until it
+ * scrolls in. No scroll timelines (older browsers) or reduced motion: always visible.
+ * Stagger: --i on siblings shifts the range a little; capped so a group never lags far behind.
  */
+@keyframes gs-reveal-rise { from { opacity: 0; transform: translateY(12px); } }
+@keyframes gs-reveal-fade { from { opacity: 0; } }
+@keyframes gs-reveal-mask { from { opacity: 0.001; clip-path: inset(0 0 14% 0); } }
+@keyframes gs-reveal-settle { from { transform: scale(1.04); } }
 @media (prefers-reduced-motion: no-preference) {
-  html.js [data-reveal] {
-    transition-property: opacity, transform, clip-path;
-    transition-duration: 640ms;
-    transition-timing-function: var(--ease-out);
-    transition-delay: calc(min(var(--i, 0), 6) * var(--stagger-block));
-  }
-  html.js [data-reveal='rise']:not([data-inview]) {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  html.js [data-reveal='fade']:not([data-inview]) {
-    opacity: 0;
-  }
-  /* image mask: the frame opens upward, the picture settles from a 4% zoom */
-  html.js [data-reveal='mask'] > * {
-    transition: transform 900ms var(--ease-out);
-  }
-  html.js [data-reveal='mask']:not([data-inview]) {
-    clip-path: inset(0 0 14% 0);
-    opacity: 0.001;
-  }
-  html.js [data-reveal='mask']:not([data-inview]) > * {
-    transform: scale(1.04);
+  @supports (animation-timeline: view()) {
+    [data-reveal] {
+      animation: gs-reveal-rise linear both;
+      animation-timeline: view();
+      animation-range: entry calc(min(var(--i, 0), 6) * 6%) entry calc(60% + min(var(--i, 0), 6) * 6%);
+    }
+    [data-reveal='fade'] { animation-name: gs-reveal-fade; }
+    [data-reveal='mask'] { animation-name: gs-reveal-mask; }
+    [data-reveal='mask'] > * {
+      animation: gs-reveal-settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 50%;
+    }
   }
 }
 
@@ -373,3 +368,7 @@
     }
   }
 }
+
+/* Cart count and similar badges: the new number slides in. Reduced motion: the global rule above stops it. */
+@keyframes gs-swap-in { from { transform: translateY(100%); opacity: 0; } }
+.gs-swap-in { display: inline-block; animation: gs-swap-in var(--dur-short) var(--ease-out); }

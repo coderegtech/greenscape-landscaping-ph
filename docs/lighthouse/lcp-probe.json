@@ -1,0 +1,61 @@
+{
+  "ranAt": "2026-11-10T01:06:55.611Z",
+  "base": "http://localhost:3000",
+  "rows": [
+    {
+      "page": "/",
+      "performance": 83,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "3.7 s",
+      "cls": "0",
+      "tbt": "300 ms",
+      "weight": "Total size was 626 KiB",
+      "lcpElement": "\"<img alt=\\\"Resort landscape at Maremegmeg Beach, El Nido\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover\\\" style=\\\"position: absolute; height: 100",
+      "lcpPhases": "TTFB:460ms Load Delay:719ms Load Time:154ms Render Delay:2404ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time",
+        "Browser errors were logged to the console"
+      ]
+    },
+    {
+      "page": "/projects",
+      "performance": 77,
+      "accessibility": 98,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "4.9 s",
+      "cls": "0",
+      "tbt": "250 ms",
+      "weight": "Total size was 754 KiB",
+      "lcpElement": "\"<img alt=\\\"Sustainable Landscaping in Action\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover transition-transform duration-(--dur-long) ease-out g",
+      "lcpPhases": "TTFB:461ms Load Delay:0ms Load Time:0ms Render Delay:4411ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time",
+        "Heading elements are not in a sequentially-descending order",
+        "Browser errors were logged to the console"
+      ]
+    },
+    {
+      "page": "/shop",
+      "performance": 93,
+      "accessibility": 99,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "3.0 s",
+      "cls": "0",
+      "tbt": "170 ms",
+      "weight": "Total size was 673 KiB",
+      "lcpElement": "\"<p class=\\\"max-w-[46ch] text-lg text-ink-2\\\">\"",
+      "lcpPhases": "TTFB:462ms Load Delay:0ms Load Time:0ms Render Delay:2505ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Heading elements are not in a sequentially-descending order",
+        "Browser errors were logged to the console"
+      ]
+    }
+  ]
+}

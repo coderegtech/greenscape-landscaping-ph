@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from '@greenscape/ui/components/sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@greenscape/ui/components/tabs';
 import { Textarea } from '@greenscape/ui/components/textarea';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@greenscape/ui/components/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@greenscape/ui/components/tooltip';
 import { Field } from '@greenscape/ui/form';
 import { SwapNumber } from '@greenscape/ui/motion/presence';
 import { Minus, Plus } from 'lucide-react';
@@ -99,6 +99,7 @@ export function Overlays() {
       <Button variant="secondary" onClick={() => toast.error('Payment didn’t go through', { description: 'Your card was not charged. Try again or use another method.' })}>
         Error toast
       </Button>
+      <TooltipProvider delayDuration={800}>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button variant="ghost" size="icon-sm" aria-label="Watering">
@@ -107,6 +108,7 @@ export function Overlays() {
         </TooltipTrigger>
         <TooltipContent>Water 2–3 times a week</TooltipContent>
       </Tooltip>
+      </TooltipProvider>
     </div>
   );
 }

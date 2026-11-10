@@ -1,0 +1,145 @@
+{
+  "ranAt": "2026-11-10T01:03:14.212Z",
+  "base": "http://localhost:3000",
+  "rows": [
+    {
+      "page": "/",
+      "performance": 87,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "3.7 s",
+      "cls": "0",
+      "tbt": "170 ms",
+      "weight": "Total size was 626 KiB",
+      "failing": [
+        "Largest Contentful Paint",
+        "Browser errors were logged to the console"
+      ]
+    },
+    {
+      "page": "/services/garden-maintenance",
+      "performance": 91,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "2.4 s",
+      "cls": "0",
+      "tbt": "310 ms",
+      "weight": "Total size was 394 KiB",
+      "failing": [
+        "Total Blocking Time",
+        "Browser errors were logged to the console"
+      ]
+    },
+    {
+      "page": "/projects",
+      "performance": 78,
+      "accessibility": 98,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "4.9 s",
+      "cls": "0",
+      "tbt": "240 ms",
+      "weight": "Total size was 754 KiB",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time",
+        "Heading elements are not in a sequentially-descending order",
+        "Browser errors were logged to the console"
+      ]
+    },
+    {
+      "page": "/projects/sustainable-landscaping-in-action",
+      "performance": 79,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "3.7 s",
+      "cls": "0",
+      "tbt": "430 ms",
+      "weight": "Total size was 786 KiB",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time",
+        "Browser errors were logged to the console"
+      ]
+    },
+    {
+      "page": "/stories/a-new-digital-home-greenscape-unveils-official-website",
+      "performance": 96,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "2.5 s",
+      "cls": "0",
+      "tbt": "140 ms",
+      "weight": "Total size was 477 KiB",
+      "failing": [
+        "Browser errors were logged to the console"
+      ]
+    },
+    {
+      "page": "/shop",
+      "performance": 85,
+      "accessibility": 99,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "3.0 s",
+      "cls": "0",
+      "tbt": "390 ms",
+      "weight": "Total size was 673 KiB",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time",
+        "Heading elements are not in a sequentially-descending order",
+        "Browser errors were logged to the console"
+      ]
+    },
+    {
+      "page": "/shop/golden-pothos",
+      "performance": 91,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "2.4 s",
+      "cls": "0",
+      "tbt": "330 ms",
+      "weight": "Total size was 396 KiB",
+      "failing": [
+        "Total Blocking Time",
+        "Browser errors were logged to the console"
+      ]
+    },
+    {
+      "page": "/quote",
+      "performance": 90,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "2.3 s",
+      "cls": "0",
+      "tbt": "340 ms",
+      "weight": "Total size was 445 KiB",
+      "failing": [
+        "Total Blocking Time",
+        "Browser errors were logged to the console"
+      ]
+    },
+    {
+      "page": "/contact",
+      "performance": 90,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp": "2.3 s",
+      "cls": "0",
+      "tbt": "370 ms",
+      "weight": "Total size was 441 KiB",
+      "failing": [
+        "Total Blocking Time",
+        "Browser errors were logged to the console"
+      ]
+    }
+  ]
+}

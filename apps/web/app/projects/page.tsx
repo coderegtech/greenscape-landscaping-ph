@@ -41,7 +41,8 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
           </ul>
         </nav>
       </PageHeader>
-      <section aria-label="Projects" className="container-page pb-24">
+      <section aria-labelledby="project-list" className="container-page pb-24">
+        <h2 id="project-list" className="sr-only">Projects</h2>
         {projects.length ? (
           <div className="grid grid-cols-1 gap-x-6 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
             {projects.map((p, i) => (

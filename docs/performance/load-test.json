@@ -1,0 +1,149 @@
+{
+  "ranAt": "2026-11-10T02:46:08.285Z",
+  "config": {
+    "seconds": 20,
+    "concurrency": 50,
+    "shoppers": 300,
+    "stock": 40
+  },
+  "catalogue": [
+    {
+      "name": "catalogue list",
+      "requests": 2429,
+      "rps": 121,
+      "p50": 58,
+      "p95": 86,
+      "p99": 107,
+      "max": 169,
+      "codes": {
+        "200": 2429
+      },
+      "errors": 0
+    },
+    {
+      "name": "catalogue category",
+      "requests": 2433,
+      "rps": 121,
+      "p50": 58,
+      "p95": 83,
+      "p99": 109,
+      "max": 170,
+      "codes": {
+        "200": 2433
+      },
+      "errors": 0
+    },
+    {
+      "name": "catalogue search",
+      "requests": 2430,
+      "rps": 121,
+      "p50": 57,
+      "p95": 82,
+      "p99": 112,
+      "max": 166,
+      "codes": {
+        "200": 2430
+      },
+      "errors": 0
+    },
+    {
+      "name": "product detail",
+      "requests": 2430,
+      "rps": 121,
+      "p50": 57,
+      "p95": 79,
+      "p99": 103,
+      "max": 167,
+      "codes": {
+        "200": 2430
+      },
+      "errors": 0
+    },
+    {
+      "name": "categories",
+      "requests": 2425,
+      "rps": 121,
+      "p50": 58,
+      "p95": 79,
+      "p99": 105,
+      "max": 168,
+      "codes": {
+        "200": 2425
+      },
+      "errors": 0
+    },
+    {
+      "name": "availability",
+      "requests": 2432,
+      "rps": 121,
+      "p50": 106,
+      "p95": 153,
+      "p99": 308,
+      "max": 603,
+      "codes": {
+        "200": 2432
+      },
+      "errors": 0
+    }
+  ],
+  "checkout": [
+    {
+      "name": "cart: add item",
+      "requests": 300,
+      "rps": 88,
+      "p50": 190,
+      "p95": 722,
+      "p99": 756,
+      "max": 763,
+      "codes": {
+        "201": 50,
+        "409": 250
+      },
+      "errors": 0
+    },
+    {
+      "name": "cart: view",
+      "requests": 50,
+      "rps": 15,
+      "p50": 344,
+      "p95": 368,
+      "p99": 374,
+      "max": 374,
+      "codes": {
+        "200": 50
+      },
+      "errors": 0
+    },
+    {
+      "name": "checkout",
+      "requests": 55,
+      "rps": 16,
+      "p50": 1407,
+      "p95": 1550,
+      "p99": 1578,
+      "max": 1578,
+      "codes": {
+        "201": 45,
+        "409": 10
+      },
+      "errors": 0
+    }
+  ],
+  "outcome": {
+    "placed": 40,
+    "soldOutAtCart": 250,
+    "soldOutAtCheckout": 10,
+    "duplicateSubmitsMerged": 5,
+    "other": []
+  },
+  "invariants": {
+    "stock": 40,
+    "ordersInDb": 40,
+    "unitsOrdered": 40,
+    "reserved": 40,
+    "onHand": 40,
+    "noOversell": true,
+    "reservedMatchesOrders": true,
+    "apiCountMatchesDb": true
+  }
+}

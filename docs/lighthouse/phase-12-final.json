@@ -1,0 +1,165 @@
+{
+  "ranAt": "2026-11-10T03:07:39.161Z",
+  "base": "http://localhost:3000",
+  "rows": [
+    {
+      "page": "/",
+      "performance": 79,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "77/79/86",
+      "lcp": "3.6 s",
+      "cls": "0",
+      "tbt": "450 ms",
+      "weight": "Total size was 688 KiB",
+      "lcpElement": "\"<img alt=\\\"Resort landscape at Maremegmeg Beach, El Nido\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover\\\" style=\\\"position: absolute; height: 100",
+      "lcpPhases": "TTFB:464ms Load Delay:142ms Load Time:202ms Render Delay:2795ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    },
+    {
+      "page": "/services/garden-maintenance",
+      "performance": 93,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "92/93/96",
+      "lcp": "3.1 s",
+      "cls": "0",
+      "tbt": "110 ms",
+      "weight": "Total size was 446 KiB",
+      "lcpElement": "\"<img alt=\\\"Garden Maintenance\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover\\\" style=\\\"position: absolute; height: 100%; width: 100%; inset: 0px;",
+      "lcpPhases": "TTFB:460ms Load Delay:229ms Load Time:248ms Render Delay:2120ms",
+      "failing": [
+        "Largest Contentful Paint"
+      ]
+    },
+    {
+      "page": "/projects",
+      "performance": 81,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "81/81/87",
+      "lcp": "3.7 s",
+      "cls": "0",
+      "tbt": "360 ms",
+      "weight": "Total size was 816 KiB",
+      "lcpElement": "\"<img alt=\\\"Sustainable Landscaping in Action\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover transition-transform duration-(--dur-long) ease-out g",
+      "lcpPhases": "TTFB:462ms Load Delay:635ms Load Time:151ms Render Delay:2485ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    },
+    {
+      "page": "/projects/sustainable-landscaping-in-action",
+      "performance": 92,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "76/92/93",
+      "lcp": "2.8 s",
+      "cls": "0",
+      "tbt": "220 ms",
+      "weight": "Total size was 846 KiB",
+      "lcpElement": "\"<img alt=\\\"Sustainable Landscaping in Action\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover\\\" style=\\\"position: absolute; height: 100%; width: 10",
+      "lcpPhases": "TTFB:459ms Load Delay:114ms Load Time:169ms Render Delay:2021ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    },
+    {
+      "page": "/stories/a-new-digital-home-greenscape-unveils-official-website",
+      "performance": 92,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "86/92/93",
+      "lcp": "2.7 s",
+      "cls": "0",
+      "tbt": "230 ms",
+      "weight": "Total size was 533 KiB",
+      "lcpElement": "\"<img alt=\\\"A New Digital Home: Greenscape Unveils Official Website\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover\\\" style=\\\"position: absolute; h",
+      "lcpPhases": "TTFB:460ms Load Delay:230ms Load Time:184ms Render Delay:1823ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    },
+    {
+      "page": "/shop",
+      "performance": 89,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "87/89/91",
+      "lcp": "3.3 s",
+      "cls": "0",
+      "tbt": "210 ms",
+      "weight": "Total size was 731 KiB",
+      "lcpElement": "\"<p class=\\\"max-w-[46ch] text-lg text-ink-2\\\">\"",
+      "lcpPhases": "TTFB:463ms Load Delay:0ms Load Time:0ms Render Delay:2800ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    },
+    {
+      "page": "/shop/golden-pothos",
+      "performance": 92,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "91/92/92",
+      "lcp": "2.7 s",
+      "cls": "0",
+      "tbt": "220 ms",
+      "weight": "Total size was 453 KiB",
+      "lcpElement": "\"<img alt=\\\"Golden Pothos\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover\\\" style=\\\"position: absolute; height: 100%; width: 100%; inset: 0px;\\\" si",
+      "lcpPhases": "TTFB:463ms Load Delay:139ms Load Time:154ms Render Delay:1943ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    },
+    {
+      "page": "/quote",
+      "performance": 92,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "91/92/92",
+      "lcp": "2.2 s",
+      "cls": "0",
+      "tbt": "300 ms",
+      "weight": "Total size was 498 KiB",
+      "lcpElement": "\"<p class=\\\"max-w-[46ch] text-lg text-ink-2\\\">\"",
+      "lcpPhases": "TTFB:458ms Load Delay:0ms Load Time:0ms Render Delay:1744ms",
+      "failing": [
+        "Total Blocking Time"
+      ]
+    },
+    {
+      "page": "/contact",
+      "performance": 90,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "88/90/93",
+      "lcp": "2.2 s",
+      "cls": "0",
+      "tbt": "370 ms",
+      "weight": "Total size was 494 KiB",
+      "lcpElement": "\"<h1 class=\\\"text-display-s\\\">\"",
+      "lcpPhases": "TTFB:459ms Load Delay:0ms Load Time:0ms Render Delay:1735ms",
+      "failing": [
+        "Total Blocking Time"
+      ]
+    }
+  ]
+}

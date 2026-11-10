@@ -1,24 +1,36 @@
 'use client';
-import { animate, useInView, useReducedMotion } from 'motion/react';
 import { useEffect, useRef } from 'react';
+
+const easeOut = (t: number) => 1 - (1 - t) ** 3; // close to the theme's --ease-out curve
 
 /**
  * A real figure that counts up once when first seen. Server HTML (and no-JS / reduced motion) shows the final value,
  * so the number is never wrong or missing. Only use with figures the business supplied.
+ * Plain requestAnimationFrame + IntersectionObserver: no animation library on public pages.
  */
 export function Counter({ value, suffix = '', className, locale = 'en-PH' }: { value: number; suffix?: string; className?: string; locale?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: '0px 0px -10% 0px' });
-  const reduce = useReducedMotion();
   const fmt = (n: number) => `${Math.round(n).toLocaleString(locale)}${suffix}`;
 
   useEffect(() => {
-    if (!inView || reduce || !ref.current) return;
     const el = ref.current;
-    const controls = animate(0, value, { duration: 1.1, ease: [0.23, 1, 0.32, 1], onUpdate: (n) => { el.textContent = fmt(n); } });
-    return () => controls.stop();
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let frame = 0;
+    const io = new IntersectionObserver(([e]) => {
+      if (!e?.isIntersecting) return;
+      io.disconnect();
+      const start = performance.now();
+      const step = (now: number) => {
+        const t = Math.min(1, (now - start) / 1100);
+        el.textContent = fmt(value * easeOut(t));
+        if (t < 1) frame = requestAnimationFrame(step);
+      };
+      frame = requestAnimationFrame(step);
+    }, { rootMargin: '0px 0px -10% 0px' });
+    io.observe(el);
+    return () => { io.disconnect(); cancelAnimationFrame(frame); el.textContent = fmt(value); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inView, reduce, value]);
+  }, [value]);
 
   return (
     <span ref={ref} className={`figure tabular ${className ?? ''}`}>

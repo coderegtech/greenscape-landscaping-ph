@@ -19,17 +19,17 @@ Never the browser's `ease`, never `transition: all` (lint-enforced), never bounc
 ## Primitives (`packages/ui/src/motion/*`)
 | Primitive | How | No-JS / reduced motion |
 |---|---|---|
-| `Reveal kind="rise"` (fade + 12 px) | CSS + one shared IntersectionObserver; plays once; `index` staggers | Content is hidden only under `html.js` + `no-preference`, so it's visible without JS; under reduced motion it renders at its end state |
+| `Reveal kind="rise"` (fade + 12 px) | CSS scroll-driven animation (`animation-timeline: view()`, entry range), zero JS; `index` (`--i`) offsets the range to stagger | Only under `prefers-reduced-motion: no-preference` and `@supports (animation-timeline: view())`; otherwise (and with JS off) content is simply visible |
 | `Reveal kind="fade"` | as above, opacity only | same |
 | `Reveal kind="mask"` (image) | frame opens upward via `clip-path`, photo settles from 4% zoom | same |
 | `Parallax` | CSS scroll-driven animation (`animation-timeline: view()`), ±6% inside a clipped frame, zero JS | static (and where unsupported) |
-| `Counter` | Motion `animate` once in view; server HTML already holds the final number | shows final number |
-| `SwapNumber` | Motion `AnimatePresence`, 220 ms vertical swap (cart count, unread) | instant swap; change announced via `aria-live` |
+| `Counter` | `requestAnimationFrame` once in view (IntersectionObserver); server HTML already holds the final number | shows final number |
+| Cart count swap | `.gs-swap-in` keyframe (`--dur-short`), re-keyed on each change | instant |
 | Button press | `active:scale-[0.98]` at `--dur-micro` | n/a (instant) |
 | Loading spinner | `.keep-motion`, appears only after 150 ms so fast actions don't flicker | keeps spinning (it's a status, not decoration) |
 | Menus, dialogs, sheets, tooltips | Radix + `tw-animate-css` enter/exit (fade + slight zoom/slide) | instant |
 
-Why reveals are CSS, not Motion: Motion's `initial` state is written into server HTML (`opacity: 0`), which would make content invisible to visitors without JavaScript and to crawlers that don't run it. The CSS approach keeps server-rendered pages complete.
+Why reveals are CSS, not Motion: Motion's `initial` state is written into server HTML (`opacity: 0`), which would make content invisible to visitors without JavaScript and to crawlers that don't run it. Phase 12 also removed the IntersectionObserver version: it needed hydration before content showed, which pushed LCP back. Public pages ship no motion library at all (Motion stays in the admin and in client-only widgets).
 
 ## Rules of use
 - **Never reveal above-the-fold content.** The hero headline, sentence and actions render immediately (they are usually the LCP element).

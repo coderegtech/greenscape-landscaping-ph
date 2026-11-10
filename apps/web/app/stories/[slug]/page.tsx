@@ -62,7 +62,7 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
           </p>
         </header>
         <div className="container-page">
-          <Photo src={a.cover.url} alt={a.cover.alt} ratio="16 / 9" priority sizes="(min-width: 80rem) 80rem, 100vw" caption={a.photoCredit ? `Photo: ${a.photoCredit}` : undefined} />
+          <Photo src={a.cover.url} alt={a.cover.alt} blurDataUrl={a.cover.blurDataUrl} ratio="16 / 9" priority sizes="(min-width: 80rem) 80rem, 100vw" caption={a.photoCredit ? `Photo: ${a.photoCredit}` : undefined} />
         </div>
         <div className="container-page flex flex-col gap-10 py-12 md:py-16">
           <RichText doc={a.body} className="text-lg" />
@@ -73,7 +73,7 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
           ))}
           {a.images.map((im) => (
             <div key={im.url} className="max-w-[48rem]">
-              <Photo src={im.url} alt={im.alt} ratio="3 / 2" sizes="(min-width: 48rem) 48rem, 100vw" />
+              <Photo src={im.url} alt={im.alt} blurDataUrl={im.blurDataUrl} ratio="3 / 2" sizes="(min-width: 48rem) 48rem, 100vw" />
             </div>
           ))}
         </div>

@@ -15,7 +15,7 @@ export function cardGrid(n: number) {
 export function ProjectCard({ p, priority }: { p: ProjectSummary; priority?: boolean }) {
   return (
     <article className="group relative flex min-w-0 flex-col gap-3">
-      <Photo src={p.cover.url} alt={p.cover.alt} ratio="4 / 3" priority={priority} sizes="(min-width: 64rem) 33vw, (min-width: 48rem) 50vw, 100vw" className="transition-transform duration-(--dur-long) ease-out group-hover:scale-[1.03]" />
+      <Photo src={p.cover.url} alt={p.cover.alt} blurDataUrl={p.cover.blurDataUrl} ratio="4 / 3" priority={priority} sizes="(min-width: 64rem) 33vw, (min-width: 48rem) 50vw, 100vw" className="transition-transform duration-(--dur-long) ease-out group-hover:scale-[1.03]" />
       <div className="flex flex-col gap-1">
         <p className="label">
           {PROJECT_CATEGORIES[p.category] ?? p.category}
@@ -35,7 +35,7 @@ export function ProjectCard({ p, priority }: { p: ProjectSummary; priority?: boo
 export function ArticleCard({ a, priority }: { a: ArticleSummary; priority?: boolean }) {
   return (
     <article className="group relative flex min-w-0 flex-col gap-3">
-      <Photo src={a.cover.url} alt={a.cover.alt} ratio="3 / 2" priority={priority} sizes="(min-width: 64rem) 33vw, (min-width: 48rem) 50vw, 100vw" className="transition-transform duration-(--dur-long) ease-out group-hover:scale-[1.03]" />
+      <Photo src={a.cover.url} alt={a.cover.alt} blurDataUrl={a.cover.blurDataUrl} ratio="3 / 2" priority={priority} sizes="(min-width: 64rem) 33vw, (min-width: 48rem) 50vw, 100vw" className="transition-transform duration-(--dur-long) ease-out group-hover:scale-[1.03]" />
       <div className="flex flex-col gap-2">
         <h3 className="text-xl">
           <Link href={`/stories/${a.slug}`} className="no-underline after:absolute after:inset-0 hover:text-signal">
@@ -55,7 +55,7 @@ export function ArticleCard({ a, priority }: { a: ArticleSummary; priority?: boo
 export function ServiceCard({ s, index }: { s: ServiceSummary; index: number }) {
   return (
     <article className="group relative flex min-w-0 flex-col gap-4">
-      <Photo src={s.hero.url} alt={s.hero.alt} ratio="4 / 5" sizes="(min-width: 64rem) 25vw, (min-width: 48rem) 50vw, 100vw" priority={index < 2} className="transition-transform duration-(--dur-long) ease-out group-hover:scale-[1.03]" />
+      <Photo src={s.hero.url} alt={s.hero.alt} blurDataUrl={s.hero.blurDataUrl} ratio="4 / 5" sizes="(min-width: 64rem) 25vw, (min-width: 48rem) 50vw, 100vw" priority={index < 2} className="transition-transform duration-(--dur-long) ease-out group-hover:scale-[1.03]" />
       <div className="flex flex-col gap-2">
         <h3 className="text-2xl">
           <Link href={`/services/${s.slug}`} className="no-underline after:absolute after:inset-0 hover:text-signal">

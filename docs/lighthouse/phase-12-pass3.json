@@ -1,0 +1,42 @@
+{
+  "ranAt": "2026-11-10T01:31:44.815Z",
+  "base": "http://localhost:3000",
+  "rows": [
+    {
+      "page": "/",
+      "performance": 80,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "76/80/80",
+      "lcp": "3.6 s",
+      "cls": "0",
+      "tbt": "400 ms",
+      "weight": "Total size was 669 KiB",
+      "lcpElement": "\"<img alt=\\\"Resort landscape at Maremegmeg Beach, El Nido\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover\\\" style=\\\"position: absolute; height: 100",
+      "lcpPhases": "TTFB:461ms Load Delay:34ms Load Time:141ms Render Delay:2970ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    },
+    {
+      "page": "/projects/sustainable-landscaping-in-action",
+      "performance": 86,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "86/86/87",
+      "lcp": "3.7 s",
+      "cls": "0",
+      "tbt": "220 ms",
+      "weight": "Total size was 828 KiB",
+      "lcpElement": "\"<img alt=\\\"Sustainable Landscaping in Action\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover\\\" style=\\\"position: absolute; height: 100%; width: 10",
+      "lcpPhases": "TTFB:459ms Load Delay:220ms Load Time:183ms Render Delay:2814ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    }
+  ]
+}

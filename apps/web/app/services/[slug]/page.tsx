@@ -35,7 +35,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
   return (
     <main id="main">
-      <PageHero title={s.title} lead={s.summary} image={{ src: s.hero.url, alt: s.hero.alt }} size="compact" />
+      <PageHero title={s.title} lead={s.summary} image={{ src: s.hero.url, alt: s.hero.alt, blurDataUrl: s.hero.blurDataUrl }} size="compact" />
 
       {s.highlights.length > 0 && (
         <Section labelledBy="covers">
@@ -61,7 +61,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               <li key={step.title} className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
                 {step.image && (
                   <Reveal kind="mask" className={i % 2 ? 'lg:order-2' : ''}>
-                    <Photo src={step.image.url} alt={step.image.alt} ratio="4 / 3" sizes="(min-width: 64rem) 50vw, 100vw" />
+                    <Photo src={step.image.url} alt={step.image.alt} blurDataUrl={step.image.blurDataUrl} ratio="4 / 3" sizes="(min-width: 64rem) 50vw, 100vw" />
                   </Reveal>
                 )}
                 <div className="flex min-w-0 flex-col gap-4">

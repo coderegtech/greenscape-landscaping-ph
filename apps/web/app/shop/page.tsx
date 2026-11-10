@@ -46,7 +46,8 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         </nav>
       </PageHeader>
 
-      <section aria-label="Products" className="container-page flex flex-col gap-8 pb-24">
+      <section aria-labelledby="product-list" className="container-page flex flex-col gap-8 pb-24">
+        <h2 id="product-list" className="sr-only">Products</h2>
         <form method="get" action="/shop" role="search" className="flex flex-wrap items-end gap-3 border-y border-rule py-4">
           {q.category && <input type="hidden" name="category" value={q.category} />}
           <label className="flex min-w-0 flex-1 basis-56 flex-col gap-1 text-sm text-ink-2">

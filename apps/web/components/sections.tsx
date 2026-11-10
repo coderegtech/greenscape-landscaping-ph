@@ -82,7 +82,7 @@ async function RenderSection({ s, i, pageTitle }: { s: Section; i: number; pageT
       return (
         <Band labelledBy={hid}>
           <SectionHeading id={hid} title={s.heading} action={linkButton('/gallery', 'Full gallery', 'secondary')} />
-          <PhotoGrid label={s.heading} images={items.map((g) => ({ url: g.image.url, alt: g.image.alt, caption: g.caption }))} />
+          <PhotoGrid label={s.heading} images={items.map((g) => ({ url: g.image.url, alt: g.image.alt, caption: g.caption, blurDataUrl: g.image.blurDataUrl }))} />
         </Band>
       );
     }
@@ -148,7 +148,7 @@ async function RenderSection({ s, i, pageTitle }: { s: Section; i: number; pageT
             </div>
             {s.image && (
               <Reveal kind="mask">
-                <Photo src={s.image.url} alt={s.image.alt} ratio="4 / 3" sizes="(min-width: 64rem) 50vw, 100vw" />
+                <Photo src={s.image.url} alt={s.image.alt} blurDataUrl={s.image.blurDataUrl} ratio="4 / 3" sizes="(min-width: 64rem) 50vw, 100vw" />
               </Reveal>
             )}
           </div>
@@ -158,7 +158,7 @@ async function RenderSection({ s, i, pageTitle }: { s: Section; i: number; pageT
       return (
         <Band labelledBy={s.heading ? hid : undefined}>
           {s.heading && <SectionHeading id={hid} title={s.heading} />}
-          <PhotoGrid label={s.heading ?? 'Photographs'} images={s.images.map((m) => ({ url: m.url, alt: m.alt }))} />
+          <PhotoGrid label={s.heading ?? 'Photographs'} images={s.images.map((m) => ({ url: m.url, alt: m.alt, blurDataUrl: m.blurDataUrl }))} />
         </Band>
       );
     case 'cta':

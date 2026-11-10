@@ -28,7 +28,8 @@
     "assets:check": "tsx scripts/migrate/check-assets.ts",
     "data:import": "tsx scripts/migrate/import-export.ts",
     "storage:setup": "pnpm --filter @greenscape/storage buckets",
-    "media:sweep": "tsx scripts/sweep-orphans.ts"
+    "media:sweep": "tsx scripts/sweep-orphans.ts",
+    "load:test": "tsx scripts/load-test.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
