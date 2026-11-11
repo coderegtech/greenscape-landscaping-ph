@@ -11,3 +11,5 @@ playwright-report/
 test-results/
 next-env.d.ts
 *.tsbuildinfo
+# Local-only generated files (e.g. dev admin credentials)
+.local/
