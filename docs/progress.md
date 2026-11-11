@@ -27,7 +27,7 @@
 | D6 | Clock-in photos | Off by default, feature-flagged, consent required |
 | D7 | Delivery fees | Flat fee per municipality, admin-editable table |
 | D8 | Production PH payment provider | Deferred; interface built now |
-| D9 | Git remote | Local git only; CI workflow written but not yet run on GitHub |
+| D9 | Git remote | Local git until 2026-11-11; now private GitHub repo `coderegtech/greenscape-landscaping-ph` (default branch `main`), CI runs on push |
 
 ## Deviations from the original plan
 - **OpenAPI** is built with Zod 4's native `z.toJSONSchema` instead of `@asteasolutions/zod-to-openapi` (its prototype patching doesn't attach to Zod 4.6 schemas).
@@ -45,7 +45,8 @@
 - Local service ports are offset (55433/57017/56379) because the defaults are used by other projects on this machine.
 
 ## Not yet done
-- CI has not run on GitHub (no remote). Every CI step was run locally and passes.
+- CI on GitHub (from 2026-11-11) uses MongoDB 7.0: runner kernels are 6.19+, where MongoDB 8.x will not start (SERVER-121912). Production hosting must check the same (`docs/deployment.md`).
+- Phase 13 (QA/release) in progress: deployment and rollback runbooks and the sign-off checklist are in `docs/deployment.md`; staging run and visual regression are still to do.
 - Google sign-in is wired but needs a Google OAuth client configured in Supabase (`[auth.external.google]`) and `NEXT_PUBLIC_AUTH_GOOGLE=true`; untested end-to-end.
 - `/shop` and `/cart` (and redirects for old product URLs) arrive with Phase 8; until then their header links 404 (e2e link check excludes exactly those two).
 - Performance: home (79), project list (81) and shop (89) are below the 90 Lighthouse target; see `docs/performance/core-web-vitals.md` for the cause and the three options to close it.
