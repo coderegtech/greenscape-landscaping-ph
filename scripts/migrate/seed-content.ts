@@ -10,6 +10,7 @@ import {
   type MediaRef, type RichTextNode, type Section,
 } from '@greenscape/content';
 import type { z } from 'zod';
+import { analyticsSection } from './privacy-analytics.ts';
 
 try { process.loadEnvFile(path.resolve(import.meta.dirname, '../../.env')); } catch { /* CI env */ }
 
@@ -202,7 +203,7 @@ const pages = [
   page('contact', 'Contact Greenscape', 'Visit the San Jose office, call, or send a message.', [{ type: 'contact' }], {}, '/pages/contact/'),
   page('quote', 'Request a quote', 'Tell us about the space. We reply within one working day.', [{ type: 'quoteForm' }], { description: 'Request a free quote for garden design, landscaping and maintenance in Palawan.' }, '/pages/get-a-quote/'),
   page('delivery-policy', 'Delivery terms', 'Where and how we deliver plants and materials.', [{ type: 'richText', body: policy('/pages/delivery-policy.html') }], {}, '/pages/delivery-policy.html'),
-  page('privacy', 'Privacy notice', 'How we collect, use and protect your information under the Data Privacy Act of 2012.', [{ type: 'richText', body: policy('/pages/privacy-policy.html') }], {}, '/pages/privacy-policy.html'),
+  page('privacy', 'Privacy notice', 'How we collect, use and protect your information under the Data Privacy Act of 2012.', [{ type: 'richText', body: policy('/pages/privacy-policy.html') }, analyticsSection], {}, '/pages/privacy-policy.html'),
 ];
 
 // ── navigation + site config ──

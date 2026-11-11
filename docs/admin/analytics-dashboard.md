@@ -39,6 +39,8 @@ No cookies, local storage, IP addresses, user ids or form contents are recorded,
 counting. The admin and employee portals are never tracked. If Redis is down, page views still count but visitors,
 sources, devices and countries do not.
 
+The website privacy notice explains this in a "Website statistics" section. New installs get it from `pnpm content:seed`; an existing site gets it with `pnpm exec tsx scripts/migrate/privacy-analytics.ts` (published through the CMS with a revision; refuses if the privacy page has unpublished edits).
+
 Limits: unique visitors are approximate (HyperLogLog, about 1% error) and per day, so a period total sums daily uniques.
 Visitors sharing one address and browser count as one. Without `INTERNAL_API_KEY` set on the website and API, nothing
 is collected.
