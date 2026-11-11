@@ -13,7 +13,7 @@ export default async function TestimonialsPage() {
   const [page, items, { data }] = await Promise.all([loadPage('testimonials'), cms.testimonials(100), (await createSupabaseServerClient()).auth.getClaims()]);
   return (
     <main id="main">
-      <PageHeader title={page.title} lead={page.lead} />
+      <PageHeader title={page.title} lead={page.lead} decor="testimonials" />
       <section aria-label="Client feedback" className="container-page pb-16">
         <div className={`grid grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-2 ${items.length >= 3 ? 'lg:grid-cols-3' : ''}`}>
           {items.map((t, i) => (

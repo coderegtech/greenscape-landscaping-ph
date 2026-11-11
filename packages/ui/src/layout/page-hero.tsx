@@ -7,6 +7,9 @@ interface HeroImage {
   src: string;
   alt: string;
   blurDataUrl?: string;
+  /** Stored pixel size; the wide layout uses it to show the whole photo at its own proportions. */
+  width?: number;
+  height?: number;
 }
 
 /**
@@ -21,6 +24,8 @@ export function PageHero({
   image,
   parallax = true,
   size = 'full',
+  layout = 'split',
+  decor,
 }: {
   title: ReactNode;
   lead?: ReactNode;
@@ -29,6 +34,10 @@ export function PageHero({
   parallax?: boolean;
   /** full: home and landing pages; compact: inner pages (service, project, shop category). */
   size?: 'full' | 'compact';
+  /** split: text beside a cropped photo; wide: text above the whole photo, uncropped (group photos, panoramas). */
+  layout?: 'split' | 'wide';
+  /** Decorative accents painted behind the content (apps/web components/decorations). */
+  decor?: ReactNode;
 }) {
   const full = size === 'full';
   const text = (
@@ -52,10 +61,26 @@ export function PageHero({
     );
   }
 
+  if (layout === 'wide') {
+    // Whole photo, nobody cropped: natural aspect ratio across the column, no parallax zoom (it trims the edges).
+    return (
+      <header className="relative isolate overflow-x-clip pt-10 pb-12 md:pt-16 md:pb-16">
+        {decor}
+        <div className="container-page flex flex-col gap-8 md:gap-12">
+          {text}
+          <div className="hero-photo-in relative overflow-clip rounded-[1.75rem] bg-paper-3 shadow-lift" style={{ aspectRatio: image.width && image.height ? `${image.width} / ${image.height}` : '16 / 9' }}>
+            <Photo src={image.src} alt={image.alt} blurDataUrl={image.blurDataUrl} ratio="auto" priority sizes="(min-width: 80rem) 75rem, 100vw" frameClassName="h-full w-full !rounded-none !outline-0" />
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   const photo = <Photo src={image.src} alt={image.alt} blurDataUrl={image.blurDataUrl} ratio="auto" priority sizes="(min-width: 64rem) 50vw, 100vw" frameClassName="h-full w-full !rounded-none !outline-0" />;
   return (
     <header className={cn('relative isolate overflow-clip', full ? 'pt-8 pb-16 md:pt-14 md:pb-24' : 'pt-6 pb-12 md:pt-10 md:pb-16')}>
       {/* botanical accent: a soft lime glow that drifts very slowly behind the photo (decorative, CSS only) */}
+      {decor}
       <div aria-hidden className="hero-glow pointer-events-none absolute -top-32 right-[-12%] -z-10 size-[42rem] rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--gs-lime)_28%,transparent),transparent)]" />
       <div className="container-page grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-16">
         {text}

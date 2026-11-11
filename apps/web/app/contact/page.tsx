@@ -10,7 +10,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
   const page = await loadPage('contact');
   return (
     <main id="main">
-      <PageHeader title={page.title} lead={page.lead} />
+      <PageHeader title={page.title} lead={page.lead} decor="contact" />
       <div className="container-page grid grid-cols-1 gap-16 pb-24 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
         <section aria-labelledby="find-us" className="flex flex-col gap-6 border-t-[1.5px] border-signal pt-6">
           <h2 id="find-us" className="text-2xl">Find us</h2>

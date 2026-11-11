@@ -107,3 +107,47 @@ export function Blob({ color = GREENS.mint, ...p }: Art & { color?: string }) {
     </svg>
   );
 }
+
+/** A daisy: many slim petals around a yellow centre. */
+export function Daisy({ petal = '#ffffff', center = BLOOMS.yellow, ...p }: Art & { petal?: string; center?: string }) {
+  return (
+    <svg viewBox="-30 -30 60 60" {...base} {...p}>
+      {Array.from({ length: 12 }, (_, i) => (
+        <ellipse key={i} cx="0" cy="-15" rx="4.2" ry="12" fill={petal} stroke="#e7ece4" strokeWidth=".8" transform={`rotate(${i * 30})`} />
+      ))}
+      <circle r="7" fill={center} />
+    </svg>
+  );
+}
+
+/** A single loose petal (for drifting and falling accents). */
+export function Petal({ color = BLOOMS.pink, ...p }: Art & { color?: string }) {
+  return (
+    <svg viewBox="0 0 30 40" {...base} {...p}>
+      <path fill={color} d="M15 38C4 30 0 18 6 8c4-7 14-7 18 0 6 10 2 22-9 30Z" />
+      <path fill="none" stroke="#fff" strokeOpacity=".5" strokeWidth="1.2" strokeLinecap="round" d="M15 34V10" />
+    </svg>
+  );
+}
+
+/** A seedling: two round leaves on a short stem. */
+export function Seedling({ color = GREENS.fresh, ...p }: Art & { color?: string }) {
+  return (
+    <svg viewBox="0 0 60 70" {...base} {...p}>
+      <path fill="none" stroke={color} strokeWidth="2.6" strokeLinecap="round" d="M30 68C30 52 31 40 30 28" />
+      <path fill={color} d="M30 32C18 34 6 26 4 12c14-2 25 6 26 20Z" />
+      <path fill={GREENS.leaf} d="M30 28c2-14 12-24 26-22-1 15-13 24-26 22Z" />
+    </svg>
+  );
+}
+
+/** Pollen: three tiny dots (the smallest accent). */
+export function Pollen({ color = BLOOMS.yellow, ...p }: Art & { color?: string }) {
+  return (
+    <svg viewBox="0 0 30 30" {...base} {...p}>
+      <circle cx="8" cy="10" r="3.5" fill={color} />
+      <circle cx="21" cy="7" r="2.2" fill={color} opacity=".75" />
+      <circle cx="17" cy="21" r="2.8" fill={color} opacity=".6" />
+    </svg>
+  );
+}

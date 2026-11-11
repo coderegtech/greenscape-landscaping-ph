@@ -31,7 +31,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
 
   return (
     <main id="main">
-      <PageHeader title={category ? PROJECT_CATEGORIES[category] : page.title} lead={page.lead}>
+      <PageHeader title={category ? PROJECT_CATEGORIES[category] : page.title} lead={page.lead} decor="gallery">
         <div className="mt-4">
           <GalleryFilters categories={categories} places={places} category={category} place={place} href={href} />
         </div>

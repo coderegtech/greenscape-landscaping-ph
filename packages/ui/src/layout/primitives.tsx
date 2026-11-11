@@ -17,6 +17,7 @@ export function Section({
   className,
   containerClassName,
   labelledBy,
+  decor,
   children,
 }: {
   id?: string;
@@ -25,14 +26,17 @@ export function Section({
   className?: string;
   containerClassName?: string;
   labelledBy?: string;
+  /** Decorative accents painted behind the content (apps/web components/decorations). */
+  decor?: ReactNode;
   children: ReactNode;
 }) {
   return (
     <section
       id={id}
       aria-labelledby={labelledBy}
-      className={cn(rule ? 'py-10 md:py-16' : 'py-16 md:py-24', band === 'deep' && 'band-deep', band === 'cream' && 'band-cream', className)}
+      className={cn(rule ? 'py-10 md:py-16' : 'py-16 md:py-24', band === 'deep' && 'band-deep', band === 'cream' && 'band-cream', decor && 'relative isolate overflow-x-clip', className)}
     >
+      {decor}
       <div className={cn('container-page', containerClassName)}>{rule ? <div className="border-t border-rule pt-10 md:pt-16">{children}</div> : children}</div>
     </section>
   );
