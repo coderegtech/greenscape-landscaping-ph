@@ -18,7 +18,8 @@ services:
       retries: 20
 
   mongo:
-    image: mongo:8
+    # MONGO_IMAGE_TAG: CI uses 7.0 because MongoDB 8.x refuses to start on Linux kernels 6.19-7.0.13 (SERVER-121912).
+    image: mongo:${MONGO_IMAGE_TAG:-8}
     # single-node replica set: needed for multi-document transactions (CMS publish + revision)
     command: ["--replSet", "rs0", "--bind_ip_all"]
     ports: ["127.0.0.1:57017:27017"]

@@ -11,9 +11,7 @@ concurrency:
 
 jobs:
   verify:
-    # Not ubuntu-latest (26.04): MongoDB 8 refuses to start on Linux kernels 6.19-7.0.13 (SERVER-121912 / SERVER-125742).
-    # Move back once the runner kernel is 7.0.14+ or the image ships a MongoDB release that runs there.
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -28,6 +26,11 @@ jobs:
 
       # Same compose file as local dev (Mongo needs a replica set, which service containers can't configure).
       - run: pnpm services:up
+        env:
+          # GitHub runners have Linux 6.19+, where MongoDB 8.x exits at startup (SERVER-121912, SERVER-125742).
+          # 7.0 runs on every kernel and has everything the app uses (replica set transactions). Back to 8 when a
+          # MongoDB 8 release or the runner kernel (7.0.14+) supports it.
+          MONGO_IMAGE_TAG: '7.0'
       - name: Service logs (on failure)
         if: failure()
         run: docker compose -f docker/compose.dev.yml logs --no-color --tail 80
@@ -63,3 +66,20 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+      # The web image pre-renders CMS pages, so it is built and scanned here, where the API is reachable
+      # (api and admin images are scanned in security.yml). Public values only; no secrets in the build.
+      - name: Build web image (API reachable over the host network)
+        run: |
+          val() { grep "^$1=" .env | cut -d= -f2-; } # .env is not shell-safe to source (URLs contain &)
+          NEXT_PUBLIC_SUPABASE_URL=$(val NEXT_PUBLIC_SUPABASE_URL); NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$(val NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)
+          pnpm --filter @greenscape/api start > api-image-build.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf http://localhost:4000/v1/health/live >/dev/null && break; sleep 2; done
+          docker build --network host -f docker/next.Dockerfile --build-arg APP=web --build-arg PORT=3000             --build-arg NEXT_PUBLIC_API_URL=http://localhost:4000 --build-arg NEXT_PUBLIC_SUPABASE_URL="$NEXT_PUBLIC_SUPABASE_URL"             --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY" -t greenscape-web:ci .
+      - name: Trivy (web image)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # 0.36.0
+        with:
+          image-ref: greenscape-web:ci
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'

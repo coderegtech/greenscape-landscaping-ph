@@ -65,7 +65,7 @@ jobs:
       matrix:
         include:
           - { app: api, dockerfile: api.Dockerfile, args: '' }
-          - { app: web, dockerfile: next.Dockerfile, args: '--build-arg APP=web --build-arg PORT=3000 --build-arg NEXT_PUBLIC_API_URL=https://api.example.invalid --build-arg NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ci' }
+          # web: built and scanned in ci.yml (its build pre-renders pages from a running API)
           - { app: admin, dockerfile: next.Dockerfile, args: '--build-arg APP=admin --build-arg PORT=3001 --build-arg NEXT_PUBLIC_API_URL=https://api.example.invalid --build-arg NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ci' }
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -80,6 +80,7 @@ jobs:
           exit-code: '1'
           format: sarif
           output: trivy-${{ matrix.app }}.sarif
+          limit-severities-for-sarif: true # gate (and report) on CRITICAL/HIGH only, as configured above
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with: { name: 'trivy-${{ matrix.app }}', path: 'trivy-${{ matrix.app }}.sarif' }
