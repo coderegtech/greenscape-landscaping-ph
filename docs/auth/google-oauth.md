@@ -25,8 +25,9 @@ the action resumes: the chat reopens, or the saved form draft is restored.
 
 - Web: `/auth/login`, `/auth/register`, `/auth/callback`, `/auth/forgot-password`, `/auth/reset-password`.
   The old `/login`, `/signup`, `/forgot-password` and `/reset-password` redirect permanently.
-- Admin: `/login` on the admin host (`admin.<domain>/login`). There is no sign-up on the admin; staff accounts are
-  customer accounts that an administrator has given a staff role.
+- Admin: `/login` on the admin host (`admin.<domain>/login`): email and password only, no Google button, no sign-up.
+  Staff accounts are created by an administrator (`docs/auth/employee-provisioning.md`).
+- Employee portal: `/login` on `employee.<domain>`: email and password only. HR creates every employee login.
 
 ## Roles
 
@@ -41,8 +42,13 @@ Roles are stored in Postgres and resolved by the API on every request (cached br
 | Admin | `admin`. |
 | Super Admin | `super_admin` (also manages roles and admins). |
 
-Staff permissions need a multi-factor session (`REQUIRE_STAFF_MFA`, on by default). With a password-only or
-Google-only session, a staff member has customer permissions until they complete the authenticator step.
+**Google never opens internal tools.** A session that was not a password sign-in (Supabase `amr` has no `password`:
+Google, magic link, recovery link) keeps customer permissions only, even if the account holds staff or employee roles
+(`passwordSignInRequired` on `/v1/auth/me`, API code `PASSWORD_SIGN_IN_REQUIRED`). Supabase links a Google identity to an
+existing account with the same verified email, so this check, not the provider, is what keeps the portals apart.
+
+Authenticator-app MFA is **not required** (`REQUIRE_STAFF_MFA` defaults to `false`). It can be switched on as extra
+hardening; then staff permissions also need an aal2 session.
 
 ## Google sign-in setup (external, not done yet)
 
@@ -52,16 +58,17 @@ been tested end to end**: it needs credentials only you can create.
 1. **Google Cloud Console** → APIs & Services:
    - Configure the OAuth consent screen (External; app name, support email, logo; scopes `openid`, `email`, `profile`).
    - Credentials → Create OAuth client ID → **Web application**.
-   - **Authorised JavaScript origins:** `https://<domain>`, `https://admin.<domain>`.
+   - **Authorised JavaScript origins:** `https://<domain>` (Google is for the customer website only).
    - **Authorised redirect URI:** `https://<project-ref>.supabase.co/auth/v1/callback`. This is Supabase's callback,
      not ours: Supabase completes the exchange, then sends the browser to our `/auth/callback`.
 2. **Supabase dashboard** → Authentication:
    - Providers → Google: enable it, and paste the client ID and secret.
    - URL Configuration:
      - **Site URL:** `https://<domain>`.
-     - **Redirect URLs:** `https://<domain>/auth/callback**` and `https://admin.<domain>/auth/callback**`.
+     - **Redirect URLs:** `https://<domain>/auth/callback**`, `https://admin.<domain>/auth/callback**` and
+       `https://employee.<domain>/auth/callback**` (the last two for password-recovery links only).
      - Add any staging hosts the same way.
-3. **Environment:** set `NEXT_PUBLIC_AUTH_GOOGLE=true` for the web and admin builds. This shows the Google button, which
+3. **Environment:** set `NEXT_PUBLIC_AUTH_GOOGLE=true` for the web build. This shows the Google button, which
    stays hidden while Google is not configured.
 4. **Local Google (optional):** in `supabase/config.toml`, enable `[auth.external.google]` with
    `client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"`, `secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"` and
@@ -70,6 +77,8 @@ been tested end to end**: it needs credentials only you can create.
 The Google profile picture is stored as `User.avatarUrl` (https only) and shown on `/account`. The name is display only.
 
 ## Admin portal on its own subdomain
+
+(The employee portal follows the same pattern on `employee.<domain>`: see `docs/deployment/subdomains.md`.)
 
 The admin is a separate Next.js app, already built to run on its own host:
 
@@ -94,7 +103,7 @@ The admin is a separate Next.js app, already built to run on its own host:
 
 | Variable | Where | Purpose |
 |---|---|---|
-| `NEXT_PUBLIC_AUTH_GOOGLE` | web, admin | Show the Google button (`true` once step 2 above is done) |
+| `NEXT_PUBLIC_AUTH_GOOGLE` | web | Show the Google button (`true` once step 2 above is done) |
 | `ANTHROPIC_API_KEY` | API only | Claude for the AI assistant (see `ai-assistant.md`) |
 | `OPENAI_COMPAT_BASE_URL`, `OPENAI_COMPAT_API_KEY` | API only | Optional OpenAI-compatible provider |
 

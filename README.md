@@ -12,6 +12,7 @@ TypeScript is pinned to 5.9 (not 7.0, the native rewrite) until Next.js's type-c
 ```
 apps/web      Next.js public site            :3000
 apps/admin    Next.js admin                  :3001
+apps/employee Next.js employee portal        :3002
 apps/api      Express API (runs TS via tsx)  :4000  → /v1/health, /v1/openapi.json, /v1/docs
 packages/config      tsconfig bases + Zod env loader
 packages/database    Prisma schema, migrations, client (driver adapter)
@@ -68,7 +69,7 @@ pnpm storage:setup
 ```bash
 pnpm dev
 ```
-Then open http://localhost:3000 (site; sign up at /signup; design gallery at /design), http://localhost:3001 (admin) and http://localhost:4000/v1/docs (API docs). Verification and reset emails land in the local inbox at http://127.0.0.1:54324.
+Then open http://localhost:3000 (site; sign up at /signup; design gallery at /design), http://localhost:3001 (admin), http://localhost:3002 (employee portal) and http://localhost:4000/v1/docs (API docs). Verification and reset emails land in the local inbox at http://127.0.0.1:54324.
 
 **First administrator:** sign in once, then
 
