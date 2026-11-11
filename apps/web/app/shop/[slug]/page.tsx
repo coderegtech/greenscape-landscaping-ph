@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { BuyBox, ProductGallery } from '@/components/buy-box';
 import { RichText } from '@/components/rich-text';
 import { Price } from '@/components/shop';
+import { WishlistButton } from '@/components/wishlist-button';
 import { shop } from '@/lib/shop';
 
 export const revalidate = 300;
@@ -55,7 +56,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             {p.scientificName && <p className="text-lg text-ink-2 italic">{p.scientificName}</p>}
             {p.nativeName && <p className="text-sm text-ink-2">Also called {p.nativeName}</p>}
           </div>
-          <p className="text-2xl"><Price amount={cheapest?.price ?? null} compareAt={cheapest?.compareAtPrice} from={new Set(prices).size > 1} /></p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-2xl"><Price amount={cheapest?.price ?? null} compareAt={cheapest?.compareAtPrice} from={new Set(prices).size > 1} /></p>
+            <WishlistButton productId={p.id} productName={p.name} />
+          </div>
           {p.variants.length ? (
             <BuyBox variants={p.variants} productName={p.name} />
           ) : (

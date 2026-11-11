@@ -36,7 +36,7 @@ const quote = (over: Record<string, unknown> = {}) => ({
 });
 
 async function upload(bytes: Buffer, contentType = 'image/png') {
-  const slot = await request(app).post('/v1/quotations/attachments').send({ filename: 'garden.png', contentType, size: bytes.length }).expect(201);
+  const slot = await request(app).post('/v1/quotations/attachments').set(bearer(who)).send({ filename: 'garden.png', contentType, size: bytes.length }).expect(201);
   const put = await fetch(slot.body.uploadUrl, { method: 'PUT', headers: { 'content-type': contentType, 'x-upsert': 'false' }, body: new Uint8Array(bytes) });
   expect(put.ok).toBe(true);
   return slot.body.id as string;
@@ -47,9 +47,13 @@ async function mailsTo(address: string) {
   return (r.messages ?? []) as { Subject: string }[];
 }
 
+let who = ''; // quotes, uploads and contact messages need an account
 beforeAll(async () => {
   deps = await testDeps({ FORM_RATE_LIMIT_PER_HOUR: '1000', QUOTE_NOTIFY_TO: email('team') });
   app = createApp(deps);
+  const u = await signedInUser(`quoter-${tag}`);
+  authIds.push(u.authUserId);
+  who = u.token;
 });
 afterAll(async () => {
   const qs = await deps.db.quotation.findMany({ where: { email: { endsWith: `${tag}@test.greenscape.local` } }, include: { attachments: true } });
@@ -69,9 +73,14 @@ afterAll(async () => {
 });
 
 describe('quote requests', () => {
+  it('needs an account to request a quote or upload', async () => {
+    await request(app).post('/v1/quotations').send(quote()).expect(401);
+    await request(app).post('/v1/quotations/attachments').send({ filename: 'garden.png', contentType: 'image/png', size: 10 }).expect(401);
+  });
+
   it('stores a request with a verified attachment, numbers it and emails both sides', async () => {
     const id = await upload(PNG);
-    const res = await request(app).post('/v1/quotations').send(quote({ attachments: [id] })).expect(201);
+    const res = await request(app).post('/v1/quotations').set(bearer(who)).send(quote({ attachments: [id] })).expect(201);
     expect(res.body.number).toMatch(/^Q-\d{4}-\d{6}$/);
     const row = await deps.db.quotation.findUniqueOrThrow({ where: { number: res.body.number }, include: { attachments: { include: { media: true } } } });
     expect(row).toMatchObject({ phone: '+639178443330', propertyType: 'residential', areaSqm: 120, status: 'NEW' });
@@ -83,31 +92,31 @@ describe('quote requests', () => {
 
   it('rejects a file that is not what it claims to be', async () => {
     const id = await upload(FAKE, 'image/png');
-    const res = await request(app).post('/v1/quotations').send(quote({ attachments: [id] })).expect(400);
+    const res = await request(app).post('/v1/quotations').set(bearer(who)).send(quote({ attachments: [id] })).expect(400);
     expect(res.body.error.message).toMatch(/not the file type it claims/);
   });
 
   it('rejects attachment reuse and unknown ids', async () => {
     const id = await upload(PNG);
-    await request(app).post('/v1/quotations').send(quote({ attachments: [id] })).expect(201);
-    await request(app).post('/v1/quotations').send(quote({ attachments: [id] })).expect(400);
-    await request(app).post('/v1/quotations').send(quote({ attachments: ['6f0f3c1e-0d5b-4a39-9f2e-6d9b5b2b8a11'] })).expect(400);
+    await request(app).post('/v1/quotations').set(bearer(who)).send(quote({ attachments: [id] })).expect(201);
+    await request(app).post('/v1/quotations').set(bearer(who)).send(quote({ attachments: [id] })).expect(400);
+    await request(app).post('/v1/quotations').set(bearer(who)).send(quote({ attachments: ['6f0f3c1e-0d5b-4a39-9f2e-6d9b5b2b8a11'] })).expect(400);
   });
 
   it('refuses disallowed attachment types and sizes before issuing a slot', async () => {
-    await request(app).post('/v1/quotations/attachments').send({ filename: 'x.exe', contentType: 'application/x-msdownload', size: 10 }).expect(400);
-    await request(app).post('/v1/quotations/attachments').send({ filename: 'big.pdf', contentType: 'application/pdf', size: 11 * 1024 * 1024 }).expect(400);
+    await request(app).post('/v1/quotations/attachments').set(bearer(who)).send({ filename: 'x.exe', contentType: 'application/x-msdownload', size: 10 }).expect(400);
+    await request(app).post('/v1/quotations/attachments').set(bearer(who)).send({ filename: 'big.pdf', contentType: 'application/pdf', size: 11 * 1024 * 1024 }).expect(400);
   });
 
   it('validates the request: services, consent, phone, past dates', async () => {
-    const res = await request(app).post('/v1/quotations').send(quote({ services: [], consent: false, phone: '12345', preferredDate: '2020-01-01' })).expect(400);
+    const res = await request(app).post('/v1/quotations').set(bearer(who)).send(quote({ services: [], consent: false, phone: '12345', preferredDate: '2020-01-01' })).expect(400);
     const paths = res.body.error.details.map((d: { path: string }) => d.path);
     expect(paths).toEqual(expect.arrayContaining(['services', 'consent', 'phone', 'preferredDate']));
   });
 
   it('honeypot submissions look accepted but are not stored', async () => {
     const before = await deps.db.quotation.count();
-    const res = await request(app).post('/v1/quotations').send(quote({ website: 'http://spam.example' })).expect(201);
+    const res = await request(app).post('/v1/quotations').set(bearer(who)).send(quote({ website: 'http://spam.example' })).expect(201);
     expect(res.body.number).toMatch(/^Q-/);
     expect(await deps.db.quotation.count()).toBe(before);
   });
@@ -145,7 +154,8 @@ describe('quote requests', () => {
 
 describe('contact and feedback', () => {
   it('stores and emails a contact message', async () => {
-    await request(app).post('/v1/contact').send({ name: 'Maria Santos', email: email('contact'), message: 'Do you deliver plants to Roxas?', consent: true }).expect(201);
+    await request(app).post('/v1/contact').send({ name: 'Maria Santos', email: email('contact'), message: 'x', consent: true }).expect(401);
+    await request(app).post('/v1/contact').set(bearer(who)).send({ name: 'Maria Santos', email: email('contact'), message: 'Do you deliver plants to Roxas?', consent: true }).expect(201);
     expect(await deps.db.contactInquiry.count({ where: { email: email('contact') } })).toBe(1);
   });
 
@@ -163,13 +173,13 @@ describe('contact and feedback', () => {
 });
 
 describe('form rate limit', () => {
-  it('limits submissions per IP per hour', async () => {
+  it('limits submissions per account per hour', async () => {
     const tight = await testDeps({ FORM_RATE_LIMIT_PER_HOUR: '2', CACHE_PREFIX: `gs:test:rl:${Date.now()}` });
     const a = createApp(tight);
     const body = { name: 'Rate Test', email: email('rl'), message: 'Testing the limiter, please ignore.', consent: true };
-    await request(a).post('/v1/contact').send(body).expect(201);
-    await request(a).post('/v1/contact').send(body).expect(201);
-    const res = await request(a).post('/v1/contact').send(body).expect(429);
+    await request(a).post('/v1/contact').set(bearer(who)).send(body).expect(201);
+    await request(a).post('/v1/contact').set(bearer(who)).send(body).expect(201);
+    const res = await request(a).post('/v1/contact').set(bearer(who)).send(body).expect(429);
     expect(res.body.error.code).toBe('RATE_LIMITED');
     await closeDeps(tight);
   });

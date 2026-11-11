@@ -18,6 +18,11 @@ export function createIdentityAdmin(supabaseUrl: string, secretKey: string) {
       const { error } = await client.auth.admin.updateUserById(authUserId, { ban_duration: banned ? BAN_FOREVER : 'none' });
       if (error) throw error;
     },
+    /** Removes the sign-in identity (account deletion). The app's own records are anonymised separately. */
+    async deleteIdentity(authUserId: string) {
+      const { error } = await client.auth.admin.deleteUser(authUserId);
+      if (error && error.status !== 404) throw error;
+    },
   };
 }
 

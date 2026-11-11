@@ -76,7 +76,9 @@ const config: NextConfig = {
     ],
   },
   async redirects() {
-    return legacyRedirects;
+    // Sign-in pages moved under /auth (bookmarks and emailed links keep working; query strings such as ?next= carry over).
+    const auth = [['/login', '/auth/login'], ['/signup', '/auth/register'], ['/forgot-password', '/auth/forgot-password'], ['/reset-password', '/auth/reset-password']].map(([source, destination]) => ({ source: source!, destination: destination!, permanent: true }));
+    return [...legacyRedirects, ...auth];
   },
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];

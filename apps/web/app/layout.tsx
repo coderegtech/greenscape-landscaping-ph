@@ -5,6 +5,8 @@ import { SiteHeader } from '@greenscape/ui/layout/site-header';
 import { JS_FLAG_SCRIPT } from '@greenscape/ui/motion/reveal';
 import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
+import { AuthProvider } from '@/components/auth/auth-context';
+import { ChatLauncher } from '@/components/chat/chat-launcher';
 import { draftMode } from 'next/headers';
 import { cms } from '@/lib/cms';
 import './globals.css';
@@ -34,6 +36,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script dangerouslySetInnerHTML={{ __html: JS_FLAG_SCRIPT }} />
       </head>
       <body>
+        <AuthProvider>
           {preview && (
             <div role="status" className="band-cream sticky top-0 z-[400] flex flex-wrap items-center justify-center gap-3 px-4 py-2 text-sm">
               <strong>Preview:</strong> you are seeing unpublished drafts.
@@ -57,6 +60,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             }
           />
           <Toaster />
+          <ChatLauncher />
+        </AuthProvider>
       </body>
     </html>
   );

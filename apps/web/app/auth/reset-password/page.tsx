@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: 'Choose a new password', robots: { in
 export default async function ResetPasswordPage() {
   // Reached via the recovery link, which signs the user in through /auth/callback.
   const { data } = await (await createSupabaseServerClient()).auth.getUser();
-  if (!data.user) redirect('/login?error=link');
+  if (!data.user) redirect('/auth/login?error=link');
   return (
     <AuthCard title="Choose a new password">
       <ResetPasswordFormView />

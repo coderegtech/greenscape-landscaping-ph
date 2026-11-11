@@ -28,7 +28,7 @@ export function GoogleButton({ next }: { next: string }) {
   );
 }
 
-export function SignInFormView({ next, forgotHref = '/forgot-password' }: { next: string; forgotHref?: string }) {
+export function SignInFormView({ next, forgotHref = '/auth/forgot-password' }: { next: string; forgotHref?: string }) {
   const [error, setError] = useState<string>();
   const { register, handleSubmit, formState } = useForm<z.input<typeof SignInForm>, unknown, z.output<typeof SignInForm>>({ resolver: zodResolver(SignInForm) });
 
@@ -51,7 +51,7 @@ export function SignInFormView({ next, forgotHref = '/forgot-password' }: { next
   );
 }
 
-export function SignUpFormView() {
+export function SignUpFormView({ next = '/account' }: { next?: string } = {}) {
   const [sentTo, setSentTo] = useState<string>();
   const [error, setError] = useState<string>();
   const { register, handleSubmit, formState } = useForm<z.input<typeof SignUpForm>, unknown, z.output<typeof SignUpForm>>({ resolver: zodResolver(SignUpForm) });
@@ -61,7 +61,7 @@ export function SignUpFormView() {
     const { error } = await createSupabaseBrowserClient().auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: callback('/account'), data: { display_name: name } },
+      options: { emailRedirectTo: callback(next), data: { display_name: name } },
     });
     if (error) return setError(friendly(error.message));
     setSentTo(email);
@@ -98,7 +98,7 @@ export function ForgotPasswordFormView() {
   const { register, handleSubmit, formState } = useForm<z.input<typeof ForgotPasswordForm>, unknown, z.output<typeof ForgotPasswordForm>>({ resolver: zodResolver(ForgotPasswordForm) });
   const onSubmit = handleSubmit(async ({ email }) => {
     // Same response whether or not the account exists (no account enumeration).
-    await createSupabaseBrowserClient().auth.resetPasswordForEmail(email, { redirectTo: callback('/reset-password') });
+    await createSupabaseBrowserClient().auth.resetPasswordForEmail(email, { redirectTo: callback('/auth/reset-password') });
     setSent(true);
   });
   if (sent) return <Notice tone="success">If an account exists for that email, a reset link is on its way.</Notice>;

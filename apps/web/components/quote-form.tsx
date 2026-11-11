@@ -76,19 +76,37 @@ function Select({ label, error, options, placeholder, ...props }: React.SelectHT
   );
 }
 
-export function QuoteForm({ signedIn }: { signedIn: boolean }) {
+import { useAuth } from './auth/auth-context';
+import { keepDraft, takeDraft } from './auth/draft';
+
+export function QuoteForm({ signedIn: signedInAtLoad }: { signedIn: boolean }) {
+  const { user, promptSignIn } = useAuth();
+  const signedIn = signedInAtLoad || !!user;
   const [step, setStep] = useState(0);
   const [uploads, setUploads] = useState<Upload[]>([]);
   const [receipt, setReceipt] = useState<z.infer<typeof QuoteReceipt> | null>(null);
   const [serverError, setServerError] = useState<string>();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const firstRender = useRef(true);
-  const { register, handleSubmit, trigger, setValue, getValues, formState } = useForm<QuoteRequestInput, unknown, Values>({
+  const { register, handleSubmit, trigger, setValue, getValues, formState, reset } = useForm<QuoteRequestInput, unknown, Values>({
     resolver: zodResolver(QuoteRequest),
     defaultValues: { services: [], attachments: [], website: '' },
     mode: 'onTouched',
   });
   const e = formState.errors;
+
+  // Quotes need an account: guests are asked to sign in when they move past the first step, attach or send,
+  // and come back to the same step with what they typed (files are attached again after sign-in).
+  const needSignIn = () => {
+    if (signedIn) return false;
+    keepDraft('quote', { values: { ...getValues(), attachments: [] }, step });
+    promptSignIn({ intent: 'quote', reason: 'Please sign in with Google or your account to request a quote. What you typed is kept while you sign in.' });
+    return true;
+  };
+  useEffect(() => {
+    const d = takeDraft<{ values: QuoteRequestInput; step: number }>('quote');
+    if (d) { reset(d.values); setStep(Math.min(d.step, STEPS.length - 1)); }
+  }, [reset]);
 
   // Move focus to the new step's heading so screen readers and keyboards land in the right place.
   useEffect(() => {
@@ -100,7 +118,7 @@ export function QuoteForm({ signedIn }: { signedIn: boolean }) {
   useEffect(() => setValue('attachments', uploads.filter((u) => u.id).map((u) => u.id!)), [uploads, setValue]);
 
   async function addFiles(files: FileList | null) {
-    if (!files) return;
+    if (!files || needSignIn()) return;
     const room = ATTACHMENT_MAX_COUNT - uploads.filter((u) => !u.error).length;
     for (const file of [...files].slice(0, Math.max(0, room))) {
       const key = crypto.randomUUID();
@@ -123,11 +141,12 @@ export function QuoteForm({ signedIn }: { signedIn: boolean }) {
   }
 
   async function next() {
-    if (await trigger(STEPS[step]!.fields, { shouldFocus: true })) setStep((s) => s + 1);
+    if ((await trigger(STEPS[step]!.fields, { shouldFocus: true })) && !needSignIn()) setStep((s) => s + 1);
   }
 
   const onSubmit = handleSubmit(async (values) => {
     setServerError(undefined);
+    if (needSignIn()) return;
     const res = await fetch(`${API}/v1/quotations`, { method: 'POST', headers: { 'content-type': 'application/json', ...(await authHeader()) }, body: JSON.stringify(values) });
     const body = await res.json().catch(() => ({}));
     if (!res.ok) return setServerError(body?.error?.message === 'Invalid request' ? 'Some details need another look. Please check each step.' : (body?.error?.message ?? 'We could not send your request. Please try again or call 0917 844 3330.'));
@@ -145,7 +164,7 @@ export function QuoteForm({ signedIn }: { signedIn: boolean }) {
           {signedIn ? (
             <>You can follow its progress in <Link href="/account">your account</Link>.</>
           ) : (
-            <><Link href="/signup">Create an account</Link> with the same email to follow its progress.</>
+            <><Link href="/auth/register">Create an account</Link> with the same email to follow its progress.</>
           )}
         </p>
       </div>

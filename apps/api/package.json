@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.7.0",
     "@greenscape/auth": "workspace:*",
     "@greenscape/cache": "workspace:*",
     "@greenscape/config": "workspace:*",

@@ -307,8 +307,33 @@ export function adminRoutes(deps: Deps) {
 }
 
 /** The customer's side of "Message us" (any signed-in account). */
-export function customerMessageRoutes(deps: Deps) {
+/**
+ * A customer's message into their one staff conversation (Messages). Serialised per customer so two tabs cannot
+ * create two conversations; staff get one email per batch of unread messages, not one per message.
+ */
+export async function postCustomerMessage(deps: Deps, auth: { userId: string; email: string }, body: string) {
   const { db, mailer, env } = deps;
+  const { firstUnread } = await db.$transaction(async (tx) => {
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`conversation:${auth.userId}`}))`;
+    const existing = await tx.conversation.findFirst({ where: { customerUserId: auth.userId } });
+    const c = existing ?? (await tx.conversation.create({ data: { customerUserId: auth.userId } }));
+    await tx.message.create({ data: { conversationId: c.id, senderUserId: auth.userId, body } });
+    await tx.conversation.update({ where: { id: c.id }, data: { lastMessageAt: new Date(), status: 'open', unreadForStaff: { increment: 1 } } });
+    return { firstUnread: !existing || existing.unreadForStaff === 0 };
+  });
+  if (firstUnread) {
+    await mailer.send({
+      to: await notifyTo(deps, 'messages'),
+      replyTo: auth.email,
+      subject: `New message from ${auth.email}`,
+      text: emailText('New customer message', [body.slice(0, 1000)], [], { label: 'Open messages', href: `${env.ADMIN_URL}/messages` }),
+      html: emailHtml('New customer message', [body.slice(0, 1000)], [], { label: 'Open messages', href: `${env.ADMIN_URL}/messages` }),
+    });
+  }
+}
+
+export function customerMessageRoutes(deps: Deps) {
+  const { db } = deps;
   const r = Router();
   const view = async (userId: string) => {
     const c = await db.conversation.findFirst({ where: { customerUserId: userId }, include: { messages: { orderBy: { createdAt: 'asc' }, take: 500 } } });
@@ -320,24 +345,7 @@ export function customerMessageRoutes(deps: Deps) {
   r.post('/me/messages', requireAuth, formLimit(deps, 'message', 30), async (req, res) => {
     const auth = currentAuth(res);
     const { body } = MessageBody.parse(req.body);
-    const { firstUnread } = await db.$transaction(async (tx) => {
-      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`conversation:${auth.userId}`}))`;
-      const existing = await tx.conversation.findFirst({ where: { customerUserId: auth.userId } });
-      const c = existing ?? (await tx.conversation.create({ data: { customerUserId: auth.userId } }));
-      await tx.message.create({ data: { conversationId: c.id, senderUserId: auth.userId, body } });
-      await tx.conversation.update({ where: { id: c.id }, data: { lastMessageAt: new Date(), status: 'open', unreadForStaff: { increment: 1 } } });
-      return { firstUnread: !existing || existing.unreadForStaff === 0 };
-    });
-    // One email per batch of unread messages, not one per message.
-    if (firstUnread) {
-      await mailer.send({
-        to: await notifyTo(deps, 'messages'),
-        replyTo: auth.email,
-        subject: `New message from ${auth.email}`,
-        text: emailText('New customer message', [body.slice(0, 1000)], [], { label: 'Open messages', href: `${env.ADMIN_URL}/messages` }),
-        html: emailHtml('New customer message', [body.slice(0, 1000)], [], { label: 'Open messages', href: `${env.ADMIN_URL}/messages` }),
-      });
-    }
+    await postCustomerMessage(deps, auth, body);
     res.status(201).json(await view(auth.userId));
   });
   return r;

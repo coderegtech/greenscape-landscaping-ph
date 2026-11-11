@@ -26,7 +26,7 @@ async function linkedEmployee(label: string) {
 async function webSession(browser: Browser, email: string) {
   const ctx = await browser.newContext(); // web and admin share cookies on localhost: keep the two people apart
   const page = await ctx.newPage();
-  await page.goto(`${WEB}/login?next=/staff`);
+  await page.goto(`${WEB}/auth/login?next=/staff`);
   await signIn(page, email);
   await expect(page).toHaveURL(`${WEB}/staff`);
   return page;
