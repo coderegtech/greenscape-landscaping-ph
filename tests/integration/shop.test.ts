@@ -28,12 +28,15 @@ const form = (over: Record<string, unknown> = {}) => ({
   zoneId, consent: true, idempotencyKey: randomUUID(), ...over,
 });
 
-async function guestCart(variantId: string, quantity = 1) {
-  const res = await request(app).post('/v1/cart/items').send({ variantId, quantity }).expect(201);
-  return res.body.cartToken as string;
+/** A fresh signed-in shopper (carts and checkout need an account) with `quantity` of a variant in their cart. */
+async function shopperCart(variantId: string, quantity = 1) {
+  const u = await signedInUser(`cart-${tag}`);
+  authIds.push(u.authUserId);
+  await request(app).post('/v1/cart/items').set(as(u.token)).send({ variantId, quantity }).expect(201);
+  return u.token;
 }
 function checkout(token: string, over: Record<string, unknown> = {}) {
-  return request(app).post('/v1/checkout').set('x-cart-token', token).send(form(over));
+  return request(app).post('/v1/checkout').set(as(token)).send(form(over));
 }
 const refOf = async (number: string) => (await deps.db.payment.findFirstOrThrow({ where: { order: { number } } })).providerRef;
 const level = async (variantId: string) => deps.db.inventoryLevel.findUniqueOrThrow({ where: { variantId } });
@@ -123,23 +126,24 @@ describe('catalogue', () => {
 });
 
 describe('cart', () => {
-  it('prices come from the server, and a guest cart follows the shopper into their account', async () => {
-    const token = await guestCart(untracked, 3);
-    const cart = await request(app).get('/v1/cart').set('x-cart-token', token).expect(200);
-    expect(cart.body).toMatchObject({ itemCount: 3, subtotal: '298.50', canCheckout: true });
-    await request(app).post('/v1/cart/items').set('x-cart-token', token).send({ variantId: untracked, quantity: 1, price: '0.01' }).expect(201);
-    expect((await request(app).get('/v1/cart').set('x-cart-token', token)).body.subtotal).toBe('398.00');
+  it('needs an account to add to the cart or check out', async () => {
+    await request(app).post('/v1/cart/items').send({ variantId: untracked, quantity: 1 }).expect(401);
+    await request(app).patch(`/v1/cart/items/${untracked}`).send({ quantity: 2 }).expect(401);
+    await request(app).post('/v1/checkout').send(form()).expect(401);
+  });
 
-    const merged = await request(app).post('/v1/cart/merge').set(as(customer.token)).set('x-cart-token', token).expect(200);
-    expect(merged.body.itemCount).toBe(4);
-    expect((await request(app).get('/v1/cart').set('x-cart-token', token)).body.itemCount).toBe(0); // guest cart is gone
-    await request(app).patch(`/v1/cart/items/${untracked}`).set(as(customer.token)).send({ quantity: 0 }).expect(200);
+  it('prices come from the server, never the browser', async () => {
+    const token = await shopperCart(untracked, 3);
+    const cart = await request(app).get('/v1/cart').set(as(token)).expect(200);
+    expect(cart.body).toMatchObject({ itemCount: 3, subtotal: '298.50', canCheckout: true });
+    await request(app).post('/v1/cart/items').set(as(token)).send({ variantId: untracked, quantity: 1, price: '0.01' }).expect(201);
+    expect((await request(app).get('/v1/cart').set(as(token))).body.subtotal).toBe('398.00');
   });
 });
 
 describe('checkout and payment', () => {
   it('N parallel checkouts for the last item: exactly one order gets it', async () => {
-    const tokens = await Promise.all(Array.from({ length: 8 }, () => guestCart(tracked)));
+    const tokens = await Promise.all(Array.from({ length: 8 }, () => shopperCart(tracked)));
     const results = await Promise.all(tokens.map((t) => checkout(t)));
     const ok = results.filter((r) => r.status === 201);
     expect(ok).toHaveLength(1);
@@ -163,7 +167,7 @@ describe('checkout and payment', () => {
   });
 
   it('a double-submitted checkout makes one order', async () => {
-    const token = await guestCart(untracked);
+    const token = await shopperCart(untracked);
     const key = randomUUID();
     const [a, b] = await Promise.all([checkout(token, { idempotencyKey: key }), checkout(token, { idempotencyKey: key })]);
     expect([a.status, b.status].sort()).toEqual([201, 201]);
@@ -173,7 +177,7 @@ describe('checkout and payment', () => {
 
   it('a failed payment releases the stock', async () => {
     await restock(2);
-    const res = await checkout(await guestCart(tracked, 2)).expect(201);
+    const res = await checkout(await shopperCart(tracked, 2)).expect(201);
     expect(await level(tracked)).toMatchObject({ onHand: 2, reserved: 2 });
     await request(app).post(`/v1/payments/mock/${await refOf(res.body.number)}/fail`).expect(200);
     expect(await level(tracked)).toMatchObject({ onHand: 2, reserved: 0 });
@@ -182,13 +186,13 @@ describe('checkout and payment', () => {
 
   it('expired reservations are released; a payment that arrives after someone else bought the stock is refunded', async () => {
     // onHand 2. First shopper takes both, then lets the hold lapse.
-    const late = await checkout(await guestCart(tracked, 2)).expect(201);
+    const late = await checkout(await shopperCart(tracked, 2)).expect(201);
     await deps.db.order.update({ where: { number: late.body.number }, data: { reservationExpiresAt: new Date(Date.now() - 1000) } });
     expect(await expireReservations(deps)).toBeGreaterThanOrEqual(1);
     expect(await level(tracked)).toMatchObject({ onHand: 2, reserved: 0 });
 
     // Someone else buys both.
-    const other = await checkout(await guestCart(tracked, 2)).expect(201);
+    const other = await checkout(await shopperCart(tracked, 2)).expect(201);
     await request(app).post(`/v1/payments/mock/${await refOf(other.body.number)}/succeed`).expect(200);
     expect(await level(tracked)).toMatchObject({ onHand: 0, reserved: 0 });
 
@@ -203,8 +207,10 @@ describe('checkout and payment', () => {
 
   it('refuses an inactive delivery zone and an empty cart', async () => {
     const off = await deps.db.deliveryZone.create({ data: { name: `Off zone ${tag}` } });
-    expect((await checkout(await guestCart(untracked), { zoneId: off.id })).body.error.code).toBe('ZONE_UNAVAILABLE');
-    await request(app).post('/v1/checkout').send(form()).expect(400);
+    expect((await checkout(await shopperCart(untracked), { zoneId: off.id })).body.error.code).toBe('ZONE_UNAVAILABLE');
+    const empty = await signedInUser(`empty-${tag}`);
+    authIds.push(empty.authUserId);
+    await request(app).post('/v1/checkout').set(as(empty.token)).send(form()).expect(400);
   });
 });
 

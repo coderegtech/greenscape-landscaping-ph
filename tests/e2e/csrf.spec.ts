@@ -8,7 +8,7 @@ test.skip(({ isMobile }) => isMobile, 'one pass is enough');
 
 test('a server action from a foreign origin is refused; the same action from the site works', async ({ page }) => {
   const u = await confirmedUser('csrf');
-  await page.goto(`${WEB}/login?next=/messages`);
+  await page.goto(`${WEB}/auth/login?next=/messages`);
   await signIn(page, u.email);
   await expect(page).toHaveURL(`${WEB}/messages`);
 

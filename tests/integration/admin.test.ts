@@ -125,7 +125,7 @@ describe('messages', () => {
   });
 
   it('contact-form messages: reply by email marks them replied', async () => {
-    await request(app).post('/v1/contact').send({ name: 'Ana Cruz', email: `ana-${tag}@test.greenscape.local`, message: 'Can you visit our resort next week?', consent: true }).expect(201);
+    await request(app).post('/v1/contact').set(as(tok.customer!)).send({ name: 'Ana Cruz', email: `ana-${tag}@test.greenscape.local`, message: 'Can you visit our resort next week?', consent: true }).expect(201);
     const list = await request(app).get('/v1/admin/inquiries?status=new').set(as(tok.content!)).expect(200);
     const i = list.body.find((x: { email: string }) => x.email === `ana-${tag}@test.greenscape.local`);
     const r = await request(app).post(`/v1/admin/inquiries/${i.id}/reply`).set(as(tok.content!)).send({ body: 'Yes, Tuesday works for us.' }).expect(201);

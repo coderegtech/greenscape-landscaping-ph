@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { ADMIN, WEB } from './helpers';
 
-const PAGES = [`${WEB}/design`, `${WEB}/`, `${WEB}/login`, `${WEB}/signup`, `${WEB}/forgot-password`, `${ADMIN}/login`];
+const PAGES = [`${WEB}/design`, `${WEB}/`, `${WEB}/auth/login`, `${WEB}/auth/register`, `${WEB}/auth/forgot-password`, `${ADMIN}/login`];
 
 test.describe('accessibility (axe, WCAG 2.1 AA)', () => {
   // measure end states: reveals fade in on load and axe would read mid-fade contrast
