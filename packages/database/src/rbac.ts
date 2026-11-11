@@ -6,7 +6,7 @@ export const PERMISSIONS = {
   'users.read': 'View users and their roles',
   'users.manage': 'Suspend/reactivate users',
   'roles.manage': 'Grant and revoke roles (except super admin)',
-  'roles.manage_super': 'Grant and revoke the super admin role',
+  'roles.manage_super': 'Grant and revoke the super admin and administrator roles',
   'settings.read': 'View site settings',
   'settings.manage': 'Change site settings',
   'settings.secrets': 'View/change integration secrets',
@@ -82,8 +82,8 @@ export type RoleKey = keyof typeof ROLES;
 export const ROLE_KEYS = Object.keys(ROLES) as RoleKey[];
 /** Every signed-in user gets this on first sight. */
 export const DEFAULT_ROLE: RoleKey = 'customer';
-/** Roles only a holder of roles.manage_super may grant or revoke. */
-export const PROTECTED_ROLES: RoleKey[] = ['super_admin'];
+/** Roles only a holder of roles.manage_super may grant or revoke (administrators are created by the super admin). */
+export const PROTECTED_ROLES: RoleKey[] = ['super_admin', 'admin'];
 
 export function expandGrants(role: RoleDef): PermissionKey[] {
   const out = new Set<PermissionKey>();
@@ -95,6 +95,12 @@ export function expandGrants(role: RoleDef): PermissionKey[] {
   for (const e of role.except ?? []) out.delete(e);
   return [...out].sort();
 }
+
+/**
+ * All a session keeps unless it was a password sign-in: Google (OAuth), magic-link and recovery sessions never carry
+ * employee or staff permissions, whatever roles the account holds. Also all a temporary-password session keeps.
+ */
+export const CUSTOMER_PERMISSIONS: ReadonlySet<string> = new Set(expandGrants(ROLES.customer));
 
 /**
  * What a person can do about their own records only (the customer and employee roles). Everything else is a staff

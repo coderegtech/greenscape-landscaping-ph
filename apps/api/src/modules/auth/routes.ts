@@ -1,7 +1,10 @@
-import { MeResponse } from '@greenscape/validation';
+import { MeResponse, NewPasswordBody } from '@greenscape/validation';
 import { Router } from 'express';
+import { audit } from '../../lib/audit.ts';
 import type { Deps } from '../../lib/deps.ts';
+import { AppError } from '../../lib/errors.ts';
 import { registry } from '../../lib/openapi.ts';
+import { logSecurity } from '../../lib/security-log.ts';
 import { currentAuth, requireAuth } from '../../middleware/auth.ts';
 
 registry.registerPath({
@@ -12,8 +15,18 @@ registry.registerPath({
   summary: 'The signed-in user, their roles and effective permissions. Creates the user record on first call.',
   responses: { 200: { description: 'current user', schema: MeResponse }, 401: { description: 'missing/invalid token' }, 403: { description: 'account suspended' } },
 });
+registry.registerPath({
+  method: 'post',
+  path: '/v1/auth/password',
+  tags: ['auth'],
+  auth: true,
+  summary: 'Replace an administrator-issued temporary password (only while one is pending, from a password sign-in).',
+  body: NewPasswordBody,
+  responses: { 204: { description: 'changed; full access from the next request' }, 409: { description: 'no temporary password pending' } },
+});
 
-export function authRoutes({ db }: Deps) {
+export function authRoutes(deps: Deps) {
+  const { db, identities } = deps;
   const r = Router();
   r.get('/me', requireAuth, async (_req, res) => {
     const auth = currentAuth(res);
@@ -26,7 +39,23 @@ export function authRoutes({ db }: Deps) {
       await db.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
     }
     const { lastLoginAt: _ignored, ...rest } = user;
-    res.json(MeResponse.parse({ user: rest, roles: auth.roles, permissions: [...auth.permissions].sort(), mfaRequired: auth.mfaPending, aal: auth.aal }));
+    res.json(MeResponse.parse({ user: rest, roles: auth.roles, permissions: [...auth.permissions].sort(), mfaRequired: auth.mfaPending, aal: auth.aal, passwordChangeRequired: auth.passwordChangeRequired, passwordSignInRequired: auth.passwordSignInRequired }));
+  });
+
+  r.post('/password', requireAuth, async (req, res) => {
+    const auth = currentAuth(res);
+    // Only the first-sign-in step lives here; other password changes go through Supabase's own reset flow.
+    if (!auth.passwordChangeRequired) throw new AppError(409, 'NO_PASSWORD_CHANGE_PENDING', 'There is no temporary password to replace.');
+    // Proves the person knows the temporary password (a Google session on the same mailbox doesn't).
+    if (auth.passwordSignInRequired) throw new AppError(403, 'PASSWORD_SIGN_IN_REQUIRED', 'Sign in with the temporary password first.');
+    const { password } = NewPasswordBody.parse(req.body);
+    await identities.setPassword(auth.authUserId, password);
+    await db.$transaction(async (tx) => {
+      await tx.user.update({ where: { id: auth.userId }, data: { mustChangePassword: false } });
+      await audit(tx, req, res, { action: 'user.password.initial_set', entityType: 'User', entityId: auth.userId });
+    });
+    logSecurity(deps, req, res, 'security.temporary_password_replaced', { target: auth.userId });
+    res.status(204).end();
   });
   return r;
 }

@@ -12,6 +12,7 @@ export const EnvSchema = z.object({
   SUPABASE_SECRET_KEY: z.string().min(20),
   WEB_URL: z.string().url().default('http://localhost:3000'),
   ADMIN_URL: z.string().url().default('http://localhost:3001'),
+  EMPLOYEE_URL: z.string().url().default('http://localhost:3002'),
   // Mail: unset SMTP_URL logs messages instead of sending (dev without Mailpit).
   SMTP_URL: z.string().optional().or(z.literal('').transform(() => undefined)),
   MAIL_FROM: z.string().default('Greenscape Palawan <no-reply@greenscapelandscapingph.com>'),
@@ -39,9 +40,9 @@ export const EnvSchema = z.object({
   CORS_ORIGINS: csv,
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
   RATE_LIMIT_PER_MIN: z.coerce.number().int().positive().default(300),
-  // Staff permissions need a multi-factor (aal2) session. On unless explicitly 'false' (only for test suites that
-  // exercise business logic with password-only tokens; never in staging or production).
-  REQUIRE_STAFF_MFA: z.enum(['true', 'false']).default('true').transform((v) => v === 'true'),
+  // Optional hardening: staff permissions need a multi-factor (aal2) session. Off by default: the business chose
+  // password sign-in without authenticator apps (password policy, throttling, audit and suspension still apply).
+  REQUIRE_STAFF_MFA: z.enum(['true', 'false']).default('false').transform((v) => v === 'true'),
   SENTRY_DSN: z.string().url().optional().or(z.literal('').transform(() => undefined)),
   APP_VERSION: z.string().default('0.1.0'),
   // AI assistant providers. Keys live here only (never in settings, the admin or the browser). Without a key the

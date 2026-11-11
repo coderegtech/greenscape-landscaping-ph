@@ -45,6 +45,10 @@ export const MeResponse = z.object({
   /** Staff member whose session hasn't completed MFA: staff permissions are withheld until it does. */
   mfaRequired: z.boolean().default(false),
   aal: z.enum(['aal1', 'aal2']).optional(),
+  /** Signed in with an administrator-issued temporary password: only customer access until it's replaced. */
+  passwordChangeRequired: z.boolean().default(false),
+  /** Holds employee/staff roles but signed in with Google (or a link): only customer access in this session. */
+  passwordSignInRequired: z.boolean().default(false),
 });
 export type MeResponse = z.infer<typeof MeResponse>;
 
@@ -65,6 +69,14 @@ export const UsersQuery = PageQuery.extend({
 });
 export const SetRolesBody = z.object({ roles: z.array(z.string().max(40)).max(10) });
 export const SetStatusBody = z.object({ status: z.enum(['ACTIVE', 'SUSPENDED']) });
+/** An administrator creates a staff account; the API returns a one-time temporary password (never stored or emailed). */
+export const ProvisionAccountBody = z.object({
+  email: z.string().trim().toLowerCase().email().max(254),
+  displayName: z.string().trim().min(1).max(80),
+  roles: z.array(z.string().max(40)).min(1).max(10),
+});
+export const ProvisionedAccount = z.object({ userId: z.string().uuid(), email: z.string(), temporaryPassword: z.string() });
+export type ProvisionedAccount = z.infer<typeof ProvisionedAccount>;
 
 export const RoleSummary = z.object({ key: z.string(), name: z.string(), permissions: z.array(z.string()) });
 
@@ -91,6 +103,7 @@ export const ForgotPasswordForm = z.object({ email: Email });
 export const ResetPasswordForm = z
   .object({ password: Password, confirm: z.string() })
   .refine((v) => v.password === v.confirm, { path: ['confirm'], message: 'Passwords do not match' });
+export const NewPasswordBody = z.object({ password: Password });
 
 /** Only same-site relative paths are allowed as post-auth redirects (blocks open redirects). */
 export function safeNext(next: string | null | undefined, fallback = '/') {
