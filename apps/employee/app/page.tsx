@@ -3,44 +3,70 @@ import { Badge } from '@greenscape/ui/components/badge';
 import { Notice } from '@greenscape/ui/form';
 import { z } from '@greenscape/validation';
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import { ClockCard, type Today } from '@/components/staff/clock-card';
-import { CorrectionButton } from '@/components/staff/correction';
-import { LeavePanel, type MyLeave } from '@/components/staff/leave';
-import { PageHeader } from '@/lib/page';
+import { SignOutButton } from '@greenscape/ui/auth-forms';
+import { ClockCard, type Today } from '@/components/clock-card';
+import { CorrectionButton } from '@/components/correction';
+import { LeavePanel, type MyLeave } from '@/components/leave';
+import { getMe } from '@/lib/session';
 
-export const metadata: Metadata = { title: 'Staff', robots: { index: false } };
+export const metadata: Metadata = { title: 'Today' };
 export const dynamic = 'force-dynamic';
+
+function Refused({ message }: { message: string }) {
+  return (
+    <main id="main" className="container-page flex flex-col items-start gap-4 py-16">
+      <h1 className="text-display-s">Employee portal</h1>
+      <Notice tone="error">{message}</Notice>
+      <SignOutButton />
+    </main>
+  );
+}
 
 const Record = z.object({ id: z.string(), workDate: z.string(), status: z.string(), statusLabel: z.string(), approved: z.boolean(), workedMinutes: z.number(), lateMinutes: z.number(), undertimeMinutes: z.number(), overtimeMinutes: z.number(), punches: z.array(z.object({ type: z.string(), at: z.string(), corrected: z.boolean() })), correctionPending: z.boolean() });
 const time = (iso: string) => new Date(iso).toLocaleTimeString('en-PH', { hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Manila' });
 const day = (ymd: string) => new Date(`${ymd}T00:00:00Z`).toLocaleDateString('en-PH', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
 const hm = (m: number) => `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
 
-export default async function StaffPage() {
+export default async function EmployeeHome() {
+  const me = await getMe();
+  if (!me) return <Refused message="This account is suspended." />;
+  if (me.passwordSignInRequired) return <Refused message="You signed in with Google. The employee portal needs your work email and password: sign out, then sign in again." />;
+  if (!me.permissions.includes('attendance.self')) return <Refused message="This portal is for Greenscape employees. Customers can use the website." />;
   let today: Today, records: z.infer<typeof Record>[], leave: MyLeave;
   try {
     [today, records, leave] = await Promise.all([api('/v1/me/attendance/today', z.custom<Today>()), api('/v1/me/attendance', z.array(Record)), api('/v1/me/leave', z.custom<MyLeave>())]);
   } catch (err) {
-    if (err instanceof ApiError && err.status === 403) {
-      return (
-        <main id="main" className="container-page py-16">
-          <PageHeader title="Staff" />
-          <Notice tone="error">{err.code === 'NOT_AN_EMPLOYEE' ? err.message : 'This page is for Greenscape staff.'} <Link href="/account">Back to your account</Link></Notice>
-        </main>
-      );
-    }
+    if (err instanceof ApiError && err.status === 403) return <Refused message={err.code === 'NOT_AN_EMPLOYEE' ? err.message : 'This portal is for Greenscape employees.'} />;
     throw err;
   }
+  // Last 7 work dates including today (records are Manila calendar dates, newest first).
+  const weekStart = new Date(Date.parse(`${today.workDate}T00:00:00Z`) - 6 * 86_400_000).toISOString().slice(0, 10);
+  const week = records.filter((r) => r.workDate >= weekStart);
+  const sum = (k: 'workedMinutes' | 'lateMinutes' | 'undertimeMinutes') => week.reduce((n, r) => n + r[k], 0);
   return (
-    <main id="main" className="container-page py-12 md:py-16">
-      <div className="mx-auto flex max-w-[52rem] flex-col gap-14">
-        <header className="flex flex-col gap-1 border-b border-rule pb-6">
-          <p className="text-sm text-ink-2">{today.employee.employeeNo}</p>
-          <h1 className="text-display-s">Hello, {today.employee.name.split(' ')[0]}</h1>
+    <main id="main" className="container-page py-8 md:py-14">
+      <div className="mx-auto flex max-w-[52rem] flex-col gap-12">
+        <header className="flex items-end justify-between gap-4 border-b border-rule pb-6">
+          <div className="flex flex-col gap-1">
+            <p className="text-sm text-ink-2">{today.employee.employeeNo} · {day(today.workDate)}</p>
+            <h1 className="text-display-s">Hello, {today.employee.name.split(' ')[0]}</h1>
+          </div>
+          <SignOutButton />
         </header>
 
         <ClockCard today={today} />
+
+        <section aria-labelledby="week" className="flex flex-col gap-3">
+          <h2 id="week" className="text-2xl">Last 7 days</h2>
+          <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4" data-testid="week-summary">
+            {[['Worked', hm(sum('workedMinutes'))], ['Days present', String(week.filter((r) => r.workedMinutes > 0).length)], ['Late', `${sum('lateMinutes')} min`], ['Short', `${sum('undertimeMinutes')} min`]].map(([k, v]) => (
+              <div key={k} className="flex flex-col gap-1 rounded-lg border border-rule p-4">
+                <dt className="text-sm text-ink-2">{k}</dt>
+                <dd className="tabular text-xl font-medium">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
 
         <section aria-labelledby="days" className="flex flex-col gap-4">
           <h2 id="days" className="text-3xl">Last 30 days</h2>

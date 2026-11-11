@@ -12,6 +12,8 @@ import { cache } from 'react';
 export const getStaff = cache(async () => {
   try {
     const me = await api('/v1/auth/me', MeResponse);
+    if (me.passwordChangeRequired) redirect('/password');
+    if (me.passwordSignInRequired) redirect('/login?error=password'); // a Google session never opens the admin
     if (me.mfaRequired) redirect(`/mfa?next=${encodeURIComponent((await headers()).get('x-pathname') ?? '/')}`); // staff permissions are withheld until MFA
     return me.permissions.includes('admin.access') ? me : null;
   } catch (err) {

@@ -2,7 +2,7 @@
 import { Button } from '@greenscape/ui/components/button';
 import { toast } from '@greenscape/ui/components/sonner';
 import { useActionState, useEffect, useState } from 'react';
-import { clockForm } from '@/app/staff/actions';
+import { clockForm } from '@/app/actions';
 
 export interface Today {
   employee: { name: string; employeeNo: string };

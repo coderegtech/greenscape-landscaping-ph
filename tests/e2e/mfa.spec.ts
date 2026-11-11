@@ -1,9 +1,11 @@
 import { expect, test } from '@playwright/test';
 import { ADMIN, PASSWORD, completeMfa, staffUser } from './helpers';
 
-// Security H-2: staff need an authenticator app. First sign-in enrols; later sign-ins are challenged; a wrong code
+// Optional hardening (REQUIRE_STAFF_MFA=true on the API; off by default, no mandatory authenticator enrolment).
+// When on: staff need an authenticator app. First sign-in enrols; later sign-ins are challenged; a wrong code
 // is refused; until the step is done no staff page opens (the API withholds staff permissions from aal1 sessions).
 test.skip(({ isMobile }) => isMobile, 'the admin is a desktop tool; one pass is enough');
+test.skip(process.env.REQUIRE_STAFF_MFA !== 'true', 'staff MFA is optional and off in this environment');
 
 test('staff enrol an authenticator, then are challenged at every sign-in', async ({ page }) => {
   test.setTimeout(150_000); // may wait for a fresh 30-second code window

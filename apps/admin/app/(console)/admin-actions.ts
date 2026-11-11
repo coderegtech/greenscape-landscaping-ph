@@ -2,12 +2,20 @@
 // Console actions for messages, users and settings. The API checks messages.reply, roles.manage(_super),
 // users.manage and settings.manage, and audits.
 import { api, attempt } from '@greenscape/auth/api';
-import { z } from '@greenscape/validation';
+import { ProvisionAccountBody, ProvisionedAccount, z } from '@greenscape/validation';
 import { revalidatePath } from 'next/cache';
 
 const Any = z.any();
 const Id = z.string().uuid();
 const json = (method: string, body: unknown) => ({ method, body: JSON.stringify(body) });
+
+export async function createStaffAccount(input: unknown) {
+  return attempt(async () => {
+    const out = await api('/v1/users', ProvisionedAccount, json('POST', ProvisionAccountBody.parse(input)));
+    revalidatePath('/users');
+    return out;
+  });
+}
 
 export async function replyConversation(id: string, body: string) {
   return attempt(async () => {

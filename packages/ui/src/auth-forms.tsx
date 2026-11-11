@@ -28,8 +28,17 @@ export function GoogleButton({ next }: { next: string }) {
   );
 }
 
+function ShowPassword({ shown, toggle }: { shown: boolean; toggle: () => void }) {
+  return (
+    <button type="button" onClick={toggle} aria-pressed={shown} className="-mt-2 mb-2 self-start text-sm text-ink-2 underline underline-offset-[0.2em]">
+      {shown ? 'Hide password' : 'Show password'}
+    </button>
+  );
+}
+
 export function SignInFormView({ next, forgotHref = '/auth/forgot-password' }: { next: string; forgotHref?: string }) {
   const [error, setError] = useState<string>();
+  const [shown, setShown] = useState(false);
   const { register, handleSubmit, formState } = useForm<z.input<typeof SignInForm>, unknown, z.output<typeof SignInForm>>({ resolver: zodResolver(SignInForm) });
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
@@ -44,7 +53,8 @@ export function SignInFormView({ next, forgotHref = '/auth/forgot-password' }: {
     <form method="post" onSubmit={onSubmit} noValidate className="flex flex-col gap-2">
       {error && <Notice tone="error">{error}</Notice>}
       <Field label="Email" type="email" autoComplete="email" error={formState.errors.email?.message} {...register('email')} />
-      <Field label="Password" type="password" autoComplete="current-password" error={formState.errors.password?.message} {...register('password')} />
+      <Field label="Password" type={shown ? 'text' : 'password'} autoComplete="current-password" error={formState.errors.password?.message} {...register('password')} />
+      <ShowPassword shown={shown} toggle={() => setShown((s) => !s)} />
       <Link href={forgotHref} className="-mt-2 mb-3 self-start text-sm text-ink underline decoration-signal underline-offset-[0.2em] hover:decoration-2">Forgot password?</Link>
       <SubmitButton pending={formState.isSubmitting}>Sign in</SubmitButton>
     </form>
@@ -125,6 +135,34 @@ export function ResetPasswordFormView() {
       {error && <Notice tone="error">{error}</Notice>}
       <Field label="New password" type="password" autoComplete="new-password" error={formState.errors.password?.message} {...register('password')} />
       <Field label="Confirm new password" type="password" autoComplete="new-password" error={formState.errors.confirm?.message} {...register('confirm')} />
+      <SubmitButton pending={formState.isSubmitting}>Save password</SubmitButton>
+    </form>
+  );
+}
+
+/**
+ * First sign-in with an administrator-issued temporary password: `save` is a server action that sends the new password
+ * to the API (POST /v1/auth/password), which sets it at Supabase and lifts the restriction.
+ */
+export function TemporaryPasswordFormView({ save, next, email }: { save: (password: string) => Promise<{ ok: true } | { ok: false; error: string }>; next: string; email: string }) {
+  const [error, setError] = useState<string>();
+  const [shown, setShown] = useState(false);
+  const { register, handleSubmit, formState } = useForm<z.input<typeof ResetPasswordForm>, unknown, z.output<typeof ResetPasswordForm>>({ resolver: zodResolver(ResetPasswordForm) });
+  const onSubmit = handleSubmit(async ({ password }) => {
+    setError(undefined);
+    const res = await save(password);
+    if (!res.ok) return setError(res.error);
+    // Supabase ends existing sessions when a password is set server-side: sign in again with the new one.
+    const { error } = await createSupabaseBrowserClient().auth.signInWithPassword({ email, password });
+    if (error) return setError('Password saved. Please sign in again with your new password.');
+    window.location.assign(next);
+  });
+  return (
+    <form method="post" onSubmit={onSubmit} noValidate className="flex flex-col gap-2">
+      {error && <Notice tone="error">{error}</Notice>}
+      <Field label="New password" type={shown ? 'text' : 'password'} autoComplete="new-password" hint="At least 8 characters with upper- and lowercase letters and a number." error={formState.errors.password?.message} {...register('password')} />
+      <Field label="Confirm new password" type={shown ? 'text' : 'password'} autoComplete="new-password" error={formState.errors.confirm?.message} {...register('confirm')} />
+      <ShowPassword shown={shown} toggle={() => setShown((s) => !s)} />
       <SubmitButton pending={formState.isSubmitting}>Save password</SubmitButton>
     </form>
   );

@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import AxeBuilder from '@axe-core/playwright';
 import { createPrismaClient } from '@greenscape/database';
 import { expect, test, type Browser } from '@playwright/test';
-import { ADMIN, WEB, signIn, staffUser } from './helpers';
+import { ADMIN, EMPLOYEE, WEB, email, signIn, signedInCustomer, staffUser } from './helpers';
 
 const db = createPrismaClient(process.env.DATABASE_URL!);
 const tag = `e2e${randomUUID().slice(0, 6)}`;
@@ -23,12 +23,13 @@ async function linkedEmployee(label: string) {
   const e = await db.employee.create({ data: { employeeNo: `E2E-${randomUUID().slice(0, 6).toUpperCase()}`, firstName: 'Ramon', lastName: `Reyes ${tag}`, email: u.email, userId: user.id, scheduleAssignments: { create: { scheduleId: s.id, effectiveFrom: new Date(`${manila(-60)}T00:00:00Z`) } } } });
   return { ...u, employee: e };
 }
-async function webSession(browser: Browser, email: string) {
-  const ctx = await browser.newContext(); // web and admin share cookies on localhost: keep the two people apart
+/** The employee portal in its own browser context (localhost apps share cookies: keep the people apart). */
+async function portalSession(browser: Browser, address: string, password?: string) {
+  const ctx = await browser.newContext();
   const page = await ctx.newPage();
-  await page.goto(`${WEB}/auth/login?next=/staff`);
-  await signIn(page, email);
-  await expect(page).toHaveURL(`${WEB}/staff`);
+  await page.goto(`${EMPLOYEE}/login`);
+  await signIn(page, address, password);
+  await expect(page).toHaveURL(password ? `${EMPLOYEE}/password` : `${EMPLOYEE}/`);
   return page;
 }
 
@@ -44,7 +45,7 @@ test.afterAll(async () => {
 
 test('employee clocks in from a phone or desktop; the page passes axe', async ({ browser }) => {
   const w = await linkedEmployee('clock');
-  const page = await webSession(browser, w.email);
+  const page = await portalSession(browser, w.email);
   await expect(page.getByRole('heading', { name: 'Hello, Ramon' })).toBeVisible();
   await expect(page.getByTestId('clock-status')).toHaveText('You are not clocked in.');
   await page.getByRole('button', { name: 'Clock in' }).click();
@@ -60,11 +61,11 @@ test('employee clocks in from a phone or desktop; the page passes axe', async ({
 test('clocking in works before (or without) the page JavaScript', async ({ browser, isMobile }) => {
   test.skip(isMobile, 'same form on both sizes');
   const w = await linkedEmployee('nojs');
-  const signed = await webSession(browser, w.email); // sign in with JS, then reuse the session without it
+  const signed = await portalSession(browser, w.email); // sign in with JS, then reuse the session without it
   const ctx = await browser.newContext({ javaScriptEnabled: false, storageState: await signed.context().storageState() });
   await signed.context().close();
   const page = await ctx.newPage();
-  await page.goto(`${WEB}/staff`);
+  await page.goto(EMPLOYEE);
   await page.getByRole('button', { name: 'Clock in' }).click();
   await expect(page.getByTestId('clock-status')).toContainText('Clocked in since');
   expect(await db.timePunch.count({ where: { record: { employeeId: w.employee.id } } })).toBe(1);
@@ -75,9 +76,9 @@ test.describe('with HR', () => {
   test.skip(({ isMobile }) => isMobile, 'HR flows run on desktop');
 
   test('HR adds an employee, who clocks in; a missed day is corrected and approved; leave is approved', async ({ page, browser }) => {
-    // HR signs in to the admin and adds the employee with the email of an existing website account.
+    // HR signs in to the admin, adds the employee and creates their login (employees never self-register).
     const hr = await staffUser('hr', ['hr_manager']);
-    const emp = await staffUser('crew', []);
+    const emp = { email: email('crew') };
     const s = await schedule();
     await page.goto(`${ADMIN}/login`);
     await signIn(page, hr.email);
@@ -87,16 +88,22 @@ test.describe('with HR', () => {
     await page.getByLabel('Last name').fill(`Santos ${tag}`);
     await page.getByLabel('Employee number').fill(`E2E-${randomUUID().slice(0, 6).toUpperCase()}`);
     await page.getByLabel('Position').fill('Gardener');
-    await page.getByLabel(/^Email/).fill(emp.email);
+    await page.getByLabel(/^Work email/).fill(emp.email);
     await page.getByRole('button', { name: 'Add employee' }).click();
-    await expect(page.getByText(`Linked to ${emp.email}`)).toBeVisible();
+    await page.getByRole('button', { name: 'Create login' }).click();
+    const temporary = (await page.getByTestId('temporary-password').locator('code').textContent())!.trim();
     await page.getByRole('combobox', { name: 'Schedule' }).selectOption({ label: s.name });
     await page.getByLabel('From').fill(manila(-30));
     await page.getByRole('button', { name: 'Assign' }).click();
     await expect(page.getByText(`${s.name}: from ${manila(-30)} onwards`)).toBeVisible();
 
-    // The employee clocks in on the website and asks for yesterday to be corrected.
-    const staff = await webSession(browser, emp.email);
+    // First sign-in at the employee portal with the temporary password: they must choose their own first.
+    const staff = await portalSession(browser, emp.email, temporary);
+    await staff.getByLabel('New password', { exact: true }).fill('Liza-Santos-2026');
+    await staff.getByLabel('Confirm new password').fill('Liza-Santos-2026');
+    await staff.getByRole('button', { name: 'Save password' }).click();
+    await expect(staff.getByRole('heading', { name: 'Hello, Liza' })).toBeVisible();
+    // Then clocks in and asks for yesterday to be corrected.
     await staff.getByRole('button', { name: 'Clock in' }).click();
     await expect(staff.getByTestId('clock-status')).toContainText('Clocked in since');
     await staff.getByRole('button', { name: 'Ask for a correction', exact: true }).click(); // a per-day "Correct …" button also exists once a past day is on the list
@@ -121,7 +128,7 @@ test.describe('with HR', () => {
     await page.getByRole('button', { name: /^Approve/ }).click();
     await expect(row).toContainText('approved');
 
-    // Leave: request on the website, approve in the admin, the employee sees it.
+    // Leave: request at the portal, approve in the admin, the employee sees it.
     const day = manila(21);
     await staff.reload();
     await staff.getByRole('combobox', { name: /^Type/ }).selectOption({ label: 'Service incentive leave' });
@@ -138,4 +145,19 @@ test.describe('with HR', () => {
     await expect(staff.getByRole('list', { name: 'Balances' })).toContainText('4.5');
     await staff.context().close();
   });
+});
+
+test('the employee portal turns customers away, and the old /staff link goes there', async ({ page, browser }) => {
+  await page.goto(`${WEB}/staff`);
+  await expect(page).toHaveURL(new RegExp(`^${EMPLOYEE}/login`));
+  const ctx = await browser.newContext();
+  const customer = await ctx.newPage();
+  await signedInCustomer(customer, 'portalcust');
+  const u = (await db.user.findFirstOrThrow({ where: { email: { contains: 'portalcust' } }, orderBy: { createdAt: 'desc' } })).email;
+  const portal = await ctx.newPage();
+  await portal.goto(`${EMPLOYEE}/login`);
+  await signIn(portal, u);
+  await expect(portal.getByText('This portal is for Greenscape employees')).toBeVisible();
+  await expect(portal.getByRole('button', { name: 'Clock in' })).toHaveCount(0);
+  await ctx.close();
 });

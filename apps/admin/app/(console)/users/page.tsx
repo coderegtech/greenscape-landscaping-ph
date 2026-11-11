@@ -3,6 +3,7 @@ import { RoleSummary, UserSummary, paginated, z } from '@greenscape/validation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { CreateStaffAccount } from '@/components/provision';
 import { UsersTable } from '@/components/users-table';
 import { can, getStaff } from '@/lib/session';
 
@@ -33,7 +34,8 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
           <button type="submit" className="h-10 rounded-pill border-[1.5px] border-signal px-4 text-sm font-bold text-signal">Show</button>
         </form>
       </div>
-      <p className="max-w-2xl text-sm text-ink-2">Everyone signs up on the website. Give staff a role here; it takes effect on their next click. Employees get their role automatically when HR links them.</p>
+      <p className="max-w-2xl text-sm text-ink-2">Customers sign up on the website. Staff accounts are created here with a temporary password; roles take effect on the next click. Employees get their login from their employee record. Staff tools only open after a password sign-in, never through Google.</p>
+      {can(me, 'users.manage') && can(me, 'roles.manage') && <CreateStaffAccount roles={roles} canSuper={can(me, 'roles.manage_super')} adminUrl={process.env.ADMIN_URL ?? 'the admin app'} />}
       <UsersTable users={data.items} roles={roles} meId={me.user.id} canRoles={can(me, 'roles.manage')} canStatus={can(me, 'users.manage')} canSuper={can(me, 'roles.manage_super')} />
       {pages > 1 && (
         <nav aria-label="Pages" className="flex items-center gap-3 text-sm">

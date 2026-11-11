@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-# Website or admin (Next.js standalone server). Pick the app with APP=web|admin and its port with PORT.
+# Website or admin (Next.js standalone server). Pick the app with APP=web|admin|employee and its port with PORT.
 #   docker build -f docker/next.Dockerfile --build-arg APP=admin --build-arg PORT=3001 \
 #     --build-arg NEXT_PUBLIC_API_URL=https://api.example --build-arg NEXT_PUBLIC_SUPABASE_URL=https://xyz.supabase.co \
 #     --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_... -t greenscape-admin .

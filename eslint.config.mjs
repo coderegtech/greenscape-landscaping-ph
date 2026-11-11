@@ -24,7 +24,7 @@ export default tseslint.config(
     rules: { 'no-restricted-syntax': ['error', { selector: 'Literal[value=/transition-all/]', message: 'Design floor: never transition all properties (docs/ui-ux-guidelines.md).' }] },
   },
   {
-    files: ['apps/web/**/*.{ts,tsx}', 'apps/admin/**/*.{ts,tsx}', 'packages/ui/**/*.{ts,tsx}', 'packages/auth/**/*.{ts,tsx}'],
+    files: ['apps/web/**/*.{ts,tsx}', 'apps/admin/**/*.{ts,tsx}', 'apps/employee/**/*.{ts,tsx}', 'packages/ui/**/*.{ts,tsx}', 'packages/auth/**/*.{ts,tsx}'],
     plugins: { 'react-hooks': reactHooks, 'jsx-a11y': jsxA11y, '@next/next': nextPlugin },
     settings: { react: { version: 'detect' } },
     rules: {

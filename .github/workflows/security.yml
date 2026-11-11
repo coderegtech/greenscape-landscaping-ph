@@ -66,6 +66,7 @@ jobs:
         include:
           - { app: api, dockerfile: api.Dockerfile, args: '' }
           # web: built and scanned in ci.yml (its build pre-renders pages from a running API)
+          - { app: employee, dockerfile: next.Dockerfile, args: '--build-arg APP=employee --build-arg PORT=3002 --build-arg NEXT_PUBLIC_API_URL=https://api.example.invalid --build-arg NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ci' }
           - { app: admin, dockerfile: next.Dockerfile, args: '--build-arg APP=admin --build-arg PORT=3001 --build-arg NEXT_PUBLIC_API_URL=https://api.example.invalid --build-arg NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ci' }
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4

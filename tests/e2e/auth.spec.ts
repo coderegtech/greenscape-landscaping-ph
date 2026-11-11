@@ -105,14 +105,14 @@ test.describe('admin access', () => {
     await expect(page.getByTestId('no-access')).toBeVisible();
 
     await grantRoles(u.email, ['content_manager']); // user row exists after the first /me call above
-    // Once the role is seen (permission cache TTL is 60 s when changed outside the API), the password-only session is
-    // sent to set up an authenticator before any staff page opens (security H-2).
+    // Once the role is seen (permission cache TTL is 60 s when changed outside the API) the console opens. With the
+    // optional REQUIRE_STAFF_MFA=true the session is first sent to set up an authenticator.
+    const mfa = process.env.REQUIRE_STAFF_MFA === 'true';
     await expect(async () => {
       await page.reload();
-      await expect(page.getByTestId('mfa-enrol')).toBeVisible({ timeout: 1000 });
+      await expect(page.getByTestId(mfa ? 'mfa-enrol' : 'staff-identity')).toBeVisible({ timeout: 1000 });
     }).toPass({ timeout: 100_000 }); // up to the 60 s permission-cache TTL, plus reload time under load
-    await expect(page).toHaveURL(/\/mfa\?next=%2F/);
-    await completeMfa(page, u.email);
+    if (mfa) await completeMfa(page, u.email);
     await expect(page.getByTestId('staff-identity')).toContainText('content_manager');
     await expect(page.getByTestId('api-status')).toHaveText('ok');
   });

@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } 
 import { toast } from '@greenscape/ui/components/sonner';
 import { Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { requestCorrection } from '@/app/staff/actions';
+import { requestCorrection } from '@/app/actions';
 
 type P = { type: 'IN' | 'OUT'; time: string; nextDay: boolean };
 const field = 'h-11 border border-muted bg-paper-2 px-3 text-base text-ink';

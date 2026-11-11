@@ -14,7 +14,7 @@ const NO = `P-${tag.slice(-8)}`;
 let deps: Deps;
 let app: ReturnType<typeof createApp>;
 const authIds: string[] = [];
-const tokens: Record<string, string> = {};
+const tokens = { super: '', admin: '', hr: '', employee: '' };
 
 async function withRoles(label: string, roles: string[]) {
   const u = await signedInUser(`${label}-${tag}`);

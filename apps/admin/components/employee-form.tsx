@@ -4,7 +4,9 @@ import { toast } from '@greenscape/ui/components/sonner';
 import { EMPLOYMENT_STATUSES } from '@greenscape/validation';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { addDepartment, assignSchedule, linkAccount, saveEmployee } from '@/app/(console)/hr-actions';
+import { addDepartment, assignSchedule, createLogin, linkAccount, saveEmployee } from '@/app/(console)/hr-actions';
+import { OneTimePassword } from '@/components/provision';
+import type { ProvisionedAccount } from '@greenscape/validation';
 
 export interface EmployeeData {
   id: string | null; employeeNo: string; firstName: string; lastName: string; email: string; mobile: string; position: string;
@@ -20,6 +22,7 @@ export function EmployeeForm({ initial, departments, managers, schedules, canMan
   const [deps, setDeps] = useState(departments);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | null>(null);
+  const [login, setLogin] = useState<ProvisionedAccount | null>(null);
   const [sched, setSched] = useState(() => ({ scheduleId: schedules[0]?.id ?? '', effectiveFrom: new Date(Date.now() + 8 * 3_600_000).toISOString().slice(0, 10) }));
   const set = (k: keyof EmployeeData, v: string) => setF((x) => ({ ...x, [k]: v }));
 
@@ -60,7 +63,7 @@ export function EmployeeForm({ initial, departments, managers, schedules, canMan
           {text('lastName', 'Last name')}
           {text('employeeNo', 'Employee number', { placeholder: 'e.g. GS-014' })}
           {text('position', 'Position', { placeholder: 'Gardener, Driver, Supervisor…' })}
-          {text('email', 'Email (links their website account)', { type: 'email' })}
+          {text('email', 'Work email (their employee-portal login)', { type: 'email' })}
           {text('mobile', 'Mobile', { type: 'tel' })}
           <label className="flex flex-col gap-1 text-sm font-medium">Department
             <span className="flex gap-2">
@@ -92,13 +95,20 @@ export function EmployeeForm({ initial, departments, managers, schedules, canMan
       {f.id && (
         <>
           <section aria-labelledby="account" className="flex flex-col gap-3 border-t border-rule pt-6">
-            <h3 id="account" className="text-xl">Website account</h3>
-            {initial.account ? (
-              <p className="text-ink-2">Linked to <strong className="text-ink">{initial.account}</strong>. They clock in and request leave at the website’s staff page.</p>
+            <h3 id="account" className="text-xl">Employee-portal login</h3>
+            {login ? (
+              <OneTimePassword account={login} portal="the employee portal" />
+            ) : initial.account ? (
+              <p className="text-ink-2">Login: <strong className="text-ink">{initial.account}</strong>. They clock in and request leave at the employee portal with their work email and password.</p>
             ) : (
               <>
-                <p className="text-ink-2">Not linked. Ask them to create an account on the website with {initial.email || 'their email'}, then link it here.</p>
-                {canManage && initial.email && <Button size="sm" variant="secondary" className="self-start" loading={busy === 'link'} onClick={() => run('link', () => linkAccount(f.id!), 'Account linked')}>Link account</Button>}
+                <p className="text-ink-2">No login yet. Create one with {initial.email || 'a work email (save it first)'}: you get a temporary password to hand over, and they set their own at first sign-in. If they already have a website account with this email, link it instead.</p>
+                {canManage && initial.email && (
+                  <div className="flex flex-wrap gap-2">
+                    <Button size="sm" className="self-start" loading={busy === 'login'} disabled={!!busy} onClick={async () => { setBusy('login'); const res = await createLogin(f.id!); setBusy(null); if (!res.ok) return void toast.error(res.error); setLogin(res.data); }}>Create login</Button>
+                    <Button size="sm" variant="secondary" className="self-start" loading={busy === 'link'} disabled={!!busy} onClick={() => run('link', () => linkAccount(f.id!), 'Account linked')}>Link existing account</Button>
+                  </div>
+                )}
               </>
             )}
           </section>

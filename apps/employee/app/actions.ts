@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 
 const Any = z.any();
 const json = (method: string, body: unknown) => ({ method, body: JSON.stringify(body) });
-const done = <T,>(r: T) => { revalidatePath('/staff'); return r; };
+const done = <T,>(r: T) => { revalidatePath('/'); return r; };
 
 export type ClockState = { ok: true; type: 'IN' | 'OUT'; at: string } | { ok: false; error: string } | null;
 /** Form action (works before the page's JavaScript loads, so an early tap on a slow phone still counts). */

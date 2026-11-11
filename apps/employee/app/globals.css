@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@greenscape/ui/styles/theme.css";
+@source "../../../packages/ui/src";

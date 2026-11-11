@@ -2,7 +2,7 @@
 // HR server actions. Each calls the API with the staff member's own token; the API checks employees.*, attendance.*,
 // leave.* and reports.attendance, blocks self-approval, and writes the audit log.
 import { api, attempt } from '@greenscape/auth/api';
-import { z } from '@greenscape/validation';
+import { ProvisionedAccount, z } from '@greenscape/validation';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -22,6 +22,14 @@ export async function saveEmployee(id: string | null, input: unknown) {
 }
 export async function linkAccount(id: string) {
   return attempt(() => api(`/v1/hr/employees/${Id.parse(id)}/link`, Any, json('POST', {})));
+}
+/** Creates the employee-portal login; the temporary password comes back once and is never stored. */
+export async function createLogin(id: string) {
+  return attempt(async () => {
+    const out = await api(`/v1/hr/employees/${Id.parse(id)}/account`, ProvisionedAccount, json('POST', {}));
+    revalidatePath(`/employees/${id}`);
+    return out;
+  });
 }
 export async function assignSchedule(employeeId: string, scheduleId: string, effectiveFrom: string) {
   return attempt(() => api(`/v1/hr/employees/${Id.parse(employeeId)}/schedule`, Any, json('POST', { scheduleId, effectiveFrom })));

@@ -14,7 +14,7 @@ rules:
     languages: [typescript]
     severity: ERROR
     paths:
-      include: [apps/web/, apps/admin/, packages/ui/]
+      include: [apps/web/, apps/admin/, apps/employee/, packages/ui/]
     pattern: process.env.SUPABASE_SECRET_KEY
 
   - id: greenscape-no-public-secrets

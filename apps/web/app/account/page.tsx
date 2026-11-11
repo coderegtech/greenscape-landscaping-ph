@@ -54,9 +54,9 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         </div>
         {reset && <Notice tone="success">Your password has been changed.</Notice>}
         <p className="text-lg">Questions? <Link href="/messages">Message us</Link> and we reply here and by email.</p>
-        {me.permissions.includes('attendance.self') && (
+        {me.roles.includes('employee') && (
           <p className="border-l-2 border-signal pl-4 text-lg">
-            <Link href="/staff">Open the staff page</Link> to clock in and out and request leave.
+            <a href={process.env.EMPLOYEE_URL ?? 'http://localhost:3002'}>Open the employee portal</a> to clock in and out and request leave (sign in with your work email and password).
           </p>
         )}
         <FactList

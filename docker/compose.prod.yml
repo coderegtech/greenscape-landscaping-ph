@@ -2,7 +2,7 @@
 # approval. Validate with `docker compose -f docker/compose.prod.yml --env-file <secrets.env> config`.
 #
 # - Postgres, Mongo and Redis sit on an internal network: no host ports, no route to the internet.
-# - Only a TLS-terminating proxy in front of web/admin/api should be public (HTTPS + HSTS); it is environment-specific
+# - Only a TLS-terminating proxy in front of web/admin/employee/api should be public (HTTPS + HSTS); it is environment-specific
 #   and not defined here.
 # - Secrets come from an env file kept outside the repository (or the platform's secret store), never from images.
 # - Every app container: non-root, read-only root filesystem, all Linux capabilities dropped, no privilege escalation,
@@ -90,6 +90,18 @@ services:
     environment:
       INTERNAL_API_KEY: ${INTERNAL_API_KEY:?set INTERNAL_API_KEY}
       PREVIEW_SECRET: ${PREVIEW_SECRET:?set PREVIEW_SECRET}
+      WEB_URL: ${WEB_URL:?set WEB_URL}
+      TRUSTED_PROXY_HOPS: ${TRUSTED_PROXY_HOPS:-1}
+    depends_on: [api]
+
+  # Employee portal (employee.<domain>): attendance and leave only, its own sign-in and host-only session.
+  employee:
+    <<: *app
+    image: ${REGISTRY:-greenscape}/employee:${TAG:-latest}
+    tmpfs: [/tmp, /app/apps/employee/.next/cache]
+    networks: [edge]
+    environment:
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:?set INTERNAL_API_KEY}
       WEB_URL: ${WEB_URL:?set WEB_URL}
       TRUSTED_PROXY_HOPS: ${TRUSTED_PROXY_HOPS:-1}
     depends_on: [api]

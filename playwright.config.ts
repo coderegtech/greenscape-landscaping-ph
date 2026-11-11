@@ -31,5 +31,6 @@ export default defineConfig({
     },
     { command: 'pnpm --filter @greenscape/web start', url: 'http://localhost:3000/api/health', reuseExistingServer: !ci, timeout: 60_000 },
     { command: 'pnpm --filter @greenscape/admin start', url: 'http://localhost:3001/api/health', reuseExistingServer: !ci, timeout: 60_000 },
+    { command: 'pnpm --filter @greenscape/employee start', url: 'http://localhost:3002/api/health', reuseExistingServer: !ci, timeout: 60_000 },
   ],
 });

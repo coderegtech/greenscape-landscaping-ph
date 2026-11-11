@@ -3,7 +3,7 @@ import { Badge } from '@greenscape/ui/components/badge';
 import { Button } from '@greenscape/ui/components/button';
 import { toast } from '@greenscape/ui/components/sonner';
 import { useState } from 'react';
-import { cancelLeave, requestLeave } from '@/app/staff/actions';
+import { cancelLeave, requestLeave } from '@/app/actions';
 
 export interface MyLeave {
   year: number;

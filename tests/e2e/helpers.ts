@@ -7,6 +7,7 @@ import { totp } from '../totp';
 // Point at other ports when the default dev servers are busy: E2E_WEB=http://localhost:3100 pnpm test:e2e
 export const WEB = process.env.E2E_WEB ?? 'http://localhost:3000';
 export const ADMIN = process.env.E2E_ADMIN ?? 'http://localhost:3001';
+export const EMPLOYEE = process.env.E2E_EMPLOYEE ?? 'http://localhost:3002';
 export const PASSWORD = 'Greenscape-E2e-2026';
 export const email = (label: string) => `${label}-${randomUUID().slice(0, 8)}@e2e.greenscape.local`;
 

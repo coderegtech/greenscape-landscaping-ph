@@ -21,7 +21,7 @@ if (!(await up())) {
 
 try {
   await run('pnpm', ['--filter', '@greenscape/api', 'build']);
-  await run('pnpm', ['--filter', '@greenscape/web', '--filter', '@greenscape/admin', 'build']);
+  await run('pnpm', ['--filter', '@greenscape/web', '--filter', '@greenscape/admin', '--filter', '@greenscape/employee', 'build']);
 } finally {
   if (api) {
     if (process.platform === 'win32') spawn('taskkill', ['/pid', String(api.pid), '/T', '/F'], { stdio: 'ignore' });
