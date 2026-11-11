@@ -11,7 +11,9 @@ concurrency:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    # Not ubuntu-latest (26.04): MongoDB 8 refuses to start on Linux kernels 6.19-7.0.13 (SERVER-121912 / SERVER-125742).
+    # Move back once the runner kernel is 7.0.14+ or the image ships a MongoDB release that runs there.
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
