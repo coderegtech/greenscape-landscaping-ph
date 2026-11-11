@@ -30,6 +30,10 @@ export const EnvSchema = z.object({
   MOCK_PAYMENT_SECRET: z.string().min(16).optional().or(z.literal('').transform(() => undefined)),
   RESERVATION_MINUTES: z.coerce.number().int().min(5).max(24 * 60).default(30),
   ORDER_NOTIFY_TO: csv,
+  // Web Push (VAPID). Unset = push is off; the inbox and live stream still work. Generate a pair with `pnpm vapid:keys`.
+  VAPID_PUBLIC_KEY: z.string().min(40).optional().or(z.literal('').transform(() => undefined)),
+  VAPID_PRIVATE_KEY: z.string().min(20).optional().or(z.literal('').transform(() => undefined)),
+  VAPID_SUBJECT: z.string().default('mailto:greenscapepalawan@gmail.com'),
   FORM_RATE_LIMIT_PER_HOUR: z.coerce.number().int().positive().default(10),
   CACHE_PREFIX: z.string().default('gs:dev'),
   CORS_ORIGINS: csv,

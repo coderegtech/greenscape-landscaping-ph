@@ -5,6 +5,9 @@ import { createTokenVerifier, type TokenVerifier } from '@greenscape/auth/server
 import { createPrismaClient, type Db } from '@greenscape/database';
 import { createStorage, type Storage } from '@greenscape/storage';
 import { createMailer, type Mailer } from './mailer.ts';
+import { createEventBus, type EventBus } from './events.ts';
+import { registerNotificationHandlers } from '../modules/notifications/handlers.ts';
+import { createNotifications, type Notifications } from '../modules/notifications/service.ts';
 import { createMockProvider, createStripeProvider, type PaymentProvider } from '../modules/shop/payments.ts';
 import type { MongoClient, MongoDb } from '@greenscape/content';
 import type { Env } from '../config/env.ts';
@@ -24,6 +27,9 @@ export interface Deps {
   payments: PaymentProvider;
   /** Supabase Auth admin (service role): email confirmation checks and bans. */
   identities: IdentityAdmin;
+  /** Domain events: business code emits, notifications (and anything later) subscribe. */
+  events: EventBus;
+  notifications: Notifications;
 }
 
 export function createPayments(env: Env, redis: Redis): PaymentProvider {
@@ -40,16 +46,21 @@ export async function createDeps(env: Env, log: Logger): Promise<Deps> {
   // Redis is optional at boot: the app serves from the databases while it reconnects.
   await redis.connect().catch((err) => log.warn({ err: err.message }, 'redis unavailable at boot; continuing without cache'));
   const cache = createCache({ redis, prefix: env.CACHE_PREFIX, logger: log });
-  return {
-    env, log, db, mongo, redis, cache,
+  const events = createEventBus(log);
+  const notifications = createNotifications({ db, redis, env, log });
+  await notifications.hub.start();
+  const deps: Deps = {
+    env, log, db, mongo, redis, cache, events, notifications,
     verifyToken: createTokenVerifier(env.SUPABASE_URL),
     storage: createStorage(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY),
     mailer: createMailer(env.SMTP_URL, env.MAIL_FROM, log),
     payments: createPayments(env, redis),
     identities: createIdentityAdmin(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY),
   };
+  registerNotificationHandlers(deps, notifications);
+  return deps;
 }
 
 export async function closeDeps(d: Deps) {
-  await Promise.allSettled([d.db.$disconnect(), d.mongo.client.close(), d.redis.quit()]);
+  await Promise.allSettled([d.notifications.hub.close(), d.db.$disconnect(), d.mongo.client.close(), d.redis.quit()]);
 }

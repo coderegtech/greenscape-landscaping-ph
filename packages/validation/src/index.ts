@@ -190,3 +190,4 @@ export * from './hr.ts';
 export * from './admin.ts';
 export * from './account.ts';
 export * from './assistant.ts';
+export * from './notifications.ts';

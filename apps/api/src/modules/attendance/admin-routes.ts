@@ -254,6 +254,7 @@ export function hrRoutes(deps: Deps) {
       await tx.attendanceCorrection.update({ where: { id }, data: { status: decision, decidedById: actor(res), decidedAt: new Date() } });
     });
     await audit(db, req, res, { action: `attendance.correction.${decision.toLowerCase()}`, entityType: 'attendanceCorrection', entityId: id, after: note ? { note } : undefined });
+    await deps.events.emit('correction.decided', { correctionId: id });
     res.json({ id, status: decision });
   });
 
@@ -273,12 +274,14 @@ export function hrRoutes(deps: Deps) {
     const { decision, note } = Decision.parse(req.body);
     await decideLeave(deps, id, decision, actor(res), note);
     await audit(db, req, res, { action: `leave.${decision.toLowerCase()}`, entityType: 'leaveRequest', entityId: id, after: note ? { note } : undefined });
+    await deps.events.emit('leave.decided', { leaveId: id });
     res.json({ id, status: decision });
   });
   r.post('/leave/:id/cancel', requirePermission('leave.approve'), async (req, res) => {
     const id = Id.parse(req.params.id);
     await cancelLeave(deps, id, { userId: actor(res), hr: true });
     await audit(db, req, res, { action: 'leave.cancel', entityType: 'leaveRequest', entityId: id });
+    await deps.events.emit('leave.decided', { leaveId: id });
     res.json({ id, status: 'CANCELLED' });
   });
   r.get('/leave/balances', requirePermission('leave.read'), async (req, res) => {

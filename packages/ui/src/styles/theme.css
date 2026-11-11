@@ -526,3 +526,8 @@
 }
 .band-forest a { text-decoration-color: rgb(201 230 74 / 0.55); }
 .band-forest ::selection { background: var(--gs-lime); color: #1e3a28; }
+/* Notifications: the bell rocks once when something arrives; new rows ease in. Both are covered by the reduced-motion rule above. */
+@keyframes gs-bell { 20% { transform: rotate(14deg); } 40% { transform: rotate(-12deg); } 60% { transform: rotate(8deg); } 80% { transform: rotate(-4deg); } }
+.gs-bell-ring { transform-origin: 50% 0; animation: gs-bell var(--dur-long) var(--ease-out); }
+@keyframes gs-notif-in { from { opacity: 0; transform: translateY(-6px); } }
+.gs-notif-in { animation: gs-notif-in var(--dur-short) var(--ease-out); }

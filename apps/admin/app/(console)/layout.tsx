@@ -1,5 +1,7 @@
 import { SignOutButton } from '@greenscape/ui/auth-forms';
 import { AdminShell } from '@greenscape/ui/layout/admin-shell';
+import { NotificationBell } from '@greenscape/ui/notifications/bell';
+import { NotificationsProvider } from '@greenscape/ui/notifications/provider';
 import { navFor } from '@/lib/nav';
 import { getStaff } from '@/lib/session';
 
@@ -21,9 +23,11 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
     );
   }
   return (
+    <NotificationsProvider app="admin" apiUrl={process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}>
     <AdminShell
       groups={navFor(me)}
       title="Greenscape Admin"
+      actions={<NotificationBell centerHref="/notifications" />}
       account={
         <div className="flex items-center gap-3">
           <span className="hidden text-sm text-ink-2 md:inline" data-testid="staff-identity">
@@ -35,5 +39,6 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
     >
       {children}
     </AdminShell>
+    </NotificationsProvider>
   );
 }

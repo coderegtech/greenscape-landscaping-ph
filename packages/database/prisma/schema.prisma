@@ -31,6 +31,9 @@ model User {
   wishlist      WishlistItem[]
   assistantConversations AssistantConversation[]
   contactInquiries ContactInquiry[]
+  notifications Notification[]
+  pushSubscriptions PushSubscription[]
+  notificationPrefs NotificationPreference[]
   lastLoginAt   DateTime?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
@@ -822,4 +825,100 @@ model AssistantMessage {
 
   @@index([conversationId, createdAt])
   @@index([createdAt])
+}
+
+// ───────────── Notifications ─────────────
+// In-app inbox + Web Push. Fan-out and delivery design: docs/notifications.md.
+
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum DeliveryStatus {
+  PENDING
+  SENT
+  FAILED
+  GONE // the push service said the subscription is expired or revoked; the subscription is deleted
+}
+
+model Notification {
+  id          String               @id @default(uuid()) @db.Uuid
+  recipientId String               @db.Uuid
+  recipient   User                 @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  /// Which frontend shows it: "web" (customer site) or "admin" (staff console). A staff member who also shops sees each in its own app.
+  app         String
+  type        String // e.g. "order.paid"; see apps/api/src/modules/notifications/events.ts
+  category    String // preference bucket: orders, quotes, messages, stock, hr, account, system
+  title       String
+  message     String
+  /// { href: "/orders/GS-…", … }: deep link (relative to the app) plus whatever the type needs.
+  payload     Json?
+  priority    NotificationPriority @default(NORMAL)
+  /// Idempotency: the same event for the same recipient is stored once.
+  dedupeKey   String?
+  readAt      DateTime?
+  createdAt   DateTime             @default(now())
+  expiresAt   DateTime?
+  deliveries  NotificationDelivery[]
+
+  @@unique([recipientId, dedupeKey])
+  @@index([recipientId, app, createdAt(sort: Desc)])
+  @@index([recipientId, app, readAt])
+  @@index([expiresAt])
+}
+
+model PushSubscription {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @db.Uuid
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  app          String // "web" | "admin": each origin has its own service worker
+  /// Stable id the browser generates once, so re-subscribing replaces the row instead of piling up.
+  deviceId     String
+  platform     String   @default("web")
+  endpoint     String   @unique
+  p256dh       String
+  auth         String
+  userAgent    String?
+  failureCount Int      @default(0)
+  lastActiveAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+  deliveries   NotificationDelivery[]
+
+  @@unique([userId, app, deviceId])
+  @@index([userId, app])
+}
+
+model NotificationPreference {
+  id        String  @id @default(uuid()) @db.Uuid
+  userId    String  @db.Uuid
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Granular by category, not type: the set of types grows, what people want to mute does not.
+  category  String
+  inApp     Boolean @default(true)
+  push      Boolean @default(true)
+  sound     Boolean @default(true)
+
+  @@unique([userId, category])
+}
+
+/// One row per push attempt target; doubles as the durable queue (worker claims PENDING rows whose nextAttemptAt has passed).
+model NotificationDelivery {
+  id             String             @id @default(uuid()) @db.Uuid
+  notificationId String             @db.Uuid
+  notification   Notification       @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  subscriptionId String?            @db.Uuid // kept (null) after the subscription is removed, so the failure history survives
+  subscription   PushSubscription?  @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  channel        String             @default("push")
+  status         DeliveryStatus     @default(PENDING)
+  attempts       Int                @default(0)
+  nextAttemptAt  DateTime           @default(now())
+  deliveredAt    DateTime?
+  failureReason  String?
+  createdAt      DateTime           @default(now())
+
+  @@unique([notificationId, subscriptionId]) // never push the same notification to the same device twice
+  @@index([status, nextAttemptAt])
 }

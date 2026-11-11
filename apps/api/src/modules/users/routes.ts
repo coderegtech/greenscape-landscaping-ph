@@ -44,7 +44,7 @@ const toSummary = (u: Row): UserSummary => ({
 const isProtected = (k: string) => PROTECTED_ROLES.includes(k as RoleKey);
 
 export function userRoutes(deps: Deps) {
-  const { db, cache, identities } = deps;
+  const { db, cache, identities, events } = deps;
   const r = Router();
 
   r.get('/users', requirePermission('users.read'), async (req, res) => {
@@ -85,6 +85,7 @@ export function userRoutes(deps: Deps) {
     });
     await cache.invalidateTags([authzCacheKey(id)]); // effective on the target's next request, not after the TTL
     logSecurity(deps, req, res, 'security.roles_changed', { target: id, roles: wanted.join(' ') });
+    await events.emit('user.roles_changed', { userId: id, roles: wanted });
     res.json(toSummary(updated));
   });
 

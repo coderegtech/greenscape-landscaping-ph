@@ -172,7 +172,7 @@ export async function applyPaymentEvent(deps: Deps, event: NormalizedPaymentEven
     return 'unknown_payment';
   }
 
-  let outcome: { result: ApplyResult; paid?: boolean; low?: string[]; lateRefund?: boolean } = { result: 'ignored' };
+  let outcome: { result: ApplyResult; paid?: boolean; low?: string[]; lateRefund?: boolean; cancelled?: string } = { result: 'ignored' };
   await db.$transaction(async (tx) => {
     await tx.$queryRaw`SELECT 1 FROM "Order" WHERE "id" = ${payment.orderId}::uuid FOR UPDATE`; // one transition at a time per order
     const order = await tx.order.findUniqueOrThrow({ where: { id: payment.orderId } });
@@ -203,7 +203,7 @@ export async function applyPaymentEvent(deps: Deps, event: NormalizedPaymentEven
       const failed = event.type === 'payment.failed';
       await tx.payment.update({ where: { id: p.id }, data: { status: failed ? 'FAILED' : 'CANCELLED', rawLast: raw as Prisma.InputJsonValue } });
       await tx.order.update({ where: { id: order.id }, data: { status: 'CANCELLED', reservationExpiresAt: null, events: { create: { type: failed ? 'payment_failed' : 'payment_cancelled', data: { ref: event.ref } } } } });
-      outcome = { result: 'applied' };
+      outcome = { result: 'applied', cancelled: failed ? 'the payment failed' : 'the payment was cancelled' };
     }
   });
   await db.webhookEvent.update({ where: { id: ledgerId }, data: { processedAt: new Date() } });
@@ -212,13 +212,17 @@ export async function applyPaymentEvent(deps: Deps, event: NormalizedPaymentEven
     // Paid after the hold expired and the stock went to someone else: give the money back automatically.
     await refundOrder(deps, payment.orderId, { amount: money(payment.amount), reason: 'Paid after the reservation expired; item sold out', restock: false, actorId: SYSTEM_ACTOR }).catch((err) => log.error({ err, orderId: payment.orderId }, 'automatic refund failed'));
   }
-  if (outcome.paid) await notifyPaid(deps, payment.orderId, outcome.low ?? []);
+  if (outcome.paid) {
+    await notifyPaid(deps, payment.orderId, outcome.low ?? []);
+    await deps.events.emit('order.paid', { orderId: payment.orderId, lowVariantIds: outcome.low ?? [] });
+  }
+  if (outcome.cancelled) await deps.events.emit('order.cancelled', { orderId: payment.orderId, reason: outcome.cancelled });
   return outcome.result;
 }
 
 // ── cancellation, expiry, refunds, fulfilment ──
-export async function cancelOrder(deps: Pick<Deps, 'db'>, orderId: string, opts: { reason: string; actorId: string | null }) {
-  return deps.db.$transaction(async (tx) => {
+export async function cancelOrder(deps: Pick<Deps, 'db' | 'events'>, orderId: string, opts: { reason: string; actorId: string | null }) {
+  const cancelled = await deps.db.$transaction(async (tx) => {
     await tx.$queryRaw`SELECT 1 FROM "Order" WHERE "id" = ${orderId}::uuid FOR UPDATE`;
     const o = await tx.order.findUniqueOrThrow({ where: { id: orderId } });
     if (o.status !== 'PENDING_PAYMENT') throw AppError.conflict('Only unpaid orders can be cancelled. Refund a paid order instead.');
@@ -226,6 +230,8 @@ export async function cancelOrder(deps: Pick<Deps, 'db'>, orderId: string, opts:
     await tx.payment.updateMany({ where: { orderId, status: 'PENDING' }, data: { status: 'CANCELLED' } });
     return tx.order.update({ where: { id: orderId }, data: { status: 'CANCELLED', reservationExpiresAt: null, events: { create: { type: 'cancelled', actorId: opts.actorId, data: { reason: opts.reason } } } } });
   });
+  await deps.events.emit('order.cancelled', { orderId, reason: opts.reason });
+  return cancelled;
 }
 
 /** Unpaid orders past their hold: ask the provider once more (a payment may have succeeded without a webhook), else cancel. */
@@ -293,6 +299,7 @@ export async function refundOrder(deps: Deps, orderId: string, opts: { amount: s
     text: emailText('Your refund is on its way', [`We refunded ${peso(amount)} for order ${o.number}.`, 'It can take 5 to 10 banking days to appear, depending on your bank or card.'], [['Order', o.number], ['Refund', peso(amount)]]),
     html: emailHtml('Your refund is on its way', [`We refunded ${peso(amount)} for order ${o.number}.`, 'It can take 5 to 10 banking days to appear, depending on your bank or card.'], [['Order', o.number], ['Refund', peso(amount)]]),
   });
+  await deps.events.emit('order.refunded', { orderId });
   return o;
 }
 
@@ -312,6 +319,7 @@ export async function setFulfillment(deps: Deps, orderId: string, to: Fulfillmen
     where: { id: orderId },
     data: { fulfillment: to, ...(to === 'DELIVERED' ? { status: 'COMPLETED' } : {}), events: { create: { type: `fulfillment.${to.toLowerCase()}`, actorId, data: note ? { note } : undefined } } },
   });
+  await deps.events.emit('order.fulfillment_changed', { orderId });
   if (to === 'OUT_FOR_DELIVERY' || to === 'DELIVERED') {
     const email = (o.shippingAddress as { email?: string }).email ?? o.customer.email;
     const title = to === 'DELIVERED' ? 'Your order was delivered' : 'Your order is on its way';

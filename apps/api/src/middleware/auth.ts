@@ -30,7 +30,7 @@ const PERM_TTL_SEC = 60; // permissions are never trusted from the token and nev
 export const authzCacheKey = (userId: string) => `authz:user:${userId}`;
 
 /** Map a verified Supabase identity to our User row, creating it (with the default role) on first sight. */
-async function resolveUser({ db, identities, log }: Deps, authUserId: string, email: string, name?: string, avatarUrl?: string) {
+async function resolveUser({ db, identities, log, events }: Deps, authUserId: string, email: string, name?: string, avatarUrl?: string) {
   const existing = await db.user.findUnique({ where: { authUserId }, select: { id: true, status: true, email: true, avatarUrl: true } });
   if (existing) {
     if (existing.email !== email || (avatarUrl && existing.avatarUrl !== avatarUrl)) await db.user.update({ where: { id: existing.id }, data: { email, ...(avatarUrl ? { avatarUrl } : {}) } });
@@ -55,10 +55,12 @@ async function resolveUser({ db, identities, log }: Deps, authUserId: string, em
   }
   try {
     const role = await db.role.findUniqueOrThrow({ where: { key: DEFAULT_ROLE } });
-    return await db.user.create({
+    const created = await db.user.create({
       data: { authUserId, email, displayName: name, avatarUrl, lastLoginAt: new Date(), roles: { create: { roleId: role.id } } },
       select: { id: true, status: true, email: true },
     });
+    await events.emit('user.registered', { userId: created.id });
+    return created;
   } catch (err) {
     // Two first requests raced; the other one created the row.
     if ((err as { code?: string }).code === 'P2002') return db.user.findUniqueOrThrow({ where: { authUserId }, select: { id: true, status: true, email: true } });
