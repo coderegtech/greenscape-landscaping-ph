@@ -1,13 +1,15 @@
 import { FactList } from '@greenscape/ui/layout/primitives';
 import { cms } from '@/lib/cms';
 
-/** Contact facts from the CMS site config. The map is a link (no third-party iframe on page load). */
+/** Contact facts from the CMS site config, with an embedded Google map of the address (lazy: loads near the viewport). */
 export async function ContactDetails() {
   const site = await cms.site();
   const c = site?.config;
   if (!c) return null;
-  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Greenscape ${c.address}`)}`;
+  const query = encodeURIComponent(`Greenscape ${c.address}`);
+  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
   return (
+    <>
     <FactList
       items={[
         {
@@ -40,5 +42,13 @@ export async function ContactDetails() {
           : []),
       ]}
     />
+    <iframe
+      src={`https://www.google.com/maps?q=${query}&output=embed`}
+      title={`Map: ${c.address}`}
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+      className="aspect-[4/3] w-full rounded-[var(--radius-card)] border border-rule bg-paper-2"
+    />
+    </>
   );
 }
