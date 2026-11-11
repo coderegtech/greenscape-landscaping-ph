@@ -8,7 +8,7 @@ import { registry } from '../../lib/openapi.ts';
 import { currentAuth, requireAuth } from '../../middleware/auth.ts';
 import { formLimit } from '../../middleware/form-limit.ts';
 
-registry.registerPath({ method: 'post', path: '/v1/contact', tags: ['inquiries'], summary: 'Send a message to Greenscape (public; rate-limited). Stored and emailed to the team.', body: ContactRequest, responses: { 201: { description: 'received' } } });
+registry.registerPath({ method: 'post', path: '/v1/contact', tags: ['inquiries'], summary: 'Send a message to Greenscape (sign-in required; rate-limited per account). Stored and emailed to the team.', body: ContactRequest, responses: { 201: { description: 'received' } } });
 registry.registerPath({ method: 'post', path: '/v1/testimonials', tags: ['inquiries'], auth: true, summary: 'Share feedback (signed in). Held as pending until a content manager approves it.', body: TestimonialRequest, responses: { 201: { description: 'pending moderation' } } });
 
 /** "Juan Dela Cruz" → "Juan C." (how the current site attributes feedback; never the full name). */
@@ -21,10 +21,11 @@ export function inquiryRoutes(deps: Deps) {
   const { db, mongo, mailer, env } = deps;
   const r = Router();
 
-  r.post('/contact', formLimit(deps, 'contact', env.FORM_RATE_LIMIT_PER_HOUR), async (req, res) => {
+  // Messages need an account (spam, and so the sender can follow up in their account); enforced here, not just in the UI.
+  r.post('/contact', requireAuth, formLimit(deps, 'contact', env.FORM_RATE_LIMIT_PER_HOUR), async (req, res) => {
     const m = ContactRequest.parse(req.body);
     if (m.website) return res.status(201).json({ received: true }); // honeypot
-    const row = await db.contactInquiry.create({ data: { name: m.name, email: m.email, phone: m.phone, subject: m.subject, body: m.message } });
+    const row = await db.contactInquiry.create({ data: { userId: currentAuth(res).userId, name: m.name, email: m.email, phone: m.phone, subject: m.subject, body: m.message } });
     const rows: [string, string][] = [['From', `${m.name} <${m.email}>`], ['Phone', m.phone ?? 'Not given'], ['Subject', m.subject ?? 'General']];
     await mailer.send({ to: await notifyTo(deps, 'messages'), replyTo: m.email, subject: `Website message from ${m.name}`, text: emailText('New website message', [m.message], rows), html: emailHtml('New website message', [m.message], rows) });
     res.status(201).json({ received: true, id: row.id });

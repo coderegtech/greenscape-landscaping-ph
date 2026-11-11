@@ -110,7 +110,8 @@ export function shopRoutes(deps: Deps) {
     const cart = await findCart(deps, who(req, res));
     res.set('cache-control', 'no-store').json(await cartView(deps, cart?.id ?? null));
   });
-  router.post('/cart/items', async (req, res) => {
+  // Adding to the cart, changing it and checking out need an account; browsing and the catalogue stay public.
+  router.post('/cart/items', requireAuth, async (req, res) => {
     const { variantId, quantity } = CartLineInput.parse(req.body);
     const [a] = await availability(deps, [variantId]);
     if (!a) throw AppError.notFound('That item does not exist');
@@ -119,7 +120,7 @@ export function shopRoutes(deps: Deps) {
     await addItem(deps, cart.id, variantId, quantity);
     res.status(201).json({ ...(await cartView(deps, cart.id)), ...(token ? { cartToken: token } : {}) });
   });
-  router.patch('/cart/items/:variantId', async (req, res) => {
+  router.patch('/cart/items/:variantId', requireAuth, async (req, res) => {
     const variantId = z.string().uuid().parse(req.params.variantId);
     const { quantity } = CartQtyInput.parse(req.body);
     const cart = await findCart(deps, who(req, res));
@@ -136,7 +137,7 @@ export function shopRoutes(deps: Deps) {
   });
 
   // ── checkout ──
-  router.post('/checkout', formLimit(deps, 'checkout', env.FORM_RATE_LIMIT_PER_HOUR * 3), async (req, res) => {
+  router.post('/checkout', requireAuth, formLimit(deps, 'checkout', env.FORM_RATE_LIMIT_PER_HOUR * 3), async (req, res) => {
     const input = CheckoutRequest.parse(req.body);
     if (input.website) throw AppError.badRequest('We could not place this order.');
     const cart = await findCart(deps, who(req, res));
