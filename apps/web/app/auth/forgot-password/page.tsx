@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: 'Reset your password', robots: { inde
 
 export default function ForgotPasswordPage() {
   return (
-    <AuthCard title="Reset your password" footer={<Link href="/login" className="font-medium text-ink">Back to sign in</Link>}>
+    <AuthCard title="Reset your password" footer={<Link href="/auth/login" className="font-medium text-ink">Back to sign in</Link>}>
       <p className="text-ink-2">Enter your account email and we&apos;ll send you a link to choose a new password.</p>
       <ForgotPasswordFormView />
     </AuthCard>

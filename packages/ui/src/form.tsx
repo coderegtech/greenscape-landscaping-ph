@@ -50,11 +50,11 @@ export function Notice({ tone, children }: { tone: 'error' | 'success'; children
 
 export function AuthCard({ title, children, footer }: { title: string; children: ReactNode; footer?: ReactNode }) {
   return (
-    <main id="main" className="container-page py-16 md:py-24">
-      <div className="mx-auto w-full max-w-[30rem]">
-        <h1 className="mb-10 text-4xl text-ink">{title}</h1>
+    <main id="main" className="container-page py-12 md:py-20">
+      <div className="hero-in mx-auto w-full max-w-[30rem] rounded-[var(--radius-card)] border border-rule bg-paper p-6 shadow-soft md:p-10">
+        <h1 className="mb-8 text-4xl text-ink">{title}</h1>
         <div className="flex flex-col gap-6">{children}</div>
-        {footer && <div className="mt-10 border-t border-rule pt-6 text-base text-ink-2">{footer}</div>}
+        {footer && <div className="mt-8 border-t border-rule pt-6 text-base text-ink-2">{footer}</div>}
       </div>
     </main>
   );

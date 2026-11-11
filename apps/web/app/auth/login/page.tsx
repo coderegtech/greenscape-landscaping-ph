@@ -12,7 +12,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const { next, error } = await searchParams;
   const to = safeNext(next, '/account');
   return (
-    <AuthCard title="Sign in" footer={<>New to Greenscape? <Link href="/signup" className="font-medium text-ink">Create an account</Link></>}>
+    <AuthCard title="Sign in" footer={<>New to Greenscape? <Link href={to === '/account' ? '/auth/register' : `/auth/register?next=${encodeURIComponent(to)}`} className="font-medium text-ink">Create an account</Link></>}>
       {error && ERRORS[error] && <Notice tone="error">{ERRORS[error]}</Notice>}
       <GoogleButton next={to} />
       <SignInFormView next={to} />

@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) return NextResponse.redirect(new URL(next, url.origin));
   }
-  const login = new URL('/login', url.origin);
+  const login = new URL('/auth/login', url.origin);
   login.searchParams.set('error', 'link'); // fixed codes only: never echo provider text into the page
   return NextResponse.redirect(login);
 }

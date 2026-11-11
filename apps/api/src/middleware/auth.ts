@@ -30,10 +30,10 @@ const PERM_TTL_SEC = 60; // permissions are never trusted from the token and nev
 export const authzCacheKey = (userId: string) => `authz:user:${userId}`;
 
 /** Map a verified Supabase identity to our User row, creating it (with the default role) on first sight. */
-async function resolveUser({ db, identities, log }: Deps, authUserId: string, email: string, name?: string) {
-  const existing = await db.user.findUnique({ where: { authUserId }, select: { id: true, status: true, email: true } });
+async function resolveUser({ db, identities, log }: Deps, authUserId: string, email: string, name?: string, avatarUrl?: string) {
+  const existing = await db.user.findUnique({ where: { authUserId }, select: { id: true, status: true, email: true, avatarUrl: true } });
   if (existing) {
-    if (existing.email !== email) await db.user.update({ where: { id: existing.id }, data: { email } });
+    if (existing.email !== email || (avatarUrl && existing.avatarUrl !== avatarUrl)) await db.user.update({ where: { id: existing.id }, data: { email, ...(avatarUrl ? { avatarUrl } : {}) } });
     return existing;
   }
   // Same verified email under a new Supabase identity (re-created account, Firebase→Supabase migration): relink.
@@ -56,7 +56,7 @@ async function resolveUser({ db, identities, log }: Deps, authUserId: string, em
   try {
     const role = await db.role.findUniqueOrThrow({ where: { key: DEFAULT_ROLE } });
     return await db.user.create({
-      data: { authUserId, email, displayName: name, lastLoginAt: new Date(), roles: { create: { roleId: role.id } } },
+      data: { authUserId, email, displayName: name, avatarUrl, lastLoginAt: new Date(), roles: { create: { roleId: role.id } } },
       select: { id: true, status: true, email: true },
     });
   } catch (err) {
@@ -101,7 +101,7 @@ export function authenticate(deps: Deps): RequestHandler {
       if (err instanceof TokenError) throw new AppError(401, err.reason === 'expired' ? 'TOKEN_EXPIRED' : 'INVALID_TOKEN', `Access token ${err.reason}`);
       throw err;
     }
-    const user = await resolveUser(deps, verified.authUserId, verified.email, verified.name);
+    const user = await resolveUser(deps, verified.authUserId, verified.email, verified.name, verified.avatarUrl);
     if (user.status !== 'ACTIVE') throw new AppError(403, 'ACCOUNT_SUSPENDED', 'This account is suspended');
     const grants = await loadGrants(deps, user.id);
     // Deny by default: until the session is aal2, staff permissions are simply absent, so every check refuses them.
