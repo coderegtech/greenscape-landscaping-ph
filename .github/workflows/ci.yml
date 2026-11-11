@@ -36,7 +36,7 @@ jobs:
         run: docker compose -f docker/compose.dev.yml logs --no-color --tail 80
 
       # Local Supabase (auth + mail) with a throwaway ES256 signing key, like a hosted project.
-      - uses: supabase/setup-cli@1dedf2c611547ede7232d26866dd3c56ab903bbb # v1
+      - uses: supabase/setup-cli@689adcfb80d947100a1eab127289b97d1fb07b13 # v1
         with:
           version: latest
       - run: echo '[]' > supabase/signing_keys.json && supabase gen signing-key --algorithm ES256 --append
