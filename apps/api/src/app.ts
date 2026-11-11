@@ -18,6 +18,8 @@ import { mediaRoutes } from './modules/media/routes.ts';
 import { inquiryRoutes } from './modules/inquiries/routes.ts';
 import { quotationRoutes } from './modules/quotations/routes.ts';
 import { userRoutes } from './modules/users/routes.ts';
+import { accountRoutes } from './modules/account/routes.ts';
+import { assistantAdminRoutes, assistantRoutes } from './modules/assistant/routes.ts';
 import { shopAdminRoutes } from './modules/shop/admin-routes.ts';
 import { hrRoutes } from './modules/attendance/admin-routes.ts';
 import { attendanceSelfRoutes } from './modules/attendance/routes.ts';
@@ -82,8 +84,11 @@ export function createApp(deps: Deps) {
   app.use('/v1/shop-admin', shopAdminRoutes(deps));
   app.use('/v1/hr', hrRoutes(deps));
   app.use('/v1', attendanceSelfRoutes(deps));
+  app.use('/v1/admin/assistant', assistantAdminRoutes(deps));
   app.use('/v1/admin', adminRoutes(deps));
   app.use('/v1', customerMessageRoutes(deps));
+  app.use('/v1', accountRoutes(deps));
+  app.use('/v1', assistantRoutes(deps));
   app.use('/v1', shopRoutes(deps));
 
   app.use(notFound);

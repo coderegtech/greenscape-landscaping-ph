@@ -6,6 +6,7 @@ import { createLogger } from './lib/logger.ts';
 import { startScheduler } from './lib/publisher.ts';
 import { startShopJobs } from './modules/shop/orders.ts';
 import { startAttendanceJobs } from './modules/attendance/service.ts';
+import { startAssistantJobs } from './modules/assistant/routes.ts';
 
 const env = readEnv();
 const log = createLogger(env.LOG_LEVEL, env.NODE_ENV === 'development');
@@ -15,6 +16,7 @@ const deps = await createDeps(env, log);
 const scheduler = startScheduler(deps);
 const shopJobs = startShopJobs(deps);
 const attendanceJobs = startAttendanceJobs(deps);
+const assistantJobs = startAssistantJobs(deps);
 const server = createApp(deps).listen(env.API_PORT, () => log.info({ port: env.API_PORT }, 'api listening'));
 
 let closing = false;
@@ -25,6 +27,7 @@ async function shutdown(signal: string) {
   scheduler.stop();
   shopJobs.stop();
   attendanceJobs.stop();
+  assistantJobs.stop();
   server.close();
   await closeDeps(deps);
   process.exit(0);
