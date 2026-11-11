@@ -25,6 +25,7 @@ import { shopAdminRoutes } from './modules/shop/admin-routes.ts';
 import { hrRoutes } from './modules/attendance/admin-routes.ts';
 import { attendanceSelfRoutes } from './modules/attendance/routes.ts';
 import { adminRoutes, customerMessageRoutes } from './modules/admin/routes.ts';
+import { analyticsCollectRoutes, analyticsReportRoutes } from './modules/analytics/routes.ts';
 import { catalogRoutes, shopRoutes, webhookRoutes } from './modules/shop/routes.ts';
 
 export function createApp(deps: Deps) {
@@ -87,6 +88,8 @@ export function createApp(deps: Deps) {
   app.use('/v1/hr', hrRoutes(deps));
   app.use('/v1', attendanceSelfRoutes(deps));
   app.use('/v1/admin/assistant', assistantAdminRoutes(deps));
+  app.use('/v1/admin/analytics', analyticsReportRoutes(deps));
+  app.use('/v1/analytics', analyticsCollectRoutes(deps));
   app.use('/v1/admin', adminRoutes(deps));
   app.use('/v1', customerMessageRoutes(deps));
   app.use('/v1', accountRoutes(deps));

@@ -924,3 +924,16 @@ model NotificationDelivery {
   @@unique([notificationId, subscriptionId]) // never push the same notification to the same device twice
   @@index([status, nextAttemptAt])
 }
+
+/// Cookieless website analytics: daily counters only. No visitor id, IP address or cookie is stored (unique visitors
+/// are counted with a Redis HyperLogLog of a keyed, day-scoped hash). See docs/admin/analytics-dashboard.md.
+model AnalyticsDaily {
+  day    DateTime @db.Date
+  /// pageview (key = path) | visitor | source (referrer host or "direct") | device | country | add_to_cart
+  metric String
+  key    String   @default("")
+  count  Int      @default(0)
+
+  @@id([day, metric, key])
+  @@index([metric, day])
+}

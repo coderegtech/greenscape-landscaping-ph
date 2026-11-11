@@ -11,6 +11,7 @@ import { CursorFollower } from '@/components/cursor';
 import { Accents } from '@/components/decorations/accents';
 import { AuthProvider } from '@/components/auth/auth-context';
 import { ChatLauncher } from '@/components/chat/chat-launcher';
+import { PageView } from '@/components/page-view';
 import { draftMode } from 'next/headers';
 import { cms } from '@/lib/cms';
 import './globals.css';
@@ -69,6 +70,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <CursorFollower />
           <Toaster />
           <ChatLauncher />
+          {!preview && <PageView />}
         </AuthProvider>
       </body>
     </html>

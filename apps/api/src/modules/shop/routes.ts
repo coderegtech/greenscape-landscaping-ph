@@ -8,6 +8,7 @@ import { registry } from '../../lib/openapi.ts';
 import { currentAuth, requireAuth } from '../../middleware/auth.ts';
 import { formLimit } from '../../middleware/form-limit.ts';
 import { addItem, cartView, ensureCart, findCart, mergeGuestCart, type Who } from './cart.ts';
+import { recordEvent } from '../analytics/routes.ts';
 import { CATALOG_TTL, availability, getProduct, listProducts, shopTags } from './catalog.ts';
 import { applyPaymentEvent, hashKey, money, placeOrder } from './orders.ts';
 import { WebhookSignatureError, createMockProvider } from './payments.ts';
@@ -118,6 +119,7 @@ export function shopRoutes(deps: Deps) {
     if (!a.inStock) throw new AppError(409, 'SOLD_OUT', 'Sorry, that item is sold out.');
     const { cart, token } = await ensureCart(deps, who(req, res));
     await addItem(deps, cart.id, variantId, quantity);
+    await recordEvent(deps, 'add_to_cart');
     res.status(201).json({ ...(await cartView(deps, cart.id)), ...(token ? { cartToken: token } : {}) });
   });
   router.patch('/cart/items/:variantId', requireAuth, async (req, res) => {

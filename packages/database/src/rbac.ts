@@ -29,6 +29,7 @@ export const PERMISSIONS = {
   'payments.refund': 'Issue refunds',
   'customers.read': 'View customer profiles',
   'reports.sales': 'View sales reports',
+  'analytics.read': 'View website traffic and conversion analytics (aggregate counts only)',
 
   'quotations.read': 'View quotation requests',
   'quotations.manage': 'Update, assign and annotate quotations',
@@ -64,10 +65,10 @@ interface RoleDef { name: string; grants: Grant[]; except?: PermissionKey[] }
 export const ROLES = {
   super_admin: { name: 'Super Administrator', grants: ['*'] },
   admin: { name: 'Administrator', grants: ['*'], except: ['roles.manage_super', 'settings.secrets'] },
-  content_manager: { name: 'Content Manager', grants: ['admin.access', 'cms.*', 'media.*', 'testimonials.moderate', 'quotations.read', 'messages.read', 'messages.reply', 'assistant.manage', 'profile.self'] },
+  content_manager: { name: 'Content Manager', grants: ['admin.access', 'cms.*', 'media.*', 'testimonials.moderate', 'quotations.read', 'messages.read', 'messages.reply', 'assistant.manage', 'analytics.read', 'profile.self'] },
   ecommerce_manager: {
     name: 'E-commerce Manager',
-    grants: ['admin.access', 'products.*', 'inventory.*', 'orders.read', 'orders.manage', 'orders.fulfill', 'payments.refund', 'customers.read', 'reports.sales', 'quotations.read', 'quotations.manage', 'messages.read', 'messages.reply', 'media.read', 'media.write', 'profile.self'],
+    grants: ['admin.access', 'products.*', 'inventory.*', 'orders.read', 'orders.manage', 'orders.fulfill', 'payments.refund', 'customers.read', 'reports.sales', 'analytics.read', 'quotations.read', 'quotations.manage', 'messages.read', 'messages.reply', 'media.read', 'media.write', 'profile.self'],
   },
   inventory_staff: { name: 'Inventory Staff', grants: ['admin.access', 'products.read', 'inventory.read', 'inventory.adjust', 'orders.read', 'orders.fulfill', 'profile.self'] },
   hr_manager: {

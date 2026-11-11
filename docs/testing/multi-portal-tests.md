@@ -20,9 +20,10 @@ runs against production.
 | Employee portal: clock in (with and without JS), axe; HR creates login, first-login password change, correction, leave | `e2e/attendance.spec.ts` |
 | Portal refuses customers; `/staff` redirects to the portal | `e2e/attendance.spec.ts` |
 | Admin menu and pages per role (all 8 roles) | `e2e/permissions.spec.ts` |
+| Analytics: only the website server may report views; per-day visitor counting; bots and junk ignored; report permissions; revenue only with `reports.sales` | `unit/analytics.test.ts`, `integration/analytics.test.ts` |
+| A website visit appears on the admin Analytics page; no tracking cookies | `e2e/analytics.spec.ts` |
 | Optional MFA (runs only with `REQUIRE_STAFF_MFA=true`) | `integration/mfa.test.ts`, `e2e/mfa.spec.ts` |
 
 ## Not covered
 
 - Real Google OAuth (needs a Google client; simulated in integration tests by an `oauth` session).
-- Website traffic analytics (not collected; `docs/admin/analytics-dashboard.md`).

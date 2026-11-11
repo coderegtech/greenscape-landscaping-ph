@@ -7,8 +7,8 @@ permissions it needs (`requirePermission`), and a user has only what their roles
 |---|---|---|
 | `super_admin` | Admin | Everything, including `roles.manage_super` (create administrators, grant/revoke `admin` and `super_admin`) and `settings.secrets` |
 | `admin` | Admin | Everything except `roles.manage_super` and `settings.secrets` |
-| `content_manager` | Admin | CMS, media, testimonials, quotations (read), messages, AI assistant settings |
-| `ecommerce_manager` | Admin | Products, inventory, orders, refunds, customers, sales reports, quotations, messages |
+| `content_manager` | Admin | CMS, media, testimonials, quotations (read), messages, AI assistant settings, analytics (no revenue) |
+| `ecommerce_manager` | Admin | Products, inventory, orders, refunds, customers, sales reports, analytics, quotations, messages |
 | `inventory_staff` | Admin | Products (read), inventory, orders (read, fulfil) |
 | `hr_manager` | Admin | Employees (incl. creating logins), schedules, attendance, corrections, leave approvals, attendance reports |
 | `employee` | Employee portal | `attendance.self`, `leave.self`, `profile.self` |

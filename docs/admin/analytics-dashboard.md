@@ -2,38 +2,53 @@
 
 Only collected data is shown. Nothing is estimated or invented.
 
-## What the dashboard shows today
+## Analytics page (`/analytics`, permission `analytics.read`)
 
-One permission-aware endpoint, `GET /v1/admin/overview`: each role receives only the sections its permissions allow.
+Granted to `super_admin`, `admin`, `content_manager` and `ecommerce_manager`. Period: last 7, 30 or 90 days (Manila
+dates), each figure compared with the previous period of the same length.
 
-| Section | Source | Permission |
-|---|---|---|
-| Sales today, 14-day net sales chart (test payments flagged) | Paid orders and refunds in Postgres | `reports.sales` |
-| Orders to send out, awaiting payment, latest orders | Orders | `orders.read` |
-| Low stock | Inventory | `inventory.read` |
-| New quotations, latest quotations | Quotations | `quotations.read` |
-| Unanswered conversations and contact messages | Messages | `messages.read` |
-| Attendance today by status, pending corrections | Attendance | `attendance.read` |
-| Pending leave | Leave requests | `leave.read` |
-| Feedback to moderate | Testimonials | `testimonials.moderate` |
-| System status | `/v1/health` | `admin.access` |
+| Figure | Source |
+|---|---|
+| Visitors (unique per day, approximate), page views, most visited pages | Website page-view beacon |
+| Product views, most viewed products | Page views of `/shop/<product>` |
+| Popular services | Page views of `/services/<service>` |
+| Checkout starts | Page views of `/checkout` |
+| Add to cart | Counted by the API when an item is added (server side) |
+| Traffic sources | Referrer host of a visitor's first view of the day, or "Direct or unknown" |
+| Devices | Mobile / tablet / desktop from the browser's user agent |
+| Countries | Only when the CDN in front of the website sends a country header (`cf-ipcountry`, `x-vercel-ip-country`) |
+| Paid orders, paid order value (gross) | Orders in Postgres paid through the verified payment webhook; value needs `reports.sales`; test-mode orders are flagged |
+| New accounts, quotation requests | Postgres |
+| Content published | CMS revision log in MongoDB |
 
-Reports: sales (gross, refunds, net, average order, delivery fees, best sellers, by delivery area; CSV and Excel) and
-attendance (per employee; table, CSV, XLSX). Customers list with paid-order totals and quotations.
+Charts: visitors per day (bars with hover/focus tooltips and a table view), the shop funnel (visitors → product views →
+add to cart → checkout → paid orders) and ranked lists. Sales and attendance exports stay on the report pages.
 
-## Website traffic analytics: not collected yet
+## How collection works (privacy)
 
-The site does not record page views, unique visitors, traffic sources, devices, countries, product views, add-to-cart
-or checkout-start events. The dashboard therefore shows none of them. Options, in order of fit:
+1. `apps/web` renders `components/page-view.tsx` on public pages (not in CMS preview). On each route it sends a beacon to
+   the website's own `/api/collect`. The referrer is sent with the first view only.
+2. `/api/collect` drops the view if the browser sends Global Privacy Control (`Sec-GPC: 1`) or Do Not Track, then forwards
+   path, referrer, user agent and CDN country to `POST /v1/analytics/pageview` with the internal key. The API refuses any
+   other caller.
+3. The API ignores bots, non-page paths and anything malformed. It increments daily counters in `AnalyticsDaily`
+   (`day, metric, key, count`). A visitor is counted once a day by adding a keyed hash of (day, address, user agent) to a
+   Redis HyperLogLog. The hash is never stored or logged, the key changes every day, and the HyperLogLog cannot return it.
 
-1. **Matomo (self-hosted or Matomo Cloud)**: traffic, sources, devices, regions, goals and funnels; can run without
-   cookies (no consent banner needed in cookieless mode). Add its script to `apps/web` only, extend the website CSP, and
-   read its Reporting API from the admin.
-2. **First-party events**: a small `POST /v1/events` endpoint (page view, product view, add to cart, checkout start)
-   storing daily aggregates with a day-rotated hash instead of IP addresses; charts in the admin. Fits the business
-   funnel exactly, but needs building.
-3. **Microsoft Clarity** for heatmaps and session replay: needs a consent banner and masking of every form; not
-   recommended for checkout, account or employee pages.
+No cookies, local storage, IP addresses, user ids or form contents are recorded, so no consent banner is needed for this
+counting. The admin and employee portals are never tracked. If Redis is down, page views still count but visitors,
+sources, devices and countries do not.
 
-Whatever is chosen: never on the admin or employee portals, never on form contents, passwords, payment fields or
-employee data.
+Limits: unique visitors are approximate (HyperLogLog, about 1% error) and per day, so a period total sums daily uniques.
+Visitors sharing one address and browser count as one. Without `INTERNAL_API_KEY` set on the website and API, nothing
+is collected.
+
+## Dashboard (home page)
+
+One permission-aware endpoint, `GET /v1/admin/overview`: sales today and a 14-day net-sales chart, orders to send out,
+low stock, new quotations, unanswered messages, attendance today, corrections, leave, feedback to moderate, system status.
+
+## Not built
+
+Heatmaps and session replay (Microsoft Clarity would need a consent banner and masking of every form; not recommended for
+checkout, account or employee pages). CSV export of the analytics page.

@@ -5,7 +5,7 @@ type Item = { label: string; href: string; permission: string; ready: boolean };
 
 // Full admin information architecture. `ready` flips as each phase ships its pages, so the menu never links to a 404.
 export const ADMIN_IA: { title: string; items: Item[] }[] = [
-  { title: 'Overview', items: [{ label: 'Dashboard', href: '/', permission: 'admin.access', ready: true }, { label: 'Notifications', href: '/notifications', permission: 'admin.access', ready: true }] },
+  { title: 'Overview', items: [{ label: 'Dashboard', href: '/', permission: 'admin.access', ready: true }, { label: 'Notifications', href: '/notifications', permission: 'admin.access', ready: true }, { label: 'Analytics', href: '/analytics', permission: 'analytics.read', ready: true }] },
   {
     title: 'Shop',
     items: [
