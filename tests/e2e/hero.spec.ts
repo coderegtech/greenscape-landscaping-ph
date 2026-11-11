@@ -79,28 +79,24 @@ test('footer is the forest band; the cart icon appears only in the shop', async 
 test.describe('photo carousel in the arch', () => {
   const slides = (page: import('@playwright/test').Page) => page.locator('[data-hero] [aria-roledescription="slide"]');
 
-  test('shows every hero slide photo, one at a time, with dots and a pause button', async ({ page }) => {
+  test('shows every hero slide photo, one at a time, with a pause button and no dots', async ({ page }) => {
     await page.clock.install();
     await page.goto(`${WEB}/`);
     const carousel = page.getByRole('group', { name: 'Garden photographs' });
     const n = await slides(page).count();
     expect(n).toBeGreaterThan(1);
-    await expect(carousel.getByRole('button', { name: /^Show photo \d+ of \d+$/ })).toHaveCount(n);
+    await expect(carousel.getByRole('button', { name: /^Show photo/ })).toHaveCount(0);
     await expect(slides(page).nth(0)).toHaveAttribute('aria-hidden', 'false');
     // Auto-advance (5.5 s) with the pointer away from the hero.
     await page.mouse.move(2, 2);
     await page.clock.runFor(6000);
     await expect(slides(page).nth(1)).toHaveAttribute('aria-hidden', 'false');
     await expect(slides(page).nth(0)).toHaveAttribute('aria-hidden', 'true');
-    // A dot jumps straight to its photo.
-    await carousel.getByRole('button', { name: `Show photo ${n} of ${n}` }).click();
-    await expect(slides(page).nth(n - 1)).toHaveAttribute('aria-hidden', 'false');
-    await expect(carousel.getByRole('button', { name: `Show photo ${n} of ${n}` })).toHaveAttribute('aria-current', 'true');
     // Paused: nothing moves.
     await carousel.getByRole('button', { name: 'Pause slideshow' }).click();
     await page.mouse.move(2, 2);
     await page.clock.runFor(12_000);
-    await expect(slides(page).nth(n - 1)).toHaveAttribute('aria-hidden', 'false');
+    await expect(slides(page).nth(1)).toHaveAttribute('aria-hidden', 'false');
     await expect(carousel.getByRole('button', { name: 'Play slideshow' })).toBeVisible();
   });
 
