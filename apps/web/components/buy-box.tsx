@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { addToCart } from '@/app/shop/actions';
+import { useAuth } from './auth/auth-context';
 import { peso } from '@/lib/money';
 import type { ShopImage, Variant } from '@/lib/shop';
 
@@ -39,7 +40,9 @@ export function BuyBox({ variants, productName }: { variants: Variant[]; product
   const max = Math.min(99, s?.available ?? 99);
   const soldOut = !!stock && (!s || !s.inStock);
 
-  const add = async () => {
+  const { requireAuth } = useAuth();
+  const add = () => requireAuth(() => void addNow(), { intent: 'cart', reason: 'Please sign in with Google or your account to add plants to your cart and check out.' });
+  const addNow = async () => {
     setBusy(true);
     const res = await addToCart(id, qty);
     setBusy(false);
