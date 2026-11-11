@@ -75,7 +75,7 @@ export function UsersTable({ users, roles, meId, canRoles, canStatus, canSuper }
             <fieldset className="flex flex-col gap-2" disabled={self}>
               <legend className="mb-2 text-sm font-medium">Roles</legend>
               {roles.map((r) => {
-                const locked = r.key === 'super_admin' && !canSuper;
+                const locked = (r.key === 'super_admin' || r.key === 'admin') && !canSuper;
                 return (
                   <div key={r.key} className={`flex items-start gap-3 text-sm ${locked ? 'opacity-55' : ''}`}>
                     <input id={`role-${r.key}`} type="checkbox" className="mt-0.5 size-5 accent-(--gs-signal)" disabled={locked} checked={picked.has(r.key)} onChange={(e) => setPicked((s) => { const n = new Set(s); if (e.target.checked) n.add(r.key); else n.delete(r.key); return n; })} />

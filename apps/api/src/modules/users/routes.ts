@@ -1,5 +1,6 @@
 import { PROTECTED_ROLES, ROLE_KEYS, type RoleKey } from '@greenscape/database/rbac';
-import { RoleSummary, SetRolesBody, SetStatusBody, UserSummary, UsersQuery, paginated, z } from '@greenscape/validation';
+import { ProvisionAccountBody, ProvisionedAccount, RoleSummary, SetRolesBody, SetStatusBody, UserSummary, UsersQuery, paginated, z } from '@greenscape/validation';
+import { assertGrantable, provisionAccount } from './provision.ts';
 import { Router } from 'express';
 import { audit } from '../../lib/audit.ts';
 import { logSecurity } from '../../lib/security-log.ts';
@@ -12,6 +13,7 @@ const IdParam = z.object({ id: z.string().uuid() });
 const UserPage = paginated(UserSummary);
 
 registry.registerPath({ method: 'get', path: '/v1/users', tags: ['users'], auth: true, summary: 'List users (users.read). Filter by email/name `q` or `role`.', query: UsersQuery, responses: { 200: { description: 'page of users', schema: UserPage } } });
+registry.registerPath({ method: 'post', path: '/v1/users', tags: ['users'], auth: true, summary: 'Create a staff account with roles and a one-time temporary password (users.manage + roles.manage; administrator roles need roles.manage_super). Audited.', body: ProvisionAccountBody, responses: { 201: { description: 'created; temporaryPassword is shown once', schema: ProvisionedAccount }, 409: { description: 'email already has an account' } } });
 registry.registerPath({ method: 'put', path: '/v1/users/{id}/roles', tags: ['users'], auth: true, summary: "Replace a user's roles (roles.manage; super_admin needs roles.manage_super). Audited.", body: SetRolesBody, responses: { 200: { description: 'updated user', schema: UserSummary }, 403: { description: 'not allowed' } } });
 registry.registerPath({ method: 'patch', path: '/v1/users/{id}/status', tags: ['users'], auth: true, summary: 'Suspend or reactivate a user (users.manage). Audited.', body: SetStatusBody, responses: { 200: { description: 'updated user', schema: UserSummary } } });
 registry.registerPath({ method: 'get', path: '/v1/roles', tags: ['users'], auth: true, summary: 'Roles and their permissions (users.read).', responses: { 200: { description: 'roles', schema: z.array(RoleSummary) } } });
@@ -60,6 +62,16 @@ export function userRoutes(deps: Deps) {
     res.json(UserPage.parse({ items: rows.map(toSummary), page: q.page, pageSize: q.pageSize, total }));
   });
 
+  // Staff accounts are created here, never by self sign-up: the person gets a temporary password to replace.
+  r.post('/users', requirePermission('users.manage', 'roles.manage'), async (req, res) => {
+    const input = ProvisionAccountBody.parse(req.body);
+    const roles = [...new Set(input.roles)].sort();
+    assertGrantable(res, roles);
+    const account = await provisionAccount(deps, req, res, { ...input, roles });
+    logSecurity(deps, req, res, 'security.account_provisioned', { target: account.userId, roles: roles.join(' ') });
+    res.status(201).json(ProvisionedAccount.parse(account));
+  });
+
   r.put('/users/:id/roles', requirePermission('roles.manage'), async (req, res) => {
     const { id } = IdParam.parse(req.params);
     const { roles } = SetRolesBody.parse(req.body);
@@ -75,7 +87,7 @@ export function userRoutes(deps: Deps) {
       const current = target.roles.map((x) => x.role.key).sort();
       const touched = [...current.filter((k) => !wanted.includes(k)), ...wanted.filter((k) => !current.includes(k))];
       if (touched.some(isProtected) && !actor.permissions.has('roles.manage_super')) {
-        throw AppError.forbidden('Only a super administrator can grant or revoke super administrator');
+        throw AppError.forbidden('Only a super administrator can grant or revoke administrator roles');
       }
       const roleRows = await tx.role.findMany({ where: { key: { in: wanted } }, select: { id: true } });
       await tx.userRole.deleteMany({ where: { userId: id } });
@@ -98,7 +110,7 @@ export function userRoutes(deps: Deps) {
       const target = await tx.user.findUnique({ where: { id }, select: userSelect });
       if (!target) throw AppError.notFound('User not found');
       if (target.roles.some((x) => isProtected(x.role.key)) && !actor.permissions.has('roles.manage_super')) {
-        throw AppError.forbidden('Only a super administrator can suspend a super administrator');
+        throw AppError.forbidden('Only a super administrator can suspend an administrator');
       }
       await audit(tx, req, res, { action: 'user.status.set', entityType: 'User', entityId: id, before: { status: target.status }, after: { status } });
       return tx.user.update({ where: { id }, data: { status }, select: { ...userSelect, authUserId: true } });

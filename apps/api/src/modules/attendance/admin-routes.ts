@@ -3,7 +3,7 @@
 import { Prisma } from '@greenscape/database';
 import {
   APPROVAL_LABELS, ApproveRecords, AssignSchedule, BalanceInput, DateRange, Decision, EMPLOYMENT_STATUSES, EmployeeInput,
-  HolidayInput, LeaveTypeInput, RecordEdit, ScheduleInput, Ymd, z,
+  HolidayInput, LeaveTypeInput, ProvisionedAccount, RecordEdit, ScheduleInput, Ymd, z,
 } from '@greenscape/validation';
 import ExcelJS from 'exceljs';
 import { Router, type Response } from 'express';
@@ -12,6 +12,7 @@ import type { Deps } from '../../lib/deps.ts';
 import { AppError } from '../../lib/errors.ts';
 import { registry } from '../../lib/openapi.ts';
 import { authzCacheKey, currentAuth, requirePermission } from '../../middleware/auth.ts';
+import { provisionAccount } from '../users/provision.ts';
 import { recordView } from './routes.ts';
 import { assertNotSelf, cancelLeave, decideLeave, ensureBalances, replacePunches, scheduleOn, toDate, toPunches, ymd } from './service.ts';
 import { manilaDate, segmentsFor } from './time.ts';
@@ -20,6 +21,7 @@ for (const [m, p, s] of [
   ['get', '/v1/hr/employees', 'Employees (employees.read): q, status, departmentId'],
   ['post', '/v1/hr/employees', 'Create an employee; links the account with the same email (employees.manage)'],
   ['put', '/v1/hr/employees/{id}', 'Update an employee (employees.manage)'],
+  ['post', '/v1/hr/employees/{id}/account', 'Create the employee-portal login with a one-time temporary password (employees.manage)'],
   ['post', '/v1/hr/employees/{id}/schedule', 'Assign a schedule from a date (employees.manage)'],
   ['get', '/v1/hr/schedules', 'Work schedules with shifts (employees.read)'],
   ['post', '/v1/hr/schedules', 'Create a schedule (employees.manage)'],
@@ -57,7 +59,7 @@ export function hrRoutes(deps: Deps) {
   const r = Router();
   const actor = (res: Response) => currentAuth(res).userId;
 
-  /** Link the employee to the account with the same email and give it the employee role (so /staff works). */
+  /** Link the employee to the account with the same email and give it the employee role (employee portal access). */
   async function linkAccount(employeeId: string, email: string | null | undefined) {
     if (!email) return false;
     const user = await db.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });
@@ -132,9 +134,19 @@ export function hrRoutes(deps: Deps) {
   r.post('/employees/:id/link', requirePermission('employees.manage'), async (req, res) => {
     const id = Id.parse(req.params.id);
     const e = await db.employee.findUniqueOrThrow({ where: { id } });
-    if (!(await linkAccount(id, e.email))) throw AppError.conflict('No account with this email yet. Ask them to create one on the website, then try again.');
+    if (!(await linkAccount(id, e.email))) throw AppError.conflict('No account with this email yet. Use "Create login" to make one.');
     await audit(db, req, res, { action: 'employee.link', entityType: 'employee', entityId: id });
     res.json(await employeeView(id));
+  });
+  // Employees never self-register: HR creates the employee-portal login and hands over the temporary password.
+  r.post('/employees/:id/account', requirePermission('employees.manage'), async (req, res) => {
+    const id = Id.parse(req.params.id);
+    const e = await db.employee.findUniqueOrThrow({ where: { id } });
+    if (e.userId) throw AppError.conflict('This employee already has a login.');
+    if (!e.email) throw AppError.badRequest('Add a work email to the employee record first.');
+    if (e.employmentStatus === 'RESIGNED' || e.employmentStatus === 'TERMINATED') throw AppError.badRequest('This employee has left.');
+    const account = await provisionAccount(deps, req, res, { email: e.email, displayName: `${e.firstName} ${e.lastName}`.trim(), roles: ['employee'] }, (tx, userId) => tx.employee.update({ where: { id }, data: { userId } }));
+    res.status(201).json(ProvisionedAccount.parse(account));
   });
 
   // ── schedules ──

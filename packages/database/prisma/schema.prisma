@@ -21,6 +21,8 @@ model User {
   /// Profile picture from the identity provider (Google), refreshed at sign-in. Display only.
   avatarUrl     String?
   status        UserStatus @default(ACTIVE)
+  /// Account was provisioned by an administrator with a temporary password: only customer access until it's changed.
+  mustChangePassword Boolean @default(false)
   /// Firebase Auth uid from the old site (migration links chats, quotes and feedback to the right person).
   legacyUid     String?    @unique
   roles         UserRole[]

@@ -18,6 +18,20 @@ export function createIdentityAdmin(supabaseUrl: string, secretKey: string) {
       const { error } = await client.auth.admin.updateUserById(authUserId, { ban_duration: banned ? BAN_FOREVER : 'none' });
       if (error) throw error;
     },
+    /**
+     * Creates a confirmed email/password identity (the administrator vouches for the address). Returns null when
+     * Supabase already has an identity with this email.
+     */
+    async createWithPassword(email: string, password: string, fullName?: string) {
+      const { data, error } = await client.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: fullName ? { full_name: fullName } : {} });
+      if (error && (error.code === 'email_exists' || error.code === 'user_already_exists')) return null;
+      if (error) throw error;
+      return data.user.id;
+    },
+    async setPassword(authUserId: string, password: string) {
+      const { error } = await client.auth.admin.updateUserById(authUserId, { password });
+      if (error) throw error;
+    },
     /** Removes the sign-in identity (account deletion). The app's own records are anonymised separately. */
     async deleteIdentity(authUserId: string) {
       const { error } = await client.auth.admin.deleteUser(authUserId);

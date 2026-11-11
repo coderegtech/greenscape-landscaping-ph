@@ -54,7 +54,7 @@ describe('M-1: relinking an account to a new identity', () => {
     const existing = await deps.db.user.create({ data: { authUserId: randomUUID(), email: `owner-${tag}@test.greenscape.local` } });
     const intruder = randomUUID();
     const local = await testDeps({ CACHE_PREFIX: `gs:test:${tag}:m1` });
-    local.verifyToken = async () => ({ authUserId: intruder, email: existing.email, aal: 'aal1' });
+    local.verifyToken = async () => ({ authUserId: intruder, email: existing.email, aal: 'aal1', methods: ['password'] });
     local.identities = { ...local.identities, emailConfirmed: async () => false };
     const res = await request(createApp(local)).get('/v1/auth/me').set(as('any')).expect(403);
     expect(res.body.error.code).toBe('EMAIL_NOT_CONFIRMED');
@@ -67,7 +67,7 @@ describe('M-1: relinking an account to a new identity', () => {
     const existing = await deps.db.user.create({ data: { authUserId: before, email: `moved-${tag}@test.greenscape.local` } });
     const next = randomUUID();
     const local = await testDeps({ CACHE_PREFIX: `gs:test:${tag}:m1b` });
-    local.verifyToken = async () => ({ authUserId: next, email: existing.email, aal: 'aal1' });
+    local.verifyToken = async () => ({ authUserId: next, email: existing.email, aal: 'aal1', methods: ['password'] });
     local.identities = { ...local.identities, emailConfirmed: async (id: string) => id === next };
     await request(createApp(local)).get('/v1/auth/me').set(as('any')).expect(200);
     expect((await deps.db.user.findUniqueOrThrow({ where: { id: existing.id } })).authUserId).toBe(next);

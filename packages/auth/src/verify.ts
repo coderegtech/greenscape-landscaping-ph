@@ -8,6 +8,8 @@ export interface VerifiedToken {
   /** Authenticator assurance level: aal2 = MFA completed this session. */
   aal: 'aal1' | 'aal2';
   sessionId?: string;
+  /** How the session was authenticated (Supabase `amr` methods: password, oauth, totp, recovery, otp…). */
+  methods: string[];
   /** From sign-up metadata or the OAuth profile; display only, never used for authorization. */
   name?: string;
   /** Profile picture URL from the OAuth profile (Google): https only; display only. */
@@ -40,7 +42,8 @@ export function createTokenVerifier(supabaseUrl: string) {
     try {
       const { payload } = await jwtVerify(token, jwks, { issuer, audience: 'authenticated', algorithms: ['ES256', 'RS256'] });
       if (typeof payload.sub !== 'string' || typeof payload.email !== 'string' || !payload.email) throw new TokenError('missing_claims');
-      return { authUserId: payload.sub, email: payload.email.toLowerCase(), aal: payload.aal === 'aal2' ? 'aal2' : 'aal1', sessionId: typeof payload.session_id === 'string' ? payload.session_id : undefined, name: displayName(payload.user_metadata), avatarUrl: avatar(payload.user_metadata) };
+      const methods = (Array.isArray(payload.amr) ? payload.amr : []).map((a) => (a as { method?: unknown } | null)?.method).filter((m): m is string => typeof m === 'string');
+      return { methods, authUserId: payload.sub, email: payload.email.toLowerCase(), aal: payload.aal === 'aal2' ? 'aal2' : 'aal1', sessionId: typeof payload.session_id === 'string' ? payload.session_id : undefined, name: displayName(payload.user_metadata), avatarUrl: avatar(payload.user_metadata) };
     } catch (err) {
       if (err instanceof TokenError) throw err;
       throw new TokenError(err instanceof errors.JWTExpired ? 'expired' : 'invalid');
