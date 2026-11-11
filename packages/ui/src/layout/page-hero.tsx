@@ -7,6 +7,9 @@ interface HeroImage {
   src: string;
   alt: string;
   blurDataUrl?: string;
+  /** Stored pixel size; the wide layout uses it to show the whole photo at its own proportions. */
+  width?: number;
+  height?: number;
 }
 
 /**
@@ -21,6 +24,7 @@ export function PageHero({
   image,
   parallax = true,
   size = 'full',
+  layout = 'split',
   decor,
 }: {
   title: ReactNode;
@@ -30,6 +34,8 @@ export function PageHero({
   parallax?: boolean;
   /** full: home and landing pages; compact: inner pages (service, project, shop category). */
   size?: 'full' | 'compact';
+  /** split: text beside a cropped photo; wide: text above the whole photo, uncropped (group photos, panoramas). */
+  layout?: 'split' | 'wide';
   /** Decorative accents painted behind the content (apps/web components/decorations). */
   decor?: ReactNode;
 }) {
@@ -51,6 +57,21 @@ export function PageHero({
     return (
       <header className={cn('container-page flex flex-col justify-end', full ? 'min-h-[min(70svh,40rem)] pb-16' : 'pt-24 pb-16')}>
         {text}
+      </header>
+    );
+  }
+
+  if (layout === 'wide') {
+    // Whole photo, nobody cropped: natural aspect ratio across the column, no parallax zoom (it trims the edges).
+    return (
+      <header className="relative isolate overflow-x-clip pt-10 pb-12 md:pt-16 md:pb-16">
+        {decor}
+        <div className="container-page flex flex-col gap-8 md:gap-12">
+          {text}
+          <div className="hero-photo-in relative overflow-clip rounded-[1.75rem] bg-paper-3 shadow-lift" style={{ aspectRatio: image.width && image.height ? `${image.width} / ${image.height}` : '16 / 9' }}>
+            <Photo src={image.src} alt={image.alt} blurDataUrl={image.blurDataUrl} ratio="auto" priority sizes="(min-width: 80rem) 75rem, 100vw" frameClassName="h-full w-full !rounded-none !outline-0" />
+          </div>
+        </div>
       </header>
     );
   }

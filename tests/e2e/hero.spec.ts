@@ -144,3 +144,18 @@ test('scrollbar uses the site colours', async ({ page }) => {
   const color = await page.evaluate(() => getComputedStyle(document.documentElement).scrollbarColor);
   expect(color).toBe('rgb(140, 166, 138) rgb(248, 250, 247)');
 });
+
+test('about: the whole team photo shows, uncropped, under the title', async ({ page }) => {
+  await page.goto(`${WEB}/about`);
+  const img = page.locator('main header img').first(); // the hero header sits inside main, so it is not a banner landmark
+  await expect(img).toBeVisible();
+  await expect.poll(() => img.evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true);
+  // The frame has the photo's own proportions, so object-fit: cover trims nothing.
+  const [frame, photo] = await img.evaluate((i: HTMLImageElement) => {
+    const r = i.closest('[style*="aspect-ratio"]')!.getBoundingClientRect();
+    return [r.width / r.height, i.naturalWidth / i.naturalHeight];
+  });
+  expect(Math.abs(frame - photo) / photo).toBeLessThan(0.02);
+  const title = (await page.getByRole('heading', { level: 1 }).boundingBox())!;
+  expect((await img.boundingBox())!.y).toBeGreaterThan(title.y + title.height - 1);
+});

@@ -41,7 +41,10 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
         <PageHero
           title={slide.headline}
           lead={slide.subheadline}
-          image={{ src: slide.image.url, alt: slide.image.alt, blurDataUrl: slide.image.blurDataUrl }}
+          image={{ src: slide.image.url, alt: slide.image.alt, blurDataUrl: slide.image.blurDataUrl, width: slide.image.width, height: slide.image.height }}
+          // About: the team photo is wide; show all of it above the fold instead of cropping it into the split frame.
+          layout={slug === 'about' ? 'wide' : 'split'}
+          decor={slug === 'about' ? <Accents set="editorial" /> : undefined}
           actions={
             i === 0 && pageTitle !== 'About Greenscape' ? (
               <>
