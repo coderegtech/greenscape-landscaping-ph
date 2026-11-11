@@ -170,7 +170,23 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
       return (
         <Band labelledBy={s.heading ? hid : undefined}>
           {s.heading && <SectionHeading id={hid} title={s.heading} />}
-          <MasonryPhotos label={s.heading ?? 'Photographs'} images={s.images} max={3} />
+          {s.images.length === 1 ? (
+            // One image (a map or diagram, e.g. "Our Footprint"): full width, uncropped, opens full size to read labels.
+            <a href={s.images[0]!.url} target="_blank" rel="noopener" className="block rounded-[var(--radius-card)] focus-visible:outline-2 focus-visible:outline-offset-4">
+              <Photo
+                src={s.images[0]!.url}
+                alt={s.images[0]!.alt}
+                blurDataUrl={s.images[0]!.blurDataUrl}
+                ratio={s.images[0]!.width && s.images[0]!.height ? `${s.images[0]!.width} / ${s.images[0]!.height}` : '4 / 3'}
+                sizes="(min-width: 80rem) 76rem, 100vw"
+                className="object-contain"
+                frameClassName="bg-paper"
+              />
+              <span className="sr-only"> (opens the full-size image)</span>
+            </a>
+          ) : (
+            <MasonryPhotos label={s.heading ?? 'Photographs'} images={s.images} max={3} />
+          )}
         </Band>
       );
     case 'cta':

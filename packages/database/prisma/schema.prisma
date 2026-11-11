@@ -18,6 +18,8 @@ model User {
   email         String     @unique
   displayName   String?
   avatarPath    String?
+  /// Profile picture from the identity provider (Google), refreshed at sign-in. Display only.
+  avatarUrl     String?
   status        UserStatus @default(ACTIVE)
   /// Firebase Auth uid from the old site (migration links chats, quotes and feedback to the right person).
   legacyUid     String?    @unique
@@ -26,6 +28,9 @@ model User {
   employee      Employee?
   auditLogs     AuditLog[]
   conversations Conversation[]
+  wishlist      WishlistItem[]
+  assistantConversations AssistantConversation[]
+  contactInquiries ContactInquiry[]
   lastLoginAt   DateTime?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
@@ -156,6 +161,7 @@ model Product {
   isBestSeller   Boolean          @default(false)
   variants       ProductVariant[]
   images         ProductImage[]
+  wishlistedBy   WishlistItem[]
   legacyId       String?          @unique
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
@@ -497,6 +503,9 @@ model Message {
 
 model ContactInquiry {
   id        String         @id @default(uuid()) @db.Uuid
+  /// The signed-in sender (messages now require an account); null for messages sent before that.
+  userId    String?        @db.Uuid
+  user      User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
   name      String
   email     String
   phone     String?
@@ -507,6 +516,7 @@ model ContactInquiry {
   createdAt DateTime       @default(now())
 
   @@index([status, createdAt])
+  @@index([userId])
 }
 
 /// A staff reply to a contact-form message, sent by email.
@@ -766,4 +776,50 @@ model Announcement {
   createdById String    @db.Uuid
   legacyId    String?   @unique
   createdAt   DateTime  @default(now())
+}
+
+/// A product a customer saved for later.
+model WishlistItem {
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String   @db.Uuid
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, productId])
+}
+
+/// A chat with the AI assistant. Belongs to one signed-in user; only they (and staff with assistant.read) can read it.
+model AssistantConversation {
+  id        String             @id @default(uuid()) @db.Uuid
+  userId    String             @db.Uuid
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String             @default("New conversation")
+  /// open | escalated (handed to a person through Messages)
+  status    String             @default("open")
+  messages  AssistantMessage[]
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  @@index([userId, updatedAt])
+  @@index([updatedAt])
+}
+
+model AssistantMessage {
+  id             String                @id @default(uuid()) @db.Uuid
+  conversationId String                @db.Uuid
+  conversation   AssistantConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  /// user | assistant
+  role           String
+  content        String
+  provider       String?
+  model          String?
+  inputTokens    Int?
+  outputTokens   Int?
+  /// Set when the provider failed; the user saw a friendly message instead.
+  error          String?
+  createdAt      DateTime              @default(now())
+
+  @@index([conversationId, createdAt])
+  @@index([createdAt])
 }

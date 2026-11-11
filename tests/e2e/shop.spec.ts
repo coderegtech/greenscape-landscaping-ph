@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import AxeBuilder from '@axe-core/playwright';
 import { createPrismaClient } from '@greenscape/database';
 import { expect, test, type Page } from '@playwright/test';
-import { ADMIN, WEB, signIn, staffUser } from './helpers';
+import { ADMIN, WEB, signIn, signedInCustomer, staffUser } from './helpers';
 
 // Fixture products are created straight in Postgres (clearly named, removed afterwards); the old site has no prices,
 // so the real catalogue has nothing buyable until staff price it.
@@ -67,8 +67,19 @@ async function checkout(page: Page, email: string) {
   await expect(page).toHaveURL(/\/checkout\/pay\/mock_/);
 }
 
-test('guest buys a plant: product page → cart → checkout → test payment → confirmation', async ({ page }) => {
+test('a guest is asked to sign in before adding to the cart, and checkout needs an account', async ({ page }) => {
   const p = await fixture({ stock: 3 });
+  await page.goto(`${WEB}/shop/${p.slug}`);
+  await expect(page.getByText(/^(In stock\.|Only \d+ left\.)$/)).toBeVisible();
+  await page.getByRole('button', { name: /^Add to cart/ }).click();
+  await expect(page.getByTestId('sign-in-prompt')).toBeVisible();
+  await page.goto(`${WEB}/checkout`);
+  await expect(page).toHaveURL(/\/auth\/login\?next=%2Fcheckout/);
+});
+
+test('a customer buys a plant: product page → cart → checkout → test payment → confirmation', async ({ page }) => {
+  const p = await fixture({ stock: 3 });
+  await signedInCustomer(page, `buyer-${tag}`);
   await addToCart(page, p.slug);
   await expect(page.getByRole('link', { name: 'Cart, 1 items' })).toBeVisible();
 
@@ -93,6 +104,7 @@ test('guest buys a plant: product page → cart → checkout → test payment �
 
 test('a declined payment cancels the order and gives the stock back', async ({ page }) => {
   const p = await fixture({ stock: 1 });
+  await signedInCustomer(page, `declined-${tag}`);
   await addToCart(page, p.slug);
   await checkout(page, `declined-${tag}@test.greenscape.local`);
   expect(await stock(p.variantId)).toMatchObject({ onHand: 1, reserved: 1 });
@@ -130,6 +142,7 @@ test('old product links land on the new pages', async ({ page }) => {
 
 test('shop pages pass axe (WCAG 2.1 AA)', async ({ page }) => {
   const p = await fixture({ stock: 2 });
+  await signedInCustomer(page, `axe-${tag}`);
   await addToCart(page, p.slug);
   // Search for the fixture so the listing renders without encoding dozens of real photos (CPU-heavy under parallel runs).
   for (const path of [`/shop?q=${tag}`, `/shop/${p.slug}`, '/cart', '/checkout']) {
@@ -144,6 +157,7 @@ test.describe('staff', () => {
   test('fulfil an order: preparing → out for delivery → delivered', async ({ page, browser }) => {
     const p = await fixture({ stock: 2 });
     const shopper = await browser.newPage();
+    await signedInCustomer(shopper, `ful-${tag}`);
     await addToCart(shopper, p.slug);
     await checkout(shopper, `ful-${tag}@test.greenscape.local`);
     const number = (await shopper.getByRole('heading', { name: /Pay for GS-/ }).textContent())!.replace('Pay for ', '');

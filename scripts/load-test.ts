@@ -34,6 +34,14 @@ const env = readEnv({
   RATE_LIMIT_PER_MIN: '100000000', FORM_RATE_LIMIT_PER_HOUR: '100000000', REVALIDATE_SECRET: '',
 });
 const deps = await createDeps(env, createLogger('silent', false));
+// Carts and checkout need an account. Virtual shoppers carry "load:<uuid>" tokens that this in-process verifier maps to
+// identities, so no Supabase users are created. Only this script's own API instance accepts them.
+const shopperEmail = (id: string) => `shopper-${id}-${tag}@load.greenscape.local`;
+deps.verifyToken = async (token) => {
+  const id = /^load:([0-9a-f-]{36})$/.exec(token)?.[1];
+  if (!id) throw new Error('not a load-test token');
+  return { authUserId: id, email: shopperEmail(id), aal: 'aal1' };
+};
 const server = createApp(deps).listen(0);
 const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
 
@@ -68,7 +76,8 @@ function summary(elapsedS: number) {
     return { name, requests: s.length, rps: Math.round(s.length / elapsedS), p50: Math.round(pct(ms, 50)), p95: Math.round(pct(ms, 95)), p99: Math.round(pct(ms, 99)), max: Math.round(ms.at(-1) ?? 0), codes, errors: s.filter((x) => x.status === 0 || x.status >= 500).length };
   });
 }
-const json = (body: object, token?: string): RequestInit => ({ method: 'POST', headers: { 'content-type': 'application/json', ...(token ? { 'x-cart-token': token } : {}) }, body: JSON.stringify(body) });
+const bearer = (token: string) => ({ authorization: `Bearer ${token}` });
+const json = (body: object, token: string): RequestInit => ({ method: 'POST', headers: { 'content-type': 'application/json', ...bearer(token) }, body: JSON.stringify(body) });
 
 // ── phase 1: catalogue browsing ──
 const browse = [
@@ -95,18 +104,19 @@ samples.clear();
 
 // ── phase 2: checkout race — more shoppers than stock, all at once ──
 console.log(`checkout: ${SHOPPERS} shoppers, ${CONCURRENCY} at a time, ${STOCK} in stock`);
-const form = (i: number) => ({ name: 'Load Tester', email: `shopper-${i}-${tag}@load.greenscape.local`, phone: '0917 844 3330', line1: '12 Rizal Avenue', barangay: 'San Pedro', zoneId: zone.id, consent: true, idempotencyKey: randomUUID() });
+const form = (id: string) => ({ name: 'Load Tester', email: shopperEmail(id), phone: '0917 844 3330', line1: '12 Rizal Avenue', barangay: 'San Pedro', zoneId: zone.id, consent: true, idempotencyKey: randomUUID() });
 let next = 0;
 const outcome = { placed: 0, soldOutAtCart: 0, soldOutAtCheckout: 0, duplicateSubmitsMerged: 0, other: [] as string[] };
 const t2 = performance.now();
 await Promise.all(Array.from({ length: CONCURRENCY }, async () => {
   for (let i = next++; i < SHOPPERS; i = next++) {
-    const add = await hit('cart: add item', '/v1/cart/items', json({ variantId: variant.id, quantity: 1 }));
+    const id = randomUUID();
+    const token = `load:${id}`;
+    const add = await hit('cart: add item', '/v1/cart/items', json({ variantId: variant.id, quantity: 1 }, token));
     if (add.status === 409) { outcome.soldOutAtCart++; continue; }
     if (add.status !== 201) { outcome.other.push(`add ${add.status}`); continue; }
-    const token = String(add.body?.cartToken);
-    await hit('cart: view', '/v1/cart', { headers: { 'x-cart-token': token } });
-    const f = form(i);
+    await hit('cart: view', '/v1/cart', { headers: bearer(token) });
+    const f = form(id);
     // Every 10th shopper double-clicks "Place order": same idempotency key, sent twice at once.
     const tries = i % 10 === 0 ? 2 : 1;
     const res = await Promise.all(Array.from({ length: tries }, () => hit('checkout', '/v1/checkout', json(f, token))));
@@ -147,6 +157,7 @@ await deps.db.order.deleteMany({ where: { id: { in: ids } } });
 await deps.db.cart.deleteMany({ where: { items: { some: { variantId: variant.id } } } });
 await deps.db.product.delete({ where: { id: product.id } });
 await deps.db.customer.deleteMany({ where: { email: { contains: tag } } });
+await deps.db.user.deleteMany({ where: { email: { contains: tag } } });
 await deps.db.deliveryZone.delete({ where: { id: zone.id } });
 server.close();
 await closeDeps(deps);

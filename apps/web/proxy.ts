@@ -2,7 +2,7 @@ import { refreshSession } from '@greenscape/auth/next';
 import { NextResponse, type NextRequest } from 'next/server';
 import { LEGACY_PRODUCT_PATHS, LEGACY_STORY_PATHS } from './lib/legacy-redirects';
 
-const PROTECTED = ['/account', '/staff', '/messages'];
+const PROTECTED = ['/account', '/staff', '/messages', '/checkout'];
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 /** Old story and product links carried Firestore ids (`story.html?id=…`, `product-detail?id=…`): resolve to the new slug. */
@@ -28,7 +28,7 @@ export async function proxy(request: NextRequest) {
   const isProtected = PROTECTED.some((p) => pathname === p || pathname.startsWith(`${p}/`));
   const { response, user } = await refreshSession(request);
   if (!user && isProtected) {
-    const login = new URL('/login', request.url);
+    const login = new URL('/auth/login', request.url);
     login.searchParams.set('next', pathname + search);
     return NextResponse.redirect(login);
   }

@@ -33,7 +33,7 @@ export default async function TestimonialsPage() {
             <div className="flex flex-col items-start gap-4">
               <p className="text-base text-ink-2">Sign in so we can confirm the feedback comes from a client.</p>
               <Button asChild>
-                <Link href="/login?next=%2Ftestimonials%23share" className="no-underline">Sign in to share feedback</Link>
+                <Link href="/auth/login?next=%2Ftestimonials%23share" className="no-underline">Sign in to share feedback</Link>
               </Button>
             </div>
           )}

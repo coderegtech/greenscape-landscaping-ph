@@ -9,7 +9,7 @@ test('a customer messages Greenscape; staff reply from the admin; the customer s
   const text = `Do you have bougainvillea in stock? ${randomUUID().slice(0, 6)}`;
   const customer = await confirmedUser('chat');
   const web = await (await browser.newContext()).newPage(); // separate cookies from the admin session
-  await web.goto(`${WEB}/login?next=/messages`);
+  await web.goto(`${WEB}/auth/login?next=/messages`);
   await signIn(web, customer.email);
   await expect(web).toHaveURL(`${WEB}/messages`);
   await web.getByLabel('Your message').fill(text);

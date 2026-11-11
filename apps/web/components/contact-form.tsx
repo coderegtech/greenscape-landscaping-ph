@@ -5,21 +5,30 @@ import { Field, Notice } from '@greenscape/ui/form';
 import { ContactRequest } from '@greenscape/validation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { z } from 'zod';
+import { useAuth } from './auth/auth-context';
+import { keepDraft, takeDraft } from './auth/draft';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 export function ContactForm({ subject }: { subject?: string }) {
   const [sent, setSent] = useState(false);
   const [serverError, setServerError] = useState<string>();
-  const { register, handleSubmit, formState } = useForm<z.input<typeof ContactRequest>, unknown, z.output<typeof ContactRequest>>({ resolver: zodResolver(ContactRequest), defaultValues: { website: '', subject: subject?.slice(0, 120) } });
+  const { user, accessToken, promptSignIn } = useAuth();
+  const { register, handleSubmit, formState, reset } = useForm<z.input<typeof ContactRequest>, unknown, z.output<typeof ContactRequest>>({ resolver: zodResolver(ContactRequest), defaultValues: { website: '', subject: subject?.slice(0, 120) } });
   const e = formState.errors;
+  useEffect(() => { const d = takeDraft<z.input<typeof ContactRequest>>('contact'); if (d) reset(d); }, [reset]);
 
   const onSubmit = handleSubmit(async (values) => {
     setServerError(undefined);
-    const res = await fetch(`${API}/v1/contact`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(values) });
+    if (!user) {
+      keepDraft('contact', values);
+      return promptSignIn({ intent: 'contact', reason: 'Please sign in with Google or your account to send us a message. Your message is kept while you sign in.' });
+    }
+    const token = await accessToken();
+    const res = await fetch(`${API}/v1/contact`, { method: 'POST', headers: { 'content-type': 'application/json', ...(token ? { authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(values) });
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       return setServerError(body?.error?.message ?? 'Your message did not send. Please try again or call 0917 844 3330.');

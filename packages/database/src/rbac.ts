@@ -34,6 +34,8 @@ export const PERMISSIONS = {
   'quotations.manage': 'Update, assign and annotate quotations',
   'messages.read': 'Read customer conversations',
   'messages.reply': 'Reply to customer conversations',
+  'assistant.manage': 'Configure the AI assistant: instructions, greeting, availability, model, knowledge sources',
+  'assistant.read': 'Read AI assistant conversations of customers, and usage (personal data: admins only by default)',
 
   'employees.read': 'View employee records',
   'employees.manage': 'Create/edit employees and schedules',
@@ -61,7 +63,7 @@ interface RoleDef { name: string; grants: Grant[]; except?: PermissionKey[] }
 export const ROLES = {
   super_admin: { name: 'Super Administrator', grants: ['*'] },
   admin: { name: 'Administrator', grants: ['*'], except: ['roles.manage_super', 'settings.secrets'] },
-  content_manager: { name: 'Content Manager', grants: ['admin.access', 'cms.*', 'media.*', 'testimonials.moderate', 'quotations.read', 'messages.read', 'messages.reply', 'profile.self'] },
+  content_manager: { name: 'Content Manager', grants: ['admin.access', 'cms.*', 'media.*', 'testimonials.moderate', 'quotations.read', 'messages.read', 'messages.reply', 'assistant.manage', 'profile.self'] },
   ecommerce_manager: {
     name: 'E-commerce Manager',
     grants: ['admin.access', 'products.*', 'inventory.*', 'orders.read', 'orders.manage', 'orders.fulfill', 'payments.refund', 'customers.read', 'reports.sales', 'quotations.read', 'quotations.manage', 'messages.read', 'messages.reply', 'media.read', 'media.write', 'profile.self'],

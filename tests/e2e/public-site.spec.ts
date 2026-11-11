@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { createPrismaClient } from '@greenscape/database';
-import { ADMIN, PASSWORD, WEB, completeMfa, confirmedUser, email } from './helpers';
+import { ADMIN, PASSWORD, WEB, apiToken, completeMfa, confirmedUser, email, signIn, signedInCustomer } from './helpers';
 
 const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64');
 const NOT_YET = /^\/(shop|cart)(\?|$)/; // Phase 8
@@ -103,8 +103,17 @@ test.describe('content pages', () => {
 });
 
 test.describe('quote request', () => {
+  test('guests are asked to sign in before the second step', async ({ page }) => {
+    await page.goto(`${WEB}/quote`);
+    await page.getByRole('main').locator('form').locator('label', { hasText: /^Landscaping$/ }).click();
+    await page.getByRole('button', { name: 'Continue' }).click();
+    await expect(page.getByTestId('sign-in-prompt')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Sign in to continue' })).toBeVisible();
+  });
+
   test('three steps with validation, an attachment, a reference number and a confirmation email', async ({ page }) => {
     const e = email('quote');
+    await signedInCustomer(page, 'quoter');
     await page.goto(`${WEB}/quote`);
     await page.getByRole('button', { name: 'Continue' }).click();
     await expect(page.getByRole('alert').filter({ hasText: 'Choose at least one service' })).toBeVisible();
@@ -143,10 +152,11 @@ test.describe('quote request', () => {
   });
 
   test('staff see the request in the admin inbox and can change its status', async ({ page }) => {
-    // Submit a request through the API, then sign in as a staff member created with the role up front.
+    // Submit a request through the API as a customer, then sign in as a staff member created with the role up front.
+    const customer = await confirmedUser('resort');
     const ref = await (await fetch('http://localhost:4000/v1/quotations', {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${await apiToken(customer.email)}` },
       body: JSON.stringify({ services: ['garden-design'], propertyType: 'resort', projectLocation: 'El Nido', details: 'Entrance garden refresh for a small resort.', name: 'Ana Reyes', email: email('resort'), phone: '09178443330', consent: true, attachments: [] }),
     }).then((r) => r.json())).number as string;
 
@@ -170,11 +180,22 @@ test.describe('quote request', () => {
   });
 });
 
-test('contact form sends a message', async ({ page }) => {
+test('contact form: a guest is asked to sign in, keeps the message, then sends it', async ({ page }) => {
+  const u = await confirmedUser('contact');
   await page.goto(`${WEB}/contact`);
   await page.getByLabel('Full name').fill('Maria Santos');
   await page.getByLabel('Email').fill(email('contact'));
   await page.getByRole('textbox', { name: 'Message' }).fill('Do you deliver plants to Roxas?');
+  await page.getByRole('checkbox', { name: /I agree/ }).check();
+  await page.getByRole('button', { name: 'Send message' }).click();
+  const prompt = page.getByTestId('sign-in-prompt');
+  await expect(prompt).toBeVisible();
+  await prompt.getByRole('link', { name: 'Sign in with email' }).click();
+  await expect(page).toHaveURL(/\/auth\/login\?next=%2Fcontact%3Fintent%3Dcontact$/);
+  await expect(prompt).toBeHidden();
+  await signIn(page, u.email);
+  await expect(page).toHaveURL(/\/contact\?intent=contact$/, { timeout: 20_000 });
+  await expect(page.getByRole('textbox', { name: 'Message' })).toHaveValue('Do you deliver plants to Roxas?');
   await page.getByRole('checkbox', { name: /I agree/ }).check();
   await page.getByRole('button', { name: 'Send message' }).click();
   await expect(page.getByRole('main').getByRole('status')).toContainText('Your message reached the team');

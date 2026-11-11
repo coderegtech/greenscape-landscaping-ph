@@ -14,7 +14,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
     <AuthCard title="Greenscape Admin" footer="Staff accounts are created by an administrator.">
       {error && ERRORS[error] && <Notice tone="error">{ERRORS[error]}</Notice>}
       <GoogleButton next={to} />
-      <SignInFormView next={to} forgotHref={`${process.env.WEB_URL ?? 'http://localhost:3000'}/forgot-password`} />
+      <SignInFormView next={to} forgotHref={`${process.env.WEB_URL ?? 'http://localhost:3000'}/auth/forgot-password`} />
     </AuthCard>
   );
 }

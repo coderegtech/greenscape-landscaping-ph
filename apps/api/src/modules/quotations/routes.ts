@@ -35,7 +35,8 @@ export function quotationRoutes(deps: Deps) {
   const limit = (name: string) => formLimit(deps, name, env.FORM_RATE_LIMIT_PER_HOUR);
 
   // ── public: attachment slot ──
-  r.post('/attachments', limit('quote-upload'), async (req, res) => {
+  // Quote requests and their uploads need an account (enforced here, not just in the UI).
+  r.post('/attachments', requireAuth, limit('quote-upload'), async (req, res) => {
     const { contentType, size } = AttachmentRequest.parse(req.body);
     const id = randomUUID();
     const path = `${PENDING}${id}.${EXT[contentType]}`;
@@ -46,7 +47,7 @@ export function quotationRoutes(deps: Deps) {
   });
 
   // ── public: submit ──
-  r.post('/', limit('quote'), async (req, res) => {
+  r.post('/', requireAuth, limit('quote'), async (req, res) => {
     const q = QuoteRequest.parse(req.body);
     if (q.website) {
       // Honeypot filled: answer like a success so bots learn nothing, store nothing.

@@ -103,3 +103,20 @@ export async function signIn(page: import('@playwright/test').Page, userEmail: s
   await expect(landed.first()).toBeVisible({ timeout: 30_000 });
   if (await page.locator('[data-testid=mfa-enrol], [data-testid=mfa-verify]').count()) await completeMfa(page, userEmail);
 }
+
+/** A confirmed customer signed in on the public site (most actions need an account). Returns their email. */
+export async function signedInCustomer(page: import('@playwright/test').Page, label: string, next = '/account') {
+  const u = await confirmedUser(label);
+  await page.goto(`${WEB}/auth/login?next=${encodeURIComponent(next)}`);
+  await signIn(page, u.email);
+  await expect(page).toHaveURL(new RegExp(`${next.replace(/[?]/g, '\\?')}$`), { timeout: 20_000 });
+  return u.email;
+}
+
+/** An access token for direct API calls in tests (password grant against local Supabase). */
+export async function apiToken(userEmail: string, password = PASSWORD) {
+  const anon = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_PUBLISHABLE_KEY!, { auth: { persistSession: false, autoRefreshToken: false } });
+  const { data, error } = await anon.auth.signInWithPassword({ email: userEmail, password });
+  if (error) throw error;
+  return data.session!.access_token;
+}

@@ -29,7 +29,7 @@ test('public site: CSP and security headers', async ({ page }) => {
   expect(res.headers()['cross-origin-opener-policy']).toBe('same-origin');
 
   const { seen: violations, drain } = collectViolations(page);
-  for (const path of ['/', '/projects/sustainable-landscaping-in-action', '/shop', '/shop/golden-pothos', '/quote', '/contact', '/login']) {
+  for (const path of ['/', '/projects/sustainable-landscaping-in-action', '/shop', '/shop/golden-pothos', '/quote', '/contact', '/auth/login']) {
     await page.goto(`${WEB}${path}`);
     await page.waitForLoadState('networkidle');
     await drain();

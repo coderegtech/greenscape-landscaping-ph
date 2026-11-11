@@ -23,6 +23,14 @@ export const ADMIN_IA: { title: string; items: Item[] }[] = [
     ],
   },
   {
+    title: 'AI assistant',
+    items: [
+      { label: 'Assistant settings', href: '/assistant', permission: 'assistant.manage', ready: true },
+      { label: 'Knowledge', href: '/assistant/knowledge', permission: 'assistant.manage', ready: true },
+      { label: 'Chats and usage', href: '/assistant/conversations', permission: 'assistant.read', ready: true },
+    ],
+  },
+  {
     title: 'Content',
     items: [
       { label: 'Pages', href: '/cms/pages', permission: 'cms.read', ready: true },

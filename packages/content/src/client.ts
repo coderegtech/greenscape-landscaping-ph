@@ -15,6 +15,8 @@ export const collections = {
   testimonials: 'testimonials',
   faqs: 'faqs',
   productContent: 'productContent',
+  /** Approved facts staff wrote for the AI assistant (title, body, enabled). */
+  assistantKnowledge: 'assistantKnowledge',
 } as const;
 export type CollectionName = (typeof collections)[keyof typeof collections];
 
@@ -43,4 +45,5 @@ export async function ensureIndexes(db: Db) {
   await db.collection('galleryItems').createIndex({ status: 1, category: 1, sortOrder: 1 });
   await db.collection('faqs').createIndex({ locale: 1, status: 1, sortOrder: 1 });
   await db.collection('productContent').createIndex({ productId: 1, locale: 1 }, { unique: true });
+  await db.collection('assistantKnowledge').createIndex({ enabled: 1, updatedAt: -1 });
 }

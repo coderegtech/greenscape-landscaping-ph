@@ -10,6 +10,8 @@ export interface VerifiedToken {
   sessionId?: string;
   /** From sign-up metadata or the OAuth profile; display only, never used for authorization. */
   name?: string;
+  /** Profile picture URL from the OAuth profile (Google): https only; display only. */
+  avatarUrl?: string;
 }
 
 export class TokenError extends Error {
@@ -22,6 +24,12 @@ function displayName(meta: unknown) {
   return v?.trim().slice(0, 80);
 }
 
+function avatar(meta: unknown) {
+  const m = (meta ?? {}) as Record<string, unknown>;
+  const v = [m.avatar_url, m.picture].find((x): x is string => typeof x === 'string');
+  return v && /^https:\/\/[^\s"'<>]{1,500}$/.test(v) ? v : undefined;
+}
+
 export function createTokenVerifier(supabaseUrl: string) {
   const base = supabaseUrl.replace(/\/$/, '');
   const issuer = `${base}/auth/v1`;
@@ -32,7 +40,7 @@ export function createTokenVerifier(supabaseUrl: string) {
     try {
       const { payload } = await jwtVerify(token, jwks, { issuer, audience: 'authenticated', algorithms: ['ES256', 'RS256'] });
       if (typeof payload.sub !== 'string' || typeof payload.email !== 'string' || !payload.email) throw new TokenError('missing_claims');
-      return { authUserId: payload.sub, email: payload.email.toLowerCase(), aal: payload.aal === 'aal2' ? 'aal2' : 'aal1', sessionId: typeof payload.session_id === 'string' ? payload.session_id : undefined, name: displayName(payload.user_metadata) };
+      return { authUserId: payload.sub, email: payload.email.toLowerCase(), aal: payload.aal === 'aal2' ? 'aal2' : 'aal1', sessionId: typeof payload.session_id === 'string' ? payload.session_id : undefined, name: displayName(payload.user_metadata), avatarUrl: avatar(payload.user_metadata) };
     } catch (err) {
       if (err instanceof TokenError) throw err;
       throw new TokenError(err instanceof errors.JWTExpired ? 'expired' : 'invalid');
