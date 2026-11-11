@@ -26,6 +26,9 @@ jobs:
 
       # Same compose file as local dev (Mongo needs a replica set, which service containers can't configure).
       - run: pnpm services:up
+      - name: Service logs (on failure)
+        if: failure()
+        run: docker compose -f docker/compose.dev.yml logs --no-color --tail 80
 
       # Local Supabase (auth + mail) with a throwaway ES256 signing key, like a hosted project.
       - uses: supabase/setup-cli@1dedf2c611547ede7232d26866dd3c56ab903bbb # v1

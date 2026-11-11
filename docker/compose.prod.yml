@@ -48,6 +48,10 @@ services:
       API_PUBLIC_URL: ${API_PUBLIC_URL:?set API_PUBLIC_URL}
       SMTP_URL: ${SMTP_URL}
       SENTRY_DSN: ${SENTRY_DSN}
+      # AI assistant providers (docs/auth/ai-assistant.md). API only; without a key the assistant starts switched off.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_COMPAT_BASE_URL: ${OPENAI_COMPAT_BASE_URL:-}
+      OPENAI_COMPAT_API_KEY: ${OPENAI_COMPAT_API_KEY:-}
     depends_on:
       postgres: { condition: service_healthy }
       mongo: { condition: service_healthy }

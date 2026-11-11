@@ -61,11 +61,16 @@ jobs:
   images:
     runs-on: ubuntu-latest
     strategy:
-      matrix: { app: [api, web, admin] }
+      fail-fast: false # one image's findings should not hide the others'
+      matrix:
+        include:
+          - { app: api, dockerfile: api.Dockerfile, args: '' }
+          - { app: web, dockerfile: next.Dockerfile, args: '--build-arg APP=web --build-arg PORT=3000 --build-arg NEXT_PUBLIC_API_URL=https://api.example.invalid --build-arg NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ci' }
+          - { app: admin, dockerfile: next.Dockerfile, args: '--build-arg APP=admin --build-arg PORT=3001 --build-arg NEXT_PUBLIC_API_URL=https://api.example.invalid --build-arg NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ci' }
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Build ${{ matrix.app }} image (no secrets in the build)
-        run: docker build -f docker/${{ matrix.app }}.Dockerfile -t greenscape-${{ matrix.app }}:ci .
+        run: docker build -f docker/${{ matrix.dockerfile }} ${{ matrix.args }} -t greenscape-${{ matrix.app }}:ci .
       - name: Trivy (OS and library vulnerabilities, misconfiguration)
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # 0.36.0 (0.28.0 used a setup-trivy tag that no longer exists)
         with:
