@@ -21,6 +21,7 @@ export function PageHero({
   image,
   parallax = true,
   size = 'full',
+  decor,
 }: {
   title: ReactNode;
   lead?: ReactNode;
@@ -29,6 +30,8 @@ export function PageHero({
   parallax?: boolean;
   /** full: home and landing pages; compact: inner pages (service, project, shop category). */
   size?: 'full' | 'compact';
+  /** Decorative accents painted behind the content (apps/web components/decorations). */
+  decor?: ReactNode;
 }) {
   const full = size === 'full';
   const text = (
@@ -56,6 +59,7 @@ export function PageHero({
   return (
     <header className={cn('relative isolate overflow-clip', full ? 'pt-8 pb-16 md:pt-14 md:pb-24' : 'pt-6 pb-12 md:pt-10 md:pb-16')}>
       {/* botanical accent: a soft lime glow that drifts very slowly behind the photo (decorative, CSS only) */}
+      {decor}
       <div aria-hidden className="hero-glow pointer-events-none absolute -top-32 right-[-12%] -z-10 size-[42rem] rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--gs-lime)_28%,transparent),transparent)]" />
       <div className="container-page grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-16">
         {text}

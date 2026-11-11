@@ -105,3 +105,34 @@ html { scrollbar-width: thin; scrollbar-color: var(--gs-sage) var(--gs-paper-2);
 ::-webkit-scrollbar-track { background: var(--gs-paper-2); }
 ::-webkit-scrollbar-thumb { background: var(--gs-sage); border: 2px solid var(--gs-paper-2); border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--gs-signal); }
+
+/* ─────────── Botanical accents (components/decorations). transform/opacity/translate only. ─────────── */
+.ba { position: absolute; z-index: -1; pointer-events: none; }
+.ba-art { display: block; transform: rotate(var(--r0, 0deg)); transform-origin: 50% 85%; }
+.ba-art > svg { display: block; width: 100%; height: auto; }
+@media (max-width: 47.99rem) { .ba-md { display: none; } }
+@media (max-width: 89.99rem) { .ba-xl { display: none; } }
+
+@keyframes ba-float { to { transform: translateY(-9px) rotate(var(--r0, 0deg)); } }
+@keyframes ba-sway { from { transform: rotate(calc(var(--r0, 0deg) - 3deg)); } to { transform: rotate(calc(var(--r0, 0deg) + 4deg)); } }
+@keyframes ba-drift { from { transform: translateX(-6px) rotate(var(--r0, 0deg)); } to { transform: translate(7px, -5px) rotate(calc(var(--r0, 0deg) + 6deg)); } }
+@keyframes ba-fall {
+  0% { transform: translate(0, -12px) rotate(var(--r0, 0deg)); opacity: 0; }
+  15%, 80% { opacity: 1; }
+  100% { transform: translate(36px, 130px) rotate(calc(var(--r0, 0deg) + 140deg)); opacity: 0; }
+}
+@keyframes ba-pulse { from { transform: scale(0.94) rotate(var(--r0, 0deg)); opacity: 0.7; } to { transform: scale(1.05) rotate(var(--r0, 0deg)); opacity: 1; } }
+@keyframes ba-parallax { from { translate: 0 calc(var(--py) * -1); } to { translate: 0 var(--py); } }
+
+@media (prefers-reduced-motion: no-preference) {
+  .ba-float, .ba-sway, .ba-drift, .ba-pulse { animation: ba-float var(--dur, 6s) ease-in-out var(--dl, 0s) infinite alternate; }
+  .ba-sway { animation-name: ba-sway; transform-origin: 50% 100%; }
+  .ba-drift { animation-name: ba-drift; }
+  .ba-pulse { animation-name: ba-pulse; }
+  .ba-fall { animation: ba-fall var(--dur, 13s) linear var(--dl, 0s) infinite; }
+  @supports (animation-timeline: view()) {
+    .ba[data-parallax] { animation: ba-parallax linear both; animation-timeline: view(); animation-range: cover; }
+  }
+}
+/* Phones: the few accents shown stay still (fewer running animations on small devices). */
+@media (max-width: 47.99rem) { .ba-art { animation: none !important; } }

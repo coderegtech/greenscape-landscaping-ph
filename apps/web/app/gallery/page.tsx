@@ -33,7 +33,7 @@ export default async function GalleryPage({ searchParams }: { searchParams: Prom
 
   return (
     <main id="main">
-      <PageHeader title={page.title} lead={page.lead}>
+      <PageHeader title={page.title} lead={page.lead} decor="gallery">
         <div className="mt-4">
           <GalleryFilters categories={categories} places={places} category={category} place={place} href={href} />
         </div>

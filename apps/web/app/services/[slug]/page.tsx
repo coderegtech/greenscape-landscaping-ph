@@ -7,6 +7,8 @@ import { Check } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { BeforeAfter } from '@/components/before-after';
+import { Accents } from '@/components/decorations/accents';
+import { type AccentSet, SETS } from '@/components/decorations/config';
 import { ArticleCard, cardGrid } from '@/components/cards';
 import { RichText } from '@/components/rich-text';
 import { QuoteBand } from '@/components/sections';
@@ -35,7 +37,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
   return (
     <main id="main">
-      <PageHero title={s.title} lead={s.summary} image={{ src: s.hero.url, alt: s.hero.alt, blurDataUrl: s.hero.blurDataUrl }} size="compact" />
+      <PageHero title={s.title} lead={s.summary} image={{ src: s.hero.url, alt: s.hero.alt, blurDataUrl: s.hero.blurDataUrl }} size="compact" decor={s.slug in SETS ? <Accents set={s.slug as AccentSet} /> : undefined} />
 
       {s.highlights.length > 0 && (
         <Section labelledBy="covers">

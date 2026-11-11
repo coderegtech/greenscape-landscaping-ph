@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
+import { Accents } from '@/components/decorations/accents';
+import type { AccentSet } from '@/components/decorations/config';
 import { Sections } from '@/components/sections';
 import { type CmsPage, cms, type MediaRef } from './cms';
 
@@ -22,13 +24,16 @@ export async function pageMetadata(slug: string, path: string): Promise<Metadata
   return seoMetadata(page.seo, page.title, hero?.type === 'hero' ? hero.slides[0]?.image : undefined, path);
 }
 
-/** Type-led page header for pages without a hero section. */
-export function PageHeader({ title, lead, children }: { title: ReactNode; lead?: ReactNode; children?: ReactNode }) {
+/** Type-led page header for pages without a hero section; `decor` adds botanical accents in its margins (public pages). */
+export function PageHeader({ title, lead, children, decor }: { title: ReactNode; lead?: ReactNode; children?: ReactNode; decor?: AccentSet }) {
   return (
-    <header className="container-page flex flex-col gap-4 pt-16 pb-10 md:pt-24 md:pb-16">
-      <h1 className="text-display-s">{title}</h1>
-      {lead && <p className="max-w-[46ch] text-lg text-ink-2">{lead}</p>}
-      {children}
+    <header className="relative isolate overflow-x-clip">
+      {decor && <Accents set={decor} />}
+      <div className="container-page flex flex-col gap-4 pt-16 pb-10 md:pt-24 md:pb-16">
+        <h1 className="text-display-s">{title}</h1>
+        {lead && <p className="max-w-[46ch] text-lg text-ink-2">{lead}</p>}
+        {children}
+      </div>
     </header>
   );
 }
@@ -39,13 +44,16 @@ export async function loadPage(slug: string): Promise<CmsPage> {
   return page;
 }
 
+// Each page's own composition (components/decorations/config.tsx); others get the generic header set.
+const PAGE_DECOR: Record<string, AccentSet> = { about: 'editorial', stories: 'stories', gallery: 'gallery', services: 'services', contact: 'contact', testimonials: 'testimonials' };
+
 /** A whole CMS page: header (unless the first section is a hero) followed by its sections, plus optional extra content. */
 export async function CmsPageView({ slug, children, after }: { slug: string; children?: ReactNode; after?: ReactNode }) {
   const page = await loadPage(slug);
   const hasHero = page.sections[0]?.type === 'hero';
   return (
     <main id="main">
-      {!hasHero && <PageHeader title={page.title} lead={page.lead} />}
+      {!hasHero && <PageHeader title={page.title} lead={page.lead} decor={PAGE_DECOR[slug] ?? 'header'} />}
       {children}
       <Sections sections={page.sections} pageTitle={page.title} slug={slug} />
       {after}

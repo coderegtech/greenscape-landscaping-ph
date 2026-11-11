@@ -8,6 +8,7 @@ import { RichText } from '@/components/rich-text';
 import { YouTube } from '@/components/youtube';
 import { cms, longDate } from '@/lib/cms';
 import { seoMetadata } from '@/lib/page';
+import { Accents } from '@/components/decorations/accents';
 
 export const revalidate = 300;
 
@@ -45,7 +46,9 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
       {/* reading progress: a lime hairline under the header that fills as the story is read (CSS scroll timeline) */}
       <div className="read-progress" aria-hidden />
       <article>
-        <header className="container-page flex flex-col gap-6 pt-16 pb-10 md:pt-24">
+        {/* Accents stay in the top margin (set "article"); the reading column below has none. */}
+        <header className="container-page relative isolate flex flex-col gap-6 pt-16 pb-10 md:pt-24">
+          <Accents set="article" />
           <p className="label">
             <Link href={isGuide ? '/services/garden-essentials' : '/stories'} className="text-muted">
               {isGuide ? 'Garden essentials' : 'Stories'}
@@ -82,7 +85,7 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
       </article>
       {more.length > 0 && (
-        <Section rule labelledBy="more">
+        <Section rule labelledBy="more" decor={<Accents set="stories" />}>
           <SectionHeading id="more" title={isGuide ? 'More guides' : 'More stories'} />
           <div className={cardGrid(more.length)}>
             {more.map((m) => (

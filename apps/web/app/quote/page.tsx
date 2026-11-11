@@ -8,7 +8,7 @@ export default async function QuotePage() {
   const [page, { data }] = await Promise.all([loadPage('quote'), (await createSupabaseServerClient()).auth.getClaims()]);
   return (
     <main id="main">
-      <PageHeader title={page.title} lead={page.lead} />
+      <PageHeader title={page.title} lead={page.lead} decor="contact" />
       <div className="container-page pb-24">
         <div className="max-w-[52rem]">
           <QuoteForm signedIn={!!data} />

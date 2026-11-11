@@ -14,7 +14,7 @@ export interface ContactFacts {
 }
 
 /** Mast footer: the wordmark over the link columns, contact facts as a <dl>, socials as named links, credits slot. */
-export function SiteFooter({ columns, contact, socials = [], legal, credits }: { columns: FooterColumn[]; contact: ContactFacts; socials?: NavLink[]; legal?: ReactNode; credits?: ReactNode }) {
+export function SiteFooter({ columns, contact, socials = [], legal, credits, decor }: { columns: FooterColumn[]; contact: ContactFacts; socials?: NavLink[]; legal?: ReactNode; credits?: ReactNode; decor?: ReactNode }) {
   const facts = [
     contact.address && { term: 'Visit', detail: contact.address },
     contact.phone && { term: 'Call', detail: <a href={`tel:${contact.phone.replace(/\s/g, '')}`}>{contact.phone}</a> },
@@ -24,6 +24,7 @@ export function SiteFooter({ columns, contact, socials = [], legal, credits }: {
 
   return (
     <footer className="band-forest relative isolate overflow-clip">
+      {decor}
       {/* botanical accent: a large leaf silhouette in the corner (decorative) */}
       <svg aria-hidden viewBox="0 0 200 200" className="pointer-events-none absolute -right-16 -bottom-20 -z-10 size-[26rem] text-white/[0.04] md:size-[34rem]">
         <path fill="currentColor" d="M100 190C40 160 15 100 30 20c50 10 110 50 140 120-20 40-45 52-70 50Z" />

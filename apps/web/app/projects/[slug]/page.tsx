@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ProjectCard, cardGrid } from '@/components/cards';
+import { Accents } from '@/components/decorations/accents';
 import { MasonryPhotos } from '@/components/gallery/masonry-photos';
 import { RichText } from '@/components/rich-text';
 import { QuoteBand } from '@/components/sections';
@@ -31,7 +32,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   return (
     <main id="main">
-      <PageHero title={p.title} image={{ src: cover!.url, alt: cover!.alt, blurDataUrl: cover!.blurDataUrl }} size="compact" />
+      <PageHero title={p.title} image={{ src: cover!.url, alt: cover!.alt, blurDataUrl: cover!.blurDataUrl }} size="compact" decor={<Accents set="project" />} />
       <Section labelledBy="about-project">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
           <div className="flex min-w-0 flex-col gap-6">

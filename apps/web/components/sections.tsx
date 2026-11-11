@@ -10,6 +10,7 @@ import { cms } from '@/lib/cms';
 import { ArticleCard, ProjectFeature, ServiceCard, TestimonialCard } from './cards';
 import { MasonryPhotos } from './gallery/masonry-photos';
 import { ContactDetails } from './contact-details';
+import { Accents } from './decorations/accents';
 import { BotanicalHero } from './hero/botanical-hero';
 import { RichText } from './rich-text';
 
@@ -57,7 +58,7 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
       const all = await cms.services();
       const items = s.serviceSlugs.map((slug) => all.find((x) => x.slug === slug)).filter(Boolean) as typeof all;
       return (
-        <Band labelledBy={hid}>
+        <Band decor={<Accents set="services" />} labelledBy={hid}>
           <SectionHeading id={hid} title={s.heading} action={linkButton('/services', 'All services', 'secondary')} />
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {items.map((x, k) => (
@@ -74,7 +75,7 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
       const items = await cms.projects({ featured: true, limit: s.limit });
       if (!items.length) return null;
       return (
-        <Band band="deep" labelledBy={hid}>
+        <Band decor={<Accents set="projects" />} band="deep" labelledBy={hid}>
           <SectionHeading id={hid} title={s.heading} action={linkButton('/projects', 'All projects', 'secondary')} />
           <div className="flex flex-col gap-8 md:gap-10">
             {items.map((p, k) => (
@@ -90,7 +91,7 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
       const items = await cms.gallery(s.limit);
       if (!items.length) return null;
       return (
-        <Band labelledBy={hid}>
+        <Band decor={<Accents set="gallery" />} labelledBy={hid}>
           <SectionHeading id={hid} title={s.heading} action={linkButton('/gallery', 'Full gallery', 'secondary')} />
           {/* Pinterest-style masonry at the photos' natural proportions; opens the lightbox. */}
           <MasonryPhotos label={s.heading} images={items.map((g) => ({ ...g.image, caption: g.caption }))} />
@@ -101,7 +102,7 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
       const items = await cms.articles({ topic: 'story', limit: s.limit });
       if (!items.length) return null;
       return (
-        <Band rule labelledBy={hid}>
+        <Band decor={<Accents set="stories" />} rule labelledBy={hid}>
           <SectionHeading id={hid} title={s.heading} action={linkButton('/stories', 'All stories', 'secondary')} />
           <div className="grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-3">
             {items.map((a, k) => (
@@ -117,7 +118,7 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
       const items = await cms.testimonials(s.limit);
       if (!items.length) return null;
       return (
-        <Band rule labelledBy={hid}>
+        <Band decor={<Accents set="testimonials" />} rule labelledBy={hid}>
           <SectionHeading id={hid} title={s.heading} action={linkButton('/testimonials', 'More feedback', 'secondary')} />
           <div className={`grid grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-2 ${items.length >= 3 ? 'lg:grid-cols-3' : ''}`}>
             {items.map((t, k) => (
@@ -151,7 +152,7 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
       );
     case 'mediaText':
       return (
-        <Band rule labelledBy={hid}>
+        <Band decor={<Accents set="editorial" />} rule labelledBy={hid}>
           <div className={`grid grid-cols-1 items-start gap-10 lg:grid-cols-2 ${s.imageSide === 'left' ? 'lg:[&>*:first-child]:order-2' : ''}`}>
             <div className="flex min-w-0 flex-col gap-6">
               <h2 id={hid} className="text-3xl md:text-4xl">{s.heading}</h2>
@@ -190,7 +191,7 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
 /** The cream band: the page's one invitation to request a quote. */
 export function QuoteBand({ id, headline, body }: { id: string; headline?: string; body?: string }) {
   return (
-    <Band band="cream" labelledBy={id}>
+    <Band decor={<Accents set="cta" />} band="cream" labelledBy={id}>
       <div className="flex flex-col items-start gap-6 md:flex-row md:items-end md:justify-between">
         <div className="flex max-w-[44rem] flex-col gap-3">
           <h2 id={id} className="text-4xl md:text-display-s">{headline ?? 'Tell us about your garden.'}</h2>

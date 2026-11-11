@@ -33,7 +33,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
 
   return (
     <main id="main">
-      <PageHeader title={q.category ? SHOP_CATEGORIES[q.category] : 'Plants and garden supplies'} lead="We deliver throughout Palawan. The delivery fee for your municipality is added at checkout.">
+      <PageHeader decor="shop" title={q.category ? SHOP_CATEGORIES[q.category] : 'Plants and garden supplies'} lead="We deliver throughout Palawan. The delivery fee for your municipality is added at checkout.">
         <nav aria-label="Shop categories" className="mt-4">
           <ul className="flex flex-wrap gap-2">
             <li><Link href={link({ category: undefined, plantType: undefined, page: undefined })} className={filterClass} aria-current={!q.category ? 'page' : undefined}>Everything</Link></li>

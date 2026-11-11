@@ -97,3 +97,16 @@ Prata (serif) headings over Manrope (sans) body are unchanged. Radii: 20px photo
 - **Footer**: the "forest" band (`.band-forest`, #1E3A28): cream text 11.8:1, sage labels 6.6:1, lime focus and hover; a leaf silhouette; pill social links. The band re-declares the `--color-*` variables, because Tailwind computes them once at `:root`.
 - **Cart icon**: shown only on `/shop`, `/cart`, `/checkout` and `/orders` (and the count is only requested there).
 - **Tests**: `tests/e2e/hero.spec.ts`, 16 passed (content and actions; decorations hidden from assistive tech; breeze, scroll drift and text fade; pointer lean on desktop only; reduced motion still; no overflow and actions on the first screen at 390/768/1440; forest footer; cart only in the shop). Screenshots of the top, middle and bottom of the hero: `docs/screenshots/hero/`.
+
+## Hero carousel, cursor, scrollbar (2026-11-11)
+- **Hero**: one action ("See our projects"); the quote CTA is in the header. The arch crossfades through every hero slide photo from the CMS (the old site's carousel): pause/play, one dot per photo, pauses on hover or focus, no auto-play under reduced motion (`hero-carousel.tsx`).
+- **Cursor** (`components/cursor.tsx`): a ring trails the system cursor (kept visible), fills lime over links and buttons, reads "View" over photo links; fine pointers only, off under reduced motion.
+- **Scrollbar**: thin sage thumb on #F8FAF7 (`scrollbar-color`, WebKit fallback).
+
+## Botanical accents across the site (2026-11-11)
+- **System** (`apps/web/components/decorations/`): `config.tsx` holds named sets (`services`, `projects`, `testimonials`, `cta`, `stories`, `article`, `editorial`, `gallery`, `project`, `header`, `contact`, `shop`, `footer`, and one per service page); `accents.tsx` renders a set. Art is the hero's `botanicals.tsx` plus a daisy, petal, seedling and pollen, in the brief palette (#315C3B, #8CA68A, #C9E64A, #F5B7C5, #F7D97B, #C9B8E8, #F3B994, #DCEFE0).
+- **Hosts**: `Section`, `PageHero` and `SiteFooter` (packages/ui) take a `decor` slot; the web `PageHeader` takes a set name. Accents paint behind the host's content (z-index −1 in its stacking context), `pointer-events: none`, `aria-hidden`.
+- **Placement**: only in a host's top or bottom padding (small pieces, every width) or beside the 80rem column at 1440px+ (larger, partly off-screen, clipped). Phones show at most one per section and keep it still; tablets add a few.
+- **Motion**: CSS only. Float, sway, drift, falling petals and soft pulse on their own durations and delays; the larger pieces drift 20–36px with scroll (CSS view timeline on the wrapper, so it never fights the float). Reduced motion: all still. Not Motion/useScroll: the scroll-linked version measured a 2.9s LCP delay in Phase 12; CSS timelines need no JavaScript.
+- **Not decorated**: the cart, checkout, staff and messages pages, product detail and product grids, form bodies and the reading column of articles.
+- **Tests**: `tests/e2e/decorations.spec.ts` (present on 17 public pages; no overlap with headings, text, links, buttons, fields or prices at 1440/768/390; no overflow or console errors; animated with varied timings; parallax moves on scroll; still on phones and under reduced motion; CLS < 0.05; gallery, contact form and product links still work). Screenshots at 1440/768/390 are written to the test output folder.

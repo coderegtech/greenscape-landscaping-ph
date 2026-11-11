@@ -6,6 +6,7 @@ import { JS_FLAG_SCRIPT } from '@greenscape/ui/motion/reveal';
 import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
 import { CursorFollower } from '@/components/cursor';
+import { Accents } from '@/components/decorations/accents';
 import { draftMode } from 'next/headers';
 import { cms } from '@/lib/cms';
 import './globals.css';
@@ -44,6 +45,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <SiteHeader items={site?.nav.main ?? []} cartCountUrl="/api/cart/count" />
           {children}
           <SiteFooter
+            decor={<Accents set="footer" />}
             columns={(site?.nav.footer ?? []).map((n) => ({ title: n.label, links: n.children ?? [] }))}
             contact={{ address: c?.address, phone: c?.phone, email: c?.email, hours: c?.hours }}
             socials={[
