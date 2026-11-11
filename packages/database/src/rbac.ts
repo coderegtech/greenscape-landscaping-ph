@@ -36,6 +36,7 @@ export const PERMISSIONS = {
   'messages.reply': 'Reply to customer conversations',
   'assistant.manage': 'Configure the AI assistant: instructions, greeting, availability, model, knowledge sources',
   'assistant.read': 'Read AI assistant conversations of customers, and usage (personal data: admins only by default)',
+  'notifications.broadcast': 'Send announcements to staff or customers',
 
   'employees.read': 'View employee records',
   'employees.manage': 'Create/edit employees and schedules',

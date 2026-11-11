@@ -14,8 +14,7 @@ const onReduceChange = (cb: () => void) => {
 
 /**
  * The hero arch as a slow crossfade through every hero slide photo (the old site's carousel images, from the CMS).
- * Accessible carousel pattern: a pause/play button (WCAG 2.2.2), one dot button per photo, hidden slides are
- * aria-hidden. It pauses while hovered or focused and never auto-plays under reduced motion. The first photo is the
+ * Accessible carousel pattern: a pause/play button (WCAG 2.2.2), no pagination dots, hidden slides are aria-hidden. It pauses while hovered or focused and never auto-plays under reduced motion. The first photo is the
  * server-rendered LCP image; the rest load lazily.
  */
 export function HeroCarousel({ photos }: { photos: MediaRef[] }) {
@@ -47,16 +46,9 @@ export function HeroCarousel({ photos }: { photos: MediaRef[] }) {
         </div>
       ))}
       {photos.length > 1 && (
-        <div className="absolute inset-x-0 bottom-4 z-10 flex items-center justify-center gap-1">
-          <button type="button" onClick={() => setChoice(!playing)} aria-label={playing ? 'Pause slideshow' : 'Play slideshow'} className="grid size-9 place-items-center rounded-full bg-paper/85 text-ink shadow-soft">
-            {playing ? <Pause aria-hidden className="size-3.5" /> : <Play aria-hidden className="size-3.5" />}
-          </button>
-          {photos.map((p, i) => (
-            <button key={p.url} type="button" onClick={() => setAt(i)} aria-label={`Show photo ${i + 1} of ${photos.length}`} aria-current={i === at || undefined} className="group grid size-7 place-items-center">
-              <span aria-hidden className="block h-2 w-2 rounded-full bg-paper/70 shadow-soft transition-transform duration-(--dur-short) ease-out group-aria-[current]:scale-x-[2.5] group-aria-[current]:bg-paper" />
-            </button>
-          ))}
-        </div>
+        <button type="button" onClick={() => setChoice(!playing)} aria-label={playing ? 'Pause slideshow' : 'Play slideshow'} className="absolute right-4 bottom-4 z-10 grid size-9 place-items-center rounded-full bg-paper/85 text-ink shadow-soft">
+          {playing ? <Pause aria-hidden className="size-3.5" /> : <Play aria-hidden className="size-3.5" />}
+        </button>
       )}
     </div>
   );

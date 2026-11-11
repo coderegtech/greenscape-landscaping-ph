@@ -17,7 +17,7 @@ const api = origin(process.env.NEXT_PUBLIC_API_URL) || 'http://localhost:4000';
 const supabase = origin(process.env.NEXT_PUBLIC_SUPABASE_URL);
 
 // Public pages are prerendered (static/ISR), so a per-request nonce isn't possible: Next's inline RSC payload scripts
-// need 'unsafe-inline'. Everything else is locked to this site, the API, Supabase and the YouTube embed.
+// need 'unsafe-inline'. Everything else is locked to this site, the API, Supabase, the YouTube and Google Maps embeds.
 export const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ''}`,
@@ -25,8 +25,9 @@ export const contentSecurityPolicy = [
   `img-src 'self' data: blob: https://i.ytimg.com ${supabase}`.trim(),
   "font-src 'self'",
   `connect-src 'self' ${api} ${supabase}`.trim(),
-  'frame-src https://www.youtube-nocookie.com',
+  'frame-src https://www.youtube-nocookie.com https://www.google.com',
   "media-src 'self'",
+  "worker-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
