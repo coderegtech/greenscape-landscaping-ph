@@ -24,6 +24,8 @@ runs against production.
 | A website visit appears on the admin Analytics page; no tracking cookies | `e2e/analytics.spec.ts` |
 | Sign out everywhere (old sessions refused, refresh tokens dead at Supabase, new sign-in works); suspension ends sessions; permissions | `integration/system.test.ts` |
 | System status and audit log: permissions, live checks, refusal counters, audit filters | `integration/system.test.ts`, `e2e/system.spec.ts` |
+| Clock-in selfies (off by default, required/optional, owner and type checks, HR link, nothing kept when off, deletion after retention), correction attachments, HR decisions reaching the employee portal | `integration/attendance-media.test.ts`, `e2e/attendance.spec.ts` |
+| Analytics CSV (permission, layout, formula-safe) | `integration/analytics.test.ts` |
 | Optional MFA (runs only with `REQUIRE_STAFF_MFA=true`) | `integration/mfa.test.ts`, `e2e/mfa.spec.ts` |
 
 ## Writing e2e tests here

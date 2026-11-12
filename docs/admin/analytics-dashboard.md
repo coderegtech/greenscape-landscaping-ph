@@ -22,7 +22,8 @@ dates), each figure compared with the previous period of the same length.
 | Content published | CMS revision log in MongoDB |
 
 Charts: visitors per day (bars with hover/focus tooltips and a table view), the shop funnel (visitors → product views →
-add to cart → checkout → paid orders) and ranked lists. Sales and attendance exports stay on the report pages.
+add to cart → checkout → paid orders) and ranked lists. **Download CSV** exports the period (totals with the previous
+period, daily visitors and page views, every ranked list); cells that start like a formula are neutralised.
 
 ## How collection works (privacy)
 
@@ -53,4 +54,4 @@ low stock, new quotations, unanswered messages, attendance today, corrections, l
 ## Not built
 
 Heatmaps and session replay (Microsoft Clarity would need a consent banner and masking of every form; not recommended for
-checkout, account or employee pages). CSV export of the analytics page.
+checkout, account or employee pages).
