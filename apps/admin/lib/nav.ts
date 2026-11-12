@@ -58,6 +58,8 @@ export const ADMIN_IA: { title: string; items: Item[] }[] = [
       { label: 'Attendance report', href: '/reports/attendance', permission: 'reports.attendance', ready: true },
       { label: 'Sales report', href: '/reports/sales', permission: 'reports.sales', ready: true },
       { label: 'Users & roles', href: '/users', permission: 'users.read', ready: true },
+      { label: 'System status', href: '/system', permission: 'system.monitor', ready: true },
+      { label: 'Audit log', href: '/audit', permission: 'audit.read', ready: true },
       { label: 'Settings', href: '/settings', permission: 'settings.read', ready: true },
     ],
   },

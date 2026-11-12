@@ -26,6 +26,7 @@ import { hrRoutes } from './modules/attendance/admin-routes.ts';
 import { attendanceSelfRoutes } from './modules/attendance/routes.ts';
 import { adminRoutes, customerMessageRoutes } from './modules/admin/routes.ts';
 import { analyticsCollectRoutes, analyticsReportRoutes } from './modules/analytics/routes.ts';
+import { requestCounters, systemRoutes } from './modules/system/routes.ts';
 import { catalogRoutes, shopRoutes, webhookRoutes } from './modules/shop/routes.ts';
 
 export function createApp(deps: Deps) {
@@ -48,6 +49,7 @@ export function createApp(deps: Deps) {
   );
   app.use(helmet());
   app.use(securityEvents(deps)); // 401/403/429 → security log channel + repeat alerts
+  app.use(requestCounters(deps)); // daily 5xx/401/403/429 counts + recent server errors for Admin → System
   app.use(
     cors({
       origin: (origin, cb) => cb(null, !origin || env.CORS_ORIGINS.includes(origin)), // no Origin = server-to-server
@@ -89,6 +91,7 @@ export function createApp(deps: Deps) {
   app.use('/v1', attendanceSelfRoutes(deps));
   app.use('/v1/admin/assistant', assistantAdminRoutes(deps));
   app.use('/v1/admin/analytics', analyticsReportRoutes(deps));
+  app.use('/v1/admin', systemRoutes(deps));
   app.use('/v1/analytics', analyticsCollectRoutes(deps));
   app.use('/v1/admin', adminRoutes(deps));
   app.use('/v1', customerMessageRoutes(deps));

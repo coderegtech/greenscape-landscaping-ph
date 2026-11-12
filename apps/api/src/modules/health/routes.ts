@@ -5,7 +5,7 @@ import { registry } from '../../lib/openapi.ts';
 
 const started = Date.now();
 
-async function check(fn: () => Promise<unknown>, timeoutMs = 2000) {
+export async function check(fn: () => Promise<unknown>, timeoutMs = 2000) {
   const t = performance.now();
   try {
     await Promise.race([fn(), new Promise((_, rej) => setTimeout(() => rej(new Error(`timeout after ${timeoutMs}ms`)), timeoutMs))]);

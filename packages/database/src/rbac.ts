@@ -11,6 +11,7 @@ export const PERMISSIONS = {
   'settings.manage': 'Change site settings',
   'settings.secrets': 'View/change integration secrets',
   'audit.read': 'View the audit log',
+  'system.monitor': 'View system health, error and refusal counts, failed jobs and webhooks',
 
   'cms.read': 'View CMS content including drafts',
   'cms.write': 'Edit CMS drafts',
