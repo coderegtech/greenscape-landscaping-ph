@@ -8,7 +8,8 @@ Motion is a **signal, not decoration**. Every animation answers "what changed?" 
 | `--dur-micro` | 120 ms | press, tick, colour change |
 | `--dur-short` | 220 ms | hover, tooltip, menu, toast, number swap |
 | `--dur-long` | 420 ms | drawer, accordion |
-| Reveal | 640 ms (mask: 900 ms) | scroll reveals |
+| Reveal | scroll-linked: 60% of the element's entry (mask settle: to 50% cover), `--ease-out` | scroll reveals |
+| `--reveal-y` / `--reveal-x` | 20 / 32 px (phones 12 / 16 px) | reveal travel, vertical / horizontal |
 | `--stagger-row` / `--stagger-block` | 40 / 80 ms | list rows / blocks; capped at 6 steps (≤ 500 ms) |
 | `--ease-out` | `cubic-bezier(0.23, 1, 0.32, 1)` | arrivals (default) |
 | `--ease-in` | `cubic-bezier(0.55, 0, 1, 0.45)` | exits |
@@ -19,8 +20,12 @@ Never the browser's `ease`, never `transition: all` (lint-enforced), never bounc
 ## Primitives (`packages/ui/src/motion/*`)
 | Primitive | How | No-JS / reduced motion |
 |---|---|---|
-| `Reveal kind="rise"` (fade + 12 px) | CSS scroll-driven animation (`animation-timeline: view()`, entry range), zero JS; `index` (`--i`) offsets the range to stagger | Only under `prefers-reduced-motion: no-preference` and `@supports (animation-timeline: view())`; otherwise (and with JS off) content is simply visible |
+| `Reveal kind="rise"` (fade + `--reveal-y` up) | CSS scroll-driven animation (`animation-timeline: view()`, entry range), zero JS; `index` (`--i`) offsets the range to stagger | Only under `prefers-reduced-motion: no-preference` and `@supports (animation-timeline: view())`; otherwise (and with JS off) content is simply visible |
+| `Reveal kind="down" / "left" / "right"` | as above; `left` enters from the right, `right` from the left (`--reveal-x`) | same |
+| `Reveal kind="scale"` | as above, from 94% | same |
 | `Reveal kind="fade"` | as above, opacity only | same |
+| `Stagger kind=…` / `data-stagger` | every direct child reveals, `--i` by column (`nth-child(4n+k)`), no wrapper per card | same |
+| `RevealLatch` (client, once in the web layout) | marks a reveal `data-revealed` once it has played; theme.css then drops its animation so it never runs backwards when scrolling up. One IntersectionObserver + one MutationObserver; never hides anything | without it (JS off) reveals still work, they also replay in reverse |
 | `Reveal kind="mask"` (image) | frame opens upward via `clip-path`, photo settles from 4% zoom | same |
 | `Parallax` | CSS scroll-driven animation (`animation-timeline: view()`), ±6% inside a clipped frame, zero JS | static (and where unsupported) |
 | `Counter` | `requestAnimationFrame` once in view (IntersectionObserver); server HTML already holds the final number | shows final number |
@@ -33,8 +38,10 @@ Why reveals are CSS, not Motion: Motion's `initial` state is written into server
 
 ## Rules of use
 - **Never reveal above-the-fold content.** The hero headline, sentence and actions render immediately (they are usually the LCP element).
-- **One reveal language per page** (usually `rise`, plus `mask` for photographs). Hero text staggers 0, 1, 2; lists stagger by row. Nothing re-animates on scroll back up.
-- **Parallax only on hero/feature photographs**, never on text, never more than one per screen.
+- **Direction follows layout, one vocabulary site-wide:** section headings rise (their action fades in after), a column beside a photo slides in from its own side, featured project cards slide in from the side their photo sits on, card grids stagger-rise, figures scale in, CTA bands rise, footer groups fade, photographs open through `mask`. Hero text staggers 0, 1, 2; lists stagger by column. Nothing re-animates on scroll back up (`RevealLatch`).
+- **Never put a reveal on an element with its own transform** (`.lift-card` hover): the filled animation would override it. Wrap the element, or use `Stagger` on its list.
+- **Shopping flows and forms stay still:** cart, checkout, account, auth, orders, messages and the product buy box have no scroll reveals; the contact form only fades (it never slides under the pointer); long-form article paragraphs never animate.
+- **Parallax only on hero/feature photographs**, never on text, never more than one per screen. Inside a `Photo` frame, pass `className="gs-parallax"` (the frame clips it); elsewhere use `Parallax`.
 - **Counters only for figures the business supplied.**
 - **No** scroll hijacking, scroll-jacked carousels, cursor followers, marquees, pulsing dots, auto-rotating sliders, or infinite loops other than loaders.
 - **Hover** is one signal: a colour step. **Focus rings never animate.** Tooltips wait 800 ms on hover (provider `delayDuration`), 0 on focus.
@@ -45,6 +52,7 @@ The dealt theme (*Hedgerow*) keeps motion still, and Hallmark's craft rules forb
 
 ## Tests
 `tests/e2e/design-system.spec.ts`: reveals are visible with JS off; reduced motion shows end states without scrolling; below-the-fold reveals start hidden and appear when scrolled to; axe runs on end states.
+`tests/e2e/scroll-animations.spec.ts`: every public page at 1440/1024/768/390 px, scrolled down and back up (see `docs/ui-ux/scroll-animations.md`).
 
 ## White botanical redesign (2026-11)
 New CSS-only primitives in `theme.css`, all off or instant under reduced motion:
