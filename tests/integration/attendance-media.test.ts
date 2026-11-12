@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createApp } from '../../apps/api/src/app.ts';
 import { closeDeps, type Deps } from '../../apps/api/src/lib/deps.ts';
 import { PRIVATE, purgeOldSelfies } from '../../apps/api/src/modules/attendance/uploads.ts';
-import { testDeps } from './helpers.ts';
+import { keepSelfieSetting, testDeps } from './helpers.ts';
 import { deleteAuthUsers, signedInUser } from './supabase.ts';
 
 // Clock-in selfies (decision D6: HR switches them on) and correction attachments, uploaded straight to private storage.
@@ -13,6 +13,7 @@ const NO = `M-${tag.slice(-8)}`;
 // 1×1 PNG: real bytes, so the storage magic-byte check passes.
 const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGD4DwABBAEAwS2OUAAAAABJRU5ErkJggg==', 'base64');
 let deps: Deps;
+let restoreSelfie: (() => Promise<void>) | undefined;
 let app: ReturnType<typeof createApp>;
 const authIds: string[] = [];
 const t = { hr: '', worker: '', other: '' };
@@ -39,6 +40,7 @@ const setSelfie = (mode: string, retentionDays = 90) => request(app).put('/v1/hr
 beforeAll(async () => {
   deps = await testDeps({ CACHE_PREFIX: `gs:test:${tag}` });
   app = createApp(deps);
+  restoreSelfie = await keepSelfieSetting(deps.db);
   const [hr, worker, other] = await Promise.all([withRoles('hr', ['hr_manager']), withRoles('worker', []), withRoles('other', [])]);
   Object.assign(t, { hr: hr.token, worker: worker.token, other: other.token });
   for (const [u, n] of [[worker, '1'], [other, '2']] as const) {
@@ -48,7 +50,7 @@ beforeAll(async () => {
 }, 60_000);
 
 afterAll(async () => {
-  await setSelfie('off');
+  await restoreSelfie?.(); // the local site's own setting, not just 'off'
   const emps = await deps.db.employee.findMany({ where: { lastName: { contains: tag } }, select: { id: true } });
   await deps.db.attendanceRecord.deleteMany({ where: { employeeId: { in: emps.map((e) => e.id) } } });
   await deps.db.employee.deleteMany({ where: { id: { in: emps.map((e) => e.id) } } });

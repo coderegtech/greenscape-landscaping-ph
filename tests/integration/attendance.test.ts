@@ -4,13 +4,14 @@ import { createApp } from '../../apps/api/src/app.ts';
 import { closeDeps, type Deps } from '../../apps/api/src/lib/deps.ts';
 import { closeDays, punch, toDate } from '../../apps/api/src/modules/attendance/service.ts';
 import { addDays, manilaDate, manilaInstant, weekdayOf } from '../../apps/api/src/modules/attendance/time.ts';
-import { testDeps } from './helpers.ts';
+import { keepSelfieSetting, testDeps } from './helpers.ts';
 import { deleteAuthUsers, signedInUser } from './supabase.ts';
 
 const tag = `it${Date.now()}`;
 const TAG = tag.toUpperCase().slice(-8);
 const as = (t: string) => ({ Authorization: `Bearer ${t}` });
 let deps: Deps;
+let restoreSelfie: (() => Promise<void>) | undefined;
 let app: ReturnType<typeof createApp>;
 const authIds: string[] = [];
 let hr = '';
@@ -40,6 +41,7 @@ async function employee(email: string, no: string) {
 beforeAll(async () => {
   deps = await testDeps({ REVALIDATE_SECRET: '' });
   app = createApp(deps);
+  restoreSelfie = await keepSelfieSetting(deps.db); // these punches carry no selfie
   const h = await user('hr');
   const row = await deps.db.user.findUniqueOrThrow({ where: { authUserId: h.authUserId } });
   const role = await deps.db.role.findUniqueOrThrow({ where: { key: 'hr_manager' } });
@@ -63,6 +65,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await restoreSelfie?.();
   const emps = await deps.db.employee.findMany({ where: { lastName: { contains: tag } }, select: { id: true } });
   const ids = emps.map((e) => e.id);
   await deps.db.attendanceRecord.deleteMany({ where: { employeeId: { in: ids } } });

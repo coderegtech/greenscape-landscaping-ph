@@ -8,6 +8,7 @@ export default defineConfig({
   testDir: 'tests/e2e',
   fullyParallel: true,
   timeout: 90_000,
+  globalSetup: './tests/e2e/setup.ts', // runs with selfies off and restores the local setting afterwards
   globalTeardown: './tests/e2e/teardown.ts',
   forbidOnly: ci,
   retries: ci ? 1 : 0,

@@ -117,7 +117,7 @@ test.describe('with HR', () => {
     await page.goto(`${ADMIN}/attendance`);
     await expect(page.getByRole('row', { name: /Liza Santos/ })).toContainText('Clocked in');
     await page.goto(`${ADMIN}/attendance/corrections`);
-    const item = page.getByTestId('correction').filter({ hasText: 'Phone battery died' });
+    const item = page.getByTestId('correction').filter({ hasText: 'Phone battery died', visible: true }); // production builds keep a hidden copy of the page
     await expect(item).toContainText('nothing recorded');
     await item.getByRole('button', { name: 'Approve' }).click();
     await expect(item).toHaveCount(0); // gone from the waiting queue
@@ -137,7 +137,7 @@ test.describe('with HR', () => {
     await staff.getByRole('button', { name: 'Send request' }).click();
     await expect(staff.getByText(/Leave requested: 0.5 day/)).toBeVisible();
     await page.goto(`${ADMIN}/leave`);
-    const req = page.getByTestId('leave-request').filter({ hasText: 'Liza Santos' });
+    const req = page.getByTestId('leave-request').filter({ hasText: 'Liza Santos', visible: true });
     await req.getByRole('button', { name: 'Approve' }).click();
     await expect(req).toHaveCount(0);
     await staff.reload();
@@ -185,6 +185,6 @@ test('a selfie goes with the clock-in when HR turns selfies on; HR opens it; the
     await signIn(page, hr.email);
     await expect(page.getByRole('link', { name: /^Selfie, in / })).toBeVisible();
   } finally {
-    await db.appSetting.update({ where: { key: 'attendance.selfie' }, data: { value: { mode: 'off', retentionDays: 90 } } });
+    await db.appSetting.update({ where: { key: 'attendance.selfie' }, data: { value: { mode: 'off', retentionDays: 90 } } }); // the run's mode (tests/e2e/setup.ts)
   }
 });
