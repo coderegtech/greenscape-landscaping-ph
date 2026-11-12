@@ -7,6 +7,11 @@ name: Deploy production
 
 on:
   workflow_call:
+    secrets: # named, so a caller hands over these two and nothing else
+      DOKPLOY_URL:
+        required: false
+      DOKPLOY_API_KEY:
+        required: false
   workflow_dispatch:
 
 permissions: {}

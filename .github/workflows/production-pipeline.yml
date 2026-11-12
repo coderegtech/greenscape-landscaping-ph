@@ -188,4 +188,6 @@ jobs:
     if: needs.publish.outputs.published != '' && needs.gate.outputs.target == 'production' && vars.DOKPLOY_AUTO_DEPLOY == 'true'
     permissions: {}
     uses: ./.github/workflows/deploy-production.yml
-    secrets: inherit
+    secrets:
+      DOKPLOY_URL: ${{ secrets.DOKPLOY_URL }}
+      DOKPLOY_API_KEY: ${{ secrets.DOKPLOY_API_KEY }}
