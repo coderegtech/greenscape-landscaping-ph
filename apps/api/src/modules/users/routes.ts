@@ -16,6 +16,7 @@ registry.registerPath({ method: 'get', path: '/v1/users', tags: ['users'], auth:
 registry.registerPath({ method: 'post', path: '/v1/users', tags: ['users'], auth: true, summary: 'Create a staff account with roles and a one-time temporary password (users.manage + roles.manage; administrator roles need roles.manage_super). Audited.', body: ProvisionAccountBody, responses: { 201: { description: 'created; temporaryPassword is shown once', schema: ProvisionedAccount }, 409: { description: 'email already has an account' } } });
 registry.registerPath({ method: 'put', path: '/v1/users/{id}/roles', tags: ['users'], auth: true, summary: "Replace a user's roles (roles.manage; super_admin needs roles.manage_super). Audited.", body: SetRolesBody, responses: { 200: { description: 'updated user', schema: UserSummary }, 403: { description: 'not allowed' } } });
 registry.registerPath({ method: 'patch', path: '/v1/users/{id}/status', tags: ['users'], auth: true, summary: 'Suspend or reactivate a user (users.manage). Audited.', body: SetStatusBody, responses: { 200: { description: 'updated user', schema: UserSummary } } });
+registry.registerPath({ method: 'post', path: '/v1/users/{id}/sessions/revoke', tags: ['users'], auth: true, summary: 'Sign a user out everywhere: sessions from before now are refused and ended at Supabase (users.manage; administrators need roles.manage_super). Audited.', responses: { 204: { description: 'done' } } });
 registry.registerPath({ method: 'get', path: '/v1/roles', tags: ['users'], auth: true, summary: 'Roles and their permissions (users.read).', responses: { 200: { description: 'roles', schema: z.array(RoleSummary) } } });
 
 const userSelect = {
@@ -44,6 +45,8 @@ const toSummary = (u: Row): UserSummary => ({
   lastLoginAt: u.lastLoginAt?.toISOString() ?? null,
 });
 const isProtected = (k: string) => PROTECTED_ROLES.includes(k as RoleKey);
+// Token sign-in times are whole seconds: a sign-in in the same second right after the cut-off must still count.
+const wholeSecondNow = () => new Date(Math.floor(Date.now() / 1000) * 1000);
 
 export function userRoutes(deps: Deps) {
   const { db, cache, identities, events } = deps;
@@ -114,7 +117,8 @@ export function userRoutes(deps: Deps) {
         throw AppError.forbidden('Only a super administrator can suspend an administrator');
       }
       await audit(tx, req, res, { action: 'user.status.set', entityType: 'User', entityId: id, before: { status: target.status }, after: { status } });
-      return tx.user.update({ where: { id }, data: { status }, select: { ...userSelect, authUserId: true } });
+      // Suspending also ends every existing session: a ban alone lets old refresh tokens work again after reactivation.
+      return tx.user.update({ where: { id }, data: { status, ...(status !== 'ACTIVE' ? { sessionsValidAfter: wholeSecondNow() } : {}) }, select: { ...userSelect, authUserId: true } });
     });
     await cache.invalidateTags([authzCacheKey(id)]);
     // The API refuses a suspended user at once; banning at Supabase also stops new sign-ins and session refreshes
@@ -128,6 +132,25 @@ export function userRoutes(deps: Deps) {
     }
     const { authUserId: _omit, ...summary } = updated;
     res.json(toSummary(summary));
+  });
+
+  // "Sign out everywhere": every session that signed in before now is refused, and ended at Supabase on first use.
+  r.post('/users/:id/sessions/revoke', requirePermission('users.manage'), async (req, res) => {
+    const { id } = IdParam.parse(req.params);
+    const actor = currentAuth(res);
+    if (id === actor.userId) throw AppError.forbidden('Sign out from your own menu instead');
+    await db.$transaction(async (tx) => {
+      const target = await tx.user.findUnique({ where: { id }, select: userSelect });
+      if (!target) throw AppError.notFound('User not found');
+      if (target.roles.some((x) => isProtected(x.role.key)) && !actor.permissions.has('roles.manage_super')) {
+        throw AppError.forbidden('Only a super administrator can sign out an administrator');
+      }
+      const at = wholeSecondNow();
+      await tx.user.update({ where: { id }, data: { sessionsValidAfter: at } });
+      await audit(tx, req, res, { action: 'user.sessions.revoke', entityType: 'User', entityId: id, after: { sessionsValidAfter: at.toISOString() } });
+    });
+    logSecurity(deps, req, res, 'security.sessions_revoked', { target: id });
+    res.status(204).end();
   });
 
   r.get('/roles', requirePermission('users.read'), async (_req, res) => {

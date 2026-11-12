@@ -23,6 +23,8 @@ model User {
   status        UserStatus @default(ACTIVE)
   /// Account was provisioned by an administrator with a temporary password: only customer access until it's changed.
   mustChangePassword Boolean @default(false)
+  /// "Sign out everywhere": sessions that signed in before this time are refused (and ended at Supabase on first use).
+  sessionsValidAfter DateTime?
   /// Firebase Auth uid from the old site (migration links chats, quotes and feedback to the right person).
   legacyUid     String?    @unique
   roles         UserRole[]

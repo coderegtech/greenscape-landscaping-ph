@@ -10,6 +10,8 @@ export interface VerifiedToken {
   sessionId?: string;
   /** How the session was authenticated (Supabase `amr` methods: password, oauth, totp, recovery, otp…). */
   methods: string[];
+  /** When the person signed in (seconds): the latest amr timestamp, which survives refreshes; falls back to iat. */
+  authTime: number;
   /** From sign-up metadata or the OAuth profile; display only, never used for authorization. */
   name?: string;
   /** Profile picture URL from the OAuth profile (Google): https only; display only. */
@@ -43,7 +45,9 @@ export function createTokenVerifier(supabaseUrl: string) {
       const { payload } = await jwtVerify(token, jwks, { issuer, audience: 'authenticated', algorithms: ['ES256', 'RS256'] });
       if (typeof payload.sub !== 'string' || typeof payload.email !== 'string' || !payload.email) throw new TokenError('missing_claims');
       const methods = (Array.isArray(payload.amr) ? payload.amr : []).map((a) => (a as { method?: unknown } | null)?.method).filter((m): m is string => typeof m === 'string');
-      return { methods, authUserId: payload.sub, email: payload.email.toLowerCase(), aal: payload.aal === 'aal2' ? 'aal2' : 'aal1', sessionId: typeof payload.session_id === 'string' ? payload.session_id : undefined, name: displayName(payload.user_metadata), avatarUrl: avatar(payload.user_metadata) };
+      const stamps = (Array.isArray(payload.amr) ? payload.amr : []).map((a) => Number((a as { timestamp?: unknown } | null)?.timestamp)).filter(Number.isFinite);
+      const authTime = stamps.length ? Math.max(...stamps) : (payload.iat ?? 0);
+      return { methods, authTime, authUserId: payload.sub, email: payload.email.toLowerCase(), aal: payload.aal === 'aal2' ? 'aal2' : 'aal1', sessionId: typeof payload.session_id === 'string' ? payload.session_id : undefined, name: displayName(payload.user_metadata), avatarUrl: avatar(payload.user_metadata) };
     } catch (err) {
       if (err instanceof TokenError) throw err;
       throw new TokenError(err instanceof errors.JWTExpired ? 'expired' : 'invalid');

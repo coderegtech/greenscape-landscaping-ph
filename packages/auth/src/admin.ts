@@ -32,6 +32,11 @@ export function createIdentityAdmin(supabaseUrl: string, secretKey: string) {
       const { error } = await client.auth.admin.updateUserById(authUserId, { password });
       if (error) throw error;
     },
+    /** Ends every session of the token's user (all devices; refresh tokens revoked). Needs one of the user's own tokens. */
+    async signOutEverywhere(accessToken: string) {
+      const { error } = await client.auth.admin.signOut(accessToken, 'global');
+      if (error) throw error;
+    },
     /** Removes the sign-in identity (account deletion). The app's own records are anonymised separately. */
     async deleteIdentity(authUserId: string) {
       const { error } = await client.auth.admin.deleteUser(authUserId);

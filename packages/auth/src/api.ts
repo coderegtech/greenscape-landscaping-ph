@@ -1,6 +1,7 @@
 import 'server-only';
 import { isIP } from 'node:net';
 import { headers } from 'next/headers';
+import { redirect, unstable_rethrow } from 'next/navigation';
 import { getAccessToken } from './next.ts';
 import type { z } from 'zod';
 
@@ -41,6 +42,9 @@ export async function api<T extends z.ZodType>(path: string, schema: T, init: Re
   });
   if (res.status === 204) return schema.parse(undefined);
   const body = await res.json().catch(() => ({}));
+  // Signed out everywhere by an administrator: the refused request already ended the session at Supabase, so the
+  // login page (every app has /login; the website forwards it to /auth/login) starts clean.
+  if (res.status === 401 && body?.error?.code === 'SESSION_REVOKED') redirect('/login');
   if (!res.ok) throw new ApiError(res.status, body?.error?.code ?? 'HTTP_ERROR', body?.error?.message ?? res.statusText, body?.error?.details);
   return schema.parse(body);
 }
@@ -52,6 +56,7 @@ export async function attempt<T>(fn: () => Promise<T>): Promise<ActionResult<T>>
   try {
     return { ok: true, data: await fn() };
   } catch (err) {
+    unstable_rethrow(err); // let redirect()/notFound() from inside the action through
     if (err instanceof ApiError) return { ok: false, status: err.status, error: err.message, details: err.details };
     console.error('server action failed', err); // unexpected: keep the cause in the server log, not the browser
     return { ok: false, status: 500, error: 'Something went wrong. Please try again.' };

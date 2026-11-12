@@ -56,7 +56,7 @@ describe('Google (OAuth) sessions', () => {
   it('keep customer access only, even for an account holding staff and employee roles', async () => {
     const u = await withRoles('oauth', ['admin', 'employee']);
     const local = await testDeps({ CACHE_PREFIX: `gs:test:${tag}:oauth` });
-    local.verifyToken = async () => ({ authUserId: u.authUserId, email: u.email, aal: 'aal1', methods: ['oauth'] });
+    local.verifyToken = async () => ({ authUserId: u.authUserId, email: u.email, aal: 'aal1', methods: ['oauth'], authTime: Math.floor(Date.now() / 1000) });
     const oauthApp = createApp(local);
     const me = await request(oauthApp).get('/v1/auth/me').set(as('google')).expect(200);
     expect(me.body.passwordSignInRequired).toBe(true);

@@ -21,6 +21,8 @@ permissions it needs (`requirePermission`), and a user has only what their roles
 - **Protected roles:** `super_admin` and `admin` can only be granted, revoked or suspended by a holder of
   `roles.manage_super`. Nobody changes their own roles or status.
 - **Changes are immediate:** a role change invalidates the user's permission cache; the next request uses the new set.
-- **Audited:** `user.provision`, `user.roles.set`, `user.status.set`, `user.password.initial_set`, `employee.*`.
+- **Audited:** `user.provision`, `user.roles.set`, `user.status.set`, `user.sessions.revoke`, `user.password.initial_set`,
+  `employee.*`; readable in Admin → Audit log (`audit.read`). System status needs `system.monitor`. Both are
+  super admin and admin only.
 - **Session narrowing** (Google sessions, temporary passwords, optional MFA): `docs/auth/supabase-authentication.md`.
 - Per-route matrix and object-level rules: `docs/security/authorization-matrix.md`.

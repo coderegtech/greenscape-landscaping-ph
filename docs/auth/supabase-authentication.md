@@ -31,8 +31,14 @@ independent sessions even under one parent domain. Sign-out is a server-side POS
 
 ## Account controls
 
-- **Suspend / reactivate** (`PATCH /v1/users/:id/status`, `users.manage`): the API refuses the user at once and the
-  identity is banned at Supabase, which stops sign-in and session refresh.
+- **Sign out everywhere** (`POST /v1/users/:id/sessions/revoke`, `users.manage`; administrators need
+  `roles.manage_super`; Admin → Users → Edit → Sign out everywhere): sets `User.sessionsValidAfter`. Any token whose
+  sign-in time (latest `amr` timestamp, unchanged by refreshes) is older is refused with 401 `SESSION_REVOKED`, and the
+  first refused token is used to end every session of that user at Supabase (global sign-out), so no device can refresh
+  its way back in. A new sign-in works at once. Audited (`user.sessions.revoke`).
+- **Suspend / reactivate** (`PATCH /v1/users/:id/status`, `users.manage`): the API refuses the user at once, the
+  identity is banned at Supabase, and existing sessions are cut off as above. (A ban alone would let old refresh tokens
+  work again after reactivation; tested locally.)
 - **Password recovery:** "Forgot password?" on every login page uses the website's reset flow
   (`/auth/forgot-password`, email link, `/auth/reset-password`). The recovery session itself never opens staff tools;
   the person signs in again with the new password.
@@ -42,5 +48,5 @@ independent sessions even under one parent domain. Sign-out is a server-side POS
 
 ## Not implemented
 
-- "Sign out everywhere" for a single user from the admin (suspension ends access; a per-device session list is not built).
+- A per-device session list (sign-out is all devices at once).
 - Username login: logins are work email addresses.

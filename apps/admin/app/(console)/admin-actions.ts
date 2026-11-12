@@ -52,6 +52,10 @@ export async function setUserRoles(id: string, roles: string[]) {
     return out;
   });
 }
+export async function revokeSessions(id: string) {
+  return attempt(() => api(`/v1/users/${Id.parse(id)}/sessions/revoke`, z.undefined(), json('POST', {})));
+}
+
 export async function setUserStatus(id: string, status: 'ACTIVE' | 'SUSPENDED') {
   return attempt(async () => {
     const out = await api(`/v1/users/${Id.parse(id)}/status`, Any, json('PATCH', { status }));

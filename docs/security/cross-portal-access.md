@@ -21,7 +21,8 @@
 - **No IDOR:** `/v1/me/*` routes resolve the employee or customer from the session; order and quotation reads check
   ownership; admin object routes need the matching permission.
 - **Separate sessions:** host-only cookies per portal; signing in on one portal does not sign you in on another.
-- **Disabled accounts:** suspension is refused by the API at once and banned at Supabase.
+- **Disabled accounts:** suspension is refused by the API at once, banned at Supabase, and every existing session is
+  ended (also available on its own as "Sign out everywhere").
 
 Tests: `tests/integration/portals.test.ts`, `tests/integration/auth.test.ts`, `tests/integration/security.test.ts`,
 `tests/e2e/permissions.spec.ts`, `tests/e2e/attendance.spec.ts`.

@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import type { RoleSummary, UserSummary, z } from '@greenscape/validation';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { setUserRoles, setUserStatus } from '@/app/(console)/admin-actions';
+import { revokeSessions, setUserRoles, setUserStatus } from '@/app/(console)/admin-actions';
 import { when } from '@/lib/format';
 
 type Props = { users: UserSummary[]; roles: z.infer<typeof RoleSummary>[]; meId: string; canRoles: boolean; canStatus: boolean; canSuper: boolean };
@@ -40,6 +40,14 @@ export function UsersTable({ users, roles, meId, canRoles, canStatus, canSuper }
     toast.success(next === 'SUSPENDED' ? 'Suspended' : 'Reactivated');
     setEdit(null);
     router.refresh();
+  };
+  const signOutEverywhere = async () => {
+    if (!edit || !window.confirm(`Sign ${edit.email} out on every device? They can sign in again straight away.`)) return;
+    setBusy('sessions');
+    const res = await revokeSessions(edit.id);
+    setBusy(null);
+    if (!res.ok) return void toast.error(res.error);
+    toast.success('Signed out everywhere');
   };
   const self = edit?.id === meId;
 
@@ -92,6 +100,8 @@ export function UsersTable({ users, roles, meId, canRoles, canStatus, canSuper }
           {edit && canStatus && !self && (
             <div className="flex flex-col gap-2 border-t border-rule pt-4">
               <Button size="sm" variant={edit.status === 'SUSPENDED' ? 'secondary' : 'danger'} className="self-start" loading={busy === 'status'} disabled={!!busy} onClick={toggleStatus}>{edit.status === 'SUSPENDED' ? 'Reactivate' : 'Suspend account'}</Button>
+              {edit.status === 'ACTIVE' && <Button size="sm" variant="secondary" className="self-start" loading={busy === 'sessions'} disabled={!!busy} onClick={signOutEverywhere}>Sign out everywhere</Button>}
+              <p className="text-xs text-muted">Suspending also signs them out everywhere.</p>
             </div>
           )}
         </DialogContent>
