@@ -32,7 +32,8 @@
     "media:sweep": "tsx scripts/sweep-orphans.ts",
     "vapid:keys": "pnpm --filter @greenscape/api exec web-push generate-vapid-keys",
     "load:test": "tsx scripts/load-test.ts",
-    "admin:create": "tsx scripts/create-admin.ts"
+    "admin:create": "tsx scripts/create-admin.ts",
+    "staff:seed": "tsx scripts/seed-sample-staff.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
