@@ -3,7 +3,7 @@ import { Photo } from '@greenscape/ui/components/photo';
 import { PageHero } from '@greenscape/ui/layout/page-hero';
 import { Section as Band, SectionHeading } from '@greenscape/ui/layout/primitives';
 import { Counter } from '@greenscape/ui/motion/counter';
-import { Reveal } from '@greenscape/ui/motion/reveal';
+import { Reveal, Stagger } from '@greenscape/ui/motion/reveal';
 import Link from 'next/link';
 import type { Section } from '@/lib/cms';
 import { cms } from '@/lib/cms';
@@ -82,7 +82,8 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
           <SectionHeading id={hid} title={s.heading} action={linkButton('/projects', 'All projects', 'secondary')} />
           <div className="flex flex-col gap-8 md:gap-10">
             {items.map((p, k) => (
-              <Reveal key={p.slug}>
+              // Each card slides in from the side its photo sits on.
+              <Reveal key={p.slug} kind={k % 2 === 1 ? 'left' : 'right'}>
                 <ProjectFeature p={p} flip={k % 2 === 1} />
               </Reveal>
             ))}
@@ -123,11 +124,11 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
       return (
         <Band decor={<Accents set="testimonials" />} rule labelledBy={hid}>
           <SectionHeading id={hid} title={s.heading} action={linkButton('/testimonials', 'More feedback', 'secondary')} />
-          <div className={`grid grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-2 ${items.length >= 3 ? 'lg:grid-cols-3' : ''}`}>
+          <Stagger className={`grid grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-2 ${items.length >= 3 ? 'lg:grid-cols-3' : ''}`}>
             {items.map((t, k) => (
               <TestimonialCard key={k} t={t} />
             ))}
-          </div>
+          </Stagger>
         </Band>
       );
     }
@@ -135,7 +136,7 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
       return (
         <Band labelledBy={hid}>
           <h2 id={hid} className="sr-only">In numbers</h2>
-          <dl className="grid grid-cols-2 border-t border-rule md:grid-cols-4">
+          <dl data-stagger="scale" className="grid grid-cols-2 border-t border-rule md:grid-cols-4">
             {s.items.map((it, k) => (
               <div key={it.label} className={`flex flex-col gap-1 py-6 ${k > 0 ? 'md:border-l md:border-rule md:pl-6' : ''}`}>
                 <dt className="label order-2">{it.label}</dt>
@@ -157,13 +158,14 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
       return (
         <Band decor={<Accents set="editorial" />} rule labelledBy={hid}>
           <div className={`grid grid-cols-1 items-start gap-10 lg:grid-cols-2 ${s.imageSide === 'left' ? 'lg:[&>*:first-child]:order-2' : ''}`}>
-            <div className="flex min-w-0 flex-col gap-6">
+            {/* The words slide in from their own side; the photo opens through its mask and drifts a little (parallax). */}
+            <Reveal kind={s.imageSide === 'left' ? 'left' : 'right'} className="flex min-w-0 flex-col gap-6">
               <h2 id={hid} className="text-3xl md:text-4xl">{s.heading}</h2>
               <RichText doc={s.body} headingOffset={1} />
-            </div>
+            </Reveal>
             {s.image && (
               <Reveal kind="mask">
-                <Photo src={s.image.url} alt={s.image.alt} blurDataUrl={s.image.blurDataUrl} ratio="4 / 3" sizes="(min-width: 64rem) 50vw, 100vw" />
+                <Photo src={s.image.url} alt={s.image.alt} blurDataUrl={s.image.blurDataUrl} ratio="4 / 3" sizes="(min-width: 64rem) 50vw, 100vw" className="gs-parallax" />
               </Reveal>
             )}
           </div>
@@ -175,18 +177,20 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
           {s.heading && <SectionHeading id={hid} title={s.heading} />}
           {s.images.length === 1 ? (
             // One image (a map or diagram, e.g. "Our Footprint"): full width, uncropped, opens full size to read labels.
-            <a href={s.images[0]!.url} target="_blank" rel="noopener" className="block rounded-[var(--radius-card)] focus-visible:outline-2 focus-visible:outline-offset-4">
-              <Photo
-                src={s.images[0]!.url}
-                alt={s.images[0]!.alt}
-                blurDataUrl={s.images[0]!.blurDataUrl}
-                ratio={s.images[0]!.width && s.images[0]!.height ? `${s.images[0]!.width} / ${s.images[0]!.height}` : '4 / 3'}
-                sizes="(min-width: 80rem) 76rem, 100vw"
-                className="object-contain"
-                frameClassName="bg-paper"
-              />
-              <span className="sr-only"> (opens the full-size image)</span>
-            </a>
+            <Reveal kind="mask">
+              <a href={s.images[0]!.url} target="_blank" rel="noopener" className="block rounded-[var(--radius-card)] focus-visible:outline-2 focus-visible:outline-offset-4">
+                <Photo
+                  src={s.images[0]!.url}
+                  alt={s.images[0]!.alt}
+                  blurDataUrl={s.images[0]!.blurDataUrl}
+                  ratio={s.images[0]!.width && s.images[0]!.height ? `${s.images[0]!.width} / ${s.images[0]!.height}` : '4 / 3'}
+                  sizes="(min-width: 80rem) 76rem, 100vw"
+                  className="object-contain"
+                  frameClassName="bg-paper"
+                />
+                <span className="sr-only"> (opens the full-size image)</span>
+              </a>
+            </Reveal>
           ) : (
             <MasonryPhotos label={s.heading ?? 'Photographs'} images={s.images} max={3} />
           )}
@@ -199,7 +203,9 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
       return (
         <Band labelledBy={hid}>
           <h2 id={hid} className="sr-only">Contact details</h2>
-          <ContactDetails />
+          <Reveal kind="fade">
+            <ContactDetails />
+          </Reveal>
         </Band>
       );
     default:
@@ -211,13 +217,13 @@ async function RenderSection({ s, i, pageTitle, slug }: { s: Section; i: number;
 export function QuoteBand({ id, headline, body }: { id: string; headline?: string; body?: string }) {
   return (
     <Band decor={<Accents set="cta" />} band="cream" labelledBy={id}>
-      <div className="flex flex-col items-start gap-6 md:flex-row md:items-end md:justify-between">
+      <Reveal className="flex flex-col items-start gap-6 md:flex-row md:items-end md:justify-between">
         <div className="flex max-w-[44rem] flex-col gap-3">
           <h2 id={id} className="text-4xl md:text-display-s">{headline ?? 'Tell us about your garden.'}</h2>
           <p className="text-lg">{body ?? 'A site visit inside Puerto Princesa City is free. We reply to every request within one working day.'}</p>
         </div>
         {linkButton('/quote', 'Request a quote')}
-      </div>
+      </Reveal>
     </Band>
   );
 }

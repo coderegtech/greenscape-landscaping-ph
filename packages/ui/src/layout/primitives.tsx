@@ -1,5 +1,6 @@
 import type { ElementType, ReactNode } from 'react';
 import { cn } from '../lib/utils';
+import { Reveal } from '../motion/reveal';
 
 /** The one container width: 80rem, centred, 16px gutters on phones, 40px from 48rem. */
 export function Container({ as: Tag = 'div', className, children }: { as?: ElementType; className?: string; children: ReactNode }) {
@@ -42,17 +43,17 @@ export function Section({
   );
 }
 
-/** Section heading group: a heading that announces its subject, and at most one line under it. Left-aligned. */
+/** Section heading group: a heading that announces its subject, and at most one line under it. Left-aligned. Rises in on scroll; the action fades in after it. */
 export function SectionHeading({ id, title, lead, action, as: Tag = 'h2' }: { id?: string; title: ReactNode; lead?: ReactNode; action?: ReactNode; as?: 'h1' | 'h2' | 'h3' }) {
   return (
     <div className="mb-10 flex flex-col gap-4 md:mb-16 md:flex-row md:items-end md:justify-between">
-      <div className="flex min-w-0 flex-col gap-3">
+      <Reveal className="flex min-w-0 flex-col gap-3">
         <Tag id={id} className="text-3xl md:text-4xl">
           {title}
         </Tag>
         {lead && <p className="max-w-[60ch] text-lg text-ink-2">{lead}</p>}
-      </div>
-      {action && <div className="shrink-0">{action}</div>}
+      </Reveal>
+      {action && <Reveal kind="fade" index={2} className="shrink-0">{action}</Reveal>}
     </div>
   );
 }

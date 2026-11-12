@@ -15,7 +15,7 @@ export default async function TestimonialsPage() {
     <main id="main">
       <PageHeader title={page.title} lead={page.lead} decor="testimonials" />
       <section aria-label="Client feedback" className="container-page pb-16">
-        <div className={`grid grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-2 ${items.length >= 3 ? 'lg:grid-cols-3' : ''}`}>
+        <div data-stagger="rise" className={`grid grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-2 ${items.length >= 3 ? 'lg:grid-cols-3' : ''}`}>
           {items.map((t, i) => (
             <TestimonialCard key={i} t={t} />
           ))}
@@ -23,7 +23,7 @@ export default async function TestimonialsPage() {
       </section>
       <Section band="deep" id="share" labelledBy="share-title">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-          <div className="flex flex-col gap-3">
+          <div data-reveal="right" className="flex flex-col gap-3">
             <h2 id="share-title" className="text-3xl md:text-4xl">Worked with us?</h2>
             <p className="text-lg">Tell others how it went. We publish feedback after a quick review.</p>
           </div>

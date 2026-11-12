@@ -12,11 +12,12 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
     <main id="main">
       <PageHeader title={page.title} lead={page.lead} decor="contact" />
       <div className="container-page grid grid-cols-1 gap-16 pb-24 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-        <section aria-labelledby="find-us" className="flex flex-col gap-6 border-t-[1.5px] border-signal pt-6">
+        <section aria-labelledby="find-us" data-reveal="right" className="flex flex-col gap-6 border-t-[1.5px] border-signal pt-6">
           <h2 id="find-us" className="text-2xl">Find us</h2>
           <ContactDetails />
         </section>
-        <section aria-labelledby="write" className="flex flex-col gap-6 border-t border-rule pt-6">
+        {/* fade only: the form never moves under the visitor's pointer */}
+        <section aria-labelledby="write" data-reveal="fade" className="flex flex-col gap-6 border-t border-rule pt-6">
           <h2 id="write" className="text-2xl">Send a message</h2>
           <ContactForm subject={typeof subject === 'string' ? subject : undefined} />
         </section>

@@ -78,7 +78,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         </p>
 
         {page.items.length ? (
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 [&>li]:min-w-0" aria-label="Product list">
+          <ul data-stagger="rise" className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 [&>li]:min-w-0" aria-label="Product list">
             {page.items.map((p, i) => <li key={p.slug}><ProductCard p={p} priority={i < 4} /></li>)}
           </ul>
         ) : (

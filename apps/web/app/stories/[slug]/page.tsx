@@ -1,5 +1,6 @@
 import { Photo } from '@greenscape/ui/components/photo';
 import { Section, SectionHeading } from '@greenscape/ui/layout/primitives';
+import { Reveal } from '@greenscape/ui/motion/reveal';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -67,19 +68,21 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
           </p>
         </header>
         <div className="container-page">
-          <Photo src={a.cover.url} alt={a.cover.alt} blurDataUrl={a.cover.blurDataUrl} ratio="16 / 9" priority sizes="(min-width: 80rem) 80rem, 100vw" caption={a.photoCredit ? `Photo: ${a.photoCredit}` : undefined} />
+          {/* CSS-only parallax inside the frame: never delays this (LCP) image. */}
+          <Photo src={a.cover.url} alt={a.cover.alt} blurDataUrl={a.cover.blurDataUrl} ratio="16 / 9" priority sizes="(min-width: 80rem) 80rem, 100vw" caption={a.photoCredit ? `Photo: ${a.photoCredit}` : undefined} className="gs-parallax" />
         </div>
         <div className="container-page flex flex-col gap-10 py-12 md:py-16">
           <RichText doc={a.body} className="text-lg" />
           {a.youtubeIds.map((id) => (
-            <div key={id} className="max-w-[48rem]">
+            <Reveal key={id} kind="fade" className="max-w-[48rem]">
               <YouTube id={id} title={a.title} />
-            </div>
+            </Reveal>
           ))}
           {a.images.map((im) => (
-            <div key={im.url} className="max-w-[48rem]">
+            // Editorial photos open through a mask; the paragraphs around them stay still while being read.
+            <Reveal key={im.url} kind="mask" className="max-w-[48rem]">
               <Photo src={im.url} alt={im.alt} blurDataUrl={im.blurDataUrl} ratio="3 / 2" sizes="(min-width: 48rem) 48rem, 100vw" />
-            </div>
+            </Reveal>
           ))}
         </div>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
@@ -87,7 +90,7 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
       {more.length > 0 && (
         <Section rule labelledBy="more" decor={<Accents set="stories" />}>
           <SectionHeading id="more" title={isGuide ? 'More guides' : 'More stories'} />
-          <div className={cardGrid(more.length)}>
+          <div data-stagger="rise" className={cardGrid(more.length)}>
             {more.map((m) => (
               <ArticleCard key={m.slug} a={m} />
             ))}

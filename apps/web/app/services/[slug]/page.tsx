@@ -2,7 +2,7 @@ import { Badge } from '@greenscape/ui/components/badge';
 import { Photo } from '@greenscape/ui/components/photo';
 import { PageHero } from '@greenscape/ui/layout/page-hero';
 import { Section, SectionHeading } from '@greenscape/ui/layout/primitives';
-import { Reveal } from '@greenscape/ui/motion/reveal';
+import { Reveal, Stagger } from '@greenscape/ui/motion/reveal';
 import { Check } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -42,15 +42,17 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       {s.highlights.length > 0 && (
         <Section labelledBy="covers">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
-            <h2 id="covers" className="text-3xl">What it covers</h2>
-            <ul className="grid grid-cols-1 border-t border-rule sm:grid-cols-2">
+            <Reveal kind="right">
+              <h2 id="covers" className="text-3xl">What it covers</h2>
+            </Reveal>
+            <Stagger as="ul" className="grid grid-cols-1 border-t border-rule sm:grid-cols-2">
               {s.highlights.map((h) => (
                 <li key={h} className="flex items-center gap-3 border-b border-rule py-4 text-lg text-ink">
                   <Check aria-hidden className="size-4 shrink-0 text-signal" />
                   {h}
                 </li>
               ))}
-            </ul>
+            </Stagger>
           </div>
         </Section>
       )}
@@ -63,14 +65,15 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               <li key={step.title} className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
                 {step.image && (
                   <Reveal kind="mask" className={i % 2 ? 'lg:order-2' : ''}>
-                    <Photo src={step.image.url} alt={step.image.alt} blurDataUrl={step.image.blurDataUrl} ratio="4 / 3" sizes="(min-width: 64rem) 50vw, 100vw" />
+                    <Photo src={step.image.url} alt={step.image.alt} blurDataUrl={step.image.blurDataUrl} ratio="4 / 3" sizes="(min-width: 64rem) 50vw, 100vw" className="gs-parallax" />
                   </Reveal>
                 )}
-                <div className="flex min-w-0 flex-col gap-4">
+                {/* The words slide in from their own side, opposite the photo. */}
+                <Reveal kind={!step.image ? 'rise' : i % 2 ? 'right' : 'left'} className="flex min-w-0 flex-col gap-4">
                   <h3 className="text-3xl">{step.title}</h3>
                   {step.lead && <p className="border-l-[1.5px] border-signal pl-4 text-lg text-ink">{step.lead}</p>}
                   <RichText doc={step.body} headingOffset={2} />
-                </div>
+                </Reveal>
               </li>
             ))}
           </ol>
@@ -80,7 +83,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       {s.packages.length > 0 && (
         <Section labelledBy="packages">
           <SectionHeading id="packages" title="Maintenance packages" lead="Fixed visits for a set area. Larger gardens are quoted after a site visit." />
-          <ul className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <Stagger as="ul" className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {s.packages.map((p) => (
               <li key={p.name} className="flex flex-col gap-6 border-t-[1.5px] border-rule pt-6 data-[featured=true]:border-signal" data-featured={p.featured}>
                 <div className="flex items-baseline justify-between gap-4">
@@ -106,32 +109,32 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                 </ul>
               </li>
             ))}
-          </ul>
+          </Stagger>
         </Section>
       )}
 
       {s.transformations.length > 0 && (
         <Section band="deep" labelledBy="transformations">
           <SectionHeading id="transformations" title="Before and after" lead="Drag the divider, or focus it and use the arrow keys." />
-          <ul className="grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2">
+          <Stagger as="ul" className="grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2">
             {s.transformations.map((t) => (
               <li key={t.title} className="flex flex-col gap-3">
                 <BeforeAfter before={t.before} after={t.after} title={t.location ? `${t.title}, ${t.location}` : t.title} />
                 {t.description && <p className="text-base text-ink-2">{t.description}</p>}
               </li>
             ))}
-          </ul>
+          </Stagger>
         </Section>
       )}
 
       {essentials.length > 0 && (
         <Section labelledBy="guides">
           <SectionHeading id="guides" title="Guides from our growers" />
-          <div className={cardGrid(essentials.length)}>
+          <Stagger className={cardGrid(essentials.length)}>
             {essentials.map((a) => (
               <ArticleCard key={a.slug} a={a} />
             ))}
-          </div>
+          </Stagger>
         </Section>
       )}
 
