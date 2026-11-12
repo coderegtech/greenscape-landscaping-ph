@@ -5,6 +5,10 @@ the owner's written approval**, and live payments stay off (`PAYMENTS_LIVE_APPRO
 The commands are for the production-shaped stack in `docker/compose.prod.yml`. On a managed platform, use the
 equivalent steps.
 
+The automated path is documented under `docs/deployment/`: the deployment-only `production` branch
+(`production-branch.md`), the pipeline that maintains it (`ci-cd-pipeline.md`), Dokploy (`dokploy.md`), variables
+(`environment-variables.md`) and branch rollback (`rollback.md`).
+
 ## What is deployed
 
 | Piece | Built from | Runs as | Health |
