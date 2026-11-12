@@ -28,6 +28,24 @@ runs against production.
 | Analytics CSV (permission, layout, formula-safe) | `integration/analytics.test.ts` |
 | Optional MFA (runs only with `REQUIRE_STAFF_MFA=true`) | `integration/mfa.test.ts`, `e2e/mfa.spec.ts` |
 
+## Authentication suites (`tests/e2e/auth`, `employee`, `admin`)
+
+| Spec | Covers |
+|---|---|
+| `auth/invalid-credentials` | All three login screens: wrong password and unknown account give the same message, validation before any request, no session or internal detail |
+| `auth/customer-google` | Google button follows config and never appears on staff portals; callback refuses bogus codes and off-site `next`; the real Google round trip is **blocked** (no OAuth client or test identity) |
+| `auth/employee-login` | HR provisions in the admin, temporary-password sign-in, forced change, dashboard, DB linkage and audit; own-password sign-in; disabled employee |
+| `auth/admin-login` | Admin sign-in without an authenticator step, admin vs super-admin permissions, customer and employee refused (page and API), disabled admin |
+| `auth/superadmin-login` | Every console area, creating an administrator, sign-out; admins cannot change, suspend, sign out or out-rank a super admin |
+| `auth/session-persistence` | Navigation and reloads on each portal, tampered cookie = signed out, host-only Lax cookies, nothing secret in local storage |
+| `auth/logout` | Each portal: sign-out ends the session, Back shows nothing private, the old token gets 401 |
+| `auth/cross-portal-access` | 12-endpoint × 5-role API matrix (401/403/200), refused writes, bad tokens, other people's quotes and orders, browser portal refusals |
+| `employee/attendance-access` | Clocking needs an employee session, server time, identity in the body ignored, duplicates refused, no self-approval |
+| `admin/cms-permissions` | CMS API closed to guests, customers and employees; drafts private until published; admin CMS pages by role |
+
+Fixtures: `tests/e2e/fixtures/test-users.ts` (synthetic accounts per role, never logged). Test passwords come from
+`E2E_PASSWORD` or are generated per run. Report: `docs/testing/authentication-playwright-report.md`.
+
 ## Visual regression
 
 `pnpm test:visual` (own config, `playwright.visual.config.ts`; not part of `pnpm test:e2e` or CI) screenshots 8 pages on
