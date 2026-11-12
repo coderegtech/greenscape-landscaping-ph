@@ -85,7 +85,7 @@ export function registerNotificationHandlers({ db, events }: Pick<Deps, 'db' | '
     const l = await db.leaveRequest.findUniqueOrThrow({ where: { id: leaveId }, include: { employee: true, leaveType: { select: { name: true } } } });
     if (l.status === 'PENDING') return;
     const word = l.status === 'APPROVED' ? 'approved' : l.status === 'REJECTED' ? 'declined' : 'cancelled';
-    await toUser(l.employee.userId, 'web', { type: `leave.${word}`, category: 'hr', title: `Your leave was ${word}`, message: `${l.leaveType.name}, ${range(l.startDate, l.endDate)}.${l.decisionNote ? ` Note: ${l.decisionNote}` : ''}`, href: '/staff', priority: 'HIGH', dedupeKey: `leave.decided:${l.id}:${l.status}` });
+    await toUser(l.employee.userId, 'employee', { type: `leave.${word}`, category: 'hr', title: `Your leave was ${word}`, message: `${l.leaveType.name}, ${range(l.startDate, l.endDate)}.${l.decisionNote ? ` Note: ${l.decisionNote}` : ''}`, href: '/', priority: 'HIGH', dedupeKey: `leave.decided:${l.id}:${l.status}` });
   });
   events.on('correction.requested', async ({ correctionId }) => {
     const c = await db.attendanceCorrection.findUniqueOrThrow({ where: { id: correctionId }, include: { record: { include: { employee: true } } } });
@@ -94,6 +94,6 @@ export function registerNotificationHandlers({ db, events }: Pick<Deps, 'db' | '
   events.on('correction.decided', async ({ correctionId }) => {
     const c = await db.attendanceCorrection.findUniqueOrThrow({ where: { id: correctionId }, include: { record: { include: { employee: true } } } });
     if (c.status === 'PENDING') return;
-    await toUser(c.record.employee.userId, 'web', { type: `correction.${c.status.toLowerCase()}`, category: 'hr', title: `Your time correction was ${c.status === 'APPROVED' ? 'approved' : 'declined'}`, message: `For ${c.record.workDate.toISOString().slice(0, 10)}.`, href: '/staff', dedupeKey: `correction.decided:${c.id}:${c.status}` });
+    await toUser(c.record.employee.userId, 'employee', { type: `correction.${c.status.toLowerCase()}`, category: 'hr', title: `Your time correction was ${c.status === 'APPROVED' ? 'approved' : 'declined'}`, message: `For ${c.record.workDate.toISOString().slice(0, 10)}.`, href: '/', dedupeKey: `correction.decided:${c.id}:${c.status}` });
   });
 }

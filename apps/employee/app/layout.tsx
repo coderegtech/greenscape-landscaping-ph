@@ -1,5 +1,6 @@
 import { LazyToaster as Toaster } from '@greenscape/ui/components/lazy-toaster';
 import { fontVariables } from '@greenscape/ui/fonts';
+import { NotificationsProvider } from '@greenscape/ui/notifications/provider';
 import type { Metadata, Viewport } from 'next';
 import { connection } from 'next/server';
 import './globals.css';
@@ -16,7 +17,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" className={fontVariables}>
       <body>
-        {children}
+        <NotificationsProvider app="employee" apiUrl={process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}>
+          {children}
+        </NotificationsProvider>
         <Toaster />
       </body>
     </html>

@@ -4,10 +4,12 @@ import { Notice } from '@greenscape/ui/form';
 import { z } from '@greenscape/validation';
 import type { Metadata } from 'next';
 import { SignOutButton } from '@greenscape/ui/auth-forms';
+import { NotificationBell } from '@greenscape/ui/notifications/bell';
 import { ClockCard, type Today } from '@/components/clock-card';
 import { CorrectionButton } from '@/components/correction';
 import { LeavePanel, type MyLeave } from '@/components/leave';
 import { getMe } from '@/lib/session';
+import { MonthCalendar, monthRange } from '@/components/month-calendar';
 
 export const metadata: Metadata = { title: 'Today' };
 export const dynamic = 'force-dynamic';
@@ -27,14 +29,19 @@ const time = (iso: string) => new Date(iso).toLocaleTimeString('en-PH', { hour: 
 const day = (ymd: string) => new Date(`${ymd}T00:00:00Z`).toLocaleDateString('en-PH', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
 const hm = (m: number) => `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
 
-export default async function EmployeeHome() {
+export default async function EmployeeHome({ searchParams }: { searchParams: Promise<{ month?: string }> }) {
+  const asked = (await searchParams).month;
   const me = await getMe();
   if (!me) return <Refused message="This account is suspended." />;
   if (me.passwordSignInRequired) return <Refused message="You signed in with Google. The employee portal needs your work email and password: sign out, then sign in again." />;
   if (!me.permissions.includes('attendance.self')) return <Refused message="This portal is for Greenscape employees. Customers can use the website." />;
-  let today: Today, records: z.infer<typeof Record>[], leave: MyLeave;
+  let today: Today, records: z.infer<typeof Record>[], leave: MyLeave, monthDays: z.infer<typeof Record>[], month: string;
   try {
     [today, records, leave] = await Promise.all([api('/v1/me/attendance/today', z.custom<Today>()), api('/v1/me/attendance', z.array(Record)), api('/v1/me/leave', z.custom<MyLeave>())]);
+    // ?month=YYYY-MM for past months; anything else shows the current (Manila, per the API) month.
+    const thisMonth = today.workDate.slice(0, 7);
+    month = asked && /^\d{4}-(0[1-9]|1[0-2])$/.test(asked) && asked <= thisMonth ? asked : thisMonth;
+    monthDays = await api(`/v1/me/attendance?${new URLSearchParams(monthRange(month))}`, z.array(Record));
   } catch (err) {
     if (err instanceof ApiError && err.status === 403) return <Refused message={err.code === 'NOT_AN_EMPLOYEE' ? err.message : 'This portal is for Greenscape employees.'} />;
     throw err;
@@ -51,7 +58,10 @@ export default async function EmployeeHome() {
             <p className="text-sm text-ink-2">{today.employee.employeeNo} · {day(today.workDate)}</p>
             <h1 className="text-display-s">Hello, {today.employee.name.split(' ')[0]}</h1>
           </div>
-          <SignOutButton />
+          <div className="flex items-center gap-3">
+            <NotificationBell centerHref="/notifications" />
+            <SignOutButton />
+          </div>
         </header>
 
         <ClockCard today={today} />
@@ -67,6 +77,8 @@ export default async function EmployeeHome() {
             ))}
           </dl>
         </section>
+
+        <MonthCalendar month={month} today={today.workDate} days={monthDays} />
 
         <section aria-labelledby="days" className="flex flex-col gap-4">
           <h2 id="days" className="text-3xl">Last 30 days</h2>

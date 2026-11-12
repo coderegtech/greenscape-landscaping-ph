@@ -82,12 +82,15 @@ export function notificationRoutes(deps: Deps) {
     const b = BroadcastBody.parse(req.body);
     const unknown = (b.roles ?? []).filter((k) => !(ROLE_KEYS as string[]).includes(k));
     if (unknown.length) throw AppError.badRequest('Unknown roles', { unknown });
-    // Audience: the chosen roles; otherwise everyone who can use that app (staff for `admin`, every active account for `web`).
+    // Audience: the chosen roles; otherwise everyone who can use that app (staff for `admin`, employees for `employee`,
+    // every active account for `web`).
     const ids = b.roles?.length
       ? (await db.user.findMany({ where: { status: 'ACTIVE', roles: { some: { role: { key: { in: b.roles } } } } }, select: { id: true } })).map((u) => u.id)
       : b.app === 'admin'
         ? await n.usersWithPermission('admin.access')
-        : (await db.user.findMany({ where: { status: 'ACTIVE' }, select: { id: true } })).map((u) => u.id);
+        : b.app === 'employee'
+          ? await n.usersWithPermission('attendance.self')
+          : (await db.user.findMany({ where: { status: 'ACTIVE' }, select: { id: true } })).map((u) => u.id);
     const id = randomUUID();
     const delivered = await n.notifyMany(ids, { app: b.app, type: 'system.announcement', category: 'system', title: b.title, message: b.message, href: b.href, priority: b.priority, dedupeKey: `broadcast:${id}` });
     await audit(db, req, res, { action: 'notification.broadcast', entityType: 'Notification', entityId: id, after: { app: b.app, roles: b.roles ?? null, title: b.title, recipients: ids.length } });

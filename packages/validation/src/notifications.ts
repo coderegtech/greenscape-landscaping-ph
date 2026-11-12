@@ -1,7 +1,8 @@
 // Notification contracts: inbox, preferences, push subscriptions, broadcast. Shared by the API and both Next.js apps.
 import { z } from 'zod';
 
-export const NOTIFICATION_APPS = ['web', 'admin'] as const;
+/** Which portal shows a notification: the website, the admin console, or the employee portal. */
+export const NOTIFICATION_APPS = ['web', 'admin', 'employee'] as const;
 export type NotificationApp = (typeof NOTIFICATION_APPS)[number];
 
 /** Preference buckets. `locked` categories always appear in the inbox (security and account notices). */

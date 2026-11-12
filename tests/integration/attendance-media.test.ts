@@ -132,3 +132,17 @@ describe('correction attachments', () => {
     expect((await fetch(mine.attachment.url)).ok).toBe(true);
   });
 });
+
+describe('employee portal notifications', () => {
+  it('HR decisions reach the employee portal (not the website) and link to its home', async () => {
+    const queue = await request(app).get('/v1/hr/corrections').set(as(t.hr)).expect(200);
+    const c = queue.body.find((x: { employeeId: string }) => x.employeeId === employeeId);
+    await request(app).post(`/v1/hr/corrections/${c.id}/decision`).set(as(t.hr)).send({ decision: 'REJECTED' }).expect(200);
+    const workerUser = await deps.db.employee.findUniqueOrThrow({ where: { id: employeeId }, select: { userId: true } });
+    await expect.poll(async () => (await deps.db.notification.findFirst({ where: { recipientId: workerUser.userId!, type: 'correction.rejected' } }))?.app).toBe('employee');
+    const n = await deps.db.notification.findFirstOrThrow({ where: { recipientId: workerUser.userId!, type: 'correction.rejected' } });
+    expect((n.payload as { href?: string } | null)?.href).toBe('/');
+    const feed = await request(app).get('/v1/notifications?app=employee').set(as(t.worker)).expect(200);
+    expect(JSON.stringify(feed.body)).toContain('Your time correction was declined');
+  });
+});

@@ -161,3 +161,30 @@ test('the employee portal turns customers away, and the old /staff link goes the
   await expect(portal.getByRole('button', { name: 'Clock in' })).toHaveCount(0);
   await ctx.close();
 });
+
+test('a selfie goes with the clock-in when HR turns selfies on; HR opens it; the month calendar shows the day', async ({ page, browser, isMobile }) => {
+  test.skip(isMobile, 'one pass is enough');
+  test.setTimeout(150_000);
+  // Optional (not required) so attendance tests running in parallel are not blocked by the global setting.
+  await db.appSetting.upsert({ where: { key: 'attendance.selfie' }, create: { key: 'attendance.selfie', value: { mode: 'optional', retentionDays: 30 } }, update: { value: { mode: 'optional', retentionDays: 30 } } });
+  try {
+    const w = await linkedEmployee('selfie');
+    const staff = await portalSession(browser, w.email);
+    await expect(staff.getByTestId('selfie')).toContainText('deleted after 30 days');
+    const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGD4DwABBAEAwS2OUAAAAABJRU5ErkJggg==', 'base64');
+    await staff.getByTestId('selfie').locator('input[type=file]').setInputFiles({ name: 'me.png', mimeType: 'image/png', buffer: png });
+    await expect(staff.getByText('Photo ready.')).toBeVisible({ timeout: 20_000 });
+    await staff.getByRole('button', { name: 'Clock in' }).click();
+    await expect(staff.getByTestId('clock-status')).toContainText('Clocked in since');
+    await expect.poll(async () => (await db.timePunch.findFirst({ where: { record: { employeeId: w.employee.id } } }))?.photoMediaId ?? null).not.toBeNull();
+    await expect(staff.getByTestId('month-calendar')).toContainText('Clocked in');
+    await staff.context().close();
+
+    const hr = await staffUser('hrselfie', ['hr_manager']);
+    await page.goto(`${ADMIN}/login?next=${encodeURIComponent(`/attendance/employee/${w.employee.id}`)}`);
+    await signIn(page, hr.email);
+    await expect(page.getByRole('link', { name: /^Selfie, in / })).toBeVisible();
+  } finally {
+    await db.appSetting.update({ where: { key: 'attendance.selfie' }, data: { value: { mode: 'off', retentionDays: 90 } } });
+  }
+});
