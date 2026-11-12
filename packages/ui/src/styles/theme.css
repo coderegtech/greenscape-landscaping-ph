@@ -313,25 +313,47 @@
  * timeline. Already on screen at load = already at its end state (no LCP delay); below the fold = hidden until it
  * scrolls in. No scroll timelines (older browsers) or reduced motion: always visible.
  * Stagger: --i on siblings shifts the range a little; capped so a group never lags far behind.
+ * [data-stagger="kind"] reveals each direct child the same way, staggered by column (no wrapper elements needed).
+ * Directions name where the element travels: rise = up, down, left = in from the right, right = in from the left.
+ * Once played, RevealLatch (reveal-latch.tsx) sets [data-revealed] and the animation is dropped, so scrolling back
+ * up never fades seen content out again.
  */
-@keyframes gs-reveal-rise { from { opacity: 0; transform: translateY(12px); } }
+:root { --reveal-y: 20px; --reveal-x: 32px; }
+@media (max-width: 47.99rem) { :root { --reveal-y: 12px; --reveal-x: 16px; } } /* phones: shorter travel */
+@keyframes gs-reveal-rise { from { opacity: 0; transform: translateY(var(--reveal-y)); } }
+@keyframes gs-reveal-down { from { opacity: 0; transform: translateY(calc(var(--reveal-y) * -1)); } }
+@keyframes gs-reveal-left { from { opacity: 0; transform: translateX(var(--reveal-x)); } }
+@keyframes gs-reveal-right { from { opacity: 0; transform: translateX(calc(var(--reveal-x) * -1)); } }
+@keyframes gs-reveal-scale { from { opacity: 0; transform: scale(0.94); } }
 @keyframes gs-reveal-fade { from { opacity: 0; } }
 @keyframes gs-reveal-mask { from { opacity: 0.001; clip-path: inset(0 0 14% 0); } }
 @keyframes gs-reveal-settle { from { transform: scale(1.04); } }
+[data-stagger] > :nth-child(4n + 2) { --i: 1; }
+[data-stagger] > :nth-child(4n + 3) { --i: 2; }
+[data-stagger] > :nth-child(4n + 4) { --i: 3; }
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    [data-reveal] {
-      animation: gs-reveal-rise linear both;
+    [data-reveal],
+    [data-stagger] > * {
+      animation: gs-reveal-rise var(--ease-out) both;
       animation-timeline: view();
       animation-range: entry calc(min(var(--i, 0), 6) * 6%) entry calc(60% + min(var(--i, 0), 6) * 6%);
     }
-    [data-reveal='fade'] { animation-name: gs-reveal-fade; }
+    [data-reveal='down'], [data-stagger='down'] > * { animation-name: gs-reveal-down; }
+    [data-reveal='left'], [data-stagger='left'] > * { animation-name: gs-reveal-left; }
+    [data-reveal='right'], [data-stagger='right'] > * { animation-name: gs-reveal-right; }
+    [data-reveal='scale'], [data-stagger='scale'] > * { animation-name: gs-reveal-scale; }
+    [data-reveal='fade'], [data-stagger='fade'] > * { animation-name: gs-reveal-fade; }
     [data-reveal='mask'] { animation-name: gs-reveal-mask; }
     [data-reveal='mask'] > * {
       animation: gs-reveal-settle linear both;
       animation-timeline: view();
       animation-range: entry 0% cover 50%;
     }
+    /* played: stay at the end state (which is the element's own style) for good */
+    [data-reveal][data-revealed],
+    [data-reveal='mask'][data-revealed] > *,
+    [data-stagger] > [data-revealed] { animation: none; }
   }
 }
 

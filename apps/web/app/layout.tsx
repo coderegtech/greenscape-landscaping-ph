@@ -5,6 +5,7 @@ import { SiteHeader } from '@greenscape/ui/layout/site-header';
 import { NotificationBell } from '@greenscape/ui/notifications/bell';
 import { NotificationsProvider } from '@greenscape/ui/notifications/provider';
 import { JS_FLAG_SCRIPT } from '@greenscape/ui/motion/reveal';
+import { RevealLatch } from '@greenscape/ui/motion/reveal-latch';
 import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
 import { CursorFollower } from '@/components/cursor';
@@ -67,6 +68,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </Link>
             }
           />
+          <RevealLatch />
           <CursorFollower />
           <Toaster />
           <ChatLauncher />

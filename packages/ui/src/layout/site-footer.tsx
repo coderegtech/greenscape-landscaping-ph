@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { Reveal } from '../motion/reveal';
 import type { NavLink } from './site-header';
 
 export interface FooterColumn {
@@ -31,9 +32,12 @@ export function SiteFooter({ columns, contact, socials = [], legal, credits, dec
         <path fill="none" stroke="rgb(30 58 40)" strokeWidth="2.5" d="M98 186C80 130 60 80 32 24M70 120l-28 4M84 150l-24 12M60 88l-24-6M80 110l32-18M90 140l34-10M62 70l26-22" />
       </svg>
       <div className="container-page py-16 md:py-24">
-        <p className="font-display text-4xl text-ink md:text-display-s">Greenscape</p>
-        <p className="mt-3 max-w-[38ch] text-base text-muted">Green today, greener tomorrow. Garden design, landscaping and care across Palawan.</p>
-        <div className="mt-16 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 lg:grid-cols-[repeat(3,minmax(0,1fr))_minmax(0,1.4fr)]">
+        {/* Gentle fades, per group: one reveal on the whole footer would sit half-faded at load on short pages. */}
+        <Reveal kind="fade">
+          <p className="font-display text-4xl text-ink md:text-display-s">Greenscape</p>
+          <p className="mt-3 max-w-[38ch] text-base text-muted">Green today, greener tomorrow. Garden design, landscaping and care across Palawan.</p>
+        </Reveal>
+        <div data-stagger="fade" className="mt-16 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 lg:grid-cols-[repeat(3,minmax(0,1fr))_minmax(0,1.4fr)]">
           {columns.map((col) => (
             <nav key={col.title} aria-label={col.title}>
               <h2 className="font-body text-sm font-medium text-muted">{col.title}</h2>
