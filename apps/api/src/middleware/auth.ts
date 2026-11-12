@@ -18,6 +18,8 @@ export interface AuthContext {
   passwordSignInRequired: boolean;
   /** Signed in with an administrator-issued temporary password that hasn't been replaced yet. */
   passwordChangeRequired: boolean;
+  sessionId?: string;
+  expiresAt: number;
 }
 
 declare global {
@@ -32,6 +34,8 @@ declare global {
 
 const PERM_TTL_SEC = 60; // permissions are never trusted from the token and never cached longer than this
 export const authzCacheKey = (userId: string) => `authz:user:${userId}`;
+/** Set at sign-out: tokens of this session are refused until they would have expired anyway. */
+export const endedSessionKey = (prefix: string, sessionId: string) => `${prefix}:session-ended:${sessionId}`;
 
 /** Map a verified Supabase identity to our User row, creating it (with the default role) on first sight. */
 async function resolveUser({ db, identities, log, events }: Deps, authUserId: string, email: string, name?: string, avatarUrl?: string) {
@@ -107,6 +111,11 @@ export function authenticate(deps: Deps): RequestHandler {
       if (err instanceof TokenError) throw new AppError(401, err.reason === 'expired' ? 'TOKEN_EXPIRED' : 'INVALID_TOKEN', `Access token ${err.reason}`);
       throw err;
     }
+    // Signed out: access tokens are verified locally, so a copy taken before sign-out would otherwise keep working
+    // until it expires. If Redis is unavailable this check is skipped (tokens still expire within the hour).
+    if (verified.sessionId && (await deps.redis.exists(endedSessionKey(deps.env.CACHE_PREFIX, verified.sessionId)).catch(() => 0))) {
+      throw new AppError(401, 'SESSION_ENDED', 'You signed out. Please sign in again.');
+    }
     const user = await resolveUser(deps, verified.authUserId, verified.email, verified.name, verified.avatarUrl);
     if (user.status !== 'ACTIVE') throw new AppError(403, 'ACCOUNT_SUSPENDED', 'This account is suspended');
     // "Sign out everywhere": a session that signed in before the cut-off is refused. The sign-in time comes from the
@@ -127,7 +136,7 @@ export function authenticate(deps: Deps): RequestHandler {
     const mfaPending = !customerOnly && deps.env.REQUIRE_STAFF_MFA && verified.aal !== 'aal2' && grants.permissions.some((p) => !SELF_SERVICE_PERMISSIONS.has(p));
     const keep = customerOnly ? CUSTOMER_PERMISSIONS : mfaPending ? SELF_SERVICE_PERMISSIONS : null;
     const permissions = new Set(keep ? grants.permissions.filter((p) => keep.has(p)) : grants.permissions);
-    res.locals.auth = { userId: user.id, authUserId: verified.authUserId, email: verified.email, aal: verified.aal, roles: grants.roles, permissions, mfaPending, passwordSignInRequired, passwordChangeRequired };
+    res.locals.auth = { userId: user.id, authUserId: verified.authUserId, email: verified.email, aal: verified.aal, roles: grants.roles, permissions, mfaPending, passwordSignInRequired, passwordChangeRequired, sessionId: verified.sessionId, expiresAt: verified.expiresAt };
     next();
   };
 }
