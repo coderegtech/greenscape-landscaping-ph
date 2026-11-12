@@ -49,6 +49,9 @@ jobs:
       - run: pnpm content:indexes
       - run: pnpm content:seed
       - run: pnpm storage:setup
+      # The seed still points at the old site's Firebase photos; production content went through this copy (Phase 11),
+      # which also records each photo's dimensions. Without it CI tests a different site (no sizes, blocked hosts).
+      - run: pnpm media:migrate --apply
 
       - run: pnpm typecheck
       - run: pnpm lint
