@@ -1,0 +1,57 @@
+name: Local stack
+description: >
+  Installs dependencies and starts the databases and a local Supabase on the runner, migrated and seeded. Shared by CI
+  (tests) and the production pipeline (staging check of the snapshot). Throwaway data only; no secrets.
+
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version-file: .nvmrc
+        cache: pnpm
+
+    - run: pnpm install --frozen-lockfile
+      shell: bash
+    - run: cp .env.example .env
+      shell: bash
+
+    # Same compose file as local dev (Mongo needs a replica set, which service containers can't configure).
+    - run: pnpm services:up
+      shell: bash
+      env:
+        # GitHub runners have Linux 6.19+, where MongoDB 8.x exits at startup (SERVER-121912, SERVER-125742).
+        # 7.0 runs on every kernel and has everything the app uses (replica set transactions). Back to 8 when a
+        # MongoDB 8 release or the runner kernel (7.0.14+) supports it.
+        MONGO_IMAGE_TAG: '7.0'
+    - name: Service logs (on failure)
+      if: failure()
+      shell: bash
+      run: docker compose -f docker/compose.dev.yml logs --no-color --tail 80
+
+    # Local Supabase (auth + mail) with a throwaway ES256 signing key, like a hosted project.
+    - uses: supabase/setup-cli@1dedf2c611547ede7232d26866dd3c56ab903bbb # v1
+      with:
+        version: latest
+    - run: echo '[]' > supabase/signing_keys.json && supabase gen signing-key --algorithm ES256 --append
+      shell: bash
+    - run: pnpm supabase:start
+      shell: bash
+    - run: pnpm supabase:env
+      shell: bash
+
+    - run: pnpm db:deploy
+      shell: bash
+    - run: pnpm db:seed
+      shell: bash
+    - run: pnpm content:indexes
+      shell: bash
+    - run: pnpm content:seed
+      shell: bash
+    - run: pnpm storage:setup
+      shell: bash
+    # The seed still points at the old site's Firebase photos; production content went through this copy (Phase 11),
+    # which also records each photo's dimensions. Without it CI tests a different site (no sizes, blocked hosts).
+    - run: pnpm media:migrate --apply
+      shell: bash
