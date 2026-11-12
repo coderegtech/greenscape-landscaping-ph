@@ -15,7 +15,7 @@ import { clientAddress, isInternal } from '../../middleware/client.ts';
 import { addDays, manilaDate, manilaInstant } from '../attendance/time.ts';
 
 registry.registerPath({ method: 'post', path: '/v1/analytics/pageview', tags: ['analytics'], summary: 'Count a website page view (website server only: needs the internal key). No cookies or ids stored.', responses: { 204: { description: 'counted or ignored' } } });
-registry.registerPath({ method: 'get', path: '/v1/admin/analytics', tags: ['analytics'], auth: true, summary: 'Traffic and conversion summary for ?days=7|30|90 with the previous period (analytics.read; revenue needs reports.sales).', responses: { 200: { description: 'summary' } } });
+registry.registerPath({ method: 'get', path: '/v1/admin/analytics', tags: ['analytics'], auth: true, summary: 'Traffic and conversion summary for ?days=7|30|90 with the previous period; format=csv downloads it (analytics.read; revenue needs reports.sales).', responses: { 200: { description: 'summary' } } });
 
 const BOT = /bot|crawl|spider|slurp|preview|headless|lighthouse|pingdom|uptime|monitor|curl|wget|python|axios|node-fetch/i;
 const SKIP = /^\/(api|auth\/callback|_next)(\/|$)/;
@@ -135,7 +135,7 @@ export function analyticsReportRoutes({ db, mongo }: Deps) {
       daily.push({ date: d, visitors: sum(rows, 'visitor'), pageviews: sum(rows, 'pageview') });
     }
     const [totals, previous] = await Promise.all([period(cur, from, to), period(prev, prevFrom, addDays(from, -1))]);
-    res.json({
+    const report = {
       from, to, days, totals, previous, daily,
       pages: top(cur, 'pageview'),
       products: top(cur, 'pageview', isProduct, 5),
@@ -143,7 +143,18 @@ export function analyticsReportRoutes({ db, mongo }: Deps) {
       sources: top(cur, 'source'),
       devices: top(cur, 'device'),
       countries: top(cur, 'country'),
-    });
+    };
+    if (req.query.format !== 'csv') return void res.json(report);
+    // One sheet-friendly CSV: Section, Item, Value, Previous period (totals only). Cells starting with = + - @ are quoted
+    // with a leading apostrophe so a spreadsheet never runs them as formulas.
+    const cell = (v: unknown) => { const s = v === undefined || v === null ? '' : String(v); const safe = /^[=+\-@\t\r]/.test(s) ? `'${s}` : s; return /[",\n]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe; };
+    const rows: unknown[][] = [['Section', 'Item', 'Value', 'Previous period']];
+    for (const [k, v] of Object.entries(totals)) rows.push(['Totals', k, v, (previous as Record<string, unknown>)[k]]);
+    for (const d of daily) rows.push(['Visitors per day', d.date, d.visitors, ''], ['Page views per day', d.date, d.pageviews, '']);
+    for (const [section, list] of [['Pages', report.pages], ['Products', report.products], ['Services', report.services], ['Sources', report.sources], ['Devices', report.devices], ['Countries', report.countries]] as const) {
+      for (const x of list) rows.push([section, x.key, x.count, '']);
+    }
+    res.set('content-type', 'text/csv; charset=utf-8').set('content-disposition', `attachment; filename="greenscape-analytics-${from}-to-${to}.csv"`).send(rows.map((x) => x.map(cell).join(',')).join('\r\n'));
   });
   return r;
 }

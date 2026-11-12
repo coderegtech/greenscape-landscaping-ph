@@ -93,3 +93,17 @@ describe('report', () => {
     expect(cms.body.totals).not.toHaveProperty('revenue');
   });
 });
+
+describe('CSV export', () => {
+  it('downloads the same report as CSV, formula-safe, with the same permission', async () => {
+    await request(app).get('/v1/admin/analytics?days=7&format=csv').set(as(tokens.customer)).expect(403);
+    const res = await request(app).get('/v1/admin/analytics?days=7&format=csv').set(as(tokens.admin)).expect(200);
+    expect(res.headers['content-type']).toContain('text/csv');
+    expect(res.headers['content-disposition']).toMatch(/attachment; filename="greenscape-analytics-\d{4}-\d{2}-\d{2}-to-\d{4}-\d{2}-\d{2}\.csv"/);
+    const lines = res.text.split('\r\n');
+    expect(lines[0]).toBe('Section,Item,Value,Previous period');
+    expect(lines.some((l) => l.startsWith('Totals,pageviews,'))).toBe(true);
+    expect(lines.filter((l) => l.startsWith('Visitors per day,'))).toHaveLength(7);
+    expect(lines.some((l) => /^[^,]*,[=+@]/.test(l))).toBe(false); // no cell starts like a formula
+  });
+});

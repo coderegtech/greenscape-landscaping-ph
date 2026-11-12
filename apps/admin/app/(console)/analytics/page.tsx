@@ -68,10 +68,11 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
           <h2 className="text-3xl">Analytics</h2>
           <p className="tabular text-sm text-ink-2">{short(r.from)} to {short(r.to)} (Manila time)</p>
         </div>
-        <nav aria-label="Period" className="flex gap-2 text-sm">
+        <nav aria-label="Period" className="flex flex-wrap items-center gap-2 text-sm">
           {['7', '30', '90'].map((d) => (
             <Link key={d} href={`/analytics?days=${d}`} aria-current={d === days ? 'page' : undefined} className={`rounded-pill border-[1.5px] px-3 py-1.5 ${d === days ? 'border-signal bg-signal text-paper' : 'border-rule-strong'}`}>Last {d} days</Link>
           ))}
+          <a href={`/analytics/download?days=${days}`} download className="ml-2">Download CSV</a>
         </nav>
       </div>
 
