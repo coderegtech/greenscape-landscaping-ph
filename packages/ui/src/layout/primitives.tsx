@@ -64,7 +64,7 @@ export function FactList({ items, className }: { items: { term: ReactNode; detai
       {items.map((it, i) => (
         <div key={i} className="contents">
           <dt className="font-medium text-ink">{it.term}</dt>
-          <dd className="text-ink-2">{it.detail}</dd>
+          <dd className="text-ink-2 [overflow-wrap:anywhere]">{it.detail}</dd>{/* long emails/URLs wrap instead of running off a phone screen */}
         </div>
       ))}
     </dl>
