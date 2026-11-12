@@ -6,6 +6,7 @@ import type { LeaveRequestInput, ProposedPunch } from '@greenscape/validation';
 import type { Deps } from '../../lib/deps.ts';
 import { AppError } from '../../lib/errors.ts';
 import { addDays, computeDay, leaveDays, manilaDate, manilaInstant, segmentsFor, weekdayOf, workDateFor, type Shift } from './time.ts';
+import { purgeOldSelfies } from './uploads.ts';
 
 type Tx = Prisma.TransactionClient | Db;
 export const toDate = (ymd: string) => new Date(`${ymd}T00:00:00Z`); // Prisma @db.Date
@@ -55,7 +56,7 @@ export async function recompute(db: Tx, recordId: string, opts: { now?: Date; re
 }
 
 // ── clock in / out ──
-export async function punch(deps: Pick<Deps, 'db'>, employeeId: string, type: 'IN' | 'OUT', ip: string | undefined, now = new Date()) {
+export async function punch(deps: Pick<Deps, 'db'>, employeeId: string, type: 'IN' | 'OUT', ip: string | undefined, now = new Date(), photoMediaId?: string) {
   return deps.db.$transaction(async (tx) => {
     await lockEmployee(tx, employeeId);
     const last = await tx.timePunch.findFirst({ where: { record: { employeeId } }, orderBy: { at: 'desc' }, include: { record: true } });
@@ -74,7 +75,8 @@ export async function punch(deps: Pick<Deps, 'db'>, employeeId: string, type: 'I
       if (rec.approvedAt) throw AppError.conflict('This day is already approved. Ask HR to change it.');
       recordId = rec.id;
     }
-    await tx.timePunch.create({ data: { recordId, type, at: now, source: 'web', ip } });
+    if (photoMediaId) await tx.mediaAsset.update({ where: { id: photoMediaId, refCount: 0 }, data: { refCount: 1 } }); // a selfie is claimed once
+    await tx.timePunch.create({ data: { recordId, type, at: now, source: 'web', ip, photoMediaId } });
     return recompute(tx, recordId, { now, resetApproval: false });
   });
 }
@@ -223,6 +225,8 @@ export function startAttendanceJobs(deps: Deps, everyMs = 15 * 60_000) {
     if (!got) return;
     const n = await closeDays(deps);
     if (n) deps.log.info({ changed: n }, 'attendance days closed');
+    const purged = await purgeOldSelfies(deps);
+    if (purged) deps.log.info({ purged }, 'clock-in selfies past retention deleted');
   };
   const timer = setInterval(() => void tick().catch((err) => deps.log.error({ err }, 'attendance job failed')), everyMs);
   timer.unref();

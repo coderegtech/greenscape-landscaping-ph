@@ -37,13 +37,25 @@ export const ScheduleInput = z.object({
 });
 export const AssignSchedule = z.object({ scheduleId: z.string().uuid(), effectiveFrom: Ymd });
 
-export const PunchInput = z.object({ type: z.enum(['IN', 'OUT']) });
+export const PunchInput = z.object({ type: z.enum(['IN', 'OUT']), /** Clock-in selfie from the upload slot, when HR turned selfies on. */ photoId: z.string().uuid().optional() });
+/** Clock-in selfie policy (decision D6: off unless HR turns it on). Photos are deleted after retentionDays. */
+export const SelfieSettings = z.object({ mode: z.enum(['off', 'optional', 'required']).default('off'), retentionDays: z.number().int().min(7).max(365).default(90) });
+export type SelfieSettings = z.infer<typeof SelfieSettings>;
 /** Proposed punches for one work date, as Manila wall-clock times; nextDay marks times after midnight (overnight shifts). */
 export const ProposedPunch = z.object({ type: z.enum(['IN', 'OUT']), time: HHmm, nextDay: z.boolean().default(false) });
 export const CorrectionRequest = z.object({
   workDate: Ymd,
   punches: z.array(ProposedPunch).min(1).max(8),
   reason: z.string().trim().min(5, 'Tell your manager what happened').max(500),
+  /** Optional supporting photo or PDF, from POST /v1/me/attendance/attachments. */
+  attachmentId: z.string().uuid().optional(),
+});
+/** Photos or a PDF, 10 MB at most (employee-private bucket limits). */
+export const CORRECTION_ATTACHMENT_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'] as const;
+/** Upload slot for a correction attachment or a clock-in selfie. */
+export const EmployeeUploadRequest = z.object({
+  contentType: z.enum(CORRECTION_ATTACHMENT_TYPES, { error: 'A photo (JPG, PNG, WebP) or a PDF' }),
+  size: z.number().int().positive().max(10 * 1024 * 1024, 'Files must be 10 MB or smaller'),
 });
 export const RecordEdit = z.object({ punches: z.array(ProposedPunch).max(8), reason: z.string().trim().min(5).max(500) });
 export const Decision = z.object({ decision: z.enum(['APPROVED', 'REJECTED']), note: optText(500) });

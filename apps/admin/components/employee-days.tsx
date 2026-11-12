@@ -31,7 +31,15 @@ export function EmployeeDays({ records, canEdit }: { records: DayRecord[]; canEd
           {records.map((r) => (
             <TableRow key={r.id} className="border-rule">
               <TableCell className="tabular whitespace-nowrap">{d(r.workDate)}</TableCell>
-              <TableCell className="tabular text-sm">{r.punches.map((p) => `${p.type === 'IN' ? 'in' : 'out'} ${t(p.at)}${p.corrected ? '*' : ''}`).join(', ')}</TableCell>
+              <TableCell className="tabular text-sm">
+                {r.punches.map((p, i) => (
+                  <span key={p.at}>
+                    {i > 0 && ', '}
+                    {p.type === 'IN' ? 'in' : 'out'} {t(p.at)}{p.corrected ? '*' : ''}
+                    {p.photoUrl && <> (<a href={p.photoUrl} target="_blank" rel="noopener noreferrer" aria-label={`Selfie, ${p.type === 'IN' ? 'in' : 'out'} ${t(p.at)} ${d(r.workDate)}`}>selfie</a>)</>}
+                  </span>
+                ))}
+              </TableCell>
               <TableCell className="tabular text-right">{r.workedMinutes ? `${Math.floor(r.workedMinutes / 60)}h ${String(r.workedMinutes % 60).padStart(2, '0')}` : ''}</TableCell>
               <TableCell className="tabular text-right">{r.lateMinutes || ''}</TableCell>
               <TableCell className="tabular text-right">{r.undertimeMinutes || ''}</TableCell>

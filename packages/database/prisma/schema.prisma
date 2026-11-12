@@ -566,6 +566,7 @@ model MediaAsset {
   createdAt            DateTime              @default(now())
   productImages        ProductImage[]
   quotationAttachments QuotationAttachment[]
+  correctionAttachments AttendanceCorrection[]
 
   @@unique([bucket, path])
   @@index([refCount, createdAt])
@@ -706,6 +707,9 @@ model AttendanceCorrection {
   requestedById String           @db.Uuid
   reason        String
   proposed      Json
+  /// Optional supporting photo or PDF (employee-private bucket; HR reads it through a short signed link).
+  attachmentId  String?          @db.Uuid
+  attachment    MediaAsset?      @relation(fields: [attachmentId], references: [id], onDelete: SetNull)
   status        ApprovalStatus   @default(PENDING)
   decidedById   String?          @db.Uuid
   decidedAt     DateTime?

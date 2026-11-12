@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { approveDays, editDay } from '@/app/(console)/hr-actions';
 
-export interface DayRecord { id: string; workDate: string; status: string; statusLabel: string; approved: boolean; workedMinutes: number; lateMinutes: number; undertimeMinutes: number; overtimeMinutes: number; punches: { type: string; at: string; corrected: boolean }[]; correctionPending: boolean }
+export interface DayRecord { id: string; workDate: string; status: string; statusLabel: string; approved: boolean; workedMinutes: number; lateMinutes: number; undertimeMinutes: number; overtimeMinutes: number; punches: { type: string; at: string; corrected: boolean; photo?: boolean; photoUrl?: string | null }[]; correctionPending: boolean }
 export interface BoardRow { employeeId: string; name: string; employeeNo: string; department: string | null; scheduled: { start: string; end: string }[]; scheduleName: string | null; record: DayRecord | null }
 const t = (iso: string) => new Date(iso).toLocaleTimeString('en-PH', { hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Manila' });
 const manila = (iso: string) => new Date(new Date(iso).getTime() + 8 * 3_600_000).toISOString();

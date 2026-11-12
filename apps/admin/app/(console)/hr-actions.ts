@@ -2,7 +2,7 @@
 // HR server actions. Each calls the API with the staff member's own token; the API checks employees.*, attendance.*,
 // leave.* and reports.attendance, blocks self-approval, and writes the audit log.
 import { api, attempt } from '@greenscape/auth/api';
-import { ProvisionedAccount, z } from '@greenscape/validation';
+import { ProvisionedAccount, SelfieSettings, z } from '@greenscape/validation';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -19,6 +19,13 @@ export async function saveEmployee(id: string | null, input: unknown) {
   });
   if (res.ok && !id) redirect(`/employees/${res.data.id}`);
   return res;
+}
+export async function saveSelfieSettings(input: unknown) {
+  return attempt(async () => {
+    const out = await api('/v1/hr/settings/selfie', SelfieSettings, json('PUT', SelfieSettings.parse(input)));
+    revalidatePath('/leave/settings');
+    return out;
+  });
 }
 export async function linkAccount(id: string) {
   return attempt(() => api(`/v1/hr/employees/${Id.parse(id)}/link`, Any, json('POST', {})));

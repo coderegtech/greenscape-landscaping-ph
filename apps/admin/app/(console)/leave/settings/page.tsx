@@ -1,13 +1,14 @@
 import { api } from '@greenscape/auth/api';
-import { z } from '@greenscape/validation';
+import { SelfieSettings, z } from '@greenscape/validation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { HolidaysEditor, LeaveTypesEditor } from '@/components/leave-settings';
+import { SelfieSettingsForm } from '@/components/selfie-settings';
 import { manilaToday } from '@/lib/hr';
 import { can, getStaff } from '@/lib/session';
 
-export const metadata: Metadata = { title: 'Leave types and holidays' };
+export const metadata: Metadata = { title: 'Leave and attendance settings' };
 export const dynamic = 'force-dynamic';
 
 export default async function LeaveSettings({ searchParams }: { searchParams: Promise<{ year?: string }> }) {
@@ -15,9 +16,10 @@ export default async function LeaveSettings({ searchParams }: { searchParams: Pr
   if (!me || !can(me, 'leave.read')) redirect('/');
   const sp = await searchParams;
   const year = /^\d{4}$/.test(sp.year ?? '') ? Number(sp.year) : Number(manilaToday().slice(0, 4));
-  const [types, holidays] = await Promise.all([
+  const [types, holidays, selfie] = await Promise.all([
     api('/v1/hr/leave-types', z.array(z.object({ id: z.string(), key: z.string(), name: z.string(), defaultDaysPerYear: z.number() }))),
     can(me, 'attendance.read') ? api(`/v1/hr/holidays?year=${year}`, z.array(z.object({ id: z.string(), date: z.string(), name: z.string(), type: z.string() }))) : Promise.resolve([]),
+    can(me, 'attendance.read') ? api('/v1/hr/settings/selfie', SelfieSettings) : Promise.resolve(null),
   ]);
   const canManage = can(me, 'employees.manage');
   return (
@@ -36,6 +38,12 @@ export default async function LeaveSettings({ searchParams }: { searchParams: Pr
         <p className="max-w-2xl text-ink-2">Enter the dates from the year’s official proclamation. Holidays are not counted as leave days, and scheduled staff are marked “Holiday” instead of absent (except on special working days).</p>
         <HolidaysEditor holidays={holidays} canManage={canManage} />
       </section>
+      {selfie && (
+        <section aria-labelledby="selfie" className="flex flex-col gap-4">
+          <h2 id="selfie" className="text-3xl">Clock-in selfie</h2>
+          <SelfieSettingsForm initial={selfie} canManage={canManage} />
+        </section>
+      )}
     </div>
   );
 }

@@ -17,6 +17,7 @@ const orphans = await db.mediaAsset.findMany({
     createdAt: { lt: cutoff },
     OR: [
       { bucket: 'private-docs', path: { startsWith: 'quotations/pending/' }, refCount: 0 },
+      { bucket: 'employee-private', path: { startsWith: 'attendance/pending/' }, refCount: 0 },
       { bucket: 'public-media', width: null }, // upload slot reserved but never completed
     ],
   },

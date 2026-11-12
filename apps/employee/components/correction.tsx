@@ -4,7 +4,8 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } 
 import { toast } from '@greenscape/ui/components/sonner';
 import { Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { requestCorrection } from '@/app/actions';
+import { CORRECTION_ATTACHMENT_TYPES } from '@greenscape/validation';
+import { correctionAttachmentSlot, requestCorrection } from '@/app/actions';
 
 type P = { type: 'IN' | 'OUT'; time: string; nextDay: boolean };
 const field = 'h-11 border border-muted bg-paper-2 px-3 text-base text-ink';
@@ -18,11 +19,21 @@ export function CorrectionButton({ workDate, label, asLink }: { workDate: string
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>();
+  const [file, setFile] = useState<File | null>(null);
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
     setError(undefined);
-    const res = await requestCorrection({ workDate: date, punches, reason });
+    let attachmentId: string | undefined;
+    if (file) {
+      // Straight to private storage through a one-time signed link; the API checks the file before attaching it.
+      const slot = await correctionAttachmentSlot({ contentType: file.type, size: file.size });
+      if (!slot.ok) return (setBusy(false), setError(slot.error));
+      const put = await fetch(slot.data.uploadUrl, { method: 'PUT', headers: { 'content-type': file.type, 'x-upsert': 'false' }, body: file }).catch(() => null);
+      if (!put?.ok) return (setBusy(false), setError('The file did not upload. Check your connection and try again.'));
+      attachmentId = slot.data.id;
+    }
+    const res = await requestCorrection({ workDate: date, punches, reason, attachmentId });
     setBusy(false);
     if (!res.ok) return setError(res.error);
     toast.success('Sent to your manager');
@@ -54,6 +65,10 @@ export function CorrectionButton({ workDate, label, asLink }: { workDate: string
           </div>
           <label className="flex flex-col gap-1 text-sm font-medium">What happened
             <textarea required minLength={5} maxLength={500} rows={3} value={reason} onChange={(e) => setReason(e.target.value)} className="border border-muted bg-paper-2 px-3 py-2 text-base text-ink" />
+          </label>
+          <label className="flex flex-col gap-1 text-sm font-medium">Supporting photo or PDF (optional)
+            <input type="file" accept={CORRECTION_ATTACHMENT_TYPES.join(',')} onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="text-sm text-ink-2 file:mr-3 file:border file:border-muted file:bg-paper-2 file:px-3 file:py-2 file:text-ink" />
+            <span className="text-xs font-normal text-muted">For example a photo of a site log. Up to 10 MB. Only HR can open it.</span>
           </label>
           {error && <p role="alert" className="text-sm text-danger">{error}</p>}
           <Button type="submit" loading={busy} className="self-start">Send for approval</Button>

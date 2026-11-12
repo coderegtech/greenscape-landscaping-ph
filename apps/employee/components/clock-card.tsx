@@ -3,10 +3,12 @@ import { Button } from '@greenscape/ui/components/button';
 import { toast } from '@greenscape/ui/components/sonner';
 import { useActionState, useEffect, useState } from 'react';
 import { clockForm } from '@/app/actions';
+import { SelfieField } from './selfie';
 
 export interface Today {
   employee: { name: string; employeeNo: string };
   workDate: string;
+  selfie: { mode: 'off' | 'optional' | 'required'; retentionDays: number };
   clockedIn: boolean;
   since: string | null;
   schedule: { name: string; flexible: boolean; segments: { start: string; end: string }[] } | null;
@@ -28,10 +30,15 @@ function useNow() {
 export function ClockCard({ today: t }: { today: Today }) {
   const now = useNow();
   const [state, action, pending] = useActionState(clockForm, null);
+  // A selfie belongs to the punch it was taken for: after each punch (a new `state`) it no longer counts.
+  const [photo, setPhoto] = useState<{ after: typeof state; id: string } | null>(null);
+  const photoId = photo && photo.after === state ? photo.id : null;
+  const selfieKey = state?.ok ? state.at : 'first'; // fresh camera field after each punch
   const elapsed = t.since && now ? Math.max(0, Math.floor((now.getTime() - Date.parse(t.since)) / 60_000)) : null;
   useEffect(() => {
     if (state?.ok) toast.success(`Clocked ${state.type === 'IN' ? 'in' : 'out'} at ${time(state.at)}`);
   }, [state]);
+  const needsPhoto = t.selfie.mode === 'required' && !photoId;
 
   return (
     <section aria-labelledby="clock" className="grid grid-cols-1 gap-8 border-t-2 border-signal pt-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
@@ -43,12 +50,14 @@ export function ClockCard({ today: t }: { today: Today }) {
         </p>
         <form action={action} className="flex flex-col gap-2">
           <input type="hidden" name="type" value={t.clockedIn ? 'OUT' : 'IN'} />
-          <Button type="submit" loading={pending} size="md" className="h-16 self-start px-10 text-lg" variant={t.clockedIn ? 'secondary' : 'primary'}>
+          {photoId && <input type="hidden" name="photoId" value={photoId} />}
+          {t.selfie.mode !== 'off' && <SelfieField key={selfieKey} mode={t.selfie.mode} retentionDays={t.selfie.retentionDays} onReady={(id) => setPhoto(id ? { after: state, id } : null)} />}
+          <Button type="submit" loading={pending} disabled={needsPhoto} size="md" className="h-16 self-start px-10 text-lg" variant={t.clockedIn ? 'secondary' : 'primary'}>
             {t.clockedIn ? 'Clock out' : 'Clock in'}
           </Button>
           {state && !state.ok && <p role="alert" className="text-sm font-medium text-danger">{state.error}</p>}
         </form>
-        <p className="text-xs text-muted">The time is taken from our server, not your phone. Only your network address is recorded with it.</p>
+        <p className="text-xs text-muted">The time is taken from our server, not your phone. {t.selfie.mode === 'off' ? 'Only your network address is recorded with it.' : 'Your network address and the selfie are recorded with it.'}</p>
       </div>
       <dl className="grid grid-cols-[auto_minmax(0,1fr)] content-start gap-x-6 gap-y-3 text-sm">
         <dt className="text-ink-2">Schedule</dt>

@@ -1,27 +1,30 @@
 // Employee self-service: clock in/out, own records, corrections, leave. Requires a linked Employee record.
-import { APPROVAL_LABELS, ATTENDANCE_STATUS_LABELS, CorrectionRequest, DateRange, LeaveRequestInput, PunchInput, z } from '@greenscape/validation';
+import { APPROVAL_LABELS, ATTENDANCE_STATUS_LABELS, CorrectionRequest, EmployeeUploadRequest, DateRange, LeaveRequestInput, PunchInput, z } from '@greenscape/validation';
 import { Router, type Response } from 'express';
 import type { Deps } from '../../lib/deps.ts';
 import { AppError } from '../../lib/errors.ts';
 import { registry } from '../../lib/openapi.ts';
 import { currentAuth, requirePermission } from '../../middleware/auth.ts';
+import { formLimit } from '../../middleware/form-limit.ts';
 import { cancelLeave, ensureBalances, punch, requestLeave, toDate, toPunches, today, ymd } from './service.ts';
 import { addDays, manilaDate } from './time.ts';
+import { ATTACHMENT_TYPES, PHOTO_TYPES, reserveUpload, selfieSettings, verifyUpload } from './uploads.ts';
 
 for (const [m, p, s] of [
   ['get', '/v1/me/attendance/today', "Today's schedule, record and whether you are clocked in (attendance.self)"],
   ['post', '/v1/me/attendance/punch', 'Clock in or out with the server time (attendance.self)'],
   ['get', '/v1/me/attendance', 'Own records for ?from&to (attendance.self)'],
+  ['post', '/v1/me/attendance/attachments', 'Reserve an upload slot (photo or PDF ≤ 10 MB) for a correction attachment (attachmentId) or a clock-in selfie (photoId)'],
   ['post', '/v1/me/attendance/corrections', 'Ask for a correction of a past day (attendance.self)'],
   ['get', '/v1/me/leave', 'Own leave balances and requests (leave.self)'],
   ['post', '/v1/me/leave', 'Request leave (leave.self)'],
   ['post', '/v1/me/leave/{id}/cancel', 'Withdraw a waiting request (leave.self)'],
 ] as const) registry.registerPath({ method: m, path: p, tags: ['attendance'], auth: true, summary: s, responses: { 200: { description: 'ok' } } });
 
-export const recordView = (r: { id: string; workDate: Date; status: keyof typeof ATTENDANCE_STATUS_LABELS; approvedAt: Date | null; workedMinutes: number; lateMinutes: number; undertimeMinutes: number; overtimeMinutes: number; punches: { type: string; at: Date; source: string }[]; corrections?: { status: string }[] }) => ({
+export const recordView = (r: { id: string; workDate: Date; status: keyof typeof ATTENDANCE_STATUS_LABELS; approvedAt: Date | null; workedMinutes: number; lateMinutes: number; undertimeMinutes: number; overtimeMinutes: number; punches: { type: string; at: Date; source: string; photoMediaId?: string | null }[]; corrections?: { status: string }[] }) => ({
   id: r.id, workDate: ymd(r.workDate), status: r.status, statusLabel: ATTENDANCE_STATUS_LABELS[r.status], approved: !!r.approvedAt,
   workedMinutes: r.workedMinutes, lateMinutes: r.lateMinutes, undertimeMinutes: r.undertimeMinutes, overtimeMinutes: r.overtimeMinutes,
-  punches: [...r.punches].sort((a, b) => a.at.getTime() - b.at.getTime()).map((p) => ({ type: p.type, at: p.at.toISOString(), corrected: p.source !== 'web' })),
+  punches: [...r.punches].sort((a, b) => a.at.getTime() - b.at.getTime()).map((p) => ({ type: p.type, at: p.at.toISOString(), corrected: p.source !== 'web', photo: !!p.photoMediaId })),
   correctionPending: !!r.corrections?.some((c) => c.status === 'PENDING'),
 });
 
@@ -37,12 +40,17 @@ export function attendanceSelfRoutes(deps: Deps) {
 
   r.get('/me/attendance/today', requirePermission('attendance.self'), async (_req, res) => {
     const e = await me(res);
-    res.set('cache-control', 'no-store').json({ employee: { name: `${e.firstName} ${e.lastName}`, employeeNo: e.employeeNo }, ...(await today(deps, e.id)) });
+    const { mode, retentionDays } = await selfieSettings(deps);
+    res.set('cache-control', 'no-store').json({ employee: { name: `${e.firstName} ${e.lastName}`, employeeNo: e.employeeNo }, selfie: { mode, retentionDays }, ...(await today(deps, e.id)) });
   });
   r.post('/me/attendance/punch', requirePermission('attendance.self'), async (req, res) => {
     const e = await me(res);
-    const { type } = PunchInput.parse(req.body);
-    await punch(deps, e.id, type, req.ip);
+    const { type, photoId } = PunchInput.parse(req.body);
+    const { mode } = await selfieSettings(deps);
+    if (mode === 'required' && !photoId) throw new AppError(400, 'SELFIE_REQUIRED', 'Take a selfie to clock in or out.');
+    // With selfies off, a photo sent anyway is not kept (nothing is collected that the notice does not mention).
+    const photo = mode !== 'off' && photoId ? await verifyUpload(deps, photoId, currentAuth(res).userId, PHOTO_TYPES, 'selfie') : null;
+    await punch(deps, e.id, type, req.ip, new Date(), photo?.id);
     res.status(201).json(await today(deps, e.id));
   });
   r.get('/me/attendance', requirePermission('attendance.self'), async (req, res) => {
@@ -52,9 +60,16 @@ export function attendanceSelfRoutes(deps: Deps) {
     const rows = await db.attendanceRecord.findMany({ where: { employeeId: e.id, workDate: { gte: toDate(from), lte: toDate(to) } }, orderBy: { workDate: 'desc' }, include: { punches: true, corrections: { select: { status: true } } } });
     res.json(rows.map(recordView));
   });
+  // A correction attachment or a clock-in selfie: reserve a slot, upload straight to private storage, then pass the id.
+  r.post('/me/attendance/attachments', requirePermission('attendance.self'), formLimit(deps, 'attendance-upload', Math.max(30, deps.env.FORM_RATE_LIMIT_PER_HOUR)), async (req, res) => {
+    await me(res);
+    const { contentType, size } = EmployeeUploadRequest.parse(req.body);
+    res.status(201).json(await reserveUpload(deps, currentAuth(res).userId, contentType, size));
+  });
   r.post('/me/attendance/corrections', requirePermission('attendance.self'), async (req, res) => {
     const e = await me(res);
     const input = CorrectionRequest.parse(req.body);
+    if (input.attachmentId) await verifyUpload(deps, input.attachmentId, currentAuth(res).userId, ATTACHMENT_TYPES, 'attachment');
     const t = manilaDate(new Date());
     if (input.workDate > t || input.workDate < addDays(t, -31)) throw AppError.badRequest('Corrections are for the last 31 days.');
     const proposed = toPunches(input.workDate, input.punches);
@@ -62,7 +77,8 @@ export function attendanceSelfRoutes(deps: Deps) {
     const out = await db.$transaction(async (tx) => {
       const rec = await tx.attendanceRecord.upsert({ where: { employeeId_workDate: { employeeId: e.id, workDate: toDate(input.workDate) } }, create: { employeeId: e.id, workDate: toDate(input.workDate), status: 'ABSENT' }, update: {} });
       if (await tx.attendanceCorrection.findFirst({ where: { recordId: rec.id, status: 'PENDING' } })) throw AppError.conflict('A correction for this day is already waiting.');
-      return tx.attendanceCorrection.create({ data: { recordId: rec.id, requestedById: currentAuth(res).userId, reason: input.reason, proposed: proposed.map((p) => ({ type: p.type, at: p.at.toISOString() })) } });
+      if (input.attachmentId) await tx.mediaAsset.update({ where: { id: input.attachmentId, refCount: 0 }, data: { refCount: 1 } }); // claimed once
+      return tx.attendanceCorrection.create({ data: { recordId: rec.id, requestedById: currentAuth(res).userId, reason: input.reason, attachmentId: input.attachmentId, proposed: proposed.map((p) => ({ type: p.type, at: p.at.toISOString() })) } });
     });
     await deps.events.emit('correction.requested', { correctionId: out.id });
     res.status(201).json({ id: out.id, status: out.status });

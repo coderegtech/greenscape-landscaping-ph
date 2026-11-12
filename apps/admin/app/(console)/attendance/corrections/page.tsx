@@ -10,7 +10,7 @@ import { can, getStaff } from '@/lib/session';
 export const metadata: Metadata = { title: 'Corrections' };
 export const dynamic = 'force-dynamic';
 
-const Item = z.object({ id: z.string(), status: z.string(), statusLabel: z.string(), reason: z.string(), createdAt: z.string(), employeeId: z.string(), employee: z.string(), workDate: z.string(), current: z.array(z.object({ type: z.string(), at: z.string() })), proposed: z.array(z.object({ type: z.string(), at: z.string() })) });
+const Item = z.object({ id: z.string(), status: z.string(), statusLabel: z.string(), reason: z.string(), createdAt: z.string(), employeeId: z.string(), employee: z.string(), workDate: z.string(), current: z.array(z.object({ type: z.string(), at: z.string() })), proposed: z.array(z.object({ type: z.string(), at: z.string() })), attachment: z.object({ url: z.string(), mimeType: z.string() }).nullable().optional() });
 const tabClass = 'inline-flex h-9 items-center gap-2 border-b-2 px-3 text-sm font-medium no-underline border-transparent text-ink-2 hover:text-ink aria-[current=page]:border-signal aria-[current=page]:text-ink';
 const times = (ps: { type: string; at: string }[]) => (ps.length ? ps.map((p) => `${p.type === 'IN' ? 'in' : 'out'} ${clockTime(p.at)}`).join(', ') : 'nothing recorded');
 
@@ -39,6 +39,7 @@ export default async function CorrectionsPage({ searchParams }: { searchParams: 
                 <dt className="text-muted">Recorded</dt><dd className="tabular">{times(c.current)}</dd>
                 <dt className="text-muted">Proposed</dt><dd className="tabular font-medium">{times(c.proposed)}</dd>
               </dl>
+              {c.attachment && <a href={c.attachment.url} target="_blank" rel="noopener noreferrer" className="self-start text-sm">Open the attached {c.attachment.mimeType === 'application/pdf' ? 'PDF' : 'photo'} <span className="text-muted">(link works for 5 minutes)</span></a>}
               {status === 'PENDING' && can(me, 'attendance.approve') && <DecisionButtons kind="correction" id={c.id} />}
             </li>
           ))}

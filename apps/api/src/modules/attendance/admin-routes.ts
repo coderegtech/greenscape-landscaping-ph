@@ -3,8 +3,9 @@
 import { Prisma } from '@greenscape/database';
 import {
   APPROVAL_LABELS, ApproveRecords, AssignSchedule, BalanceInput, DateRange, Decision, EMPLOYMENT_STATUSES, EmployeeInput,
-  HolidayInput, LeaveTypeInput, ProvisionedAccount, RecordEdit, ScheduleInput, Ymd, z,
+  HolidayInput, LeaveTypeInput, ProvisionedAccount, RecordEdit, ScheduleInput, SelfieSettings, Ymd, z,
 } from '@greenscape/validation';
+import { BUCKETS } from '@greenscape/storage';
 import ExcelJS from 'exceljs';
 import { Router, type Response } from 'express';
 import { audit } from '../../lib/audit.ts';
@@ -14,6 +15,7 @@ import { registry } from '../../lib/openapi.ts';
 import { authzCacheKey, currentAuth, requirePermission } from '../../middleware/auth.ts';
 import { provisionAccount } from '../users/provision.ts';
 import { recordView } from './routes.ts';
+import { SELFIE_KEY, selfieSettings } from './uploads.ts';
 import { assertNotSelf, cancelLeave, decideLeave, ensureBalances, replacePunches, scheduleOn, toDate, toPunches, ymd } from './service.ts';
 import { manilaDate, segmentsFor } from './time.ts';
 
@@ -27,6 +29,8 @@ for (const [m, p, s] of [
   ['post', '/v1/hr/schedules', 'Create a schedule (employees.manage)'],
   ['put', '/v1/hr/schedules/{id}', 'Replace a schedule (employees.manage)'],
   ['get', '/v1/hr/attendance', 'Daily board for ?date (attendance.read)'],
+  ['get', '/v1/hr/settings/selfie', 'Clock-in selfie policy: off | optional | required, retentionDays (attendance.read)'],
+  ['put', '/v1/hr/settings/selfie', 'Change the clock-in selfie policy (employees.manage). Audited.'],
   ['get', '/v1/hr/attendance/records', 'Records for ?employeeId&from&to (attendance.read)'],
   ['put', '/v1/hr/attendance/records/{id}', 'Replace the punches of a day with a reason (attendance.manage)'],
   ['post', '/v1/hr/attendance/approve', 'Approve finished days (attendance.approve)'],
@@ -210,11 +214,30 @@ export function hrRoutes(deps: Deps) {
     for (const x of rows) { const k = x.record?.status ?? (x.scheduled.length ? 'NOT_IN' : 'REST'); counts[k] = (counts[k] ?? 0) + 1; }
     res.set('cache-control', 'no-store').json({ date, holiday: holiday ? { name: holiday.name, type: holiday.type } : null, counts, rows });
   });
+  // Clock-in selfie policy (decision D6). Changing it is audited; employees see the current notice on their portal.
+  r.get('/settings/selfie', requirePermission('attendance.read'), async (_req, res) => res.json(await selfieSettings(deps)));
+  r.put('/settings/selfie', requirePermission('employees.manage'), async (req, res) => {
+    const value = SelfieSettings.parse(req.body);
+    const before = await selfieSettings(deps);
+    await db.$transaction([
+      db.appSetting.upsert({ where: { key: SELFIE_KEY }, create: { key: SELFIE_KEY, value, updatedById: actor(res) }, update: { value, updatedById: actor(res) } }),
+      audit(db, req, res, { action: 'attendance.selfie.set', entityType: 'setting', entityId: SELFIE_KEY, before, after: value }),
+    ]);
+    res.json(value);
+  });
   r.get('/attendance/records', requirePermission('attendance.read'), async (req, res) => {
     const employeeId = Id.parse(req.query.employeeId);
     const { from, to } = DateRange.parse(req.query);
     const rows = await db.attendanceRecord.findMany({ where: { employeeId, workDate: { gte: toDate(from), lte: toDate(to) } }, orderBy: { workDate: 'desc' }, include: { punches: true, corrections: { select: { status: true } } } });
-    res.json(rows.map(recordView));
+    // Clock-in selfies: a 5-minute signed link each, only for people who can read attendance.
+    const photoIds = rows.flatMap((x) => x.punches.map((p) => p.photoMediaId)).filter((x): x is string => !!x);
+    const assets = photoIds.length ? await db.mediaAsset.findMany({ where: { id: { in: photoIds } }, select: { id: true, path: true } }) : [];
+    const urls = new Map(await Promise.all(assets.map(async (a) => [a.id, await deps.storage.signedUrl(BUCKETS.employeePrivate.id, a.path, 300)] as const)));
+    res.json(rows.map((x) => {
+      const v = recordView(x);
+      const byTime = [...x.punches].sort((a, b) => a.at.getTime() - b.at.getTime());
+      return { ...v, punches: v.punches.map((p, i) => ({ ...p, photoUrl: byTime[i]?.photoMediaId ? urls.get(byTime[i]!.photoMediaId!) ?? null : null })) };
+    }));
   });
   r.put('/attendance/records/:id', requirePermission('attendance.manage'), async (req, res) => {
     const id = Id.parse(req.params.id);
@@ -242,8 +265,11 @@ export function hrRoutes(deps: Deps) {
   // ── corrections ──
   r.get('/corrections', requirePermission('attendance.read'), async (req, res) => {
     const status = z.enum(['PENDING', 'APPROVED', 'REJECTED']).default('PENDING').parse(req.query.status);
-    const rows = await db.attendanceCorrection.findMany({ where: { status }, orderBy: { createdAt: status === 'PENDING' ? 'asc' : 'desc' }, take: 200, include: { record: { include: { employee: true, punches: true } } } });
+    const rows = await db.attendanceCorrection.findMany({ where: { status }, orderBy: { createdAt: status === 'PENDING' ? 'asc' : 'desc' }, take: 200, include: { record: { include: { employee: true, punches: true } }, attachment: true } });
+    // Attachments are private: a 5-minute signed link per page view, only for people who can read attendance.
+    const links = new Map(await Promise.all(rows.filter((c) => c.attachment).map(async (c) => [c.id, { url: await deps.storage.signedUrl(BUCKETS.employeePrivate.id, c.attachment!.path, 300), mimeType: c.attachment!.mimeType }] as const)));
     res.json(rows.map((c) => ({
+      attachment: links.get(c.id) ?? null,
       id: c.id, status: c.status, statusLabel: APPROVAL_LABELS[c.status], reason: c.reason, createdAt: c.createdAt.toISOString(),
       employeeId: c.record.employeeId, employee: name(c.record.employee), workDate: ymd(c.record.workDate),
       current: c.record.punches.sort((a, b) => a.at.getTime() - b.at.getTime()).map((p) => ({ type: p.type, at: p.at.toISOString() })),
