@@ -161,7 +161,9 @@ describe('leave', () => {
     return d.toISOString().slice(0, 10);
   };
   it('balances are checked (including waiting requests), overlaps refused, approval uses days, cancellation returns them', async () => {
-    const mon = next(1);
+    let mon = next(1);
+    // A holiday in the week (Bonifacio Day, Nov 30) shortens the leave and breaks the day counts: use the week after.
+    while (await deps.db.holiday.count({ where: { date: { gte: toDate(mon), lte: toDate(addDays(mon, 5)) } } })) mon = addDays(mon, 7);
     const wed = new Date(Date.parse(mon) + 2 * 86_400_000).toISOString().slice(0, 10);
     if (mon.slice(0, 4) !== wed.slice(0, 4)) return; // year boundary: covered by validation
     const r1 = await request(app).post('/v1/me/leave').set(as(past.token)).send({ leaveTypeId: silId, startDate: mon, endDate: wed, reason: 'Family event' }).expect(201);

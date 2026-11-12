@@ -27,7 +27,11 @@ No authenticator app or TOTP enrolment is required. The MFA switch is kept only 
 ## Portal sessions
 
 Each Next app uses `@supabase/ssr` cookies with no `Domain` attribute, so the website, employee portal and admin keep
-independent sessions even under one parent domain. Sign-out is a server-side POST to `/auth/signout` in each app.
+independent sessions even under one parent domain. Sign-out is a server-side POST to `/auth/signout` in each app. It
+first calls `POST /v1/auth/logout`, which records the session id in Redis until the token would have expired. The API
+then refuses any token of that session (401 `SESSION_ENDED`): access tokens are verified locally, so without this a copy
+taken before sign-out kept working for up to an hour (found by `tests/e2e/auth/logout.spec.ts`). Then Supabase signs the
+user out and the cookies are cleared. If Redis is down the check is skipped and tokens still expire within the hour.
 
 ## Account controls
 

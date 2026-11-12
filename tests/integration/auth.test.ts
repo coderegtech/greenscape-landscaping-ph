@@ -1,4 +1,5 @@
-import { SignJWT, exportJWK, generateKeyPair } from 'jose';
+import { readFileSync } from 'node:fs';
+import { SignJWT, exportJWK, generateKeyPair, importJWK, type JWK } from 'jose';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createApp } from '../../apps/api/src/app.ts';
@@ -69,6 +70,23 @@ describe('token verification', () => {
       .setExpirationTime('1h')
       .sign(privateKey);
     await request(app).get('/v1/auth/me').set(bearer(forged)).expect(401);
+  });
+
+  it('rejects a correctly signed token once it has expired (TOKEN_EXPIRED); the same token unexpired works', async () => {
+    // The local Supabase signing key (supabase/signing_keys.json, generated per machine, gitignored): CI generates one too.
+    const jwk = (JSON.parse(readFileSync(new URL('../../supabase/signing_keys.json', import.meta.url), 'utf8')) as JWK[])[0]!;
+    const { key_ops: _ops, use: _use, ...signing } = jwk; // the file marks the key for verification; sign with the private part
+    const key = await importJWK(signing, 'ES256');
+    const u = await signedInUser('expiry');
+    created.push(u.authUserId);
+    const token = (exp: number) => new SignJWT({ email: u.email, aal: 'aal1', amr: [{ method: 'password', timestamp: exp - 3600 }] })
+      .setProtectedHeader({ alg: 'ES256', kid: jwk.kid!, typ: 'JWT' })
+      .setSubject(u.authUserId).setIssuer(`${process.env.SUPABASE_URL}/auth/v1`).setAudience('authenticated')
+      .setIssuedAt(exp - 3600).setExpirationTime(exp).sign(key);
+    const now = Math.floor(Date.now() / 1000);
+    await request(app).get('/v1/auth/me').set(bearer(await token(now + 600))).expect(200); // control: our signature is accepted
+    const res = await request(app).get('/v1/auth/me').set(bearer(await token(now - 60))).expect(401);
+    expect(res.body.error.code).toBe('TOKEN_EXPIRED');
   });
 });
 

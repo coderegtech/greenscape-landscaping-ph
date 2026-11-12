@@ -8,7 +8,9 @@ import { totp } from '../totp';
 export const WEB = process.env.E2E_WEB ?? 'http://localhost:3000';
 export const ADMIN = process.env.E2E_ADMIN ?? 'http://localhost:3001';
 export const EMPLOYEE = process.env.E2E_EMPLOYEE ?? 'http://localhost:3002';
-export const PASSWORD = 'Greenscape-E2e-2026';
+export const API = process.env.E2E_API ?? 'http://localhost:4000';
+/** Synthetic accounts' password: from E2E_PASSWORD, else generated per run (never hardcoded, never logged). */
+export const PASSWORD = process.env.E2E_PASSWORD ?? `Gs-${randomUUID()}-Aa1`;
 export const email = (label: string) => `${label}-${randomUUID().slice(0, 8)}@e2e.greenscape.local`;
 
 const mailpit = () => process.env.MAILPIT_URL ?? 'http://127.0.0.1:54324';

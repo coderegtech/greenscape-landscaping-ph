@@ -117,3 +117,16 @@ describe('audit log', () => {
     expect(byEntity.body.items.every((i: { entityId: string; entityType: string }) => i.entityId === one.entityId || i.entityType === one.entityId)).toBe(true);
   });
 });
+
+describe('sign out', () => {
+  it('ends only this session: its token is refused at once, another session of the same person keeps working', async () => {
+    const u = await withRoles('logout', []);
+    const one = await session(u.email);
+    const two = await session(u.email);
+    await request(app).get('/v1/auth/me').set(as(one.access_token)).expect(200);
+    await request(app).post('/v1/auth/logout').set(as(one.access_token)).expect(204);
+    expect((await request(app).get('/v1/auth/me').set(as(one.access_token)).expect(401)).body.error.code).toBe('SESSION_ENDED');
+    await request(app).get('/v1/auth/me').set(as(two.access_token)).expect(200);
+    await request(app).post('/v1/auth/logout').expect(401); // needs a session to end
+  });
+});

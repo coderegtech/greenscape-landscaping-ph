@@ -5,7 +5,7 @@ import type { Deps } from '../../lib/deps.ts';
 import { AppError } from '../../lib/errors.ts';
 import { registry } from '../../lib/openapi.ts';
 import { logSecurity } from '../../lib/security-log.ts';
-import { currentAuth, requireAuth } from '../../middleware/auth.ts';
+import { currentAuth, endedSessionKey, requireAuth } from '../../middleware/auth.ts';
 
 registry.registerPath({
   method: 'get',
@@ -15,6 +15,7 @@ registry.registerPath({
   summary: 'The signed-in user, their roles and effective permissions. Creates the user record on first call.',
   responses: { 200: { description: 'current user', schema: MeResponse }, 401: { description: 'missing/invalid token' }, 403: { description: 'account suspended' } },
 });
+registry.registerPath({ method: 'post', path: '/v1/auth/logout', tags: ['auth'], auth: true, summary: 'End this session: its access tokens are refused from now on (called by the portals at sign-out).', responses: { 204: { description: 'ended' } } });
 registry.registerPath({
   method: 'post',
   path: '/v1/auth/password',
@@ -40,6 +41,16 @@ export function authRoutes(deps: Deps) {
     }
     const { lastLoginAt: _ignored, ...rest } = user;
     res.json(MeResponse.parse({ user: rest, roles: auth.roles, permissions: [...auth.permissions].sort(), mfaRequired: auth.mfaPending, aal: auth.aal, passwordChangeRequired: auth.passwordChangeRequired, passwordSignInRequired: auth.passwordSignInRequired }));
+  });
+
+  // Called by each portal's sign-out route before it clears the cookies: this session's tokens stop working at once.
+  r.post('/logout', requireAuth, async (_req, res) => {
+    const auth = currentAuth(res);
+    if (auth.sessionId) {
+      const ttl = Math.max(1, auth.expiresAt * 1000 - Date.now());
+      await deps.redis.set(endedSessionKey(deps.env.CACHE_PREFIX, auth.sessionId), '1', 'PX', ttl);
+    }
+    res.status(204).end();
   });
 
   r.post('/password', requireAuth, async (req, res) => {
