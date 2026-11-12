@@ -22,6 +22,7 @@ packages/validation  Shared request/response contracts + form schemas
 packages/auth        Supabase: API token verification (JWKS), Next.js session helpers, server API client
 packages/ui          Design system: tokens (theme.css), fonts, shadcn/Radix components, motion, layout templates, auth forms
 tests/{unit,integration,e2e}
+apps/*/Dockerfile        One image per service, built from the repo root (docs/deployment/dokploy.md)
 docker/compose.dev.yml   Postgres :55433, Mongo :57017 (replica set), Redis :56379
 ```
 `storage` and `payments` packages are created in the phases that need them (7, 8).

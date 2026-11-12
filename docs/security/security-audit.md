@@ -67,7 +67,7 @@ Every Fixed status is backed by the tests named under each finding (`security-te
 - **Verification**: the same tools run locally where available (results in `security-testing.md`); the workflow can't run on GitHub here (no remote, D9).
 
 ## M-6: No production images; services unauthenticated
-- **Fix**: multi-stage Dockerfiles for api, web and admin (`docker/api.Dockerfile`, `docker/next.Dockerfile`): `node:24-alpine`, npm and corepack removed, production dependencies only, non-root user, read-only root filesystem, health checks, no secrets baked in. `docker/compose.prod.yml` has an internal network for Postgres/Mongo/Redis (no host ports), Redis password + ACL with dangerous commands disabled, Mongo auth with a least-privilege app user, Postgres app role without DDL (migrations use a separate role), memory limits, and `cap_drop: ALL`.
+- **Fix**: multi-stage Dockerfiles for api, web and admin (`apps/api/Dockerfile`, `apps/<web|admin>/Dockerfile`; then `docker/*.Dockerfile`): `node:24-alpine`, npm and corepack removed, production dependencies only, non-root user, read-only root filesystem, health checks, no secrets baked in. `docker/compose.prod.yml` has an internal network for Postgres/Mongo/Redis (no host ports), Redis password + ACL with dangerous commands disabled, Mongo auth with a least-privilege app user, Postgres app role without DDL (migrations use a separate role), memory limits, and `cap_drop: ALL`.
 - **Verification**: all three images built, ran locked down (read-only, no capabilities) and reported healthy; Trivy found 0 fixable HIGH/CRITICAL. `docker compose -f docker/compose.prod.yml config` validates and refuses missing secrets. A production deploy is Phase 13 and needs approval.
 
 ## M-7: Attendance scope is organisation-wide

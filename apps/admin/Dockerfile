@@ -1,17 +1,16 @@
 # syntax=docker/dockerfile:1.7
-# Website or admin (Next.js standalone server). Pick the app with APP=web|admin|employee and its port with PORT.
-#   docker build -f docker/next.Dockerfile --build-arg APP=admin --build-arg PORT=3001 \
-#     --build-arg NEXT_PUBLIC_API_URL=https://api.example --build-arg NEXT_PUBLIC_SUPABASE_URL=https://xyz.supabase.co \
+# Admin portal (Next.js standalone server), port 3001. Build from the repository root (the workspace packages are needed):
+#   docker build -f apps/admin/Dockerfile --build-arg NEXT_PUBLIC_API_URL=https://api.example \
+#     --build-arg NEXT_PUBLIC_SUPABASE_URL=https://xyz.supabase.co \
 #     --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_... -t greenscape-admin .
+# The web, admin and employee Dockerfiles differ only in this header and the APP/PORT defaults: change all three together.
 # NEXT_PUBLIC_* values are public by definition (they ship to browsers) and are baked in at build time. Server secrets
 # (SUPABASE_SECRET_KEY is not used by these apps; REVALIDATE_SECRET, PREVIEW_SECRET, INTERNAL_API_KEY) are
 # runtime environment variables only, never build args.
-# The website pre-renders CMS pages at build time, so build it where the API is reachable; otherwise pages are
-# rendered on the first request after start (ISR) instead.
 ARG NODE_IMAGE=node:24-alpine
 
 FROM ${NODE_IMAGE} AS build
-ARG APP=web
+ARG APP=admin
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
@@ -26,8 +25,8 @@ RUN pnpm install --frozen-lockfile --filter "@greenscape/${APP}..."
 RUN pnpm --filter "@greenscape/${APP}" build
 
 FROM ${NODE_IMAGE} AS runtime
-ARG APP=web
-ARG PORT=3000
+ARG APP=admin
+ARG PORT=3001
 # The app never runs npm or corepack: remove them (and the CVEs in their bundled dependencies) from the runtime.
 RUN apk add --no-cache tini && rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=${PORT} HOSTNAME=0.0.0.0

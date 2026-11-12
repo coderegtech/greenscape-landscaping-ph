@@ -9,10 +9,11 @@ equivalent steps.
 
 | Piece | Built from | Runs as | Health |
 |---|---|---|---|
-| API | `docker/api.Dockerfile` (target `runtime`) | `api`, port 4000 | `GET /v1/health/live` (process), `GET /v1/health` (databases) |
-| Migrations | `docker/api.Dockerfile` (target `migrate`) | `migrate`, a one-off job with DDL rights | exit code |
-| Website | `docker/next.Dockerfile`, `APP=web` | `web`, port 3000 | `GET /api/health` |
-| Admin | `docker/next.Dockerfile`, `APP=admin` | `admin`, port 3001 | `GET /api/health` |
+| API | `apps/api/Dockerfile` (target `runtime`) | `api`, port 4000 | `GET /v1/health/live` (process), `GET /v1/health` (databases) |
+| Migrations | `apps/api/Dockerfile` (target `migrate`) | `migrate`, a one-off job with DDL rights | exit code |
+| Website | `apps/web/Dockerfile` | `web`, port 3000 | `GET /api/health` |
+| Admin | `apps/admin/Dockerfile` | `admin`, port 3001 | `GET /api/health` |
+| Employee portal | `apps/employee/Dockerfile` | `employee`, port 3002 | `GET /api/health` |
 | Postgres 17, MongoDB, Redis 7 | official images | internal network only | compose health checks |
 | Supabase (Auth, Storage) | hosted project | | Supabase status |
 

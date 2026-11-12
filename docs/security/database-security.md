@@ -5,7 +5,7 @@
 |---|---|
 | Queries | Prisma only; raw SQL only as tagged templates (parameterised); `*Unsafe` banned by Semgrep |
 | Least privilege (production) | Three roles (`docker/init/postgres-roles.sh`): `greenscape_owner` (owns the database; nobody uses it day to day), `greenscape_migrate` (DDL; only the one-off migrate job), `greenscape_app` (the API: SELECT/INSERT/UPDATE/DELETE on tables, no DDL, no role management). `CREATE` on `public` is revoked from PUBLIC |
-| Migrations | `prisma migrate deploy` in a separate image target (`docker/api.Dockerfile --target migrate`) with the migrate role; never run by the API at start-up |
+| Migrations | `prisma migrate deploy` in a separate image target (`apps/api/Dockerfile --target migrate`) with the migrate role; never run by the API at start-up |
 | Integrity | CHECK constraints (`reserved <= onHand`, non-negative stock and money), unique idempotency keys, row locks for stock, balances and order state; advisory locks per employee for punches |
 | Network | Production: internal Docker network only, no host port (`docker/compose.prod.yml`). Dev: bound to `127.0.0.1:55433` |
 | Authentication | SCRAM-SHA-256 (`POSTGRES_INITDB_ARGS`); passwords from the secret env file, required at start |

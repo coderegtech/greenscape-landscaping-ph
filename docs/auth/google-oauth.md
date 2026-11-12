@@ -91,7 +91,7 @@ The admin is a separate Next.js app, already built to run on its own host:
 
 - **DNS:** a `CNAME` (or `A`/`AAAA`) record for `admin` pointing at the host or load balancer that serves `apps/admin`.
   The API (for example `api.<domain>`) gets its own record. Issue TLS certificates for all three hosts.
-- **Hosting:** run `apps/admin` as its own service (Docker image `docker/next.Dockerfile` built for the admin app, or `next start -p 3001`
+- **Hosting:** run `apps/admin` as its own service (Docker image built from `apps/admin/Dockerfile`, or `next start -p 3001`
   behind the proxy). Route `admin.<domain>` to it and `<domain>` to `apps/web`.
 - **Sessions:** Supabase cookies are host-only (no `Domain` attribute), so the web site and the admin hold separate
   sessions. Signing in on one does not sign you in on the other, and an admin session cookie is never sent to the

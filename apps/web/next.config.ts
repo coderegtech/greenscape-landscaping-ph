@@ -46,7 +46,7 @@ const securityHeaders = [
 ];
 
 const config: NextConfig = {
-  // Container images (docker/*.Dockerfile) build a self-contained server; local `next start` keeps the default.
+  // Container images (apps/*/Dockerfile) build a self-contained server; local `next start` keeps the default.
   ...(process.env.NEXT_OUTPUT === 'standalone' ? { output: 'standalone' as const, outputFileTracingRoot: path.join(process.cwd(), '../..') } : {}),
   reactStrictMode: true,
   poweredByHeader: false,

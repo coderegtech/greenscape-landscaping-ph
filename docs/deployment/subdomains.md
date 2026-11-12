@@ -7,8 +7,8 @@
 | `admin.greenscapelandscapingph.com` | `apps/admin` | 3001 |
 | `api.greenscapelandscapingph.com` | `apps/api` | 4000 |
 
-Images: `docker build -f docker/next.Dockerfile --build-arg APP=<web|admin|employee> --build-arg PORT=<port> ...` and
-`docker/api.Dockerfile`; `docker/compose.prod.yml` has all four services. Only a TLS-terminating reverse proxy is public;
+Images: each service has its own Dockerfile, built from the repository root (`docker build -f apps/<service>/Dockerfile .`);
+`docker/compose.prod.yml` has all four services, and `docs/deployment/dokploy.md` has the per-service Dokploy settings. Only a TLS-terminating reverse proxy is public;
 it routes each host to its service and adds HTTPS (HSTS is sent by the apps in production).
 
 ## Environment

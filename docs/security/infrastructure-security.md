@@ -2,8 +2,8 @@
 
 Nothing here is deployed: deployment needs the owner's approval (Phase 13). The repository contains production-ready, locally verified building blocks.
 
-## Container images (`docker/`)
-| | API (`api.Dockerfile`) | Website / admin (`next.Dockerfile`, `APP=web|admin`) |
+## Container images (`apps/<service>/Dockerfile`)
+| | API (`apps/api/Dockerfile`) | Website / admin / employee (`apps/<web|admin|employee>/Dockerfile`) |
 |---|---|---|
 | Build | Multi-stage; the Prisma client is generated in the build stage; a **clean production-only install** in a separate stage | Multi-stage; `next build` with `output: 'standalone'` (only in image builds) |
 | Runtime base | `node:24-alpine` + `tini`; **npm and corepack removed** | same |
