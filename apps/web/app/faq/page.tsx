@@ -21,7 +21,7 @@ export default async function FaqPage() {
   return (
     <CmsPageView slug="faq">
       <section aria-label="Questions" className="container-page pb-24">
-        <Accordion type="multiple" className="max-w-[56rem] border-t-[1.5px] border-signal">
+        <Accordion type="multiple" data-stagger="rise" className="max-w-[56rem] border-t-[1.5px] border-signal">
           {faqs.map((f) => (
             <AccordionItem key={f.question} value={f.question} className="border-rule">
               <AccordionTrigger className="py-6 font-display text-xl text-ink hover:no-underline md:text-2xl">{f.question}</AccordionTrigger>

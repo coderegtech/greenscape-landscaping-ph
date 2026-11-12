@@ -69,7 +69,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       {related.length > 0 && (
         <Section band="deep" labelledBy="related">
           <SectionHeading id="related" title={`More ${(PROJECT_CATEGORIES[p.category] ?? 'projects').toLowerCase()}`} />
-          <div className={cardGrid(related.length)}>
+          <div data-stagger="rise" className={cardGrid(related.length)}>
             {related.map((r) => (
               <ProjectCard key={r.slug} p={r} />
             ))}

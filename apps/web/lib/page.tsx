@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { Accents } from '@/components/decorations/accents';
 import type { AccentSet } from '@/components/decorations/config';
 import { Sections } from '@/components/sections';
@@ -29,10 +29,11 @@ export function PageHeader({ title, lead, children, decor }: { title: ReactNode;
   return (
     <header className="relative isolate overflow-x-clip">
       {decor && <Accents set={decor} />}
+      {/* Above the fold: the CSS entrance PageHero uses (starts with the first paint), not a scroll reveal. */}
       <div className="container-page flex flex-col gap-4 pt-16 pb-10 md:pt-24 md:pb-16">
-        <h1 className="text-display-s">{title}</h1>
-        {lead && <p className="max-w-[46ch] text-lg text-ink-2">{lead}</p>}
-        {children}
+        <h1 className="hero-in text-display-s">{title}</h1>
+        {lead && <p className="hero-in max-w-[46ch] text-lg text-ink-2" style={{ '--i': 1 } as CSSProperties}>{lead}</p>}
+        {children && <div className="hero-in" style={{ '--i': 2 } as CSSProperties}>{children}</div>}
       </div>
     </header>
   );

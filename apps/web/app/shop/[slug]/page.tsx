@@ -79,7 +79,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       </div>
 
       {(c?.description?.content?.length || c?.careInstructions?.content?.length) ? (
-        <div className="mt-16 grid grid-cols-1 gap-12 border-t border-rule pt-12 md:grid-cols-2">
+        <div data-stagger="rise" className="mt-16 grid grid-cols-1 gap-12 border-t border-rule pt-12 md:grid-cols-2">
           {c?.description?.content?.length ? (
             <section aria-labelledby="about" className="flex flex-col gap-4">
               <h2 id="about" className="text-3xl">About this {p.category === 'plants' ? 'plant' : 'product'}</h2>
