@@ -141,6 +141,9 @@ test('old product links land on the new pages', async ({ page }) => {
 });
 
 test('shop pages pass axe (WCAG 2.1 AA)', async ({ page }) => {
+  // Measure end states, as the other axe suites do: on a short page the footer peeks into a phone's first screen and
+  // axe reads its tagline mid-fade (2.8:1) instead of at rest.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   const p = await fixture({ stock: 2 });
   await signedInCustomer(page, `axe-${tag}`);
   await addToCart(page, p.slug);
