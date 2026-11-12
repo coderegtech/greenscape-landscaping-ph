@@ -37,5 +37,27 @@ Options that would close the gap, not done in this phase:
 2. Fewer photos on the home page's first load: show 6 gallery photos and lazy-render the rest on scroll.
 3. A CDN in front of Next (TTFB 460 ms locally is the Next server rendering ISR pages on a busy laptop; a CDN edge hit is about 50 ms).
 
+## Phase 13 re-check (2026-11-12): two hypotheses tested, neither moved the score
+
+Same script and settings (median of 3, mobile, simulated slow 4G). Files: `docs/lighthouse/phase13-*.json`.
+
+| Build | `/` | `/projects` | `/shop` |
+|---|---|---|---|
+| Current `main` (`phase13-before`) | 82 (81/82/85) | 79 (74/79/81) | 86 (81/86/87) |
+| Option 1: photos as plain server `<img>` via `getImageProps`, no `next/image` client component (`phase13-after`) | 79 (77/79/80) | 81 (75/81/82) | 89 (77/89/90) |
+| Decoration animations switched off (`phase13-exp-still`) | 84 (81/84/85) | 79 (78/79/87) | 87 (0/87/87) |
+
+Both changes are within run-to-run noise, so neither was kept. What a full report on `/shop` shows: first contentful
+paint 1.1 s, but the LCP element (the plain-text page intro, no image to load) is only recorded at 3–5 s. All of that is
+"render delay", and main-thread work before it is spread over framework script evaluation (~1 s, the Next/React runtime
+chunk), rendering (~2 s) and style/layout (~1 s) under the 4× CPU slowdown. Photo hydration and the floating decorations
+are not the deciding factor any more.
+
+**Recommendation:** stop tuning against a busy laptop's simulated numbers. Measure the deployed staging site (with its
+CDN) using PageSpeed Insights and the Chrome UX Report field data. Act on what real visitors see: field LCP and INP at
+the 75th percentile, not lab scores. If field LCP on mobile is above 2.5 s, the next things to try are, in order:
+serving pages from a CDN edge cache, then trimming the shared client JavaScript (the runtime chunk) with a bundle
+analysis.
+
 ## Security headers
 CSP and headers were added this phase (`docs/security.md` → Content-Security-Policy) and cost nothing measurable: the policy is a static header on the website.

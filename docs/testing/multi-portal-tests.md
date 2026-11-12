@@ -28,6 +28,14 @@ runs against production.
 | Analytics CSV (permission, layout, formula-safe) | `integration/analytics.test.ts` |
 | Optional MFA (runs only with `REQUIRE_STAFF_MFA=true`) | `integration/mfa.test.ts`, `e2e/mfa.spec.ts` |
 
+## Visual regression
+
+`pnpm test:visual` (own config, `playwright.visual.config.ts`; not part of `pnpm test:e2e` or CI) screenshots 8 pages on
+desktop and phone (home, services, projects, shop, contact, and the three sign-in screens) with reduced motion and
+compares them with the baselines in `tests/e2e/visual/visual.spec.ts-snapshots/` (2% pixel tolerance). Baselines are
+per operating system (`-win32`, `-linux` in the file name). After an intended design change, review the diff and run
+`pnpm test:visual --update-snapshots`. Needs production builds (`pnpm build`), like the e2e suite.
+
 ## Writing e2e tests here
 
 - Signed-in pages keep a live notifications stream open, so `waitForLoadState('networkidle')` never settles on them; use

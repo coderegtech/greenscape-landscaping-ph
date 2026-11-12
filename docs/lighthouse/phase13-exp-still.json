@@ -1,0 +1,60 @@
+{
+  "ranAt": "2026-11-12T03:44:39.593Z",
+  "base": "http://localhost:3000",
+  "rows": [
+    {
+      "page": "/",
+      "performance": 84,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "81/84/85",
+      "lcp": "3.3 s",
+      "cls": "0",
+      "tbt": "350 ms",
+      "weight": "Total size was 1,022 KiB",
+      "lcpElement": "\"<img alt=\\\"Greenscape landscape project in Palawan\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover\\\" style=\\\"position: absolute; height: 100%; wid",
+      "lcpPhases": "TTFB:464ms Load Delay:51ms Load Time:184ms Render Delay:2557ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    },
+    {
+      "page": "/projects",
+      "performance": 79,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "78/79/87",
+      "lcp": "3.9 s",
+      "cls": "0",
+      "tbt": "370 ms",
+      "weight": "Total size was 781 KiB",
+      "lcpElement": "\"<img alt=\\\"\\\" decoding=\\\"async\\\" data-nimg=\\\"fill\\\" class=\\\"object-cover\\\" style=\\\"position: absolute; height: 100%; width: 100%; inset: 0px;\\\" sizes=\\\"(min-wi",
+      "lcpPhases": "TTFB:464ms Load Delay:619ms Load Time:125ms Render Delay:2713ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    },
+    {
+      "page": "/shop",
+      "performance": 87,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "spread": "0/87/87",
+      "lcp": "3.1 s",
+      "cls": "0",
+      "tbt": "310 ms",
+      "weight": "Total size was 805 KiB",
+      "lcpElement": "\"<p class=\\\"max-w-[46ch] text-lg text-ink-2\\\">\"",
+      "lcpPhases": "TTFB:465ms Load Delay:0ms Load Time:0ms Render Delay:2624ms",
+      "failing": [
+        "Largest Contentful Paint",
+        "Total Blocking Time"
+      ]
+    }
+  ]
+}
