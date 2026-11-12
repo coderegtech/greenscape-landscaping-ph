@@ -39,4 +39,21 @@ The API gives the account customer permissions only and answers staff and employ
 password sign-in (a Google session on the same mailbox cannot use it). Supabase ends existing sessions when the password
 changes, so the form signs in again with the new password.
 
+## Sample staff for local development
+
+`pnpm staff:seed` (after `pnpm db:seed` and `pnpm admin:create`) fills the admin and employee portal with people to
+click through. Like `admin:create` it refuses a non-local Supabase or database. It creates, with the same
+`provisionAccount` the admin uses (super admin as the provisioner):
+
+- 7 employees (`GS-0101`–`GS-0107`, `@sample.greenscape.local`) across 4 departments and 3 schedules, each with a
+  portal login. Maria Santos is also an HR manager (admin console); Paolo Reyes is an administrator.
+- About three weeks of attendance with a scripted 38-minute late arrival (Andres), an absence (Ramon), a pending time
+  correction (Rosa), an approved one (Carlo); days older than a week are approved.
+- This year's leave balances and leave requests in every state (approved, pending, declined, cancelled), plus the HR
+  notifications those events send.
+
+Temporary passwords go to `.local/sample-staff-credentials.txt` (gitignored); the first sign-in asks for a new one.
+Rerunning is safe: existing records are kept, missing days are added, and every sample account gets a new temporary
+password.
+
 Tests: `tests/integration/portals.test.ts`; `tests/e2e/attendance.spec.ts` ("HR adds an employee...").
