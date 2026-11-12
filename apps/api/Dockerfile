@@ -2,8 +2,8 @@
 # Express API. Multi-stage: the build stage has every dependency (Prisma CLI generates the client); the runtime stage
 # keeps production dependencies only, runs as the unprivileged `node` user under tini, and holds no secrets: all
 # configuration arrives as environment variables at run time (docs/security/infrastructure-security.md).
-#   docker build -f docker/api.Dockerfile -t greenscape-api .
-#   docker build -f docker/api.Dockerfile --target migrate -t greenscape-migrate .   (one-off: prisma migrate deploy)
+#   docker build -f apps/api/Dockerfile -t greenscape-api .
+#   docker build -f apps/api/Dockerfile --target migrate -t greenscape-migrate .   (one-off: prisma migrate deploy)
 ARG NODE_IMAGE=node:24-alpine
 
 FROM ${NODE_IMAGE} AS build

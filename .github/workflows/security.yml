@@ -64,14 +64,14 @@ jobs:
       fail-fast: false # one image's findings should not hide the others'
       matrix:
         include:
-          - { app: api, dockerfile: api.Dockerfile, args: '' }
+          - { app: api, args: '' }
           # web: built and scanned in ci.yml (its build pre-renders pages from a running API)
-          - { app: employee, dockerfile: next.Dockerfile, args: '--build-arg APP=employee --build-arg PORT=3002 --build-arg NEXT_PUBLIC_API_URL=https://api.example.invalid --build-arg NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ci' }
-          - { app: admin, dockerfile: next.Dockerfile, args: '--build-arg APP=admin --build-arg PORT=3001 --build-arg NEXT_PUBLIC_API_URL=https://api.example.invalid --build-arg NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ci' }
+          - { app: employee, args: '--build-arg NEXT_PUBLIC_API_URL=https://api.example.invalid --build-arg NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ci' }
+          - { app: admin, args: '--build-arg NEXT_PUBLIC_API_URL=https://api.example.invalid --build-arg NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ci' }
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Build ${{ matrix.app }} image (no secrets in the build)
-        run: docker build -f docker/${{ matrix.dockerfile }} ${{ matrix.args }} -t greenscape-${{ matrix.app }}:ci .
+        run: docker build -f apps/${{ matrix.app }}/Dockerfile ${{ matrix.args }} -t greenscape-${{ matrix.app }}:ci .
       - name: Trivy (OS and library vulnerabilities, misconfiguration)
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # 0.36.0 (0.28.0 used a setup-trivy tag that no longer exists)
         with:

@@ -79,7 +79,7 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL=$(val NEXT_PUBLIC_SUPABASE_URL); NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$(val NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)
           pnpm --filter @greenscape/api start > api-image-build.log 2>&1 &
           for i in $(seq 1 60); do curl -sf http://localhost:4000/v1/health/live >/dev/null && break; sleep 2; done
-          docker build --network host -f docker/next.Dockerfile --build-arg APP=web --build-arg PORT=3000             --build-arg NEXT_PUBLIC_API_URL=http://localhost:4000 --build-arg NEXT_PUBLIC_SUPABASE_URL="$NEXT_PUBLIC_SUPABASE_URL"             --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY" -t greenscape-web:ci .
+          docker build --network host -f apps/web/Dockerfile --build-arg NEXT_PUBLIC_API_URL=http://localhost:4000 --build-arg NEXT_PUBLIC_SUPABASE_URL="$NEXT_PUBLIC_SUPABASE_URL"             --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY" -t greenscape-web:ci .
       - name: Trivy (web image)
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # 0.36.0
         with:
