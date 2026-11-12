@@ -6,6 +6,7 @@ const ci = !!process.env.CI;
 
 export default defineConfig({
   testDir: 'tests/e2e',
+  testIgnore: ['**/visual/**'], // visual regression runs on its own: pnpm test:visual (playwright.visual.config.ts)
   fullyParallel: true,
   timeout: 90_000,
   globalSetup: './tests/e2e/setup.ts', // runs with selfies off and restores the local setting afterwards

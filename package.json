@@ -19,6 +19,7 @@
     "test": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
     "test:e2e": "playwright test",
+    "test:visual": "playwright test -c playwright.visual.config.ts",
     "supabase:start": "supabase start -x studio,imgproxy,vector,logflare,supavisor,postgres-meta,realtime,edge-runtime",
     "supabase:env": "node scripts/supabase-env.mjs",
     "lint": "eslint .",
