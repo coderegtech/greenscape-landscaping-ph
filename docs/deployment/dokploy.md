@@ -56,3 +56,27 @@ docker build -f apps/web/Dockerfile --build-arg NEXT_PUBLIC_API_URL=https://api.
 
 `docker/` now holds only the stacks around the services: `compose.dev.yml` (local databases), `compose.prod.yml`
 (the same services as one production-shaped stack) and the database init scripts.
+
+## Deploying from the `production` branch
+
+Point every Application at the branch **`production`**, not `main`. It holds only what the builds need and only
+commits that passed CI, Security and the staging check ([production-branch.md](production-branch.md),
+[ci-cd-pipeline.md](ci-cd-pipeline.md)). The Dockerfile paths and the build context (`.`) are the same on both
+branches. `PRODUCTION.json` at the root of the branch names the `main` commit that is deployed.
+
+Two ways to deploy after a publish. Either way, nothing deploys until you turn it on.
+
+| | How | Set up |
+|---|---|---|
+| **Dokploy watches the branch** | Provider GitHub, branch `production`, Auto Deploy on. Dokploy deploys on each push to the branch; the pipeline's push counts. | In Dokploy only. No secret in GitHub. |
+| **GitHub asks Dokploy** | The `Deploy production` workflow calls `POST <DOKPLOY_URL>/api/application.deploy` with the `x-api-key` header for each application id, in order. | Secrets `DOKPLOY_URL`, `DOKPLOY_API_KEY`; variable `DOKPLOY_APPLICATION_IDS` (`migrate api web admin employee` ids); `DOKPLOY_AUTO_DEPLOY=true` to run it after every publish, or run it by hand. |
+
+Use one, not both, or each publish deploys twice. With the first, a publish **is** a deployment, so keep
+`PRODUCTION_PUBLISH_ENABLED` off until the owner has approved deploying (`docs/deployment.md`).
+
+Checklist per Application: HTTPS domain from `subdomains.md` with the container port from the table above;
+restart policy on failure for the four services, none for `migrate`; health checks come from the images; runtime
+values from [environment-variables.md](environment-variables.md); databases without a public port; volumes for
+Postgres, MongoDB and Redis data; deployment logs are under each Application's Deployments tab.
+
+Rollback: [rollback.md](rollback.md).

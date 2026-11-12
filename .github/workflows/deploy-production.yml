@@ -1,0 +1,43 @@
+# Asks Dokploy to deploy what is on the `production` branch (docs/deployment/dokploy-setup.md). Run by hand, or by the
+# production pipeline after a publish when the repository variable DOKPLOY_AUTO_DEPLOY is true.
+# Needs: secrets DOKPLOY_URL (https://dokploy.example, no trailing slash) and DOKPLOY_API_KEY; variable
+# DOKPLOY_APPLICATION_IDS (application ids separated by spaces, in deploy order: migrate, api, web, admin, employee).
+# It builds nothing and holds no application secrets: those live in Dokploy.
+name: Deploy production
+
+on:
+  workflow_call:
+    secrets: # named, so a caller hands over these two and nothing else
+      DOKPLOY_URL:
+        required: false
+      DOKPLOY_API_KEY:
+        required: false
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  dokploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger the Dokploy deployments
+        env:
+          DOKPLOY_URL: ${{ secrets.DOKPLOY_URL }}
+          DOKPLOY_API_KEY: ${{ secrets.DOKPLOY_API_KEY }}
+          APPLICATION_IDS: ${{ vars.DOKPLOY_APPLICATION_IDS }}
+        run: |
+          if [ -z "$DOKPLOY_URL" ] || [ -z "$DOKPLOY_API_KEY" ] || [ -z "$APPLICATION_IDS" ]; then
+            echo "::error::Dokploy is not configured (DOKPLOY_URL, DOKPLOY_API_KEY, DOKPLOY_APPLICATION_IDS): nothing was deployed."
+            exit 1
+          fi
+          for id in $APPLICATION_IDS; do
+            [[ "$id" =~ ^[A-Za-z0-9_-]+$ ]] || { echo "::error::'$id' is not an application id"; exit 1; }
+            curl --fail-with-body -sS -X POST "$DOKPLOY_URL/api/application.deploy" \
+              -H "x-api-key: $DOKPLOY_API_KEY" -H 'content-type: application/json' -d "{\"applicationId\":\"$id\"}"
+            echo "requested deployment of $id" | tee -a "$GITHUB_STEP_SUMMARY"
+          done
