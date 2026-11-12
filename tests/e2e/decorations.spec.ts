@@ -11,7 +11,10 @@ const WIDTHS = [[1440, 900], [768, 1024], [390, 844]] as const;
 /** Visible accents that intersect a heading, paragraph, link, button, form control or price (by more than 4px²). */
 const overlaps = (page: Page) =>
   page.evaluate(() => {
-    const vis = (e: Element) => {
+    // Measure content where it rests: a reveal that has not played holds it invisible up to 20px lower (--reveal-y),
+    // inside the band the accents use. RevealLatch sets the same attribute once a reveal has played.
+    document.querySelectorAll('[data-reveal], [data-stagger] > *').forEach((e) => e.setAttribute('data-revealed', ''));
+    const vis =(e: Element) => {
       const r = e.getBoundingClientRect();
       const s = getComputedStyle(e);
       return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && Number(s.opacity) > 0;
