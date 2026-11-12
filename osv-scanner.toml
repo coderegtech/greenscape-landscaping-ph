@@ -15,11 +15,6 @@ ignoreUntil = 2027-02-10
 reason = "@opentelemetry/instrumentation-* (knex, mongoose, mysql, mysql2, pg, tedious): dev-only, via lighthouse@12 in scripts/audit; not shipped"
 
 [[IgnoredVulns]]
-id = "GHSA-c475-qrg2-pj4r"
-ignoreUntil = 2027-02-10
-reason = "basic-ftp 5.3.1: dev-only, via lighthouse@12 in scripts/audit; not shipped"
-
-[[IgnoredVulns]]
 id = "GHSA-7pqw-9j4j-h8q3"
 ignoreUntil = 2027-02-10
 reason = "extract-zip 2.0.1: dev-only, via lighthouse@12 in scripts/audit; not shipped"
