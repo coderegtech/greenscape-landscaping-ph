@@ -84,11 +84,11 @@ test.describe('with HR', () => {
     await signIn(page, hr.email);
     await expect(page.getByTestId('staff-identity')).toBeVisible();
     await page.goto(`${ADMIN}/employees/new`);
-    await page.getByLabel('First name').fill('Liza');
-    await page.getByLabel('Last name').fill(`Santos ${tag}`);
-    await page.getByLabel('Employee number').fill(`E2E-${randomUUID().slice(0, 6).toUpperCase()}`);
-    await page.getByLabel('Position').fill('Gardener');
-    await page.getByLabel(/^Work email/).fill(emp.email);
+    await page.getByLabel('First name').filter({ visible: true }).fill('Liza');
+    await page.getByLabel('Last name').filter({ visible: true }).fill(`Santos ${tag}`);
+    await page.getByLabel('Employee number').filter({ visible: true }).fill(`E2E-${randomUUID().slice(0, 6).toUpperCase()}`);
+    await page.getByLabel('Position').filter({ visible: true }).fill('Gardener');
+    await page.getByLabel(/^Work email/).filter({ visible: true }).fill(emp.email);
     await page.getByRole('button', { name: 'Add employee' }).click();
     await page.getByRole('button', { name: 'Create login' }).click();
     const temporary = (await page.getByTestId('temporary-password').locator('code').textContent())!.trim();

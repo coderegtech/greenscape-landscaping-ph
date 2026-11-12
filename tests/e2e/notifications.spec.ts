@@ -93,6 +93,7 @@ test.describe('notifications', () => {
   });
 
   test('alerts blocked by the browser are explained, never forced; the centre has no accessibility violations', async ({ browser }) => {
+    test.skip(!process.env.VAPID_PUBLIC_KEY, 'Web Push is not configured in this environment (pnpm vapid:keys)'); // without keys the page says push is not set up instead
     const u = await customerOnMessages(browser, 'nt-denied');
     await u.page.context().addInitScript(() => Object.defineProperty(Notification, 'permission', { get: () => 'denied' }));
     await u.page.goto(`${WEB}/account/notifications`);

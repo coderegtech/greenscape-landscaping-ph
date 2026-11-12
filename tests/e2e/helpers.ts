@@ -94,6 +94,14 @@ export async function completeMfa(page: import('@playwright/test').Page, userEma
   throw new Error('MFA code was not accepted');
 }
 
+/**
+ * React has hydrated the page (event handlers attached). Signed-in pages keep a live notifications stream open, so
+ * waitForLoadState('networkidle') never settles there.
+ */
+export async function hydrated(page: import('@playwright/test').Page) {
+  await page.waitForFunction(() => Object.keys(document).some((k) => k.startsWith('_reactListening')));
+}
+
 export async function signIn(page: import('@playwright/test').Page, userEmail: string, password = PASSWORD) {
   await page.getByLabel('Email').fill(userEmail);
   await page.getByLabel('Password', { exact: true }).fill(password);
@@ -101,7 +109,8 @@ export async function signIn(page: import('@playwright/test').Page, userEmail: s
   if (!page.url().startsWith(ADMIN)) return;
   // Admin: staff land on the MFA step, others on the console (or its "no access" notice).
   const landed = page.locator('[data-testid=mfa-enrol], [data-testid=mfa-verify], [data-testid=staff-identity], [data-testid=no-access]');
-  await expect(landed.first()).toBeVisible({ timeout: 30_000 });
+  await landed.first().waitFor({ state: 'attached', timeout: 30_000 }); // the staff badge is hidden on phones
+  if (await page.locator('[data-testid=mfa-enrol], [data-testid=mfa-verify]').count()) await expect(page.locator('[data-testid=mfa-enrol], [data-testid=mfa-verify]').first()).toBeVisible();
   if (await page.locator('[data-testid=mfa-enrol], [data-testid=mfa-verify]').count()) await completeMfa(page, userEmail);
 }
 

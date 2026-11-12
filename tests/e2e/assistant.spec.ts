@@ -1,11 +1,11 @@
 import { expect, test } from '@playwright/test';
-import { WEB, signedInCustomer } from './helpers';
+import { WEB, hydrated, signedInCustomer } from './helpers';
 
 // The local API answers with the offline mock provider (no API key in development), so replies start "(Test assistant)".
 
 test('a guest who opens the chat is asked to sign in', async ({ page }) => {
   await page.goto(`${WEB}/about`);
-  await page.waitForLoadState('networkidle'); // the launcher works once the page has hydrated
+  await hydrated(page); // the launcher works once the page has hydrated
   await page.getByTestId('chat-launcher').click();
   await expect(page.getByTestId('sign-in-prompt')).toBeVisible();
   await expect(page.getByTestId('sign-in-prompt').getByText(/chat with our AI assistant/)).toBeVisible();
@@ -15,7 +15,7 @@ test('a guest who opens the chat is asked to sign in', async ({ page }) => {
 test('a customer chats: AI disclosure, a streamed reply, history, keyboard close', async ({ page }) => {
   await signedInCustomer(page, 'chatter');
   await page.goto(`${WEB}/services`);
-  await page.waitForLoadState('networkidle'); // the launcher works once the page has hydrated
+  await hydrated(page); // the launcher works once the page has hydrated
   await page.getByTestId('chat-launcher').click();
   const panel = page.getByTestId('chat-panel');
   await expect(panel).toBeVisible();

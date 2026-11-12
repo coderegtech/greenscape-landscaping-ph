@@ -110,10 +110,10 @@ test.describe('admin access', () => {
     const mfa = process.env.REQUIRE_STAFF_MFA === 'true';
     await expect(async () => {
       await page.reload();
-      await expect(page.getByTestId(mfa ? 'mfa-enrol' : 'staff-identity')).toBeVisible({ timeout: 1000 });
+      await expect(page.getByTestId(mfa ? 'mfa-enrol' : 'staff-identity')).toBeAttached({ timeout: 1000 }); // badge hidden on phones
     }).toPass({ timeout: 100_000 }); // up to the 60 s permission-cache TTL, plus reload time under load
     if (mfa) await completeMfa(page, u.email);
-    await expect(page.getByTestId('staff-identity')).toContainText('content_manager');
+    await expect(page.getByTestId('staff-identity')).toContainText('content_manager', { useInnerText: false });
     await expect(page.getByTestId('api-status')).toHaveText('ok');
   });
 });

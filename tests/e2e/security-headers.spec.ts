@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { ADMIN_IA } from '../../apps/admin/lib/nav';
-import { ADMIN, WEB, signIn, staffUser } from './helpers';
+import { ADMIN, WEB, hydrated, signIn, staffUser } from './helpers';
 
 // Phase 12: both apps send a Content-Security-Policy, and real pages run under it with no violations
 // (a violation would mean a blocked script, style, image or request — usually a page that silently stops working).
@@ -56,7 +56,7 @@ test('admin: nonce-based CSP, new nonce per request, no violations', async ({ pa
   await expect(page.getByTestId('staff-identity')).toBeVisible();
   for (const href of ADMIN_IA.flatMap((g) => g.items).filter((i) => i.ready).map((i) => i.href)) {
     await page.goto(`${ADMIN}${href}`);
-    await page.waitForLoadState('networkidle');
+    await hydrated(page); // the live notifications stream never lets the network go idle on signed-in pages
     await drain();
   }
   expect(violations).toEqual([]);

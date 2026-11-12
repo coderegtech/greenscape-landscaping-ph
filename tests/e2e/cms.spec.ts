@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { expect, test } from '@playwright/test';
-import { ADMIN, WEB, signIn, staffUser } from './helpers';
+import { ADMIN, WEB, hydrated, signIn, staffUser } from './helpers';
 
 // Admin CMS flows write shared content, so they run once (desktop) rather than per device.
 test.skip(({ isMobile }) => isMobile, 'admin CMS flows run on desktop only');
@@ -86,7 +86,7 @@ test('validation errors are shown on the fields', async ({ page }) => {
 
 test('media library: upload, describe and delete an image', async ({ page }) => {
   await page.goto(`${ADMIN}/media`);
-  await page.waitForLoadState('networkidle'); // the drop zone listens only once hydrated
+  await hydrated(page); // the drop zone listens only once hydrated
   const name = `e2e-lawn-${randomUUID().slice(0, 6)}`;
   await page.getByTestId('dropzone').locator('input[type=file]').setInputFiles({ name: `${name}.png`, mimeType: 'image/png', buffer: PNG });
   await expect(page.getByText('1 image added to the library')).toBeVisible();
@@ -105,7 +105,7 @@ test('media library: upload, describe and delete an image', async ({ page }) => 
 
 test('a file that is not really an image is refused', async ({ page }) => {
   await page.goto(`${ADMIN}/media`);
-  await page.waitForLoadState('networkidle'); // the drop zone listens only once hydrated; a file set earlier is dropped
+  await hydrated(page); // the drop zone listens only once hydrated; a file set earlier is dropped
   await page.getByTestId('dropzone').locator('input[type=file]').setInputFiles({ name: 'fake.png', mimeType: 'image/png', buffer: Buffer.from('definitely not a png') });
   await expect(page.getByText(/^fake\.png: /)).toBeVisible();
 });
