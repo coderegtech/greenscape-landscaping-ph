@@ -28,8 +28,8 @@ export default defineConfig({
       url: 'http://localhost:4000/v1/health/live',
       reuseExistingServer: !ci,
       timeout: 60_000,
-      // Every test submission comes from 127.0.0.1; the production default (10/hour) would throttle the suite.
-      env: { ...(process.env as Record<string, string>), FORM_RATE_LIMIT_PER_HOUR: '1000' },
+      // Every test request comes from 127.0.0.1; the production defaults (10 forms/hour, 300 requests/min) would throttle the suite.
+      env: { ...(process.env as Record<string, string>), FORM_RATE_LIMIT_PER_HOUR: '1000', RATE_LIMIT_PER_MIN: '100000' },
     },
     { command: 'pnpm --filter @greenscape/web start', url: 'http://localhost:3000/api/health', reuseExistingServer: !ci, timeout: 60_000 },
     { command: 'pnpm --filter @greenscape/admin start', url: 'http://localhost:3001/api/health', reuseExistingServer: !ci, timeout: 60_000 },
