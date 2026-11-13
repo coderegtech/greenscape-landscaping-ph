@@ -8,9 +8,10 @@ Integration of 2026-11-13. Repository `coderegtech/greenscape-landscaping-ph`, t
   `integration/greenscape-complete` into `main`, merge commit **`c9df53b`**, 12 Nov 23:52:09 UTC
   (13 Nov 07:52 +08:00). Final integration commit: **`e8c544e`**.
 - **`main` is green on CI and Security** at `c9df53b`. Before the integration it was red on both.
-- **One thing is red:** the new production pipeline's `staging` job, which ran for the first time on `main` and ran
-  out of disk. It publishes and deploys nothing (both are switched off). A fix is proposed in
-  [PR #10](https://github.com/coderegtech/greenscape-landscaping-ph/pull/10), with these reports.
+- **The production pipeline passes on `main`** up to where it is switched off. Its first full run, after #9, ran
+  out of runner disk in `staging`. [PR #10](https://github.com/coderegtech/greenscape-landscaping-ph/pull/10)
+  (these reports and a disk clean-up step) merged as `699a8e7`, and the next run passed gate, snapshot and staging
+  (smoke test 8 of 8). Publish and deploy are switched off and did not run.
 
 ## How the merge happened
 
@@ -55,7 +56,7 @@ the Dependabot bump editing a line PR #8 moves, and the staging job's disk.
 | [#9](https://github.com/coderegtech/greenscape-landscaping-ph/pull/9) integration | merged, `c9df53b` |
 | [#8](https://github.com/coderegtech/greenscape-landscaping-ph/pull/8) production pipeline | merged through #9 |
 | [#6](https://github.com/coderegtech/greenscape-landscaping-ph/pull/6) `supabase/setup-cli` | closed by Dependabot, not merged |
-| [#10](https://github.com/coderegtech/greenscape-landscaping-ph/pull/10) reports and staging disk fix | open when this was written; to be merged once its CI and Security checks pass |
+| [#10](https://github.com/coderegtech/greenscape-landscaping-ph/pull/10) reports and staging disk fix | merged, `699a8e7`, after its 7 checks passed |
 
 `claude/vibrant-hugle-10207c` was the one completed branch with no pull request. One could not be opened: `main`
 already contained it ("No commits between main and claude/vibrant-hugle-10207c").
@@ -72,7 +73,7 @@ Full detail and raw output in `integration-test-results.md`.
 | Local, same tree | install, migrations (13, none pending), typecheck, lint, unit, build: pass. Integration 189 of 190, the one failure a missing local key file, its file rerun 12 of 12. |
 | Local Playwright | **not valid**: 198 passed, 82 failed, against dev servers that were restarted during the run. Not rerun. |
 | After the merge | `main` fetched, `c9df53b` confirmed as its head, `pnpm build` exit 0, smoke test 8 of 8 against the local servers |
-| Production pipeline on `main` | gate and snapshot passed; staging failed, "No space left on device"; publish and deploy skipped |
+| Production pipeline on `main` | at `c9df53b`: staging failed, "No space left on device". At `699a8e7`: gate, snapshot and staging passed, smoke test 8 of 8 against the snapshot images; publish and deploy skipped (switched off) |
 
 ## State of `main`
 

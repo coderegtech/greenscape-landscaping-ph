@@ -16,12 +16,12 @@ has the identical tree (`git diff e8c544e c9df53b` is empty), so results for one
 | `pnpm test:integration` | 189 of 190 passed; the 1 failure was a missing local file, see below | pass | 21 files, 190 passed |
 | `pnpm build` | exit 0 (also at `c9df53b`) | pass | pass |
 | `pnpm test:e2e` (Chromium, desktop and mobile projects, 344 tests) | **not a valid run**: 198 passed, 82 failed, 60 skipped, 4 did not run; see below | 280 passed, 2 flaky, 62 skipped, 0 failed (34.8 min) | 279 passed, 3 flaky, 62 skipped, 0 failed (36.9 min) |
-| Smoke test (`playwright.smoke.config.ts`) | 8 passed, at `c9df53b` | not part of CI | pipeline did not reach it |
+| Smoke test (`playwright.smoke.config.ts`) | 8 passed, at `c9df53b` | not part of CI | 8 passed in the pipeline's staging job at `699a8e7` |
 | Web image build and Trivy | not run | pass | pass |
 | Security: `dependencies` (pnpm audit, OSV-Scanner) | OSV-Scanner exit 0 | pass | pass |
 | Security: `static-analysis` (Semgrep) | before the fix: 1 finding; after: local rerun inconclusive | pass | pass |
 | Security: `secrets`, `images` ×3 | not run | pass | pass |
-| Production pipeline | cannot run locally | starts only from `main` | **failed** in `staging` (out of disk) |
+| Production pipeline | cannot run locally | starts only from `main` | at `c9df53b` **failed** in `staging` (out of disk); at `699a8e7` passed up to publish, which is off |
 
 GitHub runs: CI [43330484023](https://github.com/coderegtech/greenscape-landscaping-ph/actions/runs/43330484023) and
 Security [43330484156](https://github.com/coderegtech/greenscape-landscaping-ph/actions/runs/43330484156) on the pull
@@ -147,8 +147,18 @@ admin and employee portal from the snapshot". The runner's own annotation:
 System.IO.IOException: No space left on device : '/home/runner/actions-runner/cached/2.338.2/_diag/Worker_20261113-004217-utc.log'
 ```
 
-GitHub kept no step log for the job (the log request answers `BlobNotFound`). The fix proposed in PR #10 is
-described in `conflict-report.md` and is unproven until the pipeline runs on `main` again.
+GitHub kept no step log for the job (the log request answers `BlobNotFound`). The fix, a first step that removes
+preinstalled toolchains, is described in `conflict-report.md`. It merged with PR #10 as `699a8e7`, and the pipeline
+ran twice more:
+
+| Run | Started (UTC) | Result |
+| --- | --- | --- |
+| [43406213696](https://github.com/coderegtech/greenscape-landscaping-ph/actions/runs/43406213696) | 10:03:52 | gate only: CI was still running |
+| [43412057142](https://github.com/coderegtech/greenscape-landscaping-ph/actions/runs/43412057142) | 10:49:19 | gate, `snapshot` and `staging` **passed**; `publish` and `deploy` skipped (switched off) |
+
+`staging` took 13 min 42 s. After the clean-up step `df -h /` showed 33 GB free of 72 GB. All four images were
+built from the snapshot, the `migrate` image ran, every portal became healthy, and the smoke test ended
+`8 passed (23.2s)`.
 
 ## Not run
 

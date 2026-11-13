@@ -35,7 +35,7 @@ until 12 Nov and is now an ancestor of `main`.
 | `dependabot/github_actions/pnpm/action-setup-6.1.1` | — | — | deleted on GitHub (pruned by this fetch) | Already Merged | PR #2 merged. |
 | `dependabot/github_actions/aquasecurity/trivy-action-0.36.0` | — | — | gone | Superseded | PR #4 closed; `a740ff1` made the same bump by hand. |
 | `integration/greenscape-complete` | `e8c544e` | | yes, PR #9 merged | Already Merged | `c9df53b`. |
-| `docs/integration-reports` | see `final-merge-report.md` | | yes | this work | These reports and the staging disk fix. |
+| `docs/integration-reports` | `2fbcadb` | | yes, PR #10 merged | Already Merged | These reports and the staging disk fix. |
 
 Nothing is **Incomplete**, **Conflicted** or **Blocked**.
 
