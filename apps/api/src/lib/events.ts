@@ -23,6 +23,11 @@ export interface AppEvents {
   'leave.decided': { leaveId: string };
   'correction.requested': { correctionId: string };
   'correction.decided': { correctionId: string };
+  /** A schedule's shifts were edited (everyone on it), or one employee was moved onto a schedule. */
+  'schedule.changed': { scheduleId: string; employeeId?: string; effectiveFrom?: string };
+  /** A day was closed without a clock-out: the employee should ask for a correction. */
+  'attendance.incomplete': { recordId: string };
+  'testimonial.submitted': { testimonialId: string; rating: number };
 }
 export type EventName = keyof AppEvents;
 type Handler<K extends EventName> = (payload: AppEvents[K]) => unknown;

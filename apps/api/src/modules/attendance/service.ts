@@ -191,7 +191,7 @@ export async function cancelLeave(deps: Pick<Deps, 'db'>, id: string, by: { user
  * For the last two days: scheduled employees with no record become ABSENT (or HOLIDAY / ON_LEAVE), and records still
  * clocked in after the day is over become INCOMPLETE. Idempotent; runs every 15 minutes under a Redis lock.
  */
-export async function closeDays(deps: Pick<Deps, 'db'>, now = new Date()) {
+export async function closeDays(deps: Pick<Deps, 'db'> & Partial<Pick<Deps, 'events'>>, now = new Date()) {
   const { db } = deps;
   const today = manilaDate(now);
   let changed = 0;
@@ -200,6 +200,7 @@ export async function closeDays(deps: Pick<Deps, 'db'>, now = new Date()) {
     const before = await db.attendanceRecord.findUniqueOrThrow({ where: { id: r.id }, select: { status: true } });
     const after = await recompute(db, r.id, { now });
     if (after.status !== before.status) changed++;
+    if (after.status === 'INCOMPLETE' && before.status !== 'INCOMPLETE') await deps.events?.emit('attendance.incomplete', { recordId: r.id });
   }
   const employees = await db.employee.findMany({ where: { employmentStatus: { in: ['ACTIVE', 'PROBATION'] } }, select: { id: true } });
   for (const d of [addDays(today, -2), addDays(today, -1)]) {
@@ -234,6 +235,31 @@ export function startAttendanceJobs(deps: Deps, everyMs = 15 * 60_000) {
 }
 
 /** Today's view for an employee: schedule segments, record, and which button to show. */
+/** The next `days` calendar days for one employee: shifts, holidays and approved leave. Three queries, whatever the span. */
+export async function upcoming(deps: Pick<Deps, 'db'>, employeeId: string, days = 14, now = new Date()) {
+  const { db } = deps;
+  const from = manilaDate(now);
+  const to = addDays(from, days - 1);
+  const [assignments, holidays, leave] = await Promise.all([
+    db.scheduleAssignment.findMany({ where: { employeeId, effectiveFrom: { lte: toDate(to) }, OR: [{ effectiveTo: null }, { effectiveTo: { gte: toDate(from) } }] }, orderBy: { effectiveFrom: 'desc' }, include: { schedule: { include: { shifts: true } } } }),
+    db.holiday.findMany({ where: { date: { gte: toDate(from), lte: toDate(to) } } }),
+    db.leaveRequest.findMany({ where: { employeeId, status: 'APPROVED', startDate: { lte: toDate(to) }, endDate: { gte: toDate(from) } }, select: { startDate: true, endDate: true } }),
+  ]);
+  return Array.from({ length: days }, (_, i) => {
+    const date = addDays(from, i);
+    const d = toDate(date).getTime();
+    const s = assignments.find((a) => a.effectiveFrom.getTime() <= d && (!a.effectiveTo || a.effectiveTo.getTime() >= d))?.schedule;
+    const h = holidays.find((x) => x.date.getTime() === d);
+    return {
+      date,
+      schedule: s ? { name: s.name, flexible: s.isFlexible } : null,
+      segments: s ? segmentsFor(s.shifts, date).map((g) => ({ start: g.start.toISOString(), end: g.end.toISOString(), breakMinutes: g.breakMinutes })) : [],
+      holiday: h ? { name: h.name, working: h.type === 'special_working' } : null,
+      onLeave: leave.some((l) => l.startDate.getTime() <= d && l.endDate.getTime() >= d),
+    };
+  });
+}
+
 export async function today(deps: Pick<Deps, 'db'>, employeeId: string, now = new Date()) {
   const { db } = deps;
   const last = await db.timePunch.findFirst({ where: { record: { employeeId } }, orderBy: { at: 'desc' } });

@@ -6,7 +6,7 @@ import { AppError } from '../../lib/errors.ts';
 import { registry } from '../../lib/openapi.ts';
 import { currentAuth, requirePermission } from '../../middleware/auth.ts';
 import { formLimit } from '../../middleware/form-limit.ts';
-import { cancelLeave, ensureBalances, punch, requestLeave, toDate, toPunches, today, ymd } from './service.ts';
+import { cancelLeave, ensureBalances, punch, requestLeave, toDate, toPunches, today, upcoming, ymd } from './service.ts';
 import { addDays, manilaDate } from './time.ts';
 import { ATTACHMENT_TYPES, PHOTO_TYPES, reserveUpload, selfieSettings, verifyUpload } from './uploads.ts';
 
@@ -42,6 +42,11 @@ export function attendanceSelfRoutes(deps: Deps) {
     const e = await me(res);
     const { mode, retentionDays } = await selfieSettings(deps);
     res.set('cache-control', 'no-store').json({ employee: { name: `${e.firstName} ${e.lastName}`, employeeNo: e.employeeNo }, selfie: { mode, retentionDays }, ...(await today(deps, e.id)) });
+  });
+  // The signed-in employee's own next two weeks (shifts, holidays, approved leave). Nobody else's schedule is reachable here.
+  r.get('/me/schedule', requirePermission('attendance.self'), async (_req, res) => {
+    const e = await me(res);
+    res.set('cache-control', 'no-store').json({ days: await upcoming(deps, e.id) });
   });
   r.post('/me/attendance/punch', requirePermission('attendance.self'), async (req, res) => {
     const e = await me(res);

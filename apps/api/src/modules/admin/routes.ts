@@ -106,6 +106,10 @@ export function adminRoutes(deps: Deps) {
     })());
     if (allowed(res, 'leave.read')) jobs.push(db.leaveRequest.count({ where: { status: 'PENDING' } }).then((n) => { out.leave = { pending: n }; }));
     if (allowed(res, 'testimonials.moderate')) jobs.push(mongo.db.collection(collections.testimonials).countDocuments({ status: 'pending' }).then((n) => { out.testimonials = { pending: n }; }));
+    // Latest content changes, from the audit trail (no document bodies: just what changed, by whom, when).
+    if (allowed(res, 'cms.read')) jobs.push(db.auditLog.findMany({ where: { action: { startsWith: 'cms.' } }, orderBy: { createdAt: 'desc' }, take: 5, select: { id: true, action: true, entityType: true, entityId: true, createdAt: true, actor: { select: { displayName: true, email: true } } } }).then((rows) => {
+      out.content = { recent: rows.map((a) => ({ id: a.id, action: a.action, type: a.entityType, record: a.entityId, by: a.actor?.displayName ?? a.actor?.email ?? null, at: a.createdAt.toISOString() })) };
+    }));
     await Promise.all(jobs);
     res.set('cache-control', 'no-store').json(out);
   });

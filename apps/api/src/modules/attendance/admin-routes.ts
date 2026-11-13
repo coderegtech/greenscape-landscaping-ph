@@ -175,6 +175,7 @@ export function hrRoutes(deps: Deps) {
       return tx.workSchedule.update({ where: { id }, data: { name: s.name, graceMinutes: s.graceMinutes, isFlexible: s.isFlexible, shifts: { create: s.shifts } }, include: { shifts: true } });
     });
     await audit(db, req, res, { action: 'schedule.update', entityType: 'schedule', entityId: id });
+    await deps.events.emit('schedule.changed', { scheduleId: id });
     res.json(scheduleView(out));
   });
   r.post('/employees/:id/schedule', requirePermission('employees.manage'), async (req, res) => {
@@ -189,6 +190,7 @@ export function hrRoutes(deps: Deps) {
       await tx.scheduleAssignment.create({ data: { employeeId, scheduleId, effectiveFrom: day } });
     });
     await audit(db, req, res, { action: 'schedule.assign', entityType: 'employee', entityId: employeeId, after: { scheduleId, effectiveFrom } });
+    await deps.events.emit('schedule.changed', { scheduleId, employeeId, effectiveFrom });
     res.json(await employeeView(employeeId));
   });
 
