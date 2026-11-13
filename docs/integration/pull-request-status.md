@@ -20,7 +20,7 @@
 | PR | Branch | Purpose | State |
 | --- | --- | --- | --- |
 | [#9](https://github.com/coderegtech/greenscape-landscaping-ph/pull/9) | `integration/greenscape-complete` | The integration pull request: PR #8's commits and the two Security fixes. | **Merged** as `c9df53b` on 12 Nov 23:52:09 UTC (13 Nov 07:52 +08:00) by `coderegtech`. |
-| [#10](https://github.com/coderegtech/greenscape-landscaping-ph/pull/10) | `docs/integration-reports` | These eleven reports, and the staging job's disk fix. | See `final-merge-report.md`. |
+| [#10](https://github.com/coderegtech/greenscape-landscaping-ph/pull/10) | `docs/integration-reports` | These eleven reports, and the staging job's disk fix. | **Merged** as `699a8e7` on 13 Nov 10:01:40 UTC, after its 7 checks passed. |
 
 How #9 was merged: not by the session that opened it. It was merged from the owner's account while `verify` was
 still running (all six Security checks had passed; `verify` finished 32 minutes later, at 00:24:39 UTC, with

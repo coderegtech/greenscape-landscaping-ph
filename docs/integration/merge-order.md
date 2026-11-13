@@ -11,7 +11,7 @@ Derived from `dependency-graph.md`. Base: `origin/main`.
 | 4 | fix: named secrets for the deploy workflow call | commit `9427c9a` | Semgrep finding gone (see `integration-test-results.md`). |
 | 5 | fix: `basic-ftp` override | commit `e8c544e` | OSV-Scanner exits 0. |
 | 6 | PR #9 into `main` | merge commit on GitHub | `c9df53b`. |
-| 7 | `docs/integration/` and the staging disk fix | branch `docs/integration-reports`, its own pull request | see `final-merge-report.md`. |
+| 7 | `docs/integration/` and the staging disk fix | branch `docs/integration-reports`, its own pull request | `699a8e7` (PR #10). |
 
 The reports were kept out of PR #9 on purpose: a push to its branch would have cancelled and restarted the
 40-minute `verify` run.
