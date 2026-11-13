@@ -1,6 +1,6 @@
 # Notifications
 
-Real-time in-app notifications and Web Push, for the customer site (`apps/web`) and the staff console (`apps/admin`).
+Real-time in-app notifications and Web Push, for the customer site (`apps/web`), the staff console (`apps/admin`) and the employee portal (`apps/employee`). Sounds, the 2026-11 additions and the portal UI: [`docs/notifications/`](notifications/architecture.md).
 
 ## 1. What was there, what was chosen
 
@@ -86,8 +86,11 @@ Authorization: every query includes `recipientId = <caller>`; someone else's id 
 | `message.from_customer` | `messages.read` (admin) | New message from … (once per unread batch, like the email) |
 | `message.from_staff` | the customer | Greenscape replied to your message |
 | `inquiry.received` | `messages.read` (admin) | Website message from … |
-| `leave.requested` / `leave.decided` | `leave.approve` / the employee | Leave request from … / Your leave was approved, declined or cancelled |
-| `correction.requested` / `correction.decided` | `attendance.approve` / the employee | Time correction … |
+| `leave.requested` / `leave.decided` | `leave.approve` / the employee (employee app, `/requests`) | Leave request from … / Your leave was approved, declined or cancelled |
+| `correction.requested` / `correction.decided` | `attendance.approve` / the employee (employee app, `/attendance`) | Time correction … |
+| `schedule.changed` | the employee moved onto a schedule, or everyone currently on an edited schedule (employee app) | Your work schedule changed / was updated (`/schedule`) |
+| `attendance.incomplete` | the employee (employee app), when the day-close job finds no clock-out | You did not clock out (`/attendance`) |
+| `testimonial.submitted` | `testimonials.moderate` (admin) | New review to moderate (`/cms/testimonials`); no reviewer name or text |
 | announcement | chosen audience | Admin → Notifications → Send an announcement |
 
 Payload stored with a notification: `{ href }` (a path inside the app that shows it). Push body: `{ id, title, body, url, tag, priority, icon }`.
