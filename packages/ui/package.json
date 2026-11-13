@@ -12,6 +12,7 @@
     "./notifications/sw": "./src/notifications/sw.ts",
     "./notifications/push": "./src/notifications/push.ts",
     "./notifications/format": "./src/notifications/format.ts",
+    "./notifications/sound-manager": "./src/notifications/sound-manager.ts",
     "./notifications/*": "./src/notifications/*.tsx",
     "./lib/*": "./src/lib/*.ts",
     "./hooks/*": "./src/hooks/*.ts",
