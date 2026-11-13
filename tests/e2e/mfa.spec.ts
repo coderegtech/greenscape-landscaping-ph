@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { ADMIN, PASSWORD, completeMfa, staffUser } from './helpers';
+import { ADMIN, PASSWORD, completeMfa, staffUser, signOut } from './helpers';
 
 // Optional hardening (REQUIRE_STAFF_MFA=true on the API; off by default, no mandatory authenticator enrolment).
 // When on: staff need an authenticator app. First sign-in enrols; later sign-ins are challenged; a wrong code
@@ -37,7 +37,7 @@ test('staff enrol an authenticator, then are challenged at every sign-in', async
   await expect(page.getByTestId('staff-identity')).toBeVisible();
 
   // Sign out and back in: now a challenge, not a new enrolment.
-  await page.getByRole('button', { name: 'Sign out' }).click();
+  await signOut(page);
   await signInPassword();
   await expect(page.getByTestId('mfa-verify')).toBeVisible();
   await completeMfa(page, u.email);

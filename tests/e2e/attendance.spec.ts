@@ -106,6 +106,7 @@ test.describe('with HR', () => {
     // Then clocks in and asks for yesterday to be corrected.
     await staff.getByRole('button', { name: 'Clock in' }).click();
     await expect(staff.getByTestId('clock-status')).toContainText('Clocked in since');
+    await staff.goto(`${EMPLOYEE}/attendance`);
     await staff.getByRole('button', { name: 'Ask for a correction', exact: true }).click(); // a per-day "Correct …" button also exists once a past day is on the list
     const dialog = staff.getByRole('dialog');
     await dialog.getByLabel('Day', { exact: true }).fill(manila(-1));
@@ -130,7 +131,7 @@ test.describe('with HR', () => {
 
     // Leave: request at the portal, approve in the admin, the employee sees it.
     const day = manila(21);
-    await staff.reload();
+    await staff.goto(`${EMPLOYEE}/requests`);
     await staff.getByRole('combobox', { name: /^Type/ }).selectOption({ label: 'Service incentive leave' });
     await staff.getByLabel('First day').fill(day);
     await staff.getByLabel('Half day').check();
@@ -177,6 +178,7 @@ test('a selfie goes with the clock-in when HR turns selfies on; HR opens it; the
     await staff.getByRole('button', { name: 'Clock in' }).click();
     await expect(staff.getByTestId('clock-status')).toContainText('Clocked in since');
     await expect.poll(async () => (await db.timePunch.findFirst({ where: { record: { employeeId: w.employee.id } } }))?.photoMediaId ?? null).not.toBeNull();
+    await staff.goto(`${EMPLOYEE}/attendance`);
     await expect(staff.getByTestId('month-calendar')).toContainText('Clocked in');
     await staff.context().close();
 
