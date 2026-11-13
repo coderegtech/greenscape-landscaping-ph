@@ -79,9 +79,9 @@ export function ClockCard({ today: t, correctionPending = false }: { today: Toda
           </div>
           <p className="tabular flex items-baseline gap-2 font-bold" aria-live="off" suppressHydrationWarning>
             <time className="text-[clamp(3.25rem,16vw,5.5rem)] leading-none tracking-tight" suppressHydrationWarning>{parts ? `${part('hour')}:${part('minute')}` : '--:--'}</time>
-            <span className="flex flex-col text-lg leading-tight opacity-90" suppressHydrationWarning>
+            <span className="flex flex-col text-lg leading-tight" suppressHydrationWarning>
               <span suppressHydrationWarning>{part('dayPeriod').toUpperCase()}</span>
-              <span className="text-base font-medium opacity-80" aria-hidden suppressHydrationWarning>:{part('second') || '--'}</span>
+              <span className="text-base font-medium" aria-hidden suppressHydrationWarning>:{part('second') || '--'}</span>
             </span>
           </p>
           <p className="text-base font-medium" role="status" data-testid="clock-status">
@@ -89,8 +89,8 @@ export function ClockCard({ today: t, correctionPending = false }: { today: Toda
           </p>
           <dl className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {facts.map(([k, v]) => (
-              <div key={k} className="flex flex-col gap-0.5 rounded-xl bg-paper-3/15 px-3 py-2.5">
-                <dt className="text-xs font-medium opacity-90">{k}</dt>
+              <div key={k} className="flex flex-col gap-0.5 rounded-xl bg-black/20 px-3 py-2.5">
+                <dt className="text-xs font-medium">{k}</dt>
                 <dd className="tabular truncate text-base font-bold">{v}</dd>
               </div>
             ))}

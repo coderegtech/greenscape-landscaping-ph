@@ -32,9 +32,9 @@ const matches = (href: string, path: string) => (href === '/' ? path === '/' : p
 
 function Brand({ collapsed }: { collapsed?: boolean }) {
   return (
-    <Link href="/" className="flex h-10 items-center gap-3 px-2 text-ink no-underline" aria-label="Greenscape, dashboard">
+    <Link href="/" className="flex h-10 items-center gap-3 px-2 text-ink no-underline">
       <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-xl bg-signal text-signal-ink"><Leaf className="size-5" /></span>
-      <span className={cn('flex min-w-0 flex-col leading-tight', collapsed && 'sr-only')} aria-hidden>
+      <span className={cn('flex min-w-0 flex-col leading-tight', collapsed && 'sr-only')}>
         <span className="truncate text-base font-bold">Greenscape</span>
         <span className="truncate text-xs text-muted">Admin console</span>
       </span>
@@ -102,9 +102,10 @@ function ProfileMenu({ user, children }: { user: AdminUser; children?: ReactNode
   return (
     <PopoverPrimitive.Root>
       <PopoverPrimitive.Trigger asChild>
-        <button type="button" aria-label={`Account menu, ${user.name}`} className="press flex h-10 items-center gap-2 rounded-pill border border-rule bg-paper-3 py-1 pr-2 pl-1 text-sm font-medium text-ink hover:bg-paper-2" data-testid="account-menu">
-          <span aria-hidden className="grid size-8 place-items-center rounded-full bg-signal text-xs font-bold text-signal-ink">{initials(user.name)}</span>
+        <button type="button" className="press flex h-10 items-center gap-2 rounded-pill border border-rule bg-paper-3 py-1 pr-2 pl-1 text-sm font-medium text-ink hover:bg-paper-2" data-testid="account-menu">
+          <span className="grid size-8 place-items-center rounded-full bg-signal text-xs font-bold text-signal-ink">{initials(user.name)}</span>
           <span className="hidden max-w-40 truncate md:inline">{user.name}</span>
+          <span className="sr-only">, account menu</span>
           <ChevronDown aria-hidden className="size-4 text-muted" />
         </button>
       </PopoverPrimitive.Trigger>

@@ -73,13 +73,13 @@ export function MonthCalendar({ month, today, days, shifts = {} }: { month: stri
                 onClick={() => setPicked(date)}
                 aria-pressed={date === selected}
                 aria-current={date === today ? 'date' : undefined}
-                aria-label={`${utc(date, { weekday: 'long', day: 'numeric', month: 'long' })}: ${what}`}
                 className={`${k ? `tone-${k.tone} bg-(--tone-soft) text-(--tone-ink)` : 'text-ink-2 hover:bg-paper-2'} press flex min-h-14 w-full flex-col items-center justify-start gap-0.5 rounded-xl p-1 aria-pressed:outline-2 aria-pressed:outline-offset-1 aria-pressed:outline-signal sm:min-h-16`}
               >
                 <span className={`tabular grid size-6 place-items-center rounded-full text-sm font-semibold ${date === today ? 'bg-signal text-signal-ink' : ''}`}>{i + 1}</span>
+                {/* Read as "13 November, Friday: Clocked in": starts with the number on screen (WCAG 2.5.3). */}
+                <span className="sr-only">{` ${utc(date, { month: 'long' })}, ${utc(date, { weekday: 'long' })}: ${d ? '' : what}`}</span>
                 {k && <k.icon aria-hidden className="size-3.5" />}
-                {d && <span className="hidden text-[0.6875rem] leading-tight sm:block">{d.statusLabel}</span>}
-                {d && <span className="sr-only sm:hidden">{d.statusLabel}</span>}
+                {d && <span className="sr-only text-[0.6875rem] leading-tight sm:not-sr-only">{d.statusLabel}</span>}
               </button>
             </li>
           );

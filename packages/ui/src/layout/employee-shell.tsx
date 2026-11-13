@@ -29,9 +29,9 @@ export function PortalShell({ name, pending, children }: { name: string; pending
       <a href="#main" className="sr-only z-[300] rounded-lg bg-signal px-4 py-3 font-bold text-signal-ink focus:not-sr-only focus:fixed focus:top-2 focus:left-2">Skip to content</a>
       <header className="sticky top-0 z-[200] border-b border-rule bg-paper/90 backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-[64rem] items-center gap-2 px-4 md:px-6">
-          <Link href="/" className="mr-auto flex items-center gap-2.5 text-ink no-underline md:mr-6" aria-label="Greenscape employee portal, dashboard">
+          <Link href="/" className="mr-auto flex items-center gap-2.5 text-ink no-underline md:mr-6">
             <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-signal-deep text-signal-ink"><Leaf className="size-5" /></span>
-            <span aria-hidden className="text-base font-bold">Greenscape</span>
+            <span className="text-base font-bold">Greenscape<span className="sr-only"> employee portal</span></span>
           </Link>
           <nav aria-label="Portal" className="mr-auto hidden items-center gap-1 md:flex">
             {NAV.slice(0, 4).map((n) => (
@@ -45,8 +45,8 @@ export function PortalShell({ name, pending, children }: { name: string; pending
           </nav>
           <SoundToggle />
           <NotificationBell centerHref="/notifications" />
-          <Link href="/profile" aria-label={`Profile, ${name}`} aria-current={on('/profile') ? 'page' : undefined} className="press hidden size-10 place-items-center rounded-full bg-signal-deep text-sm font-bold text-signal-ink no-underline outline-offset-2 aria-[current=page]:outline-2 aria-[current=page]:outline-signal md:grid">
-            <span aria-hidden>{initials}</span>
+          <Link href="/profile" aria-current={on('/profile') ? 'page' : undefined} className="press hidden size-10 place-items-center rounded-full bg-signal-deep text-sm font-bold text-signal-ink no-underline outline-offset-2 aria-[current=page]:outline-2 aria-[current=page]:outline-signal md:grid">
+            {initials}<span className="sr-only"> profile</span>
           </Link>
         </div>
       </header>

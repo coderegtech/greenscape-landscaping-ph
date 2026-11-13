@@ -197,7 +197,7 @@ test.describe('employee portal', () => {
     // Calendar: today carries its status in words; picking it shows the day's details; the legend explains the colours.
     await page.goto(`${EMPLOYEE}/attendance`);
     const today = page.getByTestId('month-calendar').locator('button[aria-current=date]');
-    await expect(today).toHaveAccessibleName(/Clocked in/);
+    await expect(today).toHaveAccessibleName(/^\d+ \w+, \w+: Clocked in$/);
     await today.click();
     await expect(today).toHaveAttribute('aria-pressed', 'true');
     await expect(page.getByTestId('day-details')).toContainText('Clocked in');
@@ -235,7 +235,7 @@ test.describe('employee portal', () => {
       await item.getByRole('link').click();
       await expect(page).toHaveURL(`${EMPLOYEE}/schedule`);
       await expect(page.getByTestId('schedule-days').first()).toContainText('8:00 AM to 5:00 PM');
-      await expect(page.getByText(`You are on "${name}"`)).toBeVisible();
+      await expect(page.getByText(`You are on "${name}". HR tells you`)).toBeVisible(); // the toast says it too
 
       // The other employee's inbox has nothing, and they cannot read this one by id either.
       const theirs = await (await call('/v1/notifications?app=employee', other.token)).json();
