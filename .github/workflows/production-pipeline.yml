@@ -115,6 +115,12 @@ jobs:
           ref: ${{ needs.gate.outputs.sha }}
           fetch-depth: 0
           persist-credentials: false
+      # The local stack plus four image builds overran the runner's disk on the first run on main ("No space left on
+      # device" while building the three Next images). These preinstalled toolchains are not used by this job.
+      - name: Free runner disk
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h /
       - uses: ./.github/actions/local-stack
       - name: Generate the snapshot
         env:
