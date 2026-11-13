@@ -5,7 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createApp } from '../../apps/api/src/app.ts';
 import { closeDeps, type Deps } from '../../apps/api/src/lib/deps.ts';
 import { closeDays, punch, toDate } from '../../apps/api/src/modules/attendance/service.ts';
-import { addDays, manilaDate, manilaInstant } from '../../apps/api/src/modules/attendance/time.ts';
+import { addDays, manilaDate, manilaInstant, weekdayOf } from '../../apps/api/src/modules/attendance/time.ts';
 import { keepSelfieSetting, testDeps } from './helpers.ts';
 import { deleteAuthUsers, signedInUser } from './supabase.ts';
 
@@ -117,6 +117,32 @@ describe('missed clock-out', () => {
     const rows = await inbox(mine.userId, 'attendance.incomplete');
     expect(rows).toHaveLength(1);
     expect(rows[0]).toMatchObject({ app: 'employee', priority: 'HIGH', payload: { href: '/attendance' } });
+  });
+});
+
+describe('late work', () => {
+  it('a clock-in after the cut-off stays clocked in for 4 hours before it counts as a missing time out', async () => {
+    let day = addDays(manilaDate(new Date()), -6);
+    while (weekdayOf(day) === 0 || weekdayOf(day) === 6) day = addDays(day, -1); // a working day on the 07:00 to 16:00 schedule
+    await deps.db.scheduleAssignment.create({ data: { employeeId: other.employeeId, scheduleId, effectiveFrom: toDate(day), effectiveTo: toDate(addDays(manilaDate(new Date()), -1)) } });
+    await punch(deps, other.employeeId, 'IN', '127.0.0.1', manilaInstant(day, '22:30')); // cut-off is 20:00
+    const rec = () => deps.db.attendanceRecord.findUniqueOrThrow({ where: { employeeId_workDate: { employeeId: other.employeeId, workDate: toDate(day) } } });
+    expect((await rec()).status).toBe('OPEN');
+    await closeDays(deps, manilaInstant(day, '23:59'));
+    expect((await rec()).status).toBe('OPEN');
+    await closeDays(deps, manilaInstant(addDays(day, 1), '02:31'));
+    expect((await rec()).status).toBe('INCOMPLETE');
+  });
+});
+
+describe('role changes', () => {
+  it('a staff member is told in the console as well as on the website', async () => {
+    const boss = await user('boss', 'super_admin');
+    const staff = await user('staff', 'admin');
+    await request(app).put(`/v1/users/${staff.userId}/roles`).set(as(boss.token)).send({ roles: ['admin', 'content_manager'] }).expect(200);
+    const rows = await inbox(staff.userId, 'user.roles_changed');
+    for (let i = 0; i < 20 && rows.length < 2; i++) { await new Promise((r) => setTimeout(r, 100)); rows.splice(0, rows.length, ...(await inbox(staff.userId, 'user.roles_changed'))); }
+    expect(rows.map((n) => n.app).sort()).toEqual(['admin', 'web']);
   });
 });
 

@@ -5,7 +5,7 @@ import type { z } from '@greenscape/validation';
 import type { LeaveRequestInput, ProposedPunch } from '@greenscape/validation';
 import type { Deps } from '../../lib/deps.ts';
 import { AppError } from '../../lib/errors.ts';
-import { addDays, computeDay, leaveDays, manilaDate, manilaInstant, segmentsFor, weekdayOf, workDateFor, type Shift } from './time.ts';
+import { SHIFT_WINDOW_MS, addDays, computeDay, leaveDays, manilaDate, manilaInstant, pairPunches, segmentsFor, weekdayOf, workDateFor, type Shift } from './time.ts';
 import { purgeOldSelfies } from './uploads.ts';
 
 type Tx = Prisma.TransactionClient | Db;
@@ -40,7 +40,10 @@ export async function recompute(db: Tx, recordId: string, opts: { now?: Date; re
   const sched = await scheduleOn(db, r.employeeId, date);
   const shifts = sched?.shifts ?? [];
   const res = computeDay(segmentsFor(shifts, date), r.punches.map((p) => ({ type: p.type, at: p.at })), sched?.graceMinutes ?? 0, sched?.isFlexible ?? false);
-  const over = now >= dayOverAt(shifts, date);
+  // A clock-in after the day's cut-off (late or overtime work) is still running, not missing its time out: it gets the
+  // same 4 h window as a shift before it counts as forgotten.
+  const openIn = pairPunches(r.punches.map((p) => ({ type: p.type, at: p.at }))).find((p) => !p.out)?.in;
+  const over = now >= dayOverAt(shifts, date) && (!openIn || now.getTime() >= openIn.getTime() + SHIFT_WINDOW_MS);
   let status: typeof r.status;
   if (!r.punches.length) status = r.status === 'ON_LEAVE' || r.status === 'HOLIDAY' ? r.status : 'ABSENT';
   else if (res.open) status = over ? 'INCOMPLETE' : 'OPEN';

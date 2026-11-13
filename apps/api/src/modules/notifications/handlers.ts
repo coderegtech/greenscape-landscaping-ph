@@ -20,7 +20,8 @@ export function registerNotificationHandlers({ db, events }: Pick<Deps, 'db' | '
   events.on('user.roles_changed', async ({ userId, roles }) => {
     const x = { type: 'user.roles_changed', category: 'account', title: 'Your access was changed', message: roles.length ? `Your account now has these roles: ${roles.join(', ')}. If you did not expect this, tell an administrator.` : 'All roles were removed from your account. If you did not expect this, tell an administrator.', priority: 'HIGH', dedupeKey: `user.roles_changed:${userId}:${roles.join(',')}:${new Date().toISOString().slice(0, 13)}` } as const;
     await toUser(userId, 'web', { ...x, href: '/account' });
-    if (roles.some((r) => !STAFF_ROLES_EXCLUDED.has(r))) await toUser(userId, 'admin', { ...x, href: '/' });
+    // Own key per app: UNIQUE(recipient, dedupeKey) would otherwise drop the console copy as a repeat of the website one.
+    if (roles.some((r) => !STAFF_ROLES_EXCLUDED.has(r))) await toUser(userId, 'admin', { ...x, href: '/', dedupeKey: `${x.dedupeKey}:admin` });
   });
 
   // ── quotations ──
