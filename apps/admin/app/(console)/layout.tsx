@@ -2,10 +2,16 @@ import { SignOutButton } from '@greenscape/ui/auth-forms';
 import { AdminShell } from '@greenscape/ui/layout/admin-shell';
 import { NotificationBell } from '@greenscape/ui/notifications/bell';
 import { NotificationsProvider } from '@greenscape/ui/notifications/provider';
+import { SoundToggle } from '@greenscape/ui/notifications/sound';
+import Link from 'next/link';
 import { navFor } from '@/lib/nav';
-import { getStaff } from '@/lib/session';
+import { withIcons } from '@/lib/nav-icons';
+import { badgesFrom, getOverview } from '@/lib/overview';
+import { can, getStaff } from '@/lib/session';
 
 export const dynamic = 'force-dynamic';
+
+const menuLink = 'flex h-10 items-center rounded-lg px-3 text-sm font-medium text-ink no-underline hover:bg-paper-2';
 
 export default async function ConsoleLayout({ children }: { children: React.ReactNode }) {
   const me = await getStaff();
@@ -22,23 +28,32 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
       </main>
     );
   }
+  // The same call the dashboard makes (cached per request): its counts become the menu badges.
+  const overview = await getOverview();
   return (
     <NotificationsProvider app="admin" apiUrl={process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}>
-    <AdminShell
-      groups={navFor(me)}
-      title="Greenscape Admin"
-      actions={<NotificationBell centerHref="/notifications" />}
-      account={
-        <div className="flex items-center gap-3">
-          <span className="hidden text-sm text-ink-2 md:inline" data-testid="staff-identity">
-            {me.user.email} ({me.roles.join(', ')})
-          </span>
-          <SignOutButton />
-        </div>
-      }
-    >
-      {children}
-    </AdminShell>
+      <AdminShell
+        groups={withIcons(navFor(me, badgesFrom(overview)))}
+        title="Greenscape Admin"
+        user={{ name: me.user.displayName || me.user.email, email: me.user.email, roles: me.roles }}
+        actions={
+          <>
+            <SoundToggle />
+            <NotificationBell centerHref="/notifications" />
+          </>
+        }
+        account={
+          <>
+            <nav aria-label="Account" className="flex flex-col border-y border-rule py-2">
+              <Link href="/notifications" className={menuLink}>Notifications and sounds</Link>
+              {can(me, 'settings.read') && <Link href="/settings" className={menuLink}>Settings</Link>}
+            </nav>
+            <SignOutButton />
+          </>
+        }
+      >
+        {children}
+      </AdminShell>
     </NotificationsProvider>
   );
 }

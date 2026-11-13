@@ -6,21 +6,21 @@ export const short = (ymd: string) => new Date(`${ymd}T00:00:00Z`).toLocaleDateS
 
 /**
  * One series per day (so no legend: the heading names it). Thin bars with a 2px gap, rounded data end on the
- * baseline, a tooltip on hover and keyboard focus, and the same numbers as a table. Colour: --gs-signal-deep,
- * validated (dataviz validate_palette.js) against the admin surface.
+ * baseline, a tooltip on hover and keyboard focus, and the same numbers as a table. Colour: the admin green by
+ * default; `tone` picks a semantic tone instead (blue for traffic). Both are ≥ 3:1 on the white card.
  */
-export function DailyBars({ title, total, empty, bars, format, head, row }: { title: string; total: string; empty: string; bars: Bar[]; format: (v: number) => string; head: string[]; row: (i: number) => string[] }) {
+export function DailyBars({ title, total, empty, bars, format, head, row, tone }: { title: string; total: string; empty: string; bars: Bar[]; format: (v: number) => string; head: string[]; row: (i: number) => string[]; tone?: 'blue' | 'purple' }) {
   const max = Math.max(...bars.map((d) => d.value), 0);
   if (!max) {
     return (
       <figure className="flex flex-col gap-2">
         <figcaption className="text-sm font-medium">{title}</figcaption>
-        <p className="border-y border-rule py-6 text-sm text-ink-2">{empty}</p>
+        <p className="rounded-xl bg-paper px-4 py-8 text-center text-sm text-muted">{empty}</p>
       </figure>
     );
   }
   return (
-    <figure className="flex flex-col gap-3">
+    <figure className={`flex flex-col gap-3 ${tone ? `tone-${tone}` : ''}`}>
       <figcaption className="flex flex-wrap items-baseline justify-between gap-2">
         <span className="text-sm font-medium">{title}</span>
         <span className="tabular text-sm text-ink-2">{total}</span>
@@ -31,8 +31,8 @@ export function DailyBars({ title, total, empty, bars, format, head, row }: { ti
             <li key={d.date} className="relative flex h-full min-w-0 flex-1">
               {/* A button only so the tooltip is reachable by keyboard; it does nothing when pressed. */}
               <button type="button" aria-label={d.label} className="group flex h-full w-full items-end">
-                <span className="block w-full rounded-t-[4px] bg-signal-deep transition-opacity duration-(--dur-micro) group-hover:opacity-80" style={{ height: `${Math.max(d.value > 0 ? 2 : 0, (d.value / max) * 100)}%` }} />
-                <span role="tooltip" className={`pointer-events-none absolute bottom-full z-10 mb-1 hidden border ${i < bars.length / 2 ? 'left-0' : 'right-0'} border-rule bg-paper-3 px-2 py-1 text-xs whitespace-nowrap text-ink shadow-sm group-hover:block group-focus-visible:block`}>
+                <span className={`block w-full rounded-t-[4px] ${tone ? 'bg-(--tone)' : 'bg-signal-deep'} transition-opacity duration-(--dur-micro) group-hover:opacity-80`} style={{ height: `${Math.max(d.value > 0 ? 2 : 0, (d.value / max) * 100)}%` }} />
+                <span role="tooltip" className={`pointer-events-none absolute bottom-full z-10 mb-1 hidden border ${i < bars.length / 2 ? 'left-0' : 'right-0'} border-rule rounded-lg bg-paper-3 px-2 py-1 text-xs whitespace-nowrap text-ink shadow-soft group-hover:block group-focus-visible:block`}>
                   {d.label}
                 </span>
               </button>
