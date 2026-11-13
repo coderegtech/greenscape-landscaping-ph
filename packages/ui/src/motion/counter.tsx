@@ -7,10 +7,11 @@ const easeOut = (t: number) => 1 - (1 - t) ** 3; // close to the theme's --ease-
  * A real figure that counts up once when first seen. Server HTML (and no-JS / reduced motion) shows the final value,
  * so the number is never wrong or missing. Only use with figures the business supplied.
  * Plain requestAnimationFrame + IntersectionObserver: no animation library on public pages.
+ * `decimals` and `prefix` cover money ("₱1,250.00"); `duration` is shorter on dashboards than on the public site.
  */
-export function Counter({ value, suffix = '', className, locale = 'en-PH' }: { value: number; suffix?: string; className?: string; locale?: string }) {
+export function Counter({ value, prefix = '', suffix = '', decimals = 0, duration = 1100, className, locale = 'en-PH' }: { value: number; prefix?: string; suffix?: string; decimals?: number; duration?: number; className?: string; locale?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const fmt = (n: number) => `${Math.round(n).toLocaleString(locale)}${suffix}`;
+  const fmt = (n: number) => `${prefix}${n.toLocaleString(locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}${suffix}`;
 
   useEffect(() => {
     const el = ref.current;
@@ -21,7 +22,7 @@ export function Counter({ value, suffix = '', className, locale = 'en-PH' }: { v
       io.disconnect();
       const start = performance.now();
       const step = (now: number) => {
-        const t = Math.min(1, (now - start) / 1100);
+        const t = Math.min(1, (now - start) / duration);
         el.textContent = fmt(value * easeOut(t));
         if (t < 1) frame = requestAnimationFrame(step);
       };
