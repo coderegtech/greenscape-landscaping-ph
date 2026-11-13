@@ -42,9 +42,9 @@ export function CorrectionButton({ workDate, label, asLink }: { workDate: string
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {asLink ? <button type="button" className="font-medium text-ink underline decoration-signal underline-offset-[0.2em]">Ask for a correction</button> : <Button size="sm" variant="ghost">Correct<span className="sr-only"> {label}</span></Button>}
+        {asLink ? <button type="button" className="font-medium text-ink underline decoration-signal underline-offset-[0.2em]">Ask for a correction</button> : <Button size="sm" variant="secondary">{workDate ? <>Correct<span className="sr-only"> {label}</span></> : 'Ask for a correction'}</Button>}
       </DialogTrigger>
-      <DialogContent className="max-h-[90svh] overflow-y-auto border-rule bg-paper p-6">
+      <DialogContent className="max-h-[90svh] overflow-y-auto rounded-card border-rule bg-paper-3 p-6">
         <DialogTitle className="text-2xl">Correct {workDate ? label : 'a day'}</DialogTitle>
         <DialogDescription className="text-sm text-ink-2">Enter every time in and out for the day, in order. Your manager approves it.</DialogDescription>
         <form onSubmit={submit} className="flex flex-col gap-4">

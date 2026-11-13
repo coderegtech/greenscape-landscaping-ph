@@ -1,116 +1,107 @@
-import { ApiError, api } from '@greenscape/auth/api';
-import { Badge } from '@greenscape/ui/components/badge';
-import { Notice } from '@greenscape/ui/form';
-import { z } from '@greenscape/validation';
+import { EmptyState, Panel, type Tone } from '@greenscape/ui/layout/dashboard';
+import { Bell, CalendarClock, CalendarDays, ChartNoAxesColumn, Coffee, LogIn, LogOut, PartyPopper, Timer, TimerOff } from 'lucide-react';
 import type { Metadata } from 'next';
-import { SignOutButton } from '@greenscape/ui/auth-forms';
-import { NotificationBell } from '@greenscape/ui/notifications/bell';
-import { ClockCard, type Today } from '@/components/clock-card';
-import { CorrectionButton } from '@/components/correction';
-import { LeavePanel, type MyLeave } from '@/components/leave';
-import { getMe } from '@/lib/session';
-import { MonthCalendar, monthRange } from '@/components/month-calendar';
+import type { ReactNode } from 'react';
+import { ClockCard } from '@/components/clock-card';
+import { RecentNotifications } from '@/components/recent-notifications';
+import { clock, dayLabel, hm, shiftText } from '@/lib/dates';
+import { getDays, getSchedule, portal } from '@/lib/portal';
 
-export const metadata: Metadata = { title: 'Today' };
+export const metadata: Metadata = { title: 'Dashboard' };
 export const dynamic = 'force-dynamic';
 
-function Refused({ message }: { message: string }) {
+/** A small coloured fact about today. */
+function Fact({ tone, icon, label, value }: { tone: Tone; icon: ReactNode; label: string; value: string }) {
   return (
-    <main id="main" className="container-page flex flex-col items-start gap-4 py-16">
-      <h1 className="text-display-s">Employee portal</h1>
-      <Notice tone="error">{message}</Notice>
-      <SignOutButton />
-    </main>
+    <div className={`tone-${tone} card-in flex flex-col gap-2 rounded-card bg-(--tone-soft) p-4`}>
+      <dt className="flex items-center gap-2 text-sm font-medium text-(--tone-ink) [&_svg]:size-4">{icon}{label}</dt>
+      <dd className="tabular text-xl font-bold text-ink">{value}</dd>
+    </div>
   );
 }
 
-const Record = z.object({ id: z.string(), workDate: z.string(), status: z.string(), statusLabel: z.string(), approved: z.boolean(), workedMinutes: z.number(), lateMinutes: z.number(), undertimeMinutes: z.number(), overtimeMinutes: z.number(), punches: z.array(z.object({ type: z.string(), at: z.string(), corrected: z.boolean() })), correctionPending: z.boolean() });
-const time = (iso: string) => new Date(iso).toLocaleTimeString('en-PH', { hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Manila' });
-const day = (ymd: string) => new Date(`${ymd}T00:00:00Z`).toLocaleDateString('en-PH', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
-const hm = (m: number) => `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
+export default async function EmployeeHome() {
+  const p = await portal();
+  if (!p.ok) return null; // the layout already explains why
+  const { today } = p;
+  const [records, schedule] = await Promise.all([getDays(), getSchedule().catch(() => null)]);
+  const todayRecord = records.find((r) => r.workDate === today.workDate);
+  const punches = today.record?.punches ?? [];
+  const firstIn = punches.find((x) => x.type === 'IN');
+  const lastOut = punches.findLast((x) => x.type === 'OUT');
 
-export default async function EmployeeHome({ searchParams }: { searchParams: Promise<{ month?: string }> }) {
-  const asked = (await searchParams).month;
-  const me = await getMe();
-  if (!me) return <Refused message="This account is suspended." />;
-  if (me.passwordSignInRequired) return <Refused message="You signed in with Google. The employee portal needs your work email and password: sign out, then sign in again." />;
-  if (!me.permissions.includes('attendance.self')) return <Refused message="This portal is for Greenscape employees. Customers can use the website." />;
-  let today: Today, records: z.infer<typeof Record>[], leave: MyLeave, monthDays: z.infer<typeof Record>[], month: string;
-  try {
-    [today, records, leave] = await Promise.all([api('/v1/me/attendance/today', z.custom<Today>()), api('/v1/me/attendance', z.array(Record)), api('/v1/me/leave', z.custom<MyLeave>())]);
-    // ?month=YYYY-MM for past months; anything else shows the current (Manila, per the API) month.
-    const thisMonth = today.workDate.slice(0, 7);
-    month = asked && /^\d{4}-(0[1-9]|1[0-2])$/.test(asked) && asked <= thisMonth ? asked : thisMonth;
-    monthDays = await api(`/v1/me/attendance?${new URLSearchParams(monthRange(month))}`, z.array(Record));
-  } catch (err) {
-    if (err instanceof ApiError && err.status === 403) return <Refused message={err.code === 'NOT_AN_EMPLOYEE' ? err.message : 'This portal is for Greenscape employees.'} />;
-    throw err;
-  }
-  // Last 7 work dates including today (records are Manila calendar dates, newest first).
-  const weekStart = new Date(Date.parse(`${today.workDate}T00:00:00Z`) - 6 * 86_400_000).toISOString().slice(0, 10);
-  const week = records.filter((r) => r.workDate >= weekStart);
-  const sum = (k: 'workedMinutes' | 'lateMinutes' | 'undertimeMinutes') => week.reduce((n, r) => n + r[k], 0);
+  // The last 7 work dates including today (records are Manila calendar dates, newest first).
+  const start = Date.parse(`${today.workDate}T00:00:00Z`) - 6 * 86_400_000;
+  const week = Array.from({ length: 7 }, (_, i) => new Date(start + i * 86_400_000).toISOString().slice(0, 10)).map((date) => ({ date, r: records.find((x) => x.workDate === date) }));
+  const sum = (k: 'workedMinutes' | 'lateMinutes' | 'undertimeMinutes') => week.reduce((n, d) => n + (d.r?.[k] ?? 0), 0);
+  const most = Math.max(...week.map((d) => d.r?.workedMinutes ?? 0), 1);
+  const next = schedule?.filter((d) => d.date > today.workDate).slice(0, 4) ?? [];
+
   return (
-    <main id="main" className="container-page py-8 md:py-14">
-      <div className="mx-auto flex max-w-[52rem] flex-col gap-12">
-        <header className="flex items-end justify-between gap-4 border-b border-rule pb-6">
-          <div className="flex flex-col gap-1">
-            <p className="text-sm text-ink-2">{today.employee.employeeNo} · {day(today.workDate)}</p>
-            <h1 className="text-display-s">Hello, {today.employee.name.split(' ')[0]}</h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <NotificationBell centerHref="/notifications" />
-            <SignOutButton />
-          </div>
-        </header>
+    <div className="flex flex-col gap-6 md:gap-8">
+      <header className="flex flex-col gap-1">
+        <p className="text-sm font-medium text-muted">{dayLabel(today.workDate, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
+        <h1 className="text-3xl md:text-4xl">Hello, {today.employee.name.split(' ')[0]}</h1>
+        <p className="text-sm text-muted">Employee no. {today.employee.employeeNo}</p>
+      </header>
 
-        <ClockCard today={today} />
+      <ClockCard today={today} correctionPending={!!todayRecord?.correctionPending} />
 
-        <section aria-labelledby="week" className="flex flex-col gap-3">
-          <h2 id="week" className="text-2xl">Last 7 days</h2>
-          <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4" data-testid="week-summary">
-            {[['Worked', hm(sum('workedMinutes'))], ['Days present', String(week.filter((r) => r.workedMinutes > 0).length)], ['Late', `${sum('lateMinutes')} min`], ['Short', `${sum('undertimeMinutes')} min`]].map(([k, v]) => (
-              <div key={k} className="flex flex-col gap-1 rounded-lg border border-rule p-4">
-                <dt className="text-sm text-ink-2">{k}</dt>
-                <dd className="tabular text-xl font-medium">{v}</dd>
+      <section aria-labelledby="today-h" className="flex flex-col gap-3">
+        <h2 id="today-h" className="text-xl">Today so far</h2>
+        <dl className="grid grid-cols-2 gap-3 md:grid-cols-4" data-testid="today-summary">
+          <Fact tone="blue" icon={<LogIn aria-hidden />} label="First in" value={firstIn ? clock(firstIn.at) : 'Not yet'} />
+          <Fact tone="purple" icon={<LogOut aria-hidden />} label="Last out" value={lastOut ? clock(lastOut.at) : 'Not yet'} />
+          <Fact tone="green" icon={<Timer aria-hidden />} label="Recorded" value={hm(today.record?.workedMinutes ?? 0)} />
+          <Fact tone="orange" icon={<TimerOff aria-hidden />} label="Late" value={`${today.record?.lateMinutes ?? 0} min`} />
+        </dl>
+      </section>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+        <Panel id="week" title="Last 7 days" tone="green" icon={<ChartNoAxesColumn />} action={{ label: 'Attendance', href: '/attendance' }} index={1}>
+          <ol className="flex h-28 items-end gap-2" aria-label="Hours recorded each day">
+            {week.map(({ date, r }) => (
+              <li key={date} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1.5">
+                <span aria-hidden className={`${r?.status === 'ABSENT' || r?.status === 'INCOMPLETE' ? 'tone-red' : r?.lateMinutes ? 'tone-orange' : 'tone-green'} w-full rounded-t-md bg-(--tone)`} style={{ height: `${r?.workedMinutes ? Math.max(6, (r.workedMinutes / most) * 100) : 0}%`, minHeight: r ? 3 : 0 }} />
+                <span className={`text-xs ${date === today.workDate ? 'font-bold text-ink' : 'text-muted'}`} aria-hidden>{dayLabel(date, { weekday: 'narrow' })}</span>
+                <span className="sr-only">{dayLabel(date)}: {r ? `${r.statusLabel}, ${hm(r.workedMinutes)}` : 'nothing recorded'}</span>
+              </li>
+            ))}
+          </ol>
+          <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-rule pt-4 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-4" data-testid="week-summary">
+            {[['Worked', hm(sum('workedMinutes'))], ['Days present', String(week.filter((d) => (d.r?.workedMinutes ?? 0) > 0).length)], ['Late', `${sum('lateMinutes')} min`], ['Short', `${sum('undertimeMinutes')} min`]].map(([k, v]) => (
+              <div key={k} className="flex flex-col gap-0.5">
+                <dt className="text-xs text-muted">{k}</dt>
+                <dd className="tabular text-base font-bold text-ink">{v}</dd>
               </div>
             ))}
           </dl>
-        </section>
+        </Panel>
 
-        <MonthCalendar month={month} today={today.workDate} days={monthDays} />
-
-        <section aria-labelledby="days" className="flex flex-col gap-4">
-          <h2 id="days" className="text-3xl">Last 30 days</h2>
-          {records.length ? (
-            <ul className="flex flex-col border-t border-rule" data-testid="my-days">
-              {records.map((r) => (
-                <li key={r.id} className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-x-4 gap-y-1 border-b border-rule py-3 sm:grid-cols-[7rem_minmax(0,1fr)_auto]">
-                  <span className="tabular font-medium">{day(r.workDate)}</span>
-                  <span className="flex min-w-0 flex-wrap items-center gap-2 text-sm">
-                    <Badge variant={r.status === 'PRESENT' ? 'signal' : 'outline'}>{r.statusLabel}</Badge>
-                    {r.approved && <span className="text-xs text-muted">approved</span>}
-                    <span className="tabular text-ink-2">
-                      {r.punches.length ? r.punches.map((p) => `${p.type === 'IN' ? 'in' : 'out'} ${time(p.at)}`).join(', ') : 'no times'}
-                    </span>
-                    {r.workedMinutes > 0 && <span className="tabular text-ink-2">{hm(r.workedMinutes)} worked</span>}
-                    {r.lateMinutes > 0 && <span className="tabular text-ink-2">{r.lateMinutes} min late</span>}
-                    {r.undertimeMinutes > 0 && <span className="tabular text-ink-2">{r.undertimeMinutes} min short</span>}
+        <Panel id="upcoming" title="Coming up" tone="blue" icon={<CalendarClock />} action={{ label: 'Schedule', href: '/schedule' }} index={2}>
+          {next.length ? (
+            <ul className="flex flex-col" data-testid="upcoming-schedule">
+              {next.map((d) => (
+                <li key={d.date} className="flex items-center gap-3 border-b border-rule py-2.5 last:border-b-0">
+                  <span aria-hidden className={`${d.onLeave ? 'tone-blue' : d.holiday && !d.holiday.working ? 'tone-purple' : d.segments.length ? 'tone-green' : 'tone-gray'} grid size-10 shrink-0 place-items-center rounded-xl bg-(--tone-soft) text-(--tone-ink) [&_svg]:size-[1.125rem]`}>
+                    {d.onLeave ? <CalendarDays /> : d.holiday && !d.holiday.working ? <PartyPopper /> : d.segments.length ? <CalendarClock /> : <Coffee />}
                   </span>
-                  <span className="col-span-2 sm:col-span-1 sm:justify-self-end">
-                    {r.correctionPending ? <span className="text-sm text-muted">Correction waiting</span> : !r.approved && r.status !== 'OPEN' && <CorrectionButton workDate={r.workDate} label={day(r.workDate)} />}
+                  <span className="flex min-w-0 flex-col">
+                    <span className="text-sm font-semibold text-ink">{dayLabel(d.date, { weekday: 'long', day: 'numeric', month: 'short' })}</span>
+                    <span className="truncate text-sm text-muted">{shiftText(d)}</span>
                   </span>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-ink-2">No days recorded yet.</p>
+            <EmptyState icon={<CalendarClock />} title="No schedule yet">HR has not set your shifts. Ask them if you expected to see some.</EmptyState>
           )}
-          <p className="text-sm text-ink-2">Missed a whole day? <CorrectionButton workDate={null} label="another day" asLink /></p>
-        </section>
-
-        <LeavePanel leave={leave} />
+        </Panel>
       </div>
-    </main>
+
+      <Panel id="news" title="Recent notifications" tone="purple" icon={<Bell />} action={{ label: 'See all', href: '/notifications' }} index={3}>
+        <RecentNotifications />
+      </Panel>
+    </div>
   );
 }
