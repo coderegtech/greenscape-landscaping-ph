@@ -90,7 +90,7 @@ pnpm --filter @greenscape/database grant-role you@example.com super_admin
 CI (`.github/workflows/ci.yml`) runs all of the above on every push to `main`/`rebuild/**` and on PRs.
 
 ## Docs
-`docs/audit/` (what exists today) · `docs/architecture.md` · `docs/database-schema.md` · `docs/implementation-plan.md` · `docs/migration-plan.md` · `docs/ui-ux-guidelines.md` · `docs/animation-system.md` · `docs/security.md` · `docs/api-documentation.md` · `docs/testing.md` · `docs/progress.md`
+`docs/audit/` (what exists today) · `docs/architecture.md` · `docs/database-schema.md` · `docs/implementation-plan.md` · `docs/migration-plan.md` · `docs/ui-ux-guidelines.md` · `docs/animation-system.md` · `docs/security.md` · `docs/api-documentation.md` · `docs/testing.md` · `docs/progress.md` · `docs/pwa/` (installable Admin and Employee apps) · `docs/branding/` (logo and app icons)
 
 ## Re-run the site audit
 ```bash
