@@ -119,7 +119,11 @@ export async function signIn(page: import('@playwright/test').Page, userEmail: s
 /** Signs out of a staff portal: the admin keeps it in the account menu, the employee portal on the Profile page. */
 export async function signOut(page: import('@playwright/test').Page) {
   if (page.url().startsWith(EMPLOYEE)) await page.goto(`${EMPLOYEE}/profile`);
-  else await page.getByTestId('account-menu').click();
+  else {
+    await page.getByTestId('account-menu').click();
+    await page.getByRole('dialog', { name: 'Account' }).getByRole('button', { name: 'Sign out' }).click();
+    return;
+  }
   await page.getByRole('button', { name: 'Sign out' }).click();
 }
 

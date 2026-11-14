@@ -25,6 +25,7 @@ test('a super admin reaches every area, creates an administrator, and signs out'
   await expect(dialog.getByTestId('temporary-password')).toContainText(address);
 
   await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden(); // its closing hands focus back to its trigger, which would close a menu opened meanwhile
   await signOut(page);
   await expect(page).toHaveURL(`${ADMIN}/login`);
   await page.goto(`${ADMIN}/users`);

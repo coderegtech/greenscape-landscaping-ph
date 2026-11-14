@@ -35,7 +35,7 @@ export function PortalShell({ name, pending, children }: { name: string; pending
           </Link>
           <nav aria-label="Portal" className="mr-auto hidden items-center gap-1 md:flex">
             {NAV.slice(0, 4).map((n) => (
-              <Link key={n.href} href={n.href} aria-current={on(n.href) ? 'page' : undefined} className="relative flex h-10 items-center gap-2 rounded-pill px-3.5 text-sm font-semibold text-ink-2 no-underline transition-colors duration-150 hover:text-ink aria-[current=page]:text-signal">
+              <Link key={n.href} href={n.href} aria-current={on(n.href) ? 'page' : undefined} className="relative flex h-10 items-center gap-2 rounded-pill px-3.5 text-sm font-semibold text-ink-2 no-underline transition-colors duration-150 hover:text-ink aria-[current=page]:text-signal-2">
                 {on(n.href) && <motion.span layoutId="top-nav" aria-hidden className="tone-green absolute inset-0 rounded-pill bg-(--tone-soft)" transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }} />}
                 <n.icon aria-hidden className="relative size-4" />
                 <span className="relative">{n.label}</span>
@@ -45,7 +45,7 @@ export function PortalShell({ name, pending, children }: { name: string; pending
           </nav>
           <SoundToggle />
           <NotificationBell centerHref="/notifications" />
-          <Link href="/profile" aria-current={on('/profile') ? 'page' : undefined} className="press hidden size-10 place-items-center rounded-full bg-signal-deep text-sm font-bold text-signal-ink no-underline outline-offset-2 aria-[current=page]:outline-2 aria-[current=page]:outline-signal md:grid">
+          <Link href="/profile" aria-current={on('/profile') ? 'page' : undefined} className="press hidden size-10 place-items-center rounded-full bg-signal text-sm font-bold text-signal-ink no-underline outline-offset-2 aria-[current=page]:outline-2 aria-[current=page]:outline-signal md:grid">
             {initials}<span className="sr-only"> profile</span>
           </Link>
         </div>
@@ -55,7 +55,7 @@ export function PortalShell({ name, pending, children }: { name: string; pending
         <ul className="mx-auto grid max-w-md grid-cols-5">
           {NAV.map((n) => (
             <li key={n.href}>
-              <Link href={n.href} aria-current={on(n.href) ? 'page' : undefined} className="press relative flex h-16 flex-col items-center justify-center gap-1 text-[0.6875rem] font-semibold text-muted no-underline aria-[current=page]:text-signal">
+              <Link href={n.href} aria-current={on(n.href) ? 'page' : undefined} className="press relative flex h-16 flex-col items-center justify-center gap-1 text-[0.6875rem] font-semibold text-muted no-underline aria-[current=page]:text-signal-2">
                 {on(n.href) && <motion.span layoutId="bottom-nav" aria-hidden className="tone-green absolute top-1.5 h-8 w-14 rounded-pill bg-(--tone-soft)" transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }} />}
                 <span className="relative">
                   <n.icon aria-hidden className="size-5" />
