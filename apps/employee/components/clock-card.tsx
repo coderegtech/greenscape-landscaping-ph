@@ -3,6 +3,7 @@ import { Button } from '@greenscape/ui/components/button';
 import { toast } from '@greenscape/ui/components/sonner';
 import { StatusPill, type Tone } from '@greenscape/ui/layout/dashboard';
 import { playFeedback } from '@greenscape/ui/notifications/sound-manager';
+import { useOnline } from '@greenscape/ui/pwa/client';
 import { CircleAlert, CircleCheck, CircleDot, Clock, Leaf, LogIn, LogOut, TimerReset } from 'lucide-react';
 import { useActionState, useEffect, useState } from 'react';
 import { clockForm } from '@/app/actions';
@@ -43,6 +44,7 @@ function standing(t: Today, correctionPending: boolean): { tone: Tone; label: st
 
 export function ClockCard({ today: t, correctionPending = false }: { today: Today; correctionPending?: boolean }) {
   const now = useNow();
+  const online = useOnline(); // a punch is only ever recorded by the server: offline, the button is off, nothing is queued
   const [state, action, pending] = useActionState(clockForm, null);
   // A selfie belongs to the punch it was taken for: after each punch (a new `state`) it no longer counts.
   const [photo, setPhoto] = useState<{ after: typeof state; id: string } | null>(null);
@@ -102,7 +104,7 @@ export function ClockCard({ today: t, correctionPending = false }: { today: Toda
         {photoId && <input type="hidden" name="photoId" value={photoId} />}
         {t.selfie.mode !== 'off' && <SelfieField key={selfieKey} mode={t.selfie.mode} retentionDays={t.selfie.retentionDays} onReady={(id) => setPhoto(id ? { after: state, id } : null)} />}
         <div className="flex flex-wrap items-center gap-4">
-          <Button type="submit" loading={pending} disabled={needsPhoto} size="md" className="h-16 w-full px-10 text-lg sm:w-auto sm:min-w-56" variant={t.clockedIn ? 'secondary' : 'primary'}>
+          <Button type="submit" loading={pending} disabled={needsPhoto || !online} size="md" className="h-16 w-full px-10 text-lg sm:w-auto sm:min-w-56" variant={t.clockedIn ? 'secondary' : 'primary'}>
             {t.clockedIn ? <LogOut aria-hidden className="size-5" /> : <LogIn aria-hidden className="size-5" />}
             {t.clockedIn ? 'Clock out' : 'Clock in'}
           </Button>
@@ -116,6 +118,7 @@ export function ClockCard({ today: t, correctionPending = false }: { today: Toda
             </p>
           )}
         </div>
+        {!online && <p role="alert" data-testid="clock-offline" className="flex items-center gap-2 text-sm font-medium text-danger"><CircleAlert aria-hidden className="size-4 shrink-0" />Internet connection is required to record attendance.</p>}
         {state && !state.ok && <p role="alert" className="flex items-center gap-2 text-sm font-medium text-danger"><CircleAlert aria-hidden className="size-4 shrink-0" />{state.error}</p>}
         <p className="text-xs text-muted">The time is taken from our server, not your phone. {t.selfie.mode === 'off' ? 'Only your network address is recorded with it.' : 'Your network address and the selfie are recorded with it.'}</p>
       </form>
