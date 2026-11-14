@@ -1,10 +1,13 @@
+import { randomUUID } from 'node:crypto';
 import { expect, test, type Page } from '@playwright/test';
 import { ADMIN, EMPLOYEE, WEB, signIn, signOut } from '../helpers';
 import { call, cleanupEmployees, employeeUser, userWithRoles } from '../fixtures/test-users';
 
 // Signing out on each portal: the session ends, protected pages and Back show nothing private, and a copy of the
 // access token taken before signing out no longer works against the API.
-test.afterAll(() => cleanupEmployees('logout'));
+// Parallel workers each run afterAll: a shared label would let one worker delete employees another still uses.
+const tag = `logout${randomUUID().slice(0, 6)}`;
+test.afterAll(() => cleanupEmployees(tag));
 
 /** The access token the page's session cookie holds (read in the test only; never logged). */
 async function cookieToken(page: Page) {
@@ -31,7 +34,7 @@ test('customer: sign out ends the session; Back shows no account data; the old t
 });
 
 test('employee: sign out ends the session and the old token is refused', async ({ browser }) => {
-  const e = await employeeUser('logoutemp');
+  const e = await employeeUser(`${tag}emp`);
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
   await page.goto(`${EMPLOYEE}/login`);

@@ -23,7 +23,10 @@ async function notify(by: TestUser, target: TestUser, extraRole: string) {
   expect(res.status, await res.text()).toBe(200);
 }
 
-test.afterAll(() => cleanupEmployees('Tester pr-'));
+// Tests here run in parallel workers and each worker runs afterAll: a shared label would let one worker delete the
+// employees another is still using. Each worker removes only its own.
+const tag = `pr${randomUUID().slice(0, 6)}`;
+test.afterAll(() => cleanupEmployees(tag));
 
 test.describe('admin console', () => {
   test.skip(({ isMobile }) => isMobile, 'the sidebar is the desktop layout; phones are covered by the drawer test below');
@@ -149,7 +152,7 @@ test.describe('admin console', () => {
 test.describe('employee portal', () => {
   test('pages fit the screen, navigation works, the calendar shows the day, clock-in is confirmed by the server', async ({ page, isMobile }) => {
     test.setTimeout(150_000);
-    const e = await employeeUser('pr-emp');
+    const e = await employeeUser(`${tag}-emp`);
     await listen(page);
     await page.goto(`${EMPLOYEE}/login`);
     await expect(page.getByRole('heading', { name: 'Greenscape Employees' })).toBeVisible();
@@ -211,8 +214,8 @@ test.describe('employee portal', () => {
   test('a schedule change reaches that employee only, live, and shows on their schedule', async ({ page }) => {
     test.setTimeout(120_000);
     const hr = await userWithRoles('pr-hr', ['hr_manager']);
-    const mine = await employeeUser('pr-sched');
-    const other = await employeeUser('pr-other');
+    const mine = await employeeUser(`${tag}-sched`);
+    const other = await employeeUser(`${tag}-other`);
     await page.goto(`${EMPLOYEE}/login`);
     await signIn(page, mine.email);
     await expect(page.getByTestId('notification-bell')).toBeVisible();

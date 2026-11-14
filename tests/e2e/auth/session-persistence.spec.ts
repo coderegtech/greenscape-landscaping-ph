@@ -1,10 +1,13 @@
+import { randomUUID } from 'node:crypto';
 import { expect, test } from '@playwright/test';
 import { ADMIN, EMPLOYEE, WEB, signIn } from '../helpers';
 import { cleanupEmployees, employeeUser, userWithRoles } from '../fixtures/test-users';
 
 // A valid session survives navigation and reloads on every portal; a damaged session cookie is treated as signed out;
 // session cookies are host-only (so the three portals never share one in production) and not readable cross-site.
-test.afterAll(() => cleanupEmployees('session'));
+// Parallel workers each run afterAll: a shared label would let one worker delete employees another still uses.
+const tag = `session${randomUUID().slice(0, 6)}`;
+test.afterAll(() => cleanupEmployees(tag));
 
 test('customer: the session survives navigation and reloads', async ({ page }) => {
   const c = await userWithRoles('sesscust', []);
@@ -20,7 +23,7 @@ test('customer: the session survives navigation and reloads', async ({ page }) =
 });
 
 test('employee: the session survives navigation and reloads', async ({ browser }) => {
-  const e = await employeeUser('sessionemp');
+  const e = await employeeUser(`${tag}emp`);
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
   await page.goto(`${EMPLOYEE}/login`);

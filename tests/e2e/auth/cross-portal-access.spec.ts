@@ -8,12 +8,14 @@ import { call, cleanupEmployees, employeeUser, userWithRoles, type TestUser } fr
 // Every role against every portal, enforced by the API (not just by page redirects): 401 when not signed in or the token
 // is bad, 403 when signed in without permission. Plus records that belong to someone else.
 test.skip(({ isMobile }) => isMobile, 'API and role matrix: one pass is enough');
-test.afterAll(() => cleanupEmployees('xportal'));
+// Parallel workers each run afterAll: a shared label would let one worker delete employees another still uses.
+const tag = `xportal${randomUUID().slice(0, 6)}`;
+test.afterAll(() => cleanupEmployees(tag));
 
 type Who = 'guest' | 'customer' | 'employee' | 'admin' | 'super';
 const users = {} as Record<Exclude<Who, 'guest'>, TestUser>;
 test.beforeAll(async () => {
-  const [c, e, a, s] = await Promise.all([userWithRoles('xcust', []), employeeUser('xportal'), userWithRoles('xadmin', ['admin']), userWithRoles('xsuper', ['super_admin'])]);
+  const [c, e, a, s] = await Promise.all([userWithRoles('xcust', []), employeeUser(`${tag}`), userWithRoles('xadmin', ['admin']), userWithRoles('xsuper', ['super_admin'])]);
   Object.assign(users, { customer: c, employee: e, admin: a, super: s });
 });
 const tokenOf = (w: Who) => (w === 'guest' ? undefined : users[w].token);
