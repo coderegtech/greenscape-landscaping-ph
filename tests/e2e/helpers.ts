@@ -116,6 +116,17 @@ export async function signIn(page: import('@playwright/test').Page, userEmail: s
   if (await page.locator('[data-testid=mfa-enrol], [data-testid=mfa-verify]').count()) await completeMfa(page, userEmail);
 }
 
+/** Signs out of a staff portal: the admin keeps it in the account menu, the employee portal on the Profile page. */
+export async function signOut(page: import('@playwright/test').Page) {
+  if (page.url().startsWith(EMPLOYEE)) await page.goto(`${EMPLOYEE}/profile`);
+  else {
+    await page.getByTestId('account-menu').click();
+    await page.getByRole('dialog', { name: 'Account' }).getByRole('button', { name: 'Sign out' }).click();
+    return;
+  }
+  await page.getByRole('button', { name: 'Sign out' }).click();
+}
+
 /** A confirmed customer signed in on the public site (most actions need an account). Returns their email. */
 export async function signedInCustomer(page: import('@playwright/test').Page, label: string, next = '/account') {
   const u = await confirmedUser(label);

@@ -84,8 +84,8 @@ describe('overview', () => {
     const keys = async (t: string) => Object.keys((await request(app).get('/v1/admin/overview').set(as(t)).expect(200)).body).filter((k) => k !== 'today').sort();
     expect(await keys(tok.shop!)).toEqual(['inventory', 'messages', 'orders', 'quotations', 'sales']);
     expect(await keys(tok.hr!)).toEqual(['attendance', 'leave']);
-    expect(await keys(tok.content!)).toEqual(['messages', 'quotations', 'testimonials']);
-    expect(await keys(tok.admin!)).toEqual(['attendance', 'inventory', 'leave', 'messages', 'orders', 'quotations', 'sales', 'testimonials']);
+    expect(await keys(tok.content!)).toEqual(['content', 'messages', 'quotations', 'testimonials']);
+    expect(await keys(tok.admin!)).toEqual(['attendance', 'content', 'inventory', 'leave', 'messages', 'orders', 'quotations', 'sales', 'testimonials']);
     await request(app).get('/v1/admin/overview').set(as(tok.customer!)).expect(403);
   });
   it('sales: 14 days, net of refunds, flags test payments', async () => {

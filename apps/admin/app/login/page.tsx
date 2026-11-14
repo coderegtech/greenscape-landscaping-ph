@@ -1,5 +1,6 @@
 import { SignInFormView } from '@greenscape/ui/auth-forms';
-import { AuthCard, Notice } from '@greenscape/ui/form';
+import { Notice } from '@greenscape/ui/form';
+import { PortalAuth } from '@greenscape/ui/layout/portal-auth';
 import { safeNext } from '@greenscape/validation';
 import type { Metadata } from 'next';
 
@@ -14,9 +15,16 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
   const { next, error } = await searchParams;
   const to = safeNext(next, '/');
   return (
-    <AuthCard title="Greenscape Admin" footer="Staff accounts are created by an administrator.">
+    <PortalAuth
+      tone="deep"
+      product="Admin console"
+      title="Greenscape Admin"
+      lead="Sign in with your work email and password."
+      pitch="Orders, content, people and the health of the site, on one dashboard."
+      footer="Staff accounts are created by an administrator."
+    >
       {error && ERRORS[error] && <Notice tone="error">{ERRORS[error]}</Notice>}
       <SignInFormView next={to} forgotHref={`${process.env.WEB_URL ?? 'http://localhost:3000'}/auth/forgot-password`} />
-    </AuthCard>
+    </PortalAuth>
   );
 }

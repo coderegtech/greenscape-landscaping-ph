@@ -13,7 +13,7 @@ test('an administrator signs in straight to the dashboard (no authenticator step
   await signIn(page, a.email);
   await expect(page.getByTestId('staff-identity')).toContainText('admin');
   expect(visited).not.toContain('/mfa');
-  await expect(page.getByRole('navigation', { name: 'Admin' }).getByRole('link', { name: 'Users & roles' })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Admin' }).getByRole('link', { name: 'Users and roles' })).toBeVisible();
   // Admin is not super admin: the administrator roles are locked in the account form, and the API agrees.
   await page.goto(`${ADMIN}/users`);
   await page.getByRole('button', { name: 'Create staff account' }).click();

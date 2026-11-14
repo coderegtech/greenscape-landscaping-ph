@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export const viewport: Viewport = { themeColor: '#f6f3ea', colorScheme: 'light' };
+export const viewport: Viewport = { themeColor: '#f5f8f5', colorScheme: 'light' };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   await connection(); // render per request: the CSP nonce (proxy.ts) is new on every request

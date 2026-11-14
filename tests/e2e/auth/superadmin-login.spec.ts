@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { ADMIN, email, signIn } from '../helpers';
+import { ADMIN, email, signIn, signOut } from '../helpers';
 import { call, userWithRoles } from '../fixtures/test-users';
 
 // Super admin: full console, provisioning of administrators, and protection of the super admin from other admins.
@@ -12,7 +12,7 @@ test('a super admin reaches every area, creates an administrator, and signs out'
   await signIn(page, s.email);
   await expect(page.getByTestId('staff-identity')).toContainText('super_admin');
   const nav = page.getByRole('navigation', { name: 'Admin' });
-  for (const area of ['Users & roles', 'Employees', 'Pages', 'Analytics', 'System status', 'Audit log', 'Settings']) await expect(nav.getByRole('link', { name: area, exact: true })).toBeVisible();
+  for (const area of ['Users and roles', 'Employees', 'Pages', 'Analytics', 'System monitoring', 'Audit logs', 'Settings']) await expect(nav.getByRole('link', { name: area, exact: true })).toBeVisible();
 
   await page.goto(`${ADMIN}/users`);
   await page.getByRole('button', { name: 'Create staff account' }).click();
@@ -25,7 +25,8 @@ test('a super admin reaches every area, creates an administrator, and signs out'
   await expect(dialog.getByTestId('temporary-password')).toContainText(address);
 
   await page.keyboard.press('Escape');
-  await page.getByRole('button', { name: 'Sign out' }).click();
+  await expect(dialog).toBeHidden(); // its closing hands focus back to its trigger, which would close a menu opened meanwhile
+  await signOut(page);
   await expect(page).toHaveURL(`${ADMIN}/login`);
   await page.goto(`${ADMIN}/users`);
   await expect(page).toHaveURL(/\/login/);

@@ -48,23 +48,77 @@
   --stagger-block: 80ms;
 }
 
-/* Admin: a light "cream proof" surface for an app screen, same families and hues. */
+/* Tones: one semantic colour = a solid (icons, bars, dots), a soft tint (surfaces) and an ink (text, ≥ 4.5:1 on its tint
+ * and on white). Put .tone-* on an element and read var(--tone), var(--tone-soft), var(--tone-ink) inside it.
+ * green: success, active, healthy · blue: information, activity · purple: content · orange: waiting, needs attention ·
+ * red: errors, urgent · gray: idle, finished. A tone is never the only signal: it always sits beside words or an icon. */
+:root {
+  --tone-green: #2e7d4f; --tone-green-soft: #e3f1e8; --tone-green-ink: #1f6b40;
+  --tone-blue: #3b82f6; --tone-blue-soft: #dbeafe; --tone-blue-ink: #1d4ed8;
+  --tone-purple: #8b5cf6; --tone-purple-soft: #ede9fe; --tone-purple-ink: #6d28d9;
+  --tone-orange: #f59e0b; --tone-orange-soft: #ffedd5; --tone-orange-ink: #a14d08;
+  --tone-red: #ef4444; --tone-red-soft: #fee2e2; --tone-red-ink: #b91c1c;
+  --tone-gray: #6b7280; --tone-gray-soft: #eef1ee; --tone-gray-ink: #4b5563;
+  --tone-lime: #c9e64a; --tone-lime-soft: #f3f9d6; --tone-lime-ink: #4d5c0a;
+}
+.tone-green { --tone: var(--tone-green); --tone-soft: var(--tone-green-soft); --tone-ink: var(--tone-green-ink); }
+.tone-blue { --tone: var(--tone-blue); --tone-soft: var(--tone-blue-soft); --tone-ink: var(--tone-blue-ink); }
+.tone-purple { --tone: var(--tone-purple); --tone-soft: var(--tone-purple-soft); --tone-ink: var(--tone-purple-ink); }
+.tone-orange { --tone: var(--tone-orange); --tone-soft: var(--tone-orange-soft); --tone-ink: var(--tone-orange-ink); }
+.tone-red { --tone: var(--tone-red); --tone-soft: var(--tone-red-soft); --tone-ink: var(--tone-red-ink); }
+.tone-gray { --tone: var(--tone-gray); --tone-soft: var(--tone-gray-soft); --tone-ink: var(--tone-gray-ink); }
+.tone-lime { --tone: var(--tone-lime); --tone-soft: var(--tone-lime-soft); --tone-ink: var(--tone-lime-ink); }
+
+/* Admin portal: botanical green dashboard. Sage-white ground, white cards, #2E7D4F actions, a #193C2B sidebar. */
 [data-theme='admin'] {
-  --gs-paper: oklch(97% 0.012 95);
-  --gs-paper-2: oklch(94.5% 0.016 95);
-  --gs-paper-3: oklch(99% 0.006 95);
-  --gs-ink: oklch(22% 0.04 142);
-  --gs-ink-2: oklch(32% 0.035 142);
-  --gs-muted: oklch(48% 0.03 142);
-  --gs-rule: oklch(88% 0.02 120);
-  --gs-rule-strong: oklch(78% 0.03 130);
-  --gs-signal: oklch(32% 0.091 139);
-  --gs-signal-2: oklch(38% 0.1 139);
-  --gs-signal-deep: oklch(46% 0.12 128);
-  --gs-signal-ink: oklch(97% 0.012 95);
-  --gs-focus: oklch(46% 0.12 128);
-  --gs-danger: oklch(50% 0.17 30);
-  --gs-danger-ink: oklch(98% 0.01 30);
+  --gs-paper: #f5f8f5;
+  --gs-paper-2: #eaf1ec; /* hover and quiet fills */
+  --gs-paper-3: #ffffff; /* cards */
+  --gs-brand: #193c2b;
+  --gs-ink: #1f2937;
+  --gs-ink-2: #374151;
+  --gs-muted: #5b6472;
+  --gs-rule: #e1e9e3;
+  --gs-rule-strong: #c6d3ca;
+  --gs-signal: #2e7d4f;
+  --gs-signal-2: #256841;
+  --gs-signal-deep: #2e7d4f;
+  --gs-signal-ink: #ffffff;
+  --gs-sage: #75b798;
+  --gs-focus: #2e7d4f;
+  --gs-danger: #c81e1e; /* text and outlines; the brighter #EF4444 is --tone-red, for icons and fills */
+  --gs-danger-ink: #ffffff;
+}
+
+/* Employee portal: brighter and friendlier. #368A5B is the brand green (large type, icons, the clock card); buttons that
+ * carry small white text use one step darker (#2F7A50, 5.2:1) because white on #368A5B is 4.25:1. */
+[data-theme='employee'] {
+  --gs-paper: #f7faf7;
+  --gs-paper-2: #edf4ee;
+  --gs-paper-3: #ffffff;
+  --gs-brand: #368a5b;
+  --gs-ink: #202820;
+  --gs-ink-2: #3a453c;
+  --gs-muted: #5f6b62;
+  --gs-rule: #e3ebe4;
+  --gs-rule-strong: #c9d6cc;
+  --gs-signal: #2f7a50;
+  --gs-signal-2: #276843;
+  --gs-signal-deep: #368a5b;
+  --gs-signal-ink: #ffffff;
+  --gs-focus: #2f7a50;
+  --gs-danger: #c81e1e;
+  --tone-green: #368a5b; --tone-green-soft: #e2f2e8; --tone-green-ink: #23683f;
+}
+
+/* Both portals are app screens: sans headings, a tighter type scale, 14–16px UI text. */
+[data-theme='admin'],
+[data-theme='employee'] {
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.75rem;
+  --text-4xl: 2.125rem;
+  --radius-card: 1rem;
 }
 
 /* Section bands on the white site: a soft sage-tinted step and the off-white step. Same ink, so nothing else swaps. */
@@ -248,6 +302,19 @@
   [data-theme='admin'] body,
   body[data-theme='admin'] {
     font-size: var(--text-sm);
+  }
+  [data-theme='employee'] body {
+    font-size: var(--text-base);
+  }
+  :is([data-theme='admin'], [data-theme='employee']) :is(h1, h2, h3, h4) {
+    font-family: var(--font-body);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+  /* Form controls written before the redesign are square; in the portals they take the control radius. */
+  :is([data-theme='admin'], [data-theme='employee']) main :is(input:not([type='checkbox'], [type='radio'], [type='file'], [type='range']), select, textarea) {
+    border-radius: var(--radius-control);
   }
 }
 
@@ -553,3 +620,74 @@
 .gs-bell-ring { transform-origin: 50% 0; animation: gs-bell var(--dur-long) var(--ease-out); }
 @keyframes gs-notif-in { from { opacity: 0; transform: translateY(-6px); } }
 .gs-notif-in { animation: gs-notif-in var(--dur-short) var(--ease-out); }
+
+/* ───────────────────────── Admin and employee portals ───────────────────────── */
+
+/* The admin sidebar: the one dark surface. Same token swap as .band-forest (ink 11.4:1, muted 6.3:1, lime 8.7:1 on #193C2B). */
+.band-sidebar {
+  --gs-paper: #193c2b;
+  --gs-paper-2: #22503a;
+  --gs-paper-3: #1f4633;
+  --gs-ink: #f5f8f5;
+  --gs-ink-2: #d5e2d9;
+  --gs-muted: #a3c2b0;
+  --gs-rule: rgb(245 248 245 / 0.12);
+  --gs-rule-strong: rgb(245 248 245 / 0.24);
+  --gs-signal: #c9e64a;
+  --gs-signal-ink: #193c2b;
+  --gs-focus: #c9e64a;
+  --color-paper: var(--gs-paper);
+  --color-paper-2: var(--gs-paper-2);
+  --color-paper-3: var(--gs-paper-3);
+  --color-ink: var(--gs-ink);
+  --color-ink-2: var(--gs-ink-2);
+  --color-muted: var(--gs-muted);
+  --color-rule: var(--gs-rule);
+  --color-rule-strong: var(--gs-rule-strong);
+  --color-signal: var(--gs-signal);
+  --color-signal-ink: var(--gs-signal-ink);
+  --color-focus: var(--gs-focus);
+  --color-border: var(--gs-rule);
+  --color-ring: var(--gs-focus);
+  background-color: var(--gs-paper);
+  color: var(--gs-ink-2);
+}
+
+/* Metric card: a wash of its tone from the top-left corner, fading into the white card. */
+.stat-card {
+  background-image: linear-gradient(135deg, var(--tone-soft), var(--gs-paper-3) 62%);
+}
+
+/* Cards arrive in turn (40 ms apart, capped); transform and opacity only. Reduced motion: the global rule makes it instant. */
+@keyframes gs-card-in { from { opacity: 0.001; transform: translateY(8px); } }
+.card-in { animation: gs-card-in 280ms var(--ease-out) both; animation-delay: calc(min(var(--i, 0), 8) * 40ms); }
+
+/* Tables in the admin sit on a white card: quiet header band, hairline rows, row hover. */
+[data-theme='admin'] [data-slot='table-container'] {
+  border: 1px solid var(--gs-rule);
+  border-radius: var(--radius-card);
+  background: var(--gs-paper-3);
+  box-shadow: var(--gs-shadow-soft);
+}
+[data-theme='admin'] [data-slot='table-header'] { background: var(--gs-paper); }
+[data-theme='admin'] [data-slot='table-head'] { height: 2.75rem; padding-inline: 1rem; font-weight: 600; white-space: nowrap; }
+[data-theme='admin'] [data-slot='table-cell'] { padding: 0.75rem 1rem; }
+[data-theme='admin'] [data-slot='table-row'] { transition: background-color var(--dur-micro) ease; }
+
+/* A press shrinks the control a touch (bottom navigation, clock button). */
+.press { transition: transform 140ms var(--ease-out); }
+.press:active { transform: scale(0.97); }
+
+/* Attendance confirmed by the server: the tick pops once and a ring spreads out. */
+@keyframes gs-pop { from { opacity: 0; transform: scale(0.9); } }
+@keyframes gs-ring { from { opacity: 0.5; transform: scale(0.8); } to { opacity: 0; transform: scale(1.9); } }
+.gs-pop { animation: gs-pop 240ms var(--ease-out) both; }
+.gs-ring { animation: gs-ring 700ms var(--ease-out) both; }
+
+/* Figures in the portals are set in the UI face (the public site keeps Prata). */
+:is([data-theme='admin'], [data-theme='employee']) .figure { font-family: var(--font-body); }
+
+/* The shared Input is square on the public site; in the portals it is a rounded white field. Invalid and hover borders
+   keep their own colours. */
+:is([data-theme='admin'], [data-theme='employee']) [data-slot='input'] { border-radius: var(--radius-control); background: var(--gs-paper-3); }
+:is([data-theme='admin'], [data-theme='employee']) [data-slot='input']:not([aria-invalid='true'], :hover) { border-color: var(--gs-rule-strong); }

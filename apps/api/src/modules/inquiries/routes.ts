@@ -36,7 +36,7 @@ export function inquiryRoutes(deps: Deps) {
     const t = TestimonialRequest.parse(req.body);
     const auth = currentAuth(res);
     const user = await db.user.findUniqueOrThrow({ where: { id: auth.userId }, select: { displayName: true, email: true } });
-    await mongo.db.collection(collections.testimonials).insertOne({
+    const { insertedId } = await mongo.db.collection(collections.testimonials).insertOne({
       name: shortName(user.displayName ?? user.email.split('@')[0]!),
       role: 'Verified client',
       projectType: t.projectType,
@@ -46,6 +46,7 @@ export function inquiryRoutes(deps: Deps) {
       status: 'pending',
       createdAt: new Date(),
     });
+    await deps.events.emit('testimonial.submitted', { testimonialId: String(insertedId), rating: t.rating });
     res.status(201).json({ status: 'pending' });
   });
 

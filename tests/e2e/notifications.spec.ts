@@ -67,7 +67,7 @@ test.describe('notifications', () => {
     // Full notification centre: unread filter, mark one as read by opening it from the list.
     await tab2.goto(`${ADMIN}/notifications`);
     await expect(tab2.getByTestId('notification').first()).toBeVisible();
-    await tab2.getByRole('button', { name: 'Unread' }).click();
+    await tab2.getByRole('group', { name: 'Show' }).getByRole('button', { name: /^Unread/ }).click(); // unread rows also say "unread" to screen readers
     await expect(tab2.getByTestId('notification').first()).toHaveAttribute('data-unread', 'true');
     // Admins hold notifications.broadcast, so the announcement tab exists.
     await expect(tab2.getByRole('tab', { name: 'Send an announcement' })).toBeVisible();

@@ -6,6 +6,7 @@ import type { NotificationApp, NotificationPage } from '@greenscape/validation';
 import { usePathname } from 'next/navigation';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { applyEvent, type FeedFilter, type StreamEvent } from './format';
+import { allowed, loadPrefs, play, soundFor, unlockOnGesture } from './sound-manager';
 import type { NotificationView } from '@greenscape/validation';
 
 type Listener = (e: StreamEvent) => void;
@@ -36,31 +37,7 @@ export function useNotifications() {
 
 const hasSessionCookie = () => /(?:^|;\s*)sb-[^=]*-auth-token/.test(document.cookie);
 
-/** Short two-tone beep (Web Audio, no asset). Browsers keep audio locked until the person has interacted with the page; then it just plays. */
-let audio: AudioContext | undefined;
-let lastBeep = 0;
-function beep() {
-  const now = Date.now();
-  if (now - lastBeep < 2000) return; // a burst of notifications is one sound
-  lastBeep = now;
-  try {
-    audio ??= new AudioContext();
-    if (audio.state === 'suspended') void audio.resume();
-    const t = audio.currentTime;
-    for (const [i, f] of [880, 1175].entries()) {
-      const o = audio.createOscillator();
-      const g = audio.createGain();
-      o.frequency.value = f;
-      g.gain.setValueAtTime(0.0001, t + i * 0.12);
-      g.gain.exponentialRampToValueAtTime(0.12, t + i * 0.12 + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.12 + 0.22);
-      o.connect(g).connect(audio.destination);
-      o.start(t + i * 0.12);
-      o.stop(t + i * 0.12 + 0.25);
-    }
-  } catch { /* no audio available */ }
-}
-export const playNotificationSound = beep;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function NotificationsProvider({ app, apiUrl, children }: { app: NotificationApp; apiUrl: string; children: ReactNode }) {
   const pathname = usePathname();
@@ -74,6 +51,8 @@ export function NotificationsProvider({ app, apiUrl, children }: { app: Notifica
   const unread = signedIn ? liveUnread : 0;
   const [epoch, setEpoch] = useState(0);
   const listeners = useRef(new Set<Listener>());
+  /** Ids of notifications already shown live in this tab. */
+  const seen = useRef(new Set<string>());
   const supabase = useRef<{ auth: { getSession(): Promise<{ data: { session: { access_token: string } | null } }> } } | null>(null);
 
   const token = useCallback(async () => {
@@ -106,15 +85,21 @@ export function NotificationsProvider({ app, apiUrl, children }: { app: Notifica
       if (name === 'ready') return;
       if (name === 'created') {
         const { notification: n, sound } = data as Extract<StreamEvent, { event: 'created' }>['data'];
+        // Only a well-formed notification we have not shown yet counts: a repeated event (reconnect, a second
+        // delivery) changes nothing and makes no sound. The stream itself only carries the signed-in person's events.
+        if (typeof n?.id !== 'string' || !UUID.test(n.id) || seen.current.has(n.id)) return;
+        seen.current.add(n.id);
         setUnread((c) => c + 1);
-        if (sound) beep();
+        // `sound` is the person's per-category choice (server); the rest is this browser's sound settings.
+        const prefs = loadPrefs(app);
+        if (sound && allowed(prefs, n)) void play(soundFor(n), prefs, { id: n.id });
         if (document.visibilityState === 'visible') {
           void import('sonner').then(({ toast }) => toast(n.title, { description: n.message, action: n.href ? { label: 'View', onClick: () => { window.location.assign(n.href!); } } : undefined }));
         }
       } else syncCount();
       emit({ event: name, data } as StreamEvent);
     },
-    [emit, syncCount],
+    [app, emit, syncCount],
   );
 
   // The live connection: fetch + stream (EventSource cannot send the Authorization header). Reconnects with backoff,
@@ -122,6 +107,8 @@ export function NotificationsProvider({ app, apiUrl, children }: { app: Notifica
   useEffect(() => {
     if (!signedIn) return;
     const ctrl = new AbortController();
+    // Sounds were turned on earlier on this browser: the first click or key press after a reload unlocks audio again.
+    const stopUnlock = loadPrefs(app).enabled ? unlockOnGesture() : undefined;
     let first = true;
     void (async () => {
       let attempt = 0;
@@ -177,7 +164,7 @@ export function NotificationsProvider({ app, apiUrl, children }: { app: Notifica
         await new Promise((r) => setTimeout(r, Math.min(30_000, 1000 * 2 ** attempt++) * (0.5 + Math.random() / 2)));
       }
     })();
-    return () => ctrl.abort();
+    return () => { ctrl.abort(); stopUnlock?.(); };
   }, [signedIn, app, apiUrl, token, call, handle, syncCount]);
 
   const value = useMemo<Ctx>(

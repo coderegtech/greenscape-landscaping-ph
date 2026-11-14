@@ -20,7 +20,8 @@ export function registerNotificationHandlers({ db, events }: Pick<Deps, 'db' | '
   events.on('user.roles_changed', async ({ userId, roles }) => {
     const x = { type: 'user.roles_changed', category: 'account', title: 'Your access was changed', message: roles.length ? `Your account now has these roles: ${roles.join(', ')}. If you did not expect this, tell an administrator.` : 'All roles were removed from your account. If you did not expect this, tell an administrator.', priority: 'HIGH', dedupeKey: `user.roles_changed:${userId}:${roles.join(',')}:${new Date().toISOString().slice(0, 13)}` } as const;
     await toUser(userId, 'web', { ...x, href: '/account' });
-    if (roles.some((r) => !STAFF_ROLES_EXCLUDED.has(r))) await toUser(userId, 'admin', { ...x, href: '/' });
+    // Own key per app: UNIQUE(recipient, dedupeKey) would otherwise drop the console copy as a repeat of the website one.
+    if (roles.some((r) => !STAFF_ROLES_EXCLUDED.has(r))) await toUser(userId, 'admin', { ...x, href: '/', dedupeKey: `${x.dedupeKey}:admin` });
   });
 
   // ── quotations ──
@@ -85,7 +86,7 @@ export function registerNotificationHandlers({ db, events }: Pick<Deps, 'db' | '
     const l = await db.leaveRequest.findUniqueOrThrow({ where: { id: leaveId }, include: { employee: true, leaveType: { select: { name: true } } } });
     if (l.status === 'PENDING') return;
     const word = l.status === 'APPROVED' ? 'approved' : l.status === 'REJECTED' ? 'declined' : 'cancelled';
-    await toUser(l.employee.userId, 'employee', { type: `leave.${word}`, category: 'hr', title: `Your leave was ${word}`, message: `${l.leaveType.name}, ${range(l.startDate, l.endDate)}.${l.decisionNote ? ` Note: ${l.decisionNote}` : ''}`, href: '/', priority: 'HIGH', dedupeKey: `leave.decided:${l.id}:${l.status}` });
+    await toUser(l.employee.userId, 'employee', { type: `leave.${word}`, category: 'hr', title: `Your leave was ${word}`, message: `${l.leaveType.name}, ${range(l.startDate, l.endDate)}.${l.decisionNote ? ` Note: ${l.decisionNote}` : ''}`, href: '/requests', priority: 'HIGH', dedupeKey: `leave.decided:${l.id}:${l.status}` });
   });
   events.on('correction.requested', async ({ correctionId }) => {
     const c = await db.attendanceCorrection.findUniqueOrThrow({ where: { id: correctionId }, include: { record: { include: { employee: true } } } });
@@ -94,6 +95,28 @@ export function registerNotificationHandlers({ db, events }: Pick<Deps, 'db' | '
   events.on('correction.decided', async ({ correctionId }) => {
     const c = await db.attendanceCorrection.findUniqueOrThrow({ where: { id: correctionId }, include: { record: { include: { employee: true } } } });
     if (c.status === 'PENDING') return;
-    await toUser(c.record.employee.userId, 'employee', { type: `correction.${c.status.toLowerCase()}`, category: 'hr', title: `Your time correction was ${c.status === 'APPROVED' ? 'approved' : 'declined'}`, message: `For ${c.record.workDate.toISOString().slice(0, 10)}.`, href: '/', dedupeKey: `correction.decided:${c.id}:${c.status}` });
+    await toUser(c.record.employee.userId, 'employee', { type: `correction.${c.status.toLowerCase()}`, category: 'hr', title: `Your time correction was ${c.status === 'APPROVED' ? 'approved' : 'declined'}`, message: `For ${c.record.workDate.toISOString().slice(0, 10)}.`, href: '/attendance', dedupeKey: `correction.decided:${c.id}:${c.status}` });
   });
+
+  events.on('schedule.changed', async ({ scheduleId, employeeId, effectiveFrom }) => {
+    const s = await db.workSchedule.findUniqueOrThrow({ where: { id: scheduleId }, select: { name: true } });
+    const day = new Date();
+    // Only the people on this schedule hear about it, each in their own portal inbox.
+    const people = await db.employee.findMany({
+      where: employeeId ? { id: employeeId } : { employmentStatus: { in: ['ACTIVE', 'PROBATION'] }, scheduleAssignments: { some: { scheduleId, OR: [{ effectiveTo: null }, { effectiveTo: { gte: day } }] } } },
+      select: { userId: true },
+    });
+    const body: Body = employeeId
+      ? { type: 'schedule.assigned', category: 'hr', title: 'Your work schedule changed', message: `You are on "${s.name}"${effectiveFrom ? ` from ${effectiveFrom}` : ''}. Check your shifts.`, href: '/schedule', dedupeKey: `schedule.assigned:${scheduleId}:${effectiveFrom ?? ''}` }
+      : { type: 'schedule.updated', category: 'hr', title: 'Your work schedule was updated', message: `The hours of "${s.name}" changed. Check your shifts.`, href: '/schedule', dedupeKey: `schedule.updated:${scheduleId}:${day.toISOString().slice(0, 13)}` };
+    await Promise.all(people.map((e) => toUser(e.userId, 'employee', body)));
+  });
+  events.on('attendance.incomplete', async ({ recordId }) => {
+    const r = await db.attendanceRecord.findUniqueOrThrow({ where: { id: recordId }, include: { employee: { select: { userId: true } } } });
+    await toUser(r.employee.userId, 'employee', { type: 'attendance.incomplete', category: 'hr', title: 'You did not clock out', message: `${r.workDate.toISOString().slice(0, 10)} has no clock-out. Ask for a correction so the day counts.`, href: '/attendance', priority: 'HIGH', dedupeKey: `attendance.incomplete:${r.id}` });
+  });
+
+  // ── reviews ──
+  // No name or text in the notification: the review itself is only shown on the moderation page.
+  events.on('testimonial.submitted', ({ testimonialId, rating }) => toStaff('testimonials.moderate', { type: 'testimonial.submitted', category: 'messages', title: 'New review to moderate', message: `A customer left a ${rating}-star review. It stays hidden until you approve it.`, href: '/cms/testimonials', dedupeKey: `testimonial.submitted:${testimonialId}` }));
 }

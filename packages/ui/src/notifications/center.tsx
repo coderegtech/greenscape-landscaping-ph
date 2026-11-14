@@ -1,6 +1,5 @@
 'use client';
 import { CATEGORY_KEYS, NOTIFICATION_CATEGORIES, type NotificationCategory, type NotificationPreferenceItem } from '@greenscape/validation';
-import { Volume2 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '../components/button';
 import { Checkbox } from '../components/checkbox';
@@ -9,12 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/tabs';
 import { Notice } from '../form';
 import { NotificationList } from './list';
 import { PushToggle } from './push-toggle';
-import { playNotificationSound, useFeed, useNotifications } from './provider';
+import { useFeed, useNotifications } from './provider';
+import { SoundSettings } from './sound';
 
 // The shared Tabs ships unthemed; these classes put it on the site's tokens (readable inactive labels, signal underline, scrolls on phones).
 const tabsList = 'h-auto w-full justify-start gap-1 overflow-x-auto border-b border-rule p-0';
 const tab = 'h-11 flex-none px-4 text-sm text-ink-2 hover:text-ink data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-ink after:bg-signal after:!bottom-0 after:!h-[3px] data-[state=active]:after:opacity-100';
-const selectClass = 'h-10 border border-muted bg-paper-2 px-3 text-sm text-ink';
+const selectClass = 'h-10 rounded-(--radius-control) border border-rule-strong bg-paper-3 px-3 text-sm text-ink';
 
 function Inbox() {
   const { unread, connected, markAllRead, clear } = useNotifications();
@@ -65,7 +65,7 @@ function Inbox() {
           <Button variant="danger" size="sm" onClick={() => setConfirm(true)}>Clear all</Button>
         )}
       </div>
-      <div className="border border-rule" data-testid="notification-center-list">
+      <div className="overflow-clip rounded-card border border-rule bg-paper-3" data-testid="notification-center-list">
         <NotificationList items={feed.items} state={feed.state} empty={only ? 'No unread notifications' : undefined} />
       </div>
       {feed.hasMore && (
@@ -125,11 +125,9 @@ function Preferences() {
         <h2 id="alerts-h" className="text-xl">Alerts on this device</h2>
         <PushToggle />
       </section>
+      <SoundSettings />
       <section aria-labelledby="what-h" className="flex flex-col gap-3">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 id="what-h" className="text-xl">What to be told about</h2>
-          <Button variant="ghost" size="sm" onClick={playNotificationSound}><Volume2 /> Play the sound</Button>
-        </div>
+        <h2 id="what-h" className="text-xl">What to be told about</h2>
         <div role="status" className="min-h-6">{msg && <Notice tone={msg.tone}>{msg.text}</Notice>}</div>
         {prefs ? (
           <div role="table" aria-label="Notification settings" className="flex flex-col">

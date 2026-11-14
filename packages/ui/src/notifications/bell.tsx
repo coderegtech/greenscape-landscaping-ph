@@ -7,6 +7,7 @@ import { Button } from '../components/button';
 import { NotificationList } from './list';
 import { PushToggle } from './push-toggle';
 import { useFeed, useNotifications } from './provider';
+import { SoundToggle } from './sound';
 
 /**
  * Bell with an unread badge and a dropdown of recent notifications. Renders nothing for signed-out visitors.
@@ -41,10 +42,11 @@ export function NotificationBell({ centerHref }: { centerHref: string }) {
           sideOffset={8}
           collisionPadding={8}
           aria-label="Notifications"
-          className="z-[400] flex max-h-[min(34rem,var(--radix-popover-content-available-height))] w-[min(24rem,calc(100vw-1rem))] origin-(--radix-popover-content-transform-origin) flex-col border border-rule bg-paper text-ink shadow-lg data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2"
+          className="z-[400] flex max-h-[min(34rem,var(--radix-popover-content-available-height))] w-[min(24rem,calc(100vw-1rem))] origin-(--radix-popover-content-transform-origin) flex-col overflow-clip rounded-card border border-rule bg-paper-3 text-ink shadow-lift data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2"
         >
           <div className="flex items-center justify-between gap-2 border-b border-rule px-3 py-2">
-            <h2 className="font-body text-sm font-bold">Notifications</h2>
+            <h2 className="mr-auto font-body text-sm font-bold">Notifications</h2>
+            <SoundToggle />
             <Button variant="link" className="text-sm" disabled={unread === 0} onClick={() => void markAllRead()}>
               Mark all as read
             </Button>

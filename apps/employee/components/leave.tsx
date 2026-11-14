@@ -1,7 +1,7 @@
 'use client';
-import { Badge } from '@greenscape/ui/components/badge';
 import { Button } from '@greenscape/ui/components/button';
 import { toast } from '@greenscape/ui/components/sonner';
+import { StatusPill } from '@greenscape/ui/layout/dashboard';
 import { useState } from 'react';
 import { cancelLeave, requestLeave } from '@/app/actions';
 
@@ -11,7 +11,9 @@ export interface MyLeave {
   balances: { leaveTypeId: string; name: string; allotted: number; used: number; left: number }[];
   requests: { id: string; type: string; startDate: string; endDate: string; halfDay: boolean; days: number; reason: string | null; status: string; statusLabel: string; decisionNote: string | null }[];
 }
-const field = 'h-11 w-full border border-muted bg-paper-2 px-3 text-base text-ink aria-invalid:border-danger';
+const field = 'h-11 w-full border border-rule-strong bg-paper-3 px-3 text-base text-ink aria-invalid:border-danger';
+const TONES = ['green', 'blue', 'purple', 'orange'] as const;
+const STATUS = { APPROVED: 'green', PENDING: 'orange', REJECTED: 'red', CANCELLED: 'gray' } as const;
 const day = (ymd: string) => new Date(`${ymd}T00:00:00Z`).toLocaleDateString('en-PH', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 
 export function LeavePanel({ leave }: { leave: MyLeave }) {
@@ -40,18 +42,18 @@ export function LeavePanel({ leave }: { leave: MyLeave }) {
 
   return (
     <section aria-labelledby="leave" className="flex flex-col gap-6">
-      <h2 id="leave" className="text-3xl">Leave in {leave.year}</h2>
-      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-3" aria-label="Balances">
-        {leave.balances.map((b) => (
-          <li key={b.leaveTypeId} className="flex flex-col border-t border-rule pt-3">
-            <span className="text-sm text-ink-2">{b.name}</span>
-            <span className="tabular text-3xl">{b.left}</span>
-            <span className="text-xs text-muted">of {b.allotted} days left</span>
+      <h2 id="leave" className="text-xl">Leave in {leave.year}</h2>
+      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3" aria-label="Balances">
+        {leave.balances.map((b, i) => (
+          <li key={b.leaveTypeId} className={`tone-${TONES[i % TONES.length]} card-in flex flex-col gap-1 rounded-card bg-(--tone-soft) p-4`}>
+            <span className="text-sm font-medium text-(--tone-ink)">{b.name}</span>
+            <span className="tabular text-3xl font-bold text-ink">{b.left}</span>
+            <span className="text-xs text-ink-2">of {b.allotted} days left</span>
           </li>
         ))}
       </ul>
 
-      <form onSubmit={submit} noValidate className="flex flex-col gap-4 border-t border-rule pt-6" aria-labelledby="new-leave">
+      <form onSubmit={submit} noValidate className="flex flex-col gap-4 rounded-card border border-rule bg-paper-3 p-4 shadow-soft md:p-6" aria-labelledby="new-leave">
         <h3 id="new-leave" className="text-xl">Request leave</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <label className="flex flex-col gap-1 text-sm font-medium">Type
@@ -79,15 +81,15 @@ export function LeavePanel({ leave }: { leave: MyLeave }) {
       </form>
 
       {leave.requests.length > 0 && (
-        <ul className="flex flex-col border-t border-rule" aria-label="Your requests">
+        <ul className="flex flex-col rounded-card border border-rule bg-paper-3 px-4 shadow-soft" aria-label="Your requests">
           {leave.requests.map((r) => (
-            <li key={r.id} className="flex flex-wrap items-center justify-between gap-3 border-b border-rule py-3">
+            <li key={r.id} className="flex flex-wrap items-center justify-between gap-3 border-b border-rule py-3 last:border-b-0">
               <span className="flex min-w-0 flex-col">
                 <span>{r.type}: {day(r.startDate)}{r.endDate !== r.startDate ? ` to ${day(r.endDate)}` : ''}{r.halfDay ? ' (half day)' : ''}</span>
                 <span className="text-xs text-muted">{r.days} day{r.days === 1 ? '' : 's'}{r.decisionNote ? `. Note: ${r.decisionNote}` : ''}</span>
               </span>
               <span className="flex items-center gap-2">
-                <Badge variant={r.status === 'APPROVED' ? 'signal' : 'outline'}>{r.statusLabel}</Badge>
+                <StatusPill tone={STATUS[r.status as keyof typeof STATUS] ?? 'gray'}>{r.statusLabel}</StatusPill>
                 {r.status === 'PENDING' && <Button size="sm" variant="ghost" loading={busy === r.id} onClick={() => cancel(r.id)}>Withdraw</Button>}
               </span>
             </li>

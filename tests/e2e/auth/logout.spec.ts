@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { ADMIN, EMPLOYEE, WEB, signIn } from '../helpers';
+import { ADMIN, EMPLOYEE, WEB, signIn, signOut } from '../helpers';
 import { call, cleanupEmployees, employeeUser, userWithRoles } from '../fixtures/test-users';
 
 // Signing out on each portal: the session ends, protected pages and Back show nothing private, and a copy of the
@@ -38,7 +38,7 @@ test('employee: sign out ends the session and the old token is refused', async (
   await signIn(page, e.email);
   await expect(page.getByRole('button', { name: 'Clock in' })).toBeVisible();
   const token = await cookieToken(page);
-  await page.getByRole('button', { name: 'Sign out' }).click();
+  await signOut(page);
   await expect(page).toHaveURL(`${EMPLOYEE}/login`);
   await page.goBack();
   await page.goto(`${EMPLOYEE}/`);
@@ -54,7 +54,7 @@ test('admin: sign out ends the session and the old token is refused', async ({ p
   await signIn(page, a.email);
   await expect(page.getByTestId('staff-identity')).toBeVisible();
   const token = await cookieToken(page);
-  await page.getByRole('button', { name: 'Sign out' }).click();
+  await signOut(page);
   await expect(page).toHaveURL(`${ADMIN}/login`);
   await page.goBack();
   await page.goto(`${ADMIN}/users`);
