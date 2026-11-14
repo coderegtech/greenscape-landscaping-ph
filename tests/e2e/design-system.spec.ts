@@ -79,7 +79,7 @@ test.describe('navigation', () => {
     await page.getByRole('button', { name: 'Open menu' }).click();
     const dialog = page.getByRole('dialog', { name: 'Menu' });
     await expect(dialog).toBeVisible();
-    for (const name of ['Services', 'Projects', 'Shop', 'Stories', 'About', 'Contact']) await expect(dialog.getByRole('link', { name, exact: true })).toBeVisible();
+    for (const name of ['Services', 'Projects', 'Gallery', 'Shop', 'Stories', 'About', 'Contact']) await expect(dialog.getByRole('link', { name, exact: true })).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
   });

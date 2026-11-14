@@ -17,7 +17,7 @@ describe('public CMS API', () => {
   it('site config and navigation', async () => {
     const res = await request(app).get('/v1/cms/site').expect(200);
     expect(res.body.config).toMatchObject({ phone: '0917 844 3330', email: 'greenscapepalawan@gmail.com' });
-    expect(res.body.nav.main.map((n: { label: string }) => n.label)).toEqual(['Services', 'Projects', 'Shop', 'Stories', 'About', 'Contact']);
+    expect(res.body.nav.main.map((n: { label: string }) => n.label)).toEqual(['Services', 'Projects', 'Gallery', 'Shop', 'Stories', 'About', 'Contact']);
     expect(res.headers['cache-control']).toContain('max-age=60');
   });
 
