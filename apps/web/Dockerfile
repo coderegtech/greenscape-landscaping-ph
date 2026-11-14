@@ -3,7 +3,8 @@
 #   docker build -f apps/web/Dockerfile --build-arg NEXT_PUBLIC_API_URL=https://api.example \
 #     --build-arg NEXT_PUBLIC_SUPABASE_URL=https://xyz.supabase.co \
 #     --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_... -t greenscape-web .
-# The web, admin and employee Dockerfiles differ only in this header and the APP/PORT defaults: change all three together.
+# The web, admin and employee Dockerfiles differ only in this header, the APP/PORT defaults and the
+# public/ copy (admin and employee ship app icons; web has no public folder): change all three together.
 # NEXT_PUBLIC_* values are public by definition (they ship to browsers) and are baked in at build time. Server secrets
 # (SUPABASE_SECRET_KEY is not used by these apps; REVALIDATE_SECRET, PREVIEW_SECRET, INTERNAL_API_KEY) are
 # runtime environment variables only, never build args.
