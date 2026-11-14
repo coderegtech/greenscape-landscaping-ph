@@ -218,6 +218,7 @@ const navigation = [
   nav('main', [
     { label: 'Services', href: '/services', children: serviceLinks },
     { label: 'Projects', href: '/projects', children: Object.values(categoryOf).map((c) => ({ label: c.replace(/-/g, ' ').replace(/^./, (x) => x.toUpperCase()), href: `/projects?category=${c}` })) },
+    { label: 'Gallery', href: '/gallery' },
     { label: 'Shop', href: '/shop' },
     { label: 'Stories', href: '/stories' },
     { label: 'About', href: '/about' },
