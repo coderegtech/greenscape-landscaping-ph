@@ -1,11 +1,12 @@
 'use client';
 import { NotificationBell } from '../notifications/bell';
 import { SoundToggle } from '../notifications/sound';
-import { CalendarCheck, CalendarClock, FileText, Home, Leaf, UserRound, type LucideIcon } from 'lucide-react';
+import { CalendarCheck, CalendarClock, FileText, Home, UserRound, type LucideIcon } from 'lucide-react';
 import { MotionConfig, motion } from 'motion/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
+import { BrandMark } from './brand-mark';
 
 const NAV: { href: string; label: string; icon: LucideIcon }[] = [
   { href: '/', label: 'Dashboard', icon: Home },
@@ -27,10 +28,10 @@ export function PortalShell({ name, pending, children }: { name: string; pending
   return (
     <MotionConfig reducedMotion="user">
       <a href="#main" className="sr-only z-[300] rounded-lg bg-signal px-4 py-3 font-bold text-signal-ink focus:not-sr-only focus:fixed focus:top-2 focus:left-2">Skip to content</a>
-      <header className="sticky top-0 z-[200] border-b border-rule bg-paper/90 backdrop-blur">
+      <header className="sticky top-0 z-[200] border-b border-rule bg-paper/90 pt-[env(safe-area-inset-top)] backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-[64rem] items-center gap-2 px-4 md:px-6">
           <Link href="/" className="mr-auto flex items-center gap-2.5 text-ink no-underline md:mr-6">
-            <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-signal-deep text-signal-ink"><Leaf className="size-5" /></span>
+            <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-signal-deep text-signal-ink"><BrandMark className="size-6" leaf="fill-lime" /></span>
             <span className="text-base font-bold">Greenscape<span className="sr-only"> employee portal</span></span>
           </Link>
           <nav aria-label="Portal" className="mr-auto hidden items-center gap-1 md:flex">
