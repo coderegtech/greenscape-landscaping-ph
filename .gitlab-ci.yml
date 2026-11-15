@@ -1,11 +1,18 @@
-# GitLab CI/CD for the self-hosted GitLab. One pipeline in place of the GitHub workflows:
-#   verify      <- .github/workflows/ci.yml
-#   security    <- .github/workflows/security.yml (also the weekly schedule)
-#   production  <- .github/workflows/production-pipeline.yml (snapshot + staging on main)
-#   publish     <- same, the push to the `production` branch (off until PRODUCTION_PUBLISH_ENABLED=true)
-#   deploy      <- .github/workflows/deploy-production.yml (Dokploy; automatic only with DOKPLOY_AUTO_DEPLOY=true)
+# GitLab CI/CD for the self-hosted GitLab (docs/GITLAB_CICD.md). GitHub is the primary repository, GitLab runs the pipelines;
+# scripts/sync-remotes.sh keeps the two in step (docs/DUAL_REMOTE_SETUP.md). Stages, in order:
+#   validate       typecheck                      <- .github/workflows/ci.yml
+#   lint           eslint                         <- ci.yml
+#   test           unit tests; verify = integration + e2e + app build + web image scan   <- ci.yml
+#   security       dependencies, secrets, static analysis                                <- .github/workflows/security.yml
+#   build          the api / employee / admin images, scanned with Trivy                 <- security.yml
+#   package        the production snapshot, checked for secrets, built and smoke-tested  <- production-pipeline.yml
+#   deploy         publish the snapshot to the `production` branch, ask Dokploy to deploy <- production-pipeline.yml, deploy-production.yml
+#   verify-deploy  health checks of the deployed environment
+#   sync           GitLab -> GitHub, fast-forward only; also the scheduled two-way sync
 # Runner: privileged Docker executor, one job at a time, job image docker/ci.Dockerfile. Each job starts its own
 # Docker daemon, so the throwaway databases and Supabase never touch the developer's containers on the same machine.
+# Branch pipelines run for main, develop, feature/*, fix/*, hotfix/*, rebuild/*, security/* (a GitHub pull request is
+# validated through the branch the sync copies to GitLab); a branch with an open merge request runs the MR pipeline.
 
 workflow:
   rules:
@@ -13,14 +20,22 @@ workflow:
     - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
       when: never
     - if: $CI_PIPELINE_SOURCE =~ /^(schedule|web)$/
-    - if: $CI_COMMIT_BRANCH =~ /^(main|rebuild\/.+|security\/.+)$/
+    - if: $CI_COMMIT_BRANCH =~ /^(main|develop|feature\/.+|fix\/.+|hotfix\/.+|rebuild\/.+|security\/.+)$/
 
-stages: [verify, security, production, publish, deploy]
+stages: [validate, lint, test, security, build, package, deploy, verify-deploy, sync]
 
 default:
   image: greenscape-ci:1
   tags: [greenscape]
   interruptible: true
+  # Reports the job result to the GitHub commit (so to its pull requests); does nothing without GITHUB_STATUS_TOKEN.
+  after_script: [bash scripts/ci/report-github-status.sh]
+
+# A pipeline started with SYNC_ONLY=true (the sync schedule, or Run pipeline) runs only the sync job.
+.no-sync:
+  rules:
+    - if: $SYNC_ONLY == "true"
+      when: never
 
 variables:
   npm_config_store_dir: /pnpm-store # runner volume, shared by jobs (they run one at a time)
@@ -57,22 +72,41 @@ variables:
     --severity CRITICAL,HIGH --ignore-unfixed --exit-code 1 --format table --output "trivy-${APP}.txt" "$IMAGE"
     || { cat "trivy-${APP}.txt"; exit 1; }
 
-# ---------------------------------------------------------------- verify
+# ---------------------------------------------------------------- validate, lint, unit tests (no Docker, minutes)
+
+typecheck:
+  stage: validate
+  rules: [!reference [.no-sync, rules], { if: $CI_PIPELINE_SOURCE != "schedule" }]
+  script:
+    - pnpm install --frozen-lockfile
+    - pnpm -r --workspace-concurrency=2 typecheck && pnpm exec tsc -p tests # = pnpm typecheck, 2 at a time
+
+lint:
+  stage: lint
+  rules: [!reference [.no-sync, rules], { if: $CI_PIPELINE_SOURCE != "schedule" }]
+  script:
+    - pnpm install --frozen-lockfile
+    - pnpm lint
+
+unit:
+  stage: test
+  rules: [!reference [.no-sync, rules], { if: $CI_PIPELINE_SOURCE != "schedule" }]
+  script:
+    - pnpm install --frozen-lockfile
+    - pnpm test
+
+# ---------------------------------------------------------------- test: integration, build, e2e
 
 verify:
-  stage: verify
+  stage: test
   timeout: 2h
-  rules:
-    - if: $CI_PIPELINE_SOURCE != "schedule"
+  rules: [!reference [.no-sync, rules], { if: $CI_PIPELINE_SOURCE != "schedule" }]
   # Docker on this machine has ~7 GB shared with GitLab itself: run the heavy steps with less parallelism than
   # GitHub did, or the kernel kills them (exit 137).
   variables:
     npm_config_workspace_concurrency: 1 # pnpm build: the three Next builds one after another
   before_script: [*docker, *local-stack]
   script:
-    - pnpm -r --workspace-concurrency=2 typecheck && pnpm exec tsc -p tests # = pnpm typecheck, 2 at a time
-    - pnpm lint
-    - pnpm test
     - pnpm test:integration
     # Builds web + admin with the API running (the web app pre-renders pages from the CMS).
     - pnpm build
@@ -96,6 +130,7 @@ verify:
 dependencies:
   stage: security
   needs: []
+  rules: [!reference [.no-sync, rules]]
   before_script: [*docker]
   script:
     - pnpm install --frozen-lockfile
@@ -109,6 +144,7 @@ dependencies:
 secrets:
   stage: security
   needs: []
+  rules: [!reference [.no-sync, rules]]
   variables:
     GIT_DEPTH: 0 # full history
   before_script: [*docker]
@@ -122,6 +158,7 @@ secrets:
 static-analysis:
   stage: security
   needs: []
+  rules: [!reference [.no-sync, rules]]
   before_script: [*docker]
   script:
     - docker run --rm -v "$PWD:/src" -w /src semgrep/semgrep:1.95.0 semgrep scan
@@ -132,8 +169,8 @@ static-analysis:
     paths: [semgrep.sarif]
 
 images:
-  stage: security
-  needs: []
+  stage: build
+  rules: [!reference [.no-sync, rules]]
   parallel:
     matrix:
       # web: built and scanned in verify (its build pre-renders pages from a running API)
@@ -150,10 +187,12 @@ images:
     when: always
     paths: [trivy-*.txt]
 
-# ---------------------------------------------------------------- production (main only, after every check passed)
+# ---------------------------------------------------------------- package (main only, after every check passed)
 
 .production:
   rules:
+    - if: $SYNC_ONLY == "true"
+      when: never
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE =~ /^(push|web)$/
   interruptible: false
   variables:
@@ -161,7 +200,7 @@ images:
 
 snapshot:
   extends: .production
-  stage: production
+  stage: package
   before_script: [*docker]
   script:
     - node scripts/generate-production-snapshot.ts --commit "$CI_COMMIT_SHA" --out /tmp/snapshot
@@ -172,7 +211,7 @@ snapshot:
 # production mode, then the smoke test. No secrets, nothing reaches a real environment.
 staging:
   extends: .production
-  stage: production
+  stage: package
   timeout: 2h
   before_script: [*docker, *local-stack]
   script:
@@ -201,15 +240,19 @@ staging:
     - CI=true pnpm exec playwright test -c playwright.smoke.config.ts
   after_script:
     - for c in api web admin employee; do echo "--- $c"; docker logs --tail 80 "$c" 2>&1 || true; done
+    - bash scripts/ci/report-github-status.sh
 
 # Pushes the snapshot as a fast-forward commit. Automatic on main only with PRODUCTION_PUBLISH_ENABLED=true; a manual
 # "Run pipeline" on main publishes to TARGET_BRANCH (default production-test, a rehearsal). Needs the masked CI/CD
 # variable PRODUCTION_PUSH_TOKEN (project access token, write_repository): the job token cannot push.
 publish:
   extends: .production
-  stage: publish
+  stage: deploy
   resource_group: production
+  environment: { name: production, deployment_tier: production }
   rules:
+    - if: $SYNC_ONLY == "true"
+      when: never
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "web"
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push" && $PRODUCTION_PUBLISH_ENABLED == "true"
   script:
@@ -232,12 +275,13 @@ deploy:
   stage: deploy
   interruptible: false
   resource_group: production
+  environment: { name: production, deployment_tier: production }
   needs:
     - job: publish
       optional: true
       artifacts: true
   rules:
-    - if: $CI_COMMIT_BRANCH != "main" || $CI_PIPELINE_SOURCE !~ /^(push|web)$/
+    - if: $SYNC_ONLY == "true" || $CI_COMMIT_BRANCH != "main" || $CI_PIPELINE_SOURCE !~ /^(push|web)$/
       when: never
     - if: $DOKPLOY_AUTO_DEPLOY == "true" && $PRODUCTION_PUBLISH_ENABLED == "true" && $CI_PIPELINE_SOURCE == "push"
     - when: manual
@@ -256,3 +300,50 @@ deploy:
           -H "x-api-key: $DOKPLOY_API_KEY" -H 'content-type: application/json' -d "{\"applicationId\":\"$id\"}"
         echo "requested deployment of $id"
       done
+
+# Health check of what Dokploy now serves. POST_DEPLOY_URLS: URLs separated by spaces that must answer 200 (for example
+# https://api.example.com/v1/health https://example.com/api/health). Not set: the job says so and fails, so a deploy is
+# never reported as verified without a check. On failure: docs/deployment/rollback.md.
+post-deploy-check:
+  stage: verify-deploy
+  interruptible: false
+  environment: { name: production, deployment_tier: production }
+  needs:
+    - job: deploy
+      optional: true
+  rules:
+    - if: $SYNC_ONLY == "true" || $CI_COMMIT_BRANCH != "main" || $CI_PIPELINE_SOURCE !~ /^(push|web)$/
+      when: never
+    - if: $DOKPLOY_AUTO_DEPLOY == "true" && $PRODUCTION_PUBLISH_ENABLED == "true" && $CI_PIPELINE_SOURCE == "push"
+    - when: manual
+      allow_failure: true
+  script:
+    - '[ -n "$POST_DEPLOY_URLS" ] || { echo "Set the CI/CD variable POST_DEPLOY_URLS to verify a deployment"; exit 1; }'
+    - |
+      bad=0
+      for url in $POST_DEPLOY_URLS; do
+        ok=0
+        for i in $(seq 1 30); do [ "$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$url")" = 200 ] && { ok=1; break; }; sleep 10; done
+        [ $ok = 1 ] && echo "healthy: $url" || { echo "NOT healthy after 5 minutes: $url"; bad=1; }
+      done
+      [ $bad = 0 ] || { echo "Roll back: docs/deployment/rollback.md"; exit 1; }
+
+# ---------------------------------------------------------------- sync
+# Fast-forward-only sync of branches and tags between GitHub and GitLab (scripts/sync-remotes.sh). Runs after a green
+# main pipeline (so the production snapshot reaches GitHub) and on the schedule with SYNC_ONLY=true (GitHub -> GitLab).
+# Needs the masked, protected CI/CD variables GITHUB_SYNC_TOKEN (GitHub token, contents: write) and GITLAB_SYNC_TOKEN
+# (project access token, write_repository, role Maintainer).
+sync-remotes:
+  stage: sync
+  interruptible: false
+  resource_group: sync
+  variables:
+    GITHUB_URL: https://github.com/coderegtech/greenscape-landscaping-ph.git
+    GITLAB_URL: ${CI_SERVER_PROTOCOL}://gitlab:${CI_SERVER_PORT}/${CI_PROJECT_PATH}.git
+  rules:
+    - if: $SYNC_ONLY == "true"
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push" && $GITHUB_SYNC_TOKEN && $GITLAB_SYNC_TOKEN
+  script:
+    - ': "${GITHUB_SYNC_TOKEN:?set the masked CI/CD variable GITHUB_SYNC_TOKEN (docs/DUAL_REMOTE_SETUP.md)}"'
+    - ': "${GITLAB_SYNC_TOKEN:?set the masked CI/CD variable GITLAB_SYNC_TOKEN (docs/DUAL_REMOTE_SETUP.md)}"'
+    - bash scripts/sync-remotes.sh

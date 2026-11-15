@@ -9,6 +9,61 @@ The automated path is documented under `docs/deployment/`: the deployment-only `
 (`production-branch.md`), the pipeline that maintains it (`ci-cd-pipeline.md`), Dokploy (`dokploy.md`), variables
 (`environment-variables.md`) and branch rollback (`rollback.md`).
 
+(On Windows and macOS `docs/DEPLOYMENT.md` and `docs/deployment.md` are the same path; this is the one file.)
+
+## Deployment workflow (GitHub + GitLab)
+
+Production deploys run **only** through GitLab CI/CD, from `main`, after every earlier stage passed. Nothing deploys from
+a developer machine, a feature branch or a pull request. Repositories and sync: [DUAL_REMOTE_SETUP.md](DUAL_REMOTE_SETUP.md);
+pipeline: [GITLAB_CICD.md](GITLAB_CICD.md); branches: [BRANCHING_STRATEGY.md](BRANCHING_STRATEGY.md).
+
+```
+merge to main (GitHub) -sync-> GitLab main -> validate, lint, test, security, build -> package -> deploy -> verify-deploy
+                                                                                        |           |
+                                                                       snapshot + staging smoke     publish `production` (fast-forward)
+                                                                                                    Dokploy deploy, health check
+                                                                                                    sync to GitHub (+tag)
+```
+
+- **Built with multi-stage Dockerfiles** (`apps/*/Dockerfile`): a build stage with dev dependencies, a runtime stage with
+  production dependencies only; images are scanned with Trivy (fixable HIGH/CRITICAL fails the pipeline).
+- **The snapshot** (`scripts/generate-production-snapshot.ts`, manifest `config/production-files.json`) leaves out tests,
+  fixtures, audits, screenshots, design notes, one-off scripts and CI configuration. **Nothing is deleted from `main`**;
+  runtime configuration, migrations, Dockerfiles and the lockfile are `required` or the snapshot is rejected.
+- **Validated before it ships**: Gitleaks over the snapshot, then `staging` builds the four images from it, runs them in
+  production mode against throwaway databases and runs the Playwright smoke test.
+
+| State | Result of a green `main` pipeline |
+|---|---|
+| default | everything up to `staging`; `publish` and `deploy` are manual jobs |
+| `PRODUCTION_PUBLISH_ENABLED=true` | `publish` pushes the snapshot to `production` automatically |
+| plus `DOKPLOY_AUTO_DEPLOY=true` | `deploy` asks Dokploy, then `post-deploy-check` verifies `POST_DEPLOY_URLS` |
+
+Rehearse without touching `production`: Run pipeline on `main` with `TARGET_BRANCH=production-test` (delete that branch
+afterwards on both remotes).
+
+**Releases and tags.** After a successful `publish`, tag the released commit on `main` and push it; the sync carries it to
+the other remote. Tags are never moved or overwritten (the sync reports a conflict instead).
+
+```bash
+git tag -a v<MAJOR.MINOR.PATCH> <sha on main> -m "release v<MAJOR.MINOR.PATCH>"
+```
+
+```bash
+git push origin v<MAJOR.MINOR.PATCH>
+```
+
+**If the deployment fails**, nothing is changed automatically. Roll back in this order (`deployment/rollback.md`):
+redeploy the previous deployment in Dokploy; or `git revert` the bad commit on `main` and let the pipeline publish the
+fix; or, in an emergency, revert the snapshot commit on `production`. Set `PRODUCTION_PUBLISH_ENABLED=false` until `main`
+is fixed. Migrations are additive, so the previous snapshot runs against the newer schema.
+
+**Status (2026-11-15).** The GitLab jobs `dependencies`, `secrets`, `static-analysis` and `images` have passed on the
+runner. `verify` (integration, build, e2e) takes about 90 minutes there and failed on resource limits (an e2e timeout and
+one OOM kill) before this change, so `snapshot`, `staging`, `publish` and `deploy` have not completed on GitLab yet.
+Until a `main` pipeline is green end to end, deployments stay manual. No credentials for the GitHub sync, Dokploy or
+`production` publishing are configured in GitLab yet ([GITLAB_CICD.md](GITLAB_CICD.md)).
+
 ## What is deployed
 
 | Piece | Built from | Runs as | Health |
