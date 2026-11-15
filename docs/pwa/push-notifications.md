@@ -15,7 +15,7 @@ Only by a click: "Turn on alerts" in the bell dropdown or on the Notifications p
 
 | App | Events |
 |---|---|
-| Admin | Paid orders, quote requests, customer and website messages, low stock, leave requests, time-correction requests, reviews to moderate, role changes, announcements |
+| Admin | Paid orders, quote requests, customer and website messages, low stock, leave requests, time-correction requests, employee clock-ins, reviews to moderate, role changes, announcements |
 | Employee | Schedule changes, leave decisions, correction decisions, missed clock-out, announcements |
 
 Audiences are resolved by permission on the server, and a push goes only to subscriptions made in that app.
