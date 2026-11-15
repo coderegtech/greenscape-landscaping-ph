@@ -41,7 +41,7 @@ variables:
   - pnpm install --frozen-lockfile
   - cp .env.example .env
   - pnpm services:up || { docker compose -f docker/compose.dev.yml logs --no-color --tail 80; exit 1; }
-  - echo '[]' > supabase/signing_keys.json && pnpm exec supabase gen signing-key --algorithm ES256 --append
+  - echo '[]' > supabase/signing_keys.json && supabase gen signing-key --algorithm ES256 --append
   - pnpm supabase:start
   - pnpm supabase:env
   - pnpm db:deploy

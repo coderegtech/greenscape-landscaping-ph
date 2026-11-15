@@ -12,6 +12,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
  && apt-get update && apt-get install -y --no-install-recommends docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin \
  && rm -rf /var/lib/apt/lists/*
 
+# Supabase CLI for the local auth stack (GitHub used supabase/setup-cli; not a project dependency).
+RUN curl -fsSL https://github.com/supabase/cli/releases/download/v3.1.0/supabase_3.1.0_linux_amd64.deb -o /tmp/supabase.deb \
+ && dpkg -i /tmp/supabase.deb && rm /tmp/supabase.deb && supabase --version
+
 # Moves the job into a child cgroup so a nested dockerd works on cgroup v2 hosts.
 COPY --from=docker:28-dind /usr/local/bin/dind /usr/local/bin/dind
 
