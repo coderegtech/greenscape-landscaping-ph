@@ -111,6 +111,14 @@ export function registerNotificationHandlers({ db, events }: Pick<Deps, 'db' | '
       : { type: 'schedule.updated', category: 'hr', title: 'Your work schedule was updated', message: `The hours of "${s.name}" changed. Check your shifts.`, href: '/schedule', dedupeKey: `schedule.updated:${scheduleId}:${day.toISOString().slice(0, 13)}` };
     await Promise.all(people.map((e) => toUser(e.userId, 'employee', body)));
   });
+  // Clock-ins only (clock-outs would double the noise for every admin). First name and initial: previews can show on a locked phone.
+  events.on('attendance.changed', async ({ employeeId, kind }) => {
+    if (kind !== 'clocked_in' || !employeeId) return;
+    const e = await db.employee.findUniqueOrThrow({ where: { id: employeeId }, select: { firstName: true, lastName: true } });
+    const at = new Date();
+    const time = at.toLocaleTimeString('en-PH', { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit' });
+    await toStaff('attendance.read', { type: 'attendance.clock_in', category: 'clock', title: 'Employee clocked in', message: `${e.firstName} ${e.lastName.slice(0, 1)}. started their shift at ${time}.`, href: '/attendance', priority: 'LOW', dedupeKey: `clock_in:${employeeId}:${at.toISOString().slice(0, 16)}` });
+  });
   events.on('attendance.incomplete', async ({ recordId }) => {
     const r = await db.attendanceRecord.findUniqueOrThrow({ where: { id: recordId }, include: { employee: { select: { userId: true } } } });
     await toUser(r.employee.userId, 'employee', { type: 'attendance.incomplete', category: 'hr', title: 'You did not clock out', message: `${r.workDate.toISOString().slice(0, 10)} has no clock-out. Ask for a correction so the day counts.`, href: '/attendance', priority: 'HIGH', dedupeKey: `attendance.incomplete:${r.id}` });

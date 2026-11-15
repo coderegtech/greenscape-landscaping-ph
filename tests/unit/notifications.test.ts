@@ -1,5 +1,6 @@
-import { BroadcastBody, Href, NotificationListQuery, PreferenceUpdate, PushSubscriptionBody } from '@greenscape/validation';
+import { BroadcastBody, categoriesFor, Href, NotificationListQuery, PreferenceUpdate, PushSubscriptionBody } from '@greenscape/validation';
 import { describe, expect, it, vi } from 'vitest';
+import { readEnv } from '../../apps/api/src/config/env.ts';
 import { createEventBus } from '../../apps/api/src/lib/events.ts';
 import { backoffMs, classifyPushError, decodeCursor, effectivePreference, encodeCursor, pushOptions } from '../../apps/api/src/modules/notifications/logic.ts';
 
@@ -84,3 +85,24 @@ describe('event bus', () => {
   });
 });
 
+
+describe('portal categories', () => {
+  it('each portal shows only what it can receive', () => {
+    expect(categoriesFor('employee')).toEqual(['hr', 'account', 'system']);
+    expect(categoriesFor('web')).not.toContain('clock');
+    expect(categoriesFor('web')).not.toContain('stock');
+    expect(categoriesFor('admin')).toContain('clock');
+  });
+});
+
+describe('VAPID configuration', () => {
+  const base = { DATABASE_URL: 'postgres://x', MONGODB_URL: 'mongodb://x', REDIS_URL: 'redis://x', SUPABASE_URL: 'http://x.test', SUPABASE_SECRET_KEY: 's'.repeat(20) };
+  it('is off with neither key and on with both', () => {
+    expect(readEnv(base).VAPID_PUBLIC_KEY).toBeUndefined();
+    expect(readEnv({ ...base, VAPID_PUBLIC_KEY: 'p'.repeat(87), VAPID_PRIVATE_KEY: 'k'.repeat(43) }).VAPID_PRIVATE_KEY).toBe('k'.repeat(43));
+  });
+  it('refuses to start with half a pair', () => {
+    expect(() => readEnv({ ...base, VAPID_PUBLIC_KEY: 'p'.repeat(87) })).toThrow(/VAPID_PRIVATE_KEY/);
+    expect(() => readEnv({ ...base, VAPID_PRIVATE_KEY: 'k'.repeat(43) })).toThrow(/VAPID_PRIVATE_KEY/);
+  });
+});
