@@ -1,5 +1,6 @@
 'use client';
 import { Button } from '@greenscape/ui/components/button';
+import { useOnline } from '@greenscape/ui/components/offline';
 import { toast } from '@greenscape/ui/components/sonner';
 import { StatusPill, type Tone } from '@greenscape/ui/layout/dashboard';
 import { playFeedback } from '@greenscape/ui/notifications/sound-manager';
@@ -46,6 +47,7 @@ export function ClockCard({ today: t, correctionPending = false }: { today: Toda
   const [state, action, pending] = useActionState(clockForm, null);
   // A selfie belongs to the punch it was taken for: after each punch (a new `state`) it no longer counts.
   const [photo, setPhoto] = useState<{ after: typeof state; id: string } | null>(null);
+  const online = useOnline();
   const photoId = photo && photo.after === state ? photo.id : null;
   const selfieKey = state?.ok ? state.at : 'first'; // fresh camera field after each punch
   const elapsed = t.since && now ? Math.max(0, Math.floor((now.getTime() - Date.parse(t.since)) / 60_000)) : null;
@@ -102,10 +104,11 @@ export function ClockCard({ today: t, correctionPending = false }: { today: Toda
         {photoId && <input type="hidden" name="photoId" value={photoId} />}
         {t.selfie.mode !== 'off' && <SelfieField key={selfieKey} mode={t.selfie.mode} retentionDays={t.selfie.retentionDays} onReady={(id) => setPhoto(id ? { after: state, id } : null)} />}
         <div className="flex flex-wrap items-center gap-4">
-          <Button type="submit" loading={pending} disabled={needsPhoto} size="md" className="h-16 w-full px-10 text-lg sm:w-auto sm:min-w-56" variant={t.clockedIn ? 'secondary' : 'primary'}>
+          <Button type="submit" loading={pending} disabled={needsPhoto || !online} size="md" className="h-16 w-full px-10 text-lg sm:w-auto sm:min-w-56" variant={t.clockedIn ? 'secondary' : 'primary'}>
             {t.clockedIn ? <LogOut aria-hidden className="size-5" /> : <LogIn aria-hidden className="size-5" />}
             {t.clockedIn ? 'Clock out' : 'Clock in'}
           </Button>
+          {!online && <p role="status" className="text-sm text-ink-2">You’re offline. An internet connection is needed to record attendance.</p>}
           {state?.ok && (
             <p key={state.at} className="tone-green flex items-center gap-2 text-sm font-semibold text-(--tone-ink)" data-testid="clock-confirmed">
               <span className="relative grid size-8 place-items-center" aria-hidden>

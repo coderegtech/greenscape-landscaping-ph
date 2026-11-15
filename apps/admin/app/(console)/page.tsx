@@ -122,7 +122,7 @@ export default async function AdminHome() {
             {waiting.length ? (
               <ul className="-mx-2 flex flex-col" data-testid="pending-approvals">{waiting.map(({ key, ...w }) => <Waiting key={key} {...w} />)}</ul>
             ) : (
-              <EmptyState icon={<CircleCheck />} title="All caught up">No requests, messages or reviews are waiting.</EmptyState>
+              <EmptyState variant="notifications" size="sm" title="All caught up">No requests, messages or reviews are waiting.</EmptyState>
             )}
           </Panel>
         )}
@@ -158,7 +158,7 @@ export default async function AdminHome() {
                 </dl>
               </div>
             ) : (
-              <EmptyState icon={<Users />} title="No active employees yet">Add employees to see who is in each day.</EmptyState>
+              <EmptyState variant="employees" size="sm" title="No active employees yet">Add employees to see who is in each day.</EmptyState>
             )}
           </Panel>
         )}
@@ -179,7 +179,7 @@ export default async function AdminHome() {
                   </li>
                 ))}
               </ul>
-            ) : <EmptyState icon={<ShoppingBag />} title="No orders yet">Orders show up here as customers check out.</EmptyState>}
+            ) : <EmptyState variant="orders" size="sm" title="No orders yet">Orders show up here as customers check out.</EmptyState>}
           </Panel>
         )}
         {o.quotations && (
@@ -199,7 +199,7 @@ export default async function AdminHome() {
                   </li>
                 ))}
               </ul>
-            ) : <EmptyState icon={<ReceiptText />} title="No quote requests yet">Requests from the website form land here.</EmptyState>}
+            ) : <EmptyState variant="articles" size="sm" title="No quote requests yet">Requests from the website form land here.</EmptyState>}
           </Panel>
         )}
         {o.content && (
@@ -216,7 +216,7 @@ export default async function AdminHome() {
                   </li>
                 ))}
               </ul>
-            ) : <EmptyState icon={<FilePen />} title="No content changes yet">Edits and publishes to the website are listed here.</EmptyState>}
+            ) : <EmptyState variant="projects" size="sm" title="No content changes yet">Edits and publishes to the website are listed here.</EmptyState>}
           </Panel>
         )}
       </div>

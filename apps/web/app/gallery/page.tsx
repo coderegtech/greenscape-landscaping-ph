@@ -1,3 +1,4 @@
+import { EmptyState } from '@greenscape/ui/components/empty-state';
 import Link from 'next/link';
 import { GalleryFilters } from '@/components/gallery/gallery-filters';
 import { GalleryLightbox } from '@/components/gallery/gallery-lightbox';
@@ -55,7 +56,7 @@ export default async function GalleryPage({ searchParams }: { searchParams: Prom
             </MasonryGrid>
           </GalleryLightbox>
         ) : (
-          <p className="text-lg text-ink-2">No photographs match. <Link href="/gallery">See every photograph</Link>.</p>
+          <EmptyState variant="gallery" size="lg" title="No photographs match" description="Try another category." actionLabel="See every photograph" actionHref="/gallery" />
         )}
         {shown < matching.length && (
           <div className="flex justify-center">

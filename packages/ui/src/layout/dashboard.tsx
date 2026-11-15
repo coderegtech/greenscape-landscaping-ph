@@ -113,13 +113,5 @@ export function StatusPill({ tone, icon, children, className, ...props }: { tone
   );
 }
 
-/** What a list shows when it has nothing in it. */
-export function EmptyState({ icon, title, children }: { icon?: ReactNode; title: string; children?: ReactNode }) {
-  return (
-    <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
-      {icon && <span aria-hidden className="grid size-11 place-items-center rounded-full bg-paper-2 text-muted [&_svg]:size-5">{icon}</span>}
-      <p className="text-sm font-semibold text-ink">{title}</p>
-      {children && <p className="max-w-sm text-sm text-muted">{children}</p>}
-    </div>
-  );
-}
+/** What a list shows when it has nothing in it (illustrated variants live in components/empty-state). */
+export { EmptyState } from '../components/empty-state';

@@ -94,7 +94,7 @@ export default async function EmployeeHome() {
               ))}
             </ul>
           ) : (
-            <EmptyState icon={<CalendarClock />} title="No schedule yet">HR has not set your shifts. Ask them if you expected to see some.</EmptyState>
+            <EmptyState variant="attendance" size="sm" title="No schedule yet">HR has not set your shifts. Ask them if you expected to see some.</EmptyState>
           )}
         </Panel>
       </div>

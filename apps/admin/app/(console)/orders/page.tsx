@@ -1,3 +1,4 @@
+import { EmptyState } from '@greenscape/ui/components/empty-state';
 import { api } from '@greenscape/auth/api';
 import { Badge } from '@greenscape/ui/components/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@greenscape/ui/components/table';
@@ -73,7 +74,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
           </TableBody>
         </Table>
       ) : (
-        <p className="text-ink-2">No orders here{sp.q ? ` matching “${sp.q}”` : ''}.</p>
+        <EmptyState variant={sp.q ? 'search' : 'orders'} title="No orders here" description={sp.q ? `Nothing matches “${sp.q}”. Try a different search.` : 'Orders show up here as customers check out.'} />
       )}
       {pages > 1 && (
         <nav aria-label="Pages" className="flex items-center gap-3 text-sm">

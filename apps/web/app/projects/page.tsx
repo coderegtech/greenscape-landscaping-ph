@@ -1,5 +1,5 @@
+import { EmptyState } from '@greenscape/ui/components/empty-state';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { GalleryFilters } from '@/components/gallery/gallery-filters';
 import { MasonryCard } from '@/components/gallery/masonry-card';
 import { MasonryGrid, MasonryItem, ratioOf } from '@/components/gallery/masonry-grid';
@@ -47,9 +47,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
             ))}
           </MasonryGrid>
         ) : (
-          <p className="text-lg text-ink-2">
-            No projects match yet. <Link href="/projects">See all projects</Link>.
-          </p>
+          <EmptyState variant="projects" size="lg" title="No projects match yet" description="Try another category." actionLabel="See all projects" actionHref="/projects" />
         )}
       </section>
     </main>

@@ -52,7 +52,7 @@ export default async function SchedulePage() {
         ))
       ) : (
         <div className="rounded-card border border-rule bg-paper-3 shadow-soft">
-          <EmptyState icon={<CalendarClock />} title="No schedule yet">HR has not assigned you a work schedule. You can still clock in and out; ask HR if you expected to see shifts here.</EmptyState>
+          <EmptyState variant="attendance" size="sm" title="No schedule yet">HR has not assigned you a work schedule. You can still clock in and out; ask HR if you expected to see shifts here.</EmptyState>
         </div>
       )}
     </div>

@@ -1,3 +1,4 @@
+import { EmptyState } from '@greenscape/ui/components/empty-state';
 import { CATALOG_SORTS, CatalogQuery, PLANT_TYPES, SHOP_CATEGORIES } from '@greenscape/validation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -82,7 +83,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
             {page.items.map((p, i) => <li key={p.slug}><ProductCard p={p} priority={i < 4} /></li>)}
           </ul>
         ) : (
-          <p className="text-lg text-ink-2">Nothing matches that yet. <Link href="/shop">See everything</Link> or <Link href="/contact">ask us</Link>; we may be able to source it.</p>
+          <EmptyState variant="search" size="lg" title="Nothing matches that yet" actionLabel="See everything" actionHref="/shop">Try a different search or filter, or <Link href="/contact">ask us</Link>: we may be able to source it.</EmptyState>
         )}
 
         {pages > 1 && (

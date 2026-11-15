@@ -1,3 +1,4 @@
+import { EmptyState } from '@greenscape/ui/components/empty-state';
 import { api } from '@greenscape/auth/api';
 import { Badge } from '@greenscape/ui/components/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@greenscape/ui/components/table';
@@ -61,7 +62,7 @@ export default async function EmployeesPage({ searchParams }: { searchParams: Pr
           </TableBody>
         </Table>
       ) : (
-        <p className="text-ink-2">No employees yet.{can(me, 'employees.manage') ? ' Add the team with “New employee”.' : ''}</p>
+        <EmptyState variant="employees" title="No employees yet" description={can(me, 'employees.manage') ? 'Add the team with “New employee”.' : undefined} />
       )}
     </div>
   );

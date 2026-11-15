@@ -1,5 +1,5 @@
 import { EmptyState, PageHeader, StatusPill } from '@greenscape/ui/layout/dashboard';
-import { CalendarX, Check, TimerReset } from 'lucide-react';
+import { Check, TimerReset } from 'lucide-react';
 import type { Metadata } from 'next';
 import { CorrectionButton } from '@/components/correction';
 import { MonthCalendar } from '@/components/month-calendar';
@@ -54,7 +54,7 @@ export default async function AttendancePage({ searchParams }: { searchParams: P
           </ul>
         ) : (
           <div className="rounded-card border border-rule bg-paper-3 shadow-soft">
-            <EmptyState icon={<CalendarX />} title="No days recorded yet">Your days appear here once you clock in.</EmptyState>
+            <EmptyState variant="attendance" size="sm" title="No days recorded yet">Your days appear here once you clock in.</EmptyState>
           </div>
         )}
         <p className="text-sm text-ink-2">Missed a whole day? <CorrectionButton workDate={null} label="another day" asLink /></p>
