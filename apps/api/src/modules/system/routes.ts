@@ -7,7 +7,7 @@ import type { Deps } from '../../lib/deps.ts';
 import { registry } from '../../lib/openapi.ts';
 import { requirePermission } from '../../middleware/auth.ts';
 import { addDays, manilaDate } from '../attendance/time.ts';
-import { check } from '../health/routes.ts';
+import { check, websocketCheck } from '../health/routes.ts';
 
 registry.registerPath({ method: 'get', path: '/v1/admin/system', tags: ['system'], auth: true, summary: 'Health, storage, daily 5xx/401/403/429 counts, recent server errors, webhook and push-job failures (system.monitor).', responses: { 200: { description: 'status' } } });
 registry.registerPath({ method: 'get', path: '/v1/admin/audit', tags: ['system'], auth: true, summary: 'Audit log, newest first; filter by action prefix, actor email, entity (audit.read).', responses: { 200: { description: 'page of entries' } } });
@@ -41,7 +41,7 @@ const AuditQuery = z.object({
   page: z.coerce.number().int().min(1).max(500).default(1),
 });
 
-export function systemRoutes({ db, mongo, redis, cache, storage, env }: Deps) {
+export function systemRoutes({ db, mongo, redis, cache, storage, realtime, env }: Deps) {
   const r = Router();
   const started = Date.now();
 
@@ -49,11 +49,12 @@ export function systemRoutes({ db, mongo, redis, cache, storage, env }: Deps) {
     const today = manilaDate(new Date());
     const week = Array.from({ length: 7 }, (_, i) => addDays(today, i - 6));
     const since = new Date(Date.now() - 7 * 86_400_000);
-    const [postgres, mongoCheck, redisCheck, storageCheck, counts, errors, webhookFailed, webhookStuck, webhookRecent, pushFailed, pushStuck, pushRecent] = await Promise.all([
+    const [postgres, mongoCheck, redisCheck, storageCheck, websocket, counts, errors, webhookFailed, webhookStuck, webhookRecent, pushFailed, pushStuck, pushRecent] = await Promise.all([
       check(() => db.$queryRaw`SELECT 1`),
       check(() => mongo.db.command({ ping: 1 })),
       check(async () => { if (!(await cache.ping())) throw new Error('not connected'); }),
       check(async () => { if (!(await storage.ping())) throw new Error('not reachable'); }, 4000),
+      websocketCheck(realtime),
       Promise.all(week.map((d) => redis.hgetall(`${env.CACHE_PREFIX}:mon:${d}`).catch(() => null))),
       redis.lrange(`${env.CACHE_PREFIX}:mon:errors`, 0, RECENT - 1).catch(() => [] as string[]),
       db.webhookEvent.count({ where: { error: { not: null }, receivedAt: { gte: since } } }),
@@ -67,7 +68,7 @@ export function systemRoutes({ db, mongo, redis, cache, storage, env }: Deps) {
       version: env.APP_VERSION,
       environment: env.NODE_ENV,
       uptimeSec: Math.round((Date.now() - started) / 1000),
-      checks: { postgres, mongo: mongoCheck, redis: redisCheck, storage: storageCheck },
+      checks: { postgres, mongo: mongoCheck, redis: redisCheck, storage: storageCheck, websocket },
       requests: week.map((date, i) => ({ date, counted: counts[i] !== null, s5xx: Number(counts[i]?.['5xx'] ?? 0), s401: Number(counts[i]?.['401'] ?? 0), s403: Number(counts[i]?.['403'] ?? 0), s429: Number(counts[i]?.['429'] ?? 0) })),
       recentErrors: errors.map((e) => { try { return JSON.parse(e) as object; } catch { return null; } }).filter(Boolean),
       webhooks: { failed7d: webhookFailed, stuck: webhookStuck, recent: webhookRecent.map((w) => ({ ...w, error: w.error?.slice(0, 200) ?? null, receivedAt: w.receivedAt.toISOString() })) },

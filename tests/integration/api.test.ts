@@ -1,3 +1,4 @@
+import { createServer } from 'node:http';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createApp } from '../../apps/api/src/app.ts';
@@ -10,13 +11,14 @@ describe('API with all dependencies up', () => {
   beforeAll(async () => {
     deps = await testDeps();
     app = createApp(deps);
+    deps.realtime.attach(createServer(app)); // the websocket check is only ok once Socket.IO is on an HTTP server
   });
   afterAll(() => closeDeps(deps));
 
   it('GET /v1/health reports every dependency ok', async () => {
     const res = await request(app).get('/v1/health').expect(200);
     expect(res.body.status).toBe('ok');
-    expect(res.body.checks).toMatchObject({ postgres: { ok: true }, mongo: { ok: true }, redis: { ok: true } });
+    expect(res.body.checks).toMatchObject({ postgres: { ok: true }, mongo: { ok: true }, redis: { ok: true }, websocket: { ok: true } });
     expect(res.headers['cache-control']).toBe('no-store');
   });
 

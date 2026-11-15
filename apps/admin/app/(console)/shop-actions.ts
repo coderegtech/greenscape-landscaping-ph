@@ -83,3 +83,17 @@ export async function refundOrder(orderId: string, input: { amount: string; reas
 export async function saveZone(id: string, input: unknown) {
   return attempt(() => api(`/v1/shop-admin/zones/${Id.parse(id)}`, Any, json('PUT', input)));
 }
+export async function createZone(input: unknown) {
+  return attempt(async () => {
+    const out = await api('/v1/shop-admin/zones', Any, json('POST', input));
+    revalidatePath('/settings/delivery');
+    return out;
+  });
+}
+export async function deleteZone(id: string) {
+  return attempt(async () => {
+    await api(`/v1/shop-admin/zones/${Id.parse(id)}`, z.undefined(), json('DELETE', {}));
+    revalidatePath('/settings/delivery');
+    return true;
+  });
+}

@@ -60,6 +60,9 @@ const summarize = (d: any) => ({
 export function cmsAdminRoutes(deps: Deps) {
   const { mongo, db } = deps;
   const r = Router();
+  // The site's pages are fixed; staff edit the existing ones (import may overwrite a page, never create one).
+  const CLOSED_TYPE = 'pages';
+  const CLOSED_MESSAGE = 'New pages cannot be added. Edit an existing page instead.';
   const typeOf = (t: string) => {
     if (!isContentType(t)) throw AppError.notFound('Unknown content type');
     return t;
@@ -162,6 +165,7 @@ export function cmsAdminRoutes(deps: Deps) {
 
   r.post('/:type', can('cms.write'), async (req, res) => {
     const t = typeOf(String(req.params.type));
+    if (t === CLOSED_TYPE) throw AppError.forbidden(CLOSED_MESSAGE);
     const input = CreateBody.parse(req.body);
     const body = parseBody(t, input.body);
     const auth = currentAuth(res);
@@ -281,8 +285,9 @@ export function cmsAdminRoutes(deps: Deps) {
     const updated = await coll(t).findOneAndUpdate(
       { slug: input.slug, locale: input.locale },
       { $set: { draft: body, seo: input.seo, updatedBy: auth.userId, updatedAt: now }, $inc: { revision: 1 }, $setOnInsert: { status: 'draft', createdAt: now } },
-      { upsert: true, returnDocument: 'after', projection: { _id: 0 } },
+      { upsert: t !== CLOSED_TYPE, returnDocument: 'after', projection: { _id: 0 } },
     );
+    if (!updated) throw AppError.notFound(CLOSED_MESSAGE);
     await snapshot(deps, t, updated as any, auth.userId, 'imported');
     res.json(summarize(updated));
   });

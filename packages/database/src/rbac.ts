@@ -7,6 +7,7 @@ export const PERMISSIONS = {
   'users.manage': 'Suspend/reactivate users',
   'roles.manage': 'Grant and revoke roles (except super admin)',
   'roles.manage_super': 'Grant and revoke the super admin and administrator roles',
+  'roles.define': 'Create, edit and delete custom roles and choose their permissions',
   'settings.read': 'View site settings',
   'settings.manage': 'Change site settings',
   'settings.secrets': 'View/change integration secrets',
@@ -109,3 +110,39 @@ export const CUSTOMER_PERMISSIONS: ReadonlySet<string> = new Set(expandGrants(RO
  * permission and, with REQUIRE_STAFF_MFA, needs a multi-factor session (aal2).
  */
 export const SELF_SERVICE_PERMISSIONS: ReadonlySet<string> = new Set([...expandGrants(ROLES.customer), ...expandGrants(ROLES.employee)]);
+
+/** Permissions only the built-in administrator roles hold: a custom role can never carry them (no self-made super admins). */
+export const RESERVED_PERMISSIONS: PermissionKey[] = ['roles.define', 'roles.manage_super', 'settings.secrets'];
+
+/** Role editor: sign-in and self-service access, shown as plain checkboxes above the grid. */
+export const ACCESS_PERMISSIONS: PermissionKey[] = ['admin.access', 'profile.self', 'orders.self', 'quotations.self', 'attendance.self', 'leave.self'];
+
+/**
+ * The role editor's module × action grid. The API still checks the flat permission keys above; each key sits in exactly
+ * one cell (the closest action), and what fits no column goes under `other`. A unit test keeps this in step with PERMISSIONS.
+ */
+export interface GridRow { module: string; view?: PermissionKey; create?: PermissionKey; update?: PermissionKey; delete?: PermissionKey; other?: PermissionKey[] }
+export const PERMISSION_GRID: GridRow[] = [
+  { module: 'Users', view: 'users.read', update: 'users.manage' },
+  { module: 'Roles', update: 'roles.manage', other: ['roles.define', 'roles.manage_super'] },
+  { module: 'Site settings', view: 'settings.read', update: 'settings.manage', other: ['settings.secrets'] },
+  { module: 'Audit log', view: 'audit.read' },
+  { module: 'System monitoring', view: 'system.monitor' },
+  { module: 'Website content', view: 'cms.read', update: 'cms.write', other: ['cms.publish'] },
+  { module: 'Media', view: 'media.read', update: 'media.write' },
+  { module: 'Testimonials', update: 'testimonials.moderate' },
+  { module: 'Products', view: 'products.read', update: 'products.write' },
+  { module: 'Inventory', view: 'inventory.read', update: 'inventory.adjust' },
+  { module: 'Orders', view: 'orders.read', update: 'orders.manage', other: ['orders.fulfill', 'payments.refund'] },
+  { module: 'Customers', view: 'customers.read' },
+  { module: 'Sales reports', view: 'reports.sales' },
+  { module: 'Analytics', view: 'analytics.read' },
+  { module: 'Quotations', view: 'quotations.read', update: 'quotations.manage' },
+  { module: 'Messages', view: 'messages.read', update: 'messages.reply' },
+  { module: 'Announcements', create: 'notifications.broadcast' },
+  { module: 'AI assistant', view: 'assistant.read', update: 'assistant.manage' },
+  { module: 'Employees', view: 'employees.read', update: 'employees.manage' },
+  { module: 'Attendance', view: 'attendance.read', update: 'attendance.manage', other: ['attendance.approve'] },
+  { module: 'Leave', view: 'leave.read', update: 'leave.approve' },
+  { module: 'Attendance reports', view: 'reports.attendance' },
+];

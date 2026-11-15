@@ -82,6 +82,7 @@ export function createRealtime({ env, log, redis }: { env: Deps['env']; log: Log
   io.adapter(createAdapter(pub, sub, { key: `${env.CACHE_PREFIX}:sio` })); // subscribing connects `sub`
   void pub.connect().catch(() => undefined); // ioredis keeps retrying in the background
 
+  let attached = false;
   const perUser = new Map<string, number>();
   const signal = (topic: LiveTopic, kind: string, ref?: string): LiveSignal => ({ v: 1, id: randomUUID(), topic, kind, ...(ref ? { ref } : {}), at: new Date().toISOString() });
 
@@ -142,7 +143,9 @@ export function createRealtime({ env, log, redis }: { env: Deps['env']; log: Log
   return {
     io,
     start,
-    attach: (server: HttpServer) => io.attach(server),
+    attach: (server: HttpServer) => { attached = true; return io.attach(server); },
+    /** For health checks: is the socket server on the API's HTTP server, and how many sockets are open on this instance. */
+    status: () => ({ attached, connections: io.of('/').sockets.size }),
     /** Notification inbox events (the notification service is the only caller). */
     publish: (e: HubEvent) => io.to(`inbox:${e.app}:${e.userId}`).emit('notification', { event: e.event, data: e.data }),
     /** "Topic changed" to the staff who may read it, and to the given people (their own records). */
