@@ -19,6 +19,7 @@
   ],
   "exclude": [
     "docker/compose.dev.yml",
+    "apps/web/app/design/**",
     "**/node_modules/**",
     "**/.next/**",
     "**/dist/**",

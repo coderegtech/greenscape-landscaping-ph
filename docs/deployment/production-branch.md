@@ -39,6 +39,7 @@ What is deliberately left out and why:
 | `supabase/` | Local Supabase CLI configuration; production uses the hosted project |
 | `.github/` | Workflows run from `main`; the pipeline's token may not write workflow files anyway |
 | `docker/compose.dev.yml` | Local databases only |
+| `apps/web/app/design/` | Design-system showcase page (`/design`); only the e2e suite on `main` uses it |
 | `eslint.config.mjs` and other lint/scan config | Not part of `next build` or the API image |
 
 The root `package.json` and `pnpm-lock.yaml` are copied unchanged, so `pnpm install --frozen-lockfile` works. The
