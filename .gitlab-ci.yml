@@ -1,0 +1,254 @@
+# GitLab CI/CD for the self-hosted GitLab. One pipeline in place of the GitHub workflows:
+#   verify      <- .github/workflows/ci.yml
+#   security    <- .github/workflows/security.yml (also the weekly schedule)
+#   production  <- .github/workflows/production-pipeline.yml (snapshot + staging on main)
+#   publish     <- same, the push to the `production` branch (off until PRODUCTION_PUBLISH_ENABLED=true)
+#   deploy      <- .github/workflows/deploy-production.yml (Dokploy; automatic only with DOKPLOY_AUTO_DEPLOY=true)
+# Runner: privileged Docker executor, one job at a time, job image docker/ci.Dockerfile. Each job starts its own
+# Docker daemon, so the throwaway databases and Supabase never touch the developer's containers on the same machine.
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
+      when: never
+    - if: $CI_PIPELINE_SOURCE =~ /^(schedule|web)$/
+    - if: $CI_COMMIT_BRANCH =~ /^(main|rebuild\/.+|security\/.+)$/
+
+stages: [verify, security, production, publish, deploy]
+
+default:
+  image: greenscape-ci:1
+  tags: [greenscape]
+  interruptible: true
+
+variables:
+  npm_config_store_dir: /pnpm-store # runner volume, shared by jobs (they run one at a time)
+  # MongoDB 8.x exits at startup on Linux 6.19+ kernels (SERVER-121912); 7.0 has everything the app uses.
+  MONGO_IMAGE_TAG: '7.0'
+  TRIVY_IMAGE: aquasec/trivy:0.75.0
+
+# The job's own Docker daemon. Its image cache lives in a runner volume; containers and volumes from the previous
+# job are removed so every job starts clean.
+.docker: &docker
+  - (dind dockerd > /tmp/dockerd.log 2>&1 &)
+  - for i in $(seq 1 60); do docker info >/dev/null 2>&1 && break; sleep 1; done; docker info >/dev/null 2>&1 || { tail -40 /tmp/dockerd.log; exit 1; }
+  - docker rm -f $(docker ps -aq) >/dev/null 2>&1 || true
+  - docker volume prune -af >/dev/null && docker network prune -f >/dev/null
+
+# Port of .github/actions/local-stack: dependencies, databases and a local Supabase, migrated and seeded.
+.local-stack: &local-stack
+  - pnpm install --frozen-lockfile
+  - cp .env.example .env
+  - pnpm services:up || { docker compose -f docker/compose.dev.yml logs --no-color --tail 80; exit 1; }
+  - echo '[]' > supabase/signing_keys.json && pnpm exec supabase gen signing-key --algorithm ES256 --append
+  - pnpm supabase:start
+  - pnpm supabase:env
+  - pnpm db:deploy
+  - pnpm db:seed
+  - pnpm content:indexes
+  - pnpm content:seed
+  - pnpm storage:setup
+  # The seed still points at the old site's Firebase photos; production content went through this copy.
+  - pnpm media:migrate --apply
+
+.trivy: &trivy # usage: IMAGE=<tag> before this; fails on fixable CRITICAL/HIGH
+  - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:/src" -w /src "$TRIVY_IMAGE" image
+    --severity CRITICAL,HIGH --ignore-unfixed --exit-code 1 --format table --output "trivy-${APP}.txt" "$IMAGE"
+    || { cat "trivy-${APP}.txt"; exit 1; }
+
+# ---------------------------------------------------------------- verify
+
+verify:
+  stage: verify
+  timeout: 2h
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+  before_script: [*docker, *local-stack]
+  script:
+    - pnpm typecheck
+    - pnpm lint
+    - pnpm test
+    - pnpm test:integration
+    # Builds web + admin with the API running (the web app pre-renders pages from the CMS).
+    - pnpm build
+    - CI=true pnpm test:e2e
+    # The web image pre-renders CMS pages, so it is built and scanned here, where the API is reachable.
+    - val() { grep "^$1=" .env | cut -d= -f2-; } # .env is not shell-safe to source (URLs contain &)
+    - (pnpm --filter @greenscape/api start > api-image-build.log 2>&1 &)
+    - for i in $(seq 1 60); do curl -sf http://localhost:4000/v1/health/live >/dev/null && break; sleep 2; done
+    - docker build --network host -f apps/web/Dockerfile --build-arg NEXT_PUBLIC_API_URL=http://localhost:4000
+      --build-arg NEXT_PUBLIC_SUPABASE_URL="$(val NEXT_PUBLIC_SUPABASE_URL)"
+      --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="$(val NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)" -t greenscape-web:ci .
+    - APP=web IMAGE=greenscape-web:ci
+    - *trivy
+  artifacts:
+    when: always
+    expire_in: 7 days
+    paths: [playwright-report/, trivy-web.txt]
+
+# ---------------------------------------------------------------- security
+
+dependencies:
+  stage: security
+  needs: []
+  before_script: [*docker]
+  script:
+    - pnpm install --frozen-lockfile
+    - pnpm audit --prod --audit-level=high --json > pnpm-audit.json || (cat pnpm-audit.json; exit 1)
+    - docker run --rm -v "$PWD:/src" ghcr.io/google/osv-scanner:v1.9.2 --config /src/osv-scanner.toml --format json
+      --output /src/osv.json --lockfile /src/pnpm-lock.yaml
+  artifacts:
+    when: always
+    paths: [pnpm-audit.json, osv.json]
+
+secrets:
+  stage: security
+  needs: []
+  variables:
+    GIT_DEPTH: 0 # full history
+  before_script: [*docker]
+  script:
+    - docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.21.2 detect --source /repo --config /repo/.gitleaks.toml
+      --redact --report-format sarif --report-path /repo/gitleaks.sarif
+  artifacts:
+    when: always
+    paths: [gitleaks.sarif]
+
+static-analysis:
+  stage: security
+  needs: []
+  before_script: [*docker]
+  script:
+    - docker run --rm -v "$PWD:/src" -w /src semgrep/semgrep:1.95.0 semgrep scan
+      --config p/typescript --config p/nodejs --config p/owasp-top-ten --config .semgrep.yml
+      --severity ERROR --error --sarif --output semgrep.sarif
+  artifacts:
+    when: always
+    paths: [semgrep.sarif]
+
+images:
+  stage: security
+  needs: []
+  parallel:
+    matrix:
+      # web: built and scanned in verify (its build pre-renders pages from a running API)
+      - APP: api
+        ARGS: ''
+      - APP: [employee, admin]
+        ARGS: --build-arg NEXT_PUBLIC_API_URL=https://api.example.invalid --build-arg NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ci
+  before_script: [*docker]
+  script:
+    - docker build -f "apps/$APP/Dockerfile" $ARGS -t "greenscape-$APP:ci" .
+    - IMAGE="greenscape-$APP:ci"
+    - *trivy
+  artifacts:
+    when: always
+    paths: [trivy-*.txt]
+
+# ---------------------------------------------------------------- production (main only, after every check passed)
+
+.production:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE =~ /^(push|web)$/
+  interruptible: false
+  variables:
+    GIT_DEPTH: 0 # the generator checks that the commit is on origin/main
+
+snapshot:
+  extends: .production
+  stage: production
+  before_script: [*docker]
+  script:
+    - node scripts/generate-production-snapshot.ts --commit "$CI_COMMIT_SHA" --out /tmp/snapshot
+    - docker run --rm -v /tmp/snapshot:/snapshot:ro -v "$PWD/.gitleaks.toml:/gitleaks.toml:ro"
+      zricethezav/gitleaks:v8.21.2 detect --no-git --source /snapshot --config /gitleaks.toml --redact
+
+# Staging inside the job: throwaway databases and Supabase, the four images built from the snapshot and started in
+# production mode, then the smoke test. No secrets, nothing reaches a real environment.
+staging:
+  extends: .production
+  stage: production
+  timeout: 2h
+  before_script: [*docker, *local-stack]
+  script:
+    - node scripts/generate-production-snapshot.ts --commit "$CI_COMMIT_SHA" --out /tmp/snapshot
+    - cd /tmp/snapshot
+    - docker build -f apps/api/Dockerfile -t greenscape-api:snapshot .
+    - docker build -f apps/api/Dockerfile --target migrate -t greenscape-migrate:snapshot .
+    # Already migrated by the stack setup: proves the snapshot's migrations match and the job image runs.
+    - docker run --rm --network host --env-file "$CI_PROJECT_DIR/.env" greenscape-migrate:snapshot
+    - docker run -d --name api --network host --env-file "$CI_PROJECT_DIR/.env" -e NODE_ENV=production greenscape-api:snapshot
+    - for i in $(seq 1 60); do curl -sf http://localhost:4000/v1/health >/dev/null && break; sleep 2; done; curl -sf http://localhost:4000/v1/health >/dev/null
+    - val() { grep "^$1=" "$CI_PROJECT_DIR/.env" | cut -d= -f2-; }
+    - |
+      for app in web admin employee; do
+        docker build --network host -f "apps/$app/Dockerfile" \
+          --build-arg NEXT_PUBLIC_API_URL=http://localhost:4000 --build-arg NEXT_PUBLIC_SUPABASE_URL="$(val NEXT_PUBLIC_SUPABASE_URL)" \
+          --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="$(val NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)" -t "greenscape-$app:snapshot" .
+        docker run -d --name "$app" --network host --env-file "$CI_PROJECT_DIR/.env" -e NODE_ENV=production "greenscape-$app:snapshot"
+      done
+    - |
+      for port in 3000 3001 3002; do
+        for i in $(seq 1 60); do curl -sf "http://localhost:$port/api/health" >/dev/null && continue 2; sleep 2; done
+        echo "the app on port $port did not become healthy"; exit 1
+      done
+    - cd "$CI_PROJECT_DIR"
+    - CI=true pnpm exec playwright test -c playwright.smoke.config.ts
+  after_script:
+    - for c in api web admin employee; do echo "--- $c"; docker logs --tail 80 "$c" 2>&1 || true; done
+
+# Pushes the snapshot as a fast-forward commit. Automatic on main only with PRODUCTION_PUBLISH_ENABLED=true; a manual
+# "Run pipeline" on main publishes to TARGET_BRANCH (default production-test, a rehearsal). Needs the masked CI/CD
+# variable PRODUCTION_PUSH_TOKEN (project access token, write_repository): the job token cannot push.
+publish:
+  extends: .production
+  stage: publish
+  resource_group: production
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push" && $PRODUCTION_PUBLISH_ENABLED == "true"
+  script:
+    - if [ "$CI_PIPELINE_SOURCE" = web ]; then TARGET=${TARGET_BRANCH:-production-test}; else TARGET=production; fi
+    - '[[ "$TARGET" =~ ^production(-[a-z0-9-]+)?$ ]] || { echo "TARGET_BRANCH must be production or production-<name>"; exit 1; }'
+    - '[ -n "$PRODUCTION_PUSH_TOKEN" ] || { echo "Set the CI/CD variable PRODUCTION_PUSH_TOKEN to publish"; exit 1; }'
+    - git remote set-url origin "${CI_SERVER_PROTOCOL}://oauth2:${PRODUCTION_PUSH_TOKEN}@gitlab:${CI_SERVER_PORT}/${CI_PROJECT_PATH}.git"
+    - git config user.name 'GitLab CI' && git config user.email 'ci@greenscape.invalid'
+    - node scripts/generate-production-snapshot.ts --commit "$CI_COMMIT_SHA" --out /tmp/snapshot
+    - echo "target=$TARGET" > publish.env
+    - GITHUB_OUTPUT=publish.env bash scripts/publish-production-snapshot.sh /tmp/snapshot "$CI_COMMIT_SHA" "$TARGET"
+  artifacts:
+    reports:
+      dotenv: publish.env
+
+# Asks Dokploy to deploy what is on the `production` branch. Automatic after a publish to production when
+# DOKPLOY_AUTO_DEPLOY=true; otherwise a manual job on main. Variables: DOKPLOY_URL, DOKPLOY_API_KEY (masked) and
+# DOKPLOY_APPLICATION_IDS (ids separated by spaces, in deploy order: migrate, api, web, admin, employee).
+deploy:
+  stage: deploy
+  interruptible: false
+  resource_group: production
+  needs:
+    - job: publish
+      optional: true
+      artifacts: true
+  rules:
+    - if: $CI_COMMIT_BRANCH != "main" || $CI_PIPELINE_SOURCE !~ /^(push|web)$/
+      when: never
+    - if: $DOKPLOY_AUTO_DEPLOY == "true" && $PRODUCTION_PUBLISH_ENABLED == "true" && $CI_PIPELINE_SOURCE == "push"
+    - when: manual
+      allow_failure: true
+  script:
+    - |
+      if [ "$CI_JOB_MANUAL" != true ] && { [ -z "$published" ] || [ "$target" != production ]; }; then
+        echo "Nothing new was published to production: not deploying."; exit 0
+      fi
+      if [ -z "$DOKPLOY_URL" ] || [ -z "$DOKPLOY_API_KEY" ] || [ -z "$DOKPLOY_APPLICATION_IDS" ]; then
+        echo "Dokploy is not configured (DOKPLOY_URL, DOKPLOY_API_KEY, DOKPLOY_APPLICATION_IDS): nothing was deployed."; exit 1
+      fi
+      for id in $DOKPLOY_APPLICATION_IDS; do
+        [[ "$id" =~ ^[A-Za-z0-9_-]+$ ]] || { echo "'$id' is not an application id"; exit 1; }
+        curl --fail-with-body -sS -X POST "$DOKPLOY_URL/api/application.deploy" \
+          -H "x-api-key: $DOKPLOY_API_KEY" -H 'content-type: application/json' -d "{\"applicationId\":\"$id\"}"
+        echo "requested deployment of $id"
+      done
