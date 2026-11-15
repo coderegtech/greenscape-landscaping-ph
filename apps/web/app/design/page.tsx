@@ -1,6 +1,9 @@
 import { Badge } from '@greenscape/ui/components/badge';
+import { ILLUSTRATIONS } from '@greenscape/ui/components/botanical-art';
+import { EmptyState } from '@greenscape/ui/components/empty-state';
+import { ErrorState } from '@greenscape/ui/components/error-state';
 import { Photo } from '@greenscape/ui/components/photo';
-import { ProductGridSkeleton, TableSkeleton } from '@greenscape/ui/components/skeletons';
+import { ChartSkeleton, GallerySkeleton, ProductGridSkeleton, StatsSkeleton, TableSkeleton } from '@greenscape/ui/components/skeletons';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@greenscape/ui/components/table';
 import { FieldIndex } from '@greenscape/ui/layout/field-index';
 import { PageHero } from '@greenscape/ui/layout/page-hero';
@@ -206,6 +209,22 @@ export default function DesignSystemPage() {
         <ProductGridSkeleton count={4} />
         <div className="mt-10">
           <TableSkeleton rows={3} columns={4} />
+        </div>
+        <div className="mt-10 grid gap-6 md:grid-cols-2">
+          <StatsSkeleton count={2} />
+          <ChartSkeleton className="h-48" />
+        </div>
+        <div className="mt-10"><GallerySkeleton count={4} /></div>
+      </Block>
+
+      <Block id="empty" title="Empty, error and offline states" lead="Empty means the request worked and returned nothing; error and offline mean it did not.">
+        <ul data-testid="illustrations" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {ILLUSTRATIONS.filter((v) => !['error', 'offline', 'forbidden'].includes(v)).map((v) => (
+            <li key={v} className="rounded-xl border border-rule"><EmptyState variant={v as never} size="sm" title={`Empty: ${v}`} description="What this list shows when there is nothing in it." /></li>
+          ))}
+        </ul>
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {(['error', 'offline', 'forbidden'] as const).map((k) => <div key={k} className="rounded-xl border border-rule"><ErrorState kind={k} compact /></div>)}
         </div>
       </Block>
     </main>

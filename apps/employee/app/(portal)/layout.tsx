@@ -1,4 +1,5 @@
 import { SignOutButton } from '@greenscape/ui/auth-forms';
+import { OfflineBanner } from '@greenscape/ui/components/offline';
 import { Notice } from '@greenscape/ui/form';
 import { PortalShell } from '@greenscape/ui/layout/employee-shell';
 import { getLeave, portal } from '@/lib/portal';
@@ -21,6 +22,7 @@ export default async function PortalLayout({ children }: { children: React.React
   const leave = await getLeave().catch(() => null);
   return (
     <PortalShell name={p.today.employee.name} pending={leave?.requests.filter((r) => r.status === 'PENDING').length ?? 0}>
+      <OfflineBanner message="You’re offline. An internet connection is needed to record attendance." />
       {children}
     </PortalShell>
   );

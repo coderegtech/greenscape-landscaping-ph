@@ -1,3 +1,4 @@
+import { EmptyState } from '@greenscape/ui/components/empty-state';
 import { api } from '@greenscape/auth/api';
 import { SignOutButton } from '@greenscape/ui/auth-forms';
 import { Badge } from '@greenscape/ui/components/badge';
@@ -93,7 +94,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               ))}
             </ul>
           ) : (
-            <p className="text-base text-ink-2">No orders yet.</p>
+            <EmptyState variant="orders" title="Your orders will grow here" actionLabel="Browse products" actionHref="/shop">You haven’t placed an order yet. Explore our collection to get started.</EmptyState>
           )}
         </section>
         <section aria-labelledby="quotes" className="flex flex-col gap-6">

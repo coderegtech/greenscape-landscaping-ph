@@ -1,4 +1,5 @@
 import { SignOutButton } from '@greenscape/ui/auth-forms';
+import { OfflineBanner } from '@greenscape/ui/components/offline';
 import { AdminShell } from '@greenscape/ui/layout/admin-shell';
 import { NotificationBell } from '@greenscape/ui/notifications/bell';
 import { NotificationsProvider } from '@greenscape/ui/notifications/provider';
@@ -56,6 +57,7 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
         }
       >
         <ConsoleLive />
+        <OfflineBanner message="You’re offline. Changes can’t be saved until your connection is back." />
         {children}
       </AdminShell>
     </NotificationsProvider>

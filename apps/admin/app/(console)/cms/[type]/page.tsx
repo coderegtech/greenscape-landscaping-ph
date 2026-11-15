@@ -1,3 +1,4 @@
+import { EmptyState } from '@greenscape/ui/components/empty-state';
 import { api } from '@greenscape/auth/api';
 import { Badge } from '@greenscape/ui/components/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@greenscape/ui/components/table';
@@ -87,7 +88,7 @@ export default async function ContentList({ params, searchParams }: { params: Pr
           </TableBody>
         </Table>
       ) : (
-        <p className="text-ink-2">Nothing here{sp.q ? ` matching “${sp.q}”` : ''}.</p>
+        <EmptyState variant={sp.q ? 'search' : 'articles'} title="Nothing here" description={sp.q ? `Nothing matches “${sp.q}”. Try a different search.` : `No ${def.label.toLowerCase()} in this view yet.`} />
       )}
     </div>
   );

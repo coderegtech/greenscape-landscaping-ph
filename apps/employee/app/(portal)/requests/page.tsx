@@ -1,5 +1,5 @@
 import { EmptyState, PageHeader, StatusPill } from '@greenscape/ui/layout/dashboard';
-import { ClipboardCheck, TimerReset } from 'lucide-react';
+import { TimerReset } from 'lucide-react';
 import type { Metadata } from 'next';
 import { CorrectionButton } from '@/components/correction';
 import { LeavePanel } from '@/components/leave';
@@ -37,7 +37,7 @@ export default async function RequestsPage() {
               ))}
             </ul>
           ) : (
-            <EmptyState icon={<ClipboardCheck />} title="No corrections waiting">Forgot to clock in or out? Send the right times and HR will review them.</EmptyState>
+            <EmptyState variant="leave" size="sm" title="No corrections waiting">Forgot to clock in or out? Send the right times and HR will review them.</EmptyState>
           )}
         </div>
       </section>
