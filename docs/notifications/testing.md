@@ -19,7 +19,7 @@ pnpm test:e2e tests/e2e/push.spec.ts tests/e2e/notifications.spec.ts
 
 ## Not automatable
 
-Playwright cannot click a system notification, hear the device's sound, or receive through a real push service with the browser closed. Once per platform:
+Playwright cannot click a system notification, hear the device's sound, or subscribe through a real push service: browsers it launches answer `Registration failed - permission denied` (tried with Edge, headless and headed). The push spec runs on full Chromium (`playwright install chromium`, as CI does) or, locally, `E2E_PUSH_CHANNEL=msedge`; the default headless shell has no notifications at all. Once per platform:
 
 1. Install the portal (Android: Chrome menu → Install. iPhone: Share → Add to Home Screen, then open it from the Home Screen).
 2. Sign in, then Notifications → Settings → Turn on alerts → allow.
