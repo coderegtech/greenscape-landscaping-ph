@@ -33,9 +33,15 @@ const allowed = matcher(manifest);
 // `<mode> <type> <sha>\t<path>` per tracked file. Symlinks (120000) and submodules (160000) could bring in content
 // from outside the repository, so a snapshot that selects one is refused.
 const files: string[] = [];
+const excluded = new Map<string, number>(); // reported by folder, two levels deep
 for (const entry of git(['ls-tree', '-r', '-z', commit]).split('\0').filter(Boolean)) {
   const [info, file] = entry.split('\t');
-  if (!allowed(file)) continue;
+  if (!allowed(file)) {
+    const parts = file.split('/');
+    const key = parts.slice(0, Math.min(2, parts.length - 1)).join('/') || file;
+    excluded.set(key, (excluded.get(key) ?? 0) + 1);
+    continue;
+  }
   const mode = info.split(' ')[0];
   if (mode !== '100644' && mode !== '100755') throw new Error(`${file} is a symbolic link or submodule (mode ${mode}): not allowed in the snapshot`);
   if (file.split('/').includes('..') || path.isAbsolute(file)) throw new Error(`${file} escapes the repository root`);
@@ -60,10 +66,10 @@ try {
 
 // No timestamp: the same commit always produces the same tree. The publish commit and the workflow run carry the time.
 const metadata = {
-  notice: 'Generated from main by .github/workflows/production-pipeline.yml. Do not edit this branch by hand.',
+  notice: 'Generated from main by the production pipeline (.gitlab-ci.yml, .github/workflows/production-pipeline.yml). Do not edit this branch by hand.',
   sourceBranch: merged ? SOURCE_BRANCH : null,
   sourceCommit: commit,
-  generatedBy: process.env.GITHUB_ACTIONS ? 'github-actions' : 'local',
+  generatedBy: process.env.GITLAB_CI ? 'gitlab-ci' : process.env.GITHUB_ACTIONS ? 'github-actions' : 'local',
   deploymentTarget: 'dokploy',
   fileCount: files.length,
 };
@@ -79,4 +85,7 @@ const byTop = new Map<string, number>();
 for (const f of files) byTop.set(f.split('/')[0], (byTop.get(f.split('/')[0]) ?? 0) + 1);
 console.log(`snapshot of ${commit}: ${files.length} files, valid`);
 for (const [top, n] of byTop) console.log(`  ${String(n).padStart(4)}  ${top}`);
+const excludedCount = [...excluded.values()].reduce((a, b) => a + b, 0);
+console.log(`excluded: ${excludedCount} tracked files`);
+for (const [key, n] of [...excluded].sort()) console.log(`  ${String(n).padStart(4)}  ${key}`);
 console.log(out);
