@@ -14,8 +14,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   return (
     <AuthCard title="Sign in" footer={<>New to Greenscape? <Link href={to === '/account' ? '/auth/register' : `/auth/register?next=${encodeURIComponent(to)}`} className="font-medium text-ink">Create an account</Link></>}>
       {error && ERRORS[error] && <Notice tone="error">{ERRORS[error]}</Notice>}
-      <GoogleButton next={to} />
       <SignInFormView next={to} />
+      <GoogleButton next={to} divider />
     </AuthCard>
   );
 }

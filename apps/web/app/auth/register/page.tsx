@@ -11,8 +11,8 @@ export default async function SignUpPage({ searchParams }: { searchParams: Promi
   const q = to === '/account' ? '' : `?next=${encodeURIComponent(to)}`;
   return (
     <AuthCard title="Create an account" footer={<>Already have an account? <Link href={`/auth/login${q}`} className="font-medium text-ink">Sign in</Link></>}>
-      <GoogleButton next={to} />
       <SignUpFormView next={to} />
+      <GoogleButton next={to} divider />
     </AuthCard>
   );
 }
