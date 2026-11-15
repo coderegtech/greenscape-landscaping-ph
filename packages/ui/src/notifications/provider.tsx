@@ -2,7 +2,8 @@
 // Notification state for one app (customer site or admin): the live connection, the unread count, and the actions.
 // Mounted once in each layout. Anonymous visitors cost nothing: no network call and no extra JavaScript until a
 // Supabase session cookie exists.
-import type { NotificationApp, NotificationPage } from '@greenscape/validation';
+import { LIVE_TOPICS, REALTIME_FATAL, REALTIME_PATH, type LiveSignal, type LiveTopic, type NotificationApp, type NotificationPage, type RealtimeServerEvents } from '@greenscape/validation';
+import type { Socket as IoSocket } from 'socket.io-client';
 import { usePathname } from 'next/navigation';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { applyEvent, type FeedFilter, type StreamEvent } from './format';
@@ -10,6 +11,9 @@ import { allowed, loadPrefs, play, soundFor, unlockOnGesture } from './sound-man
 import type { NotificationView } from '@greenscape/validation';
 
 type Listener = (e: StreamEvent) => void;
+type LiveListener = (s: LiveSignal) => void;
+type Socket = IoSocket<RealtimeServerEvents, Record<string, never>>;
+export type LiveStatus = 'connecting' | 'connected' | 'reconnecting' | 'offline' | 'disconnected';
 export type Call = <T = unknown>(path: string, init?: RequestInit) => Promise<T>;
 
 interface Ctx {
@@ -17,11 +21,14 @@ interface Ctx {
   /** false until we know there is a signed-in user; the bell renders nothing for visitors. */
   signedIn: boolean;
   connected: boolean;
+  status: LiveStatus;
   unread: number;
   /** Bumps after every reconnect so open lists re-fetch what they missed. */
   epoch: number;
   call: Call;
   subscribe: (fn: Listener) => () => void;
+  /** Live "this changed" signals (admin dashboards, the employee's own records). */
+  subscribeLive: (fn: LiveListener) => () => void;
   markRead: (id: string) => Promise<void>;
   markAllRead: () => Promise<void>;
   remove: (id: string) => Promise<void>;
@@ -45,12 +52,16 @@ export function NotificationsProvider({ app, apiUrl, children }: { app: Notifica
   // Server and first client render say "no", so there is no hydration mismatch.
   void pathname;
   const signedIn = useSyncExternalStore(() => () => undefined, hasSessionCookie, () => false);
-  const [liveConnected, setConnected] = useState(false);
+  const [liveStatus, setStatus] = useState<LiveStatus>('connecting');
   const [liveUnread, setUnread] = useState(0);
-  const connected = signedIn && liveConnected;
+  const status: LiveStatus = signedIn ? liveStatus : 'disconnected';
+  const connected = status === 'connected';
   const unread = signedIn ? liveUnread : 0;
   const [epoch, setEpoch] = useState(0);
   const listeners = useRef(new Set<Listener>());
+  const liveListeners = useRef(new Set<LiveListener>());
+  /** Ids of live signals already handled (a repeat after a reconnect changes nothing). */
+  const seenLive = useRef(new Set<string>());
   /** Ids of notifications already shown live in this tab. */
   const seen = useRef(new Set<string>());
   const supabase = useRef<{ auth: { getSession(): Promise<{ data: { session: { access_token: string } | null } }> } } | null>(null);
@@ -102,75 +113,81 @@ export function NotificationsProvider({ app, apiUrl, children }: { app: Notifica
     [app, emit, syncCount],
   );
 
-  // The live connection: fetch + stream (EventSource cannot send the Authorization header). Reconnects with backoff,
-  // and on every (re)connect the server's `ready` event tells open lists to re-fetch, which recovers anything missed.
+  // The live connection: one Socket.IO socket per tab (loaded only once someone is signed in). The handshake sends the
+  // Supabase access token, fetched fresh on every attempt, so a reconnect after expiry carries a new one. Every
+  // (re)connect re-syncs the count and bumps `epoch`, which makes open lists and live pages re-fetch what they missed.
   useEffect(() => {
     if (!signedIn) return;
-    const ctrl = new AbortController();
     // Sounds were turned on earlier on this browser: the first click or key press after a reload unlocks audio again.
     const stopUnlock = loadPrefs(app).enabled ? unlockOnGesture() : undefined;
+    let socket: Socket | undefined;
+    let stopped = false;
     let first = true;
-    void (async () => {
-      let attempt = 0;
-      while (!ctrl.signal.aborted) {
-        // One controller per connection. A silent network drop leaves reads hanging with no error, so the connection is
-        // also abandoned when the server's 25 s heartbeat stops for 60 s, or when the browser reports it is back online.
-        const conn = new AbortController();
-        const drop = () => conn.abort();
-        let watchdog: ReturnType<typeof setTimeout> | undefined;
-        const kick = () => { clearTimeout(watchdog); watchdog = setTimeout(drop, 60_000); };
-        ctrl.signal.addEventListener('abort', drop, { once: true });
-        window.addEventListener('online', drop);
-        try {
-          const t = await token();
-          if (!t) return; // signed out
-          kick();
-          const res = await fetch(`${apiUrl}/v1/notifications/stream?app=${app}`, { headers: { authorization: `Bearer ${t}` }, signal: conn.signal, cache: 'no-store' });
-          if (!res.ok || !res.body) throw new Error(String(res.status));
-          const reader = res.body.getReader();
-          const dec = new TextDecoder();
-          let buf = '';
-          for (;;) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            kick();
-            buf += dec.decode(value, { stream: true });
-            for (let i = buf.indexOf('\n\n'); i >= 0; i = buf.indexOf('\n\n')) {
-              const block = buf.slice(0, i);
-              buf = buf.slice(i + 2);
-              const name = /^event: (.+)$/m.exec(block)?.[1];
-              const data = /^data: (.+)$/m.exec(block)?.[1];
-              if (!name || !data) continue;
-              if (name === 'ready') {
-                attempt = 0;
-                setConnected(true);
-                syncCount();
-                if (!first) setEpoch((n) => n + 1);
-                if (first) void import('./push').then((m) => m.resyncPush(call, app)).catch(() => undefined);
-                first = false;
-              }
-              handle(name, JSON.parse(data));
-            }
-          }
-        } catch {
-          if (ctrl.signal.aborted) return;
-        } finally {
-          clearTimeout(watchdog);
-          window.removeEventListener('online', drop);
-          ctrl.signal.removeEventListener('abort', drop);
-        }
-        setConnected(false);
-        if (typeof navigator !== 'undefined' && !navigator.onLine) await new Promise<void>((r) => window.addEventListener('online', () => r(), { once: true }));
-        await new Promise((r) => setTimeout(r, Math.min(30_000, 1000 * 2 ** attempt++) * (0.5 + Math.random() / 2)));
-      }
-    })();
-    return () => { ctrl.abort(); stopUnlock?.(); };
+    let attempt = 0;
+    let retry: ReturnType<typeof setTimeout> | undefined;
+    const down = () => setStatus(navigator.onLine ? 'reconnecting' : 'offline');
+    // Socket.IO retries dropped transports by itself; a refusal or a server-side close (token expiry, access change)
+    // needs a manual retry, with backoff and jitter. The next handshake re-checks the account.
+    const retryLater = () => {
+      clearTimeout(retry);
+      retry = setTimeout(() => socket?.connect(), Math.min(30_000, 1000 * 2 ** attempt++) * (0.5 + Math.random() / 2));
+    };
+    // An installed PWA coming back to the foreground: reconnect now instead of waiting for a throttled timer.
+    const wake = () => { if (document.visibilityState === 'visible' && socket && !socket.connected) { clearTimeout(retry); socket.connect(); } };
+    void import('socket.io-client').then(({ io }) => {
+      if (stopped) return;
+      setStatus('connecting');
+      socket = io(apiUrl, {
+        path: REALTIME_PATH,
+        transports: ['websocket', 'polling'], // WebSocket first; long-polling only where a proxy blocks WebSockets
+        tryAllTransports: true,
+        auth: (cb) => void token().then((t) => cb({ token: t ?? '', app }), () => cb({ token: '', app })),
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 30_000,
+        randomizationFactor: 0.5,
+      });
+      socket.on('connect', () => {
+        attempt = 0;
+        setStatus('connected');
+        syncCount();
+        if (!first) setEpoch((n) => n + 1);
+        else void import('./push').then((m) => m.resyncPush(call, app)).catch(() => undefined);
+        first = false;
+      });
+      socket.on('notification', (e) => { if (e && typeof e.event === 'string') handle(e.event, e.data); });
+      socket.on('live', (s) => {
+        if (!s || typeof s.id !== 'string' || !LIVE_TOPICS.includes(s.topic) || seenLive.current.has(s.id)) return;
+        if (seenLive.current.size > 500) seenLive.current.clear();
+        seenLive.current.add(s.id);
+        liveListeners.current.forEach((fn) => fn(s));
+      });
+      socket.on('disconnect', (reason) => {
+        down();
+        if (reason === 'io server disconnect') retryLater();
+      });
+      socket.on('connect_error', (err) => {
+        down();
+        if (socket?.active) return; // a transport problem: Socket.IO is already retrying
+        const code = (err as { data?: { code?: string } }).data?.code;
+        if (code && (REALTIME_FATAL as readonly string[]).includes(code)) setStatus('disconnected'); // signed out or no access: wait for a new sign-in
+        else retryLater();
+      });
+    });
+    document.addEventListener('visibilitychange', wake);
+    return () => {
+      stopped = true;
+      clearTimeout(retry);
+      document.removeEventListener('visibilitychange', wake);
+      socket?.disconnect();
+      stopUnlock?.();
+    };
   }, [signedIn, app, apiUrl, token, call, handle, syncCount]);
 
   const value = useMemo<Ctx>(
     () => ({
-      app, signedIn, connected, unread, epoch, call,
+      app, signedIn, connected, status, unread, epoch, call,
       subscribe: (fn) => { listeners.current.add(fn); return () => void listeners.current.delete(fn); },
+      subscribeLive: (fn) => { liveListeners.current.add(fn); return () => void liveListeners.current.delete(fn); },
       // Optimistic: lists update at once; a failure re-fetches (epoch) and tells the person.
       async markRead(id) {
         emit({ event: 'read', data: { ids: [id] } });
@@ -193,7 +210,7 @@ export function NotificationsProvider({ app, apiUrl, children }: { app: Notifica
         syncCount();
       },
     }),
-    [app, signedIn, connected, unread, epoch, call, emit, syncCount],
+    [app, signedIn, connected, status, unread, epoch, call, emit, syncCount],
   );
   return <NotificationsContext.Provider value={value}>{children}</NotificationsContext.Provider>;
 }
@@ -242,4 +259,31 @@ export function useFeed(filter: FeedFilter = {}, enabled = true) {
 
   const state = fresh ? 'ready' : failed === key ? 'error' : 'loading';
   return { items: fresh?.items ?? [], state: state as 'loading' | 'ready' | 'error', hasMore: fresh?.next != null, loadingMore: more, loadMore };
+}
+
+/**
+ * Runs `fn` when one of `topics` changes (debounced, so a burst of changes costs one re-fetch) and after every
+ * reconnect, since anything may have changed while the socket was down.
+ */
+export function useLive(topics: readonly LiveTopic[], fn: () => void, waitMs = 400) {
+  const { subscribeLive, epoch } = useNotifications();
+  const latest = useRef(fn);
+  useEffect(() => { latest.current = fn; });
+  const key = topics.join(',');
+  useEffect(() => {
+    const wanted = new Set(key.split(','));
+    let t: ReturnType<typeof setTimeout> | undefined;
+    const off = subscribeLive((s) => {
+      if (!wanted.has(s.topic)) return;
+      clearTimeout(t);
+      t = setTimeout(() => latest.current(), waitMs);
+    });
+    return () => { off(); clearTimeout(t); };
+  }, [subscribeLive, key, waitMs]);
+  const seenEpoch = useRef(epoch);
+  useEffect(() => {
+    if (epoch === seenEpoch.current) return;
+    seenEpoch.current = epoch;
+    latest.current();
+  }, [epoch]);
 }

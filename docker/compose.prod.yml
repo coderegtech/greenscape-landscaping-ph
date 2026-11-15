@@ -42,9 +42,11 @@ services:
       PAYMENTS_LIVE_APPROVED: 'false'
       REQUIRE_STAFF_MFA: 'true'
       CACHE_PREFIX: gs:prod
-      CORS_ORIGINS: ${WEB_URL:?set WEB_URL},${ADMIN_URL:?set ADMIN_URL}
+      # Browsers of all three portals call the API (and open the realtime socket); a missing origin is refused.
+      CORS_ORIGINS: ${WEB_URL:?set WEB_URL},${ADMIN_URL:?set ADMIN_URL},${EMPLOYEE_URL:?set EMPLOYEE_URL}
       WEB_URL: ${WEB_URL:?set WEB_URL}
       ADMIN_URL: ${ADMIN_URL:?set ADMIN_URL}
+      EMPLOYEE_URL: ${EMPLOYEE_URL:?set EMPLOYEE_URL}
       API_PUBLIC_URL: ${API_PUBLIC_URL:?set API_PUBLIC_URL}
       SMTP_URL: ${SMTP_URL}
       SENTRY_DSN: ${SENTRY_DSN}

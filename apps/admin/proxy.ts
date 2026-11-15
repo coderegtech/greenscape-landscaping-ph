@@ -22,7 +22,7 @@ export function contentSecurityPolicy(nonce: string, dev = process.env.NODE_ENV 
     "style-src 'self' 'unsafe-inline'", // next/image, Radix and the rich-text editor set style attributes
     `img-src 'self' data: blob: ${supabase}`.trim(),
     "font-src 'self'",
-    `connect-src 'self' ${api} ${supabase}`.trim(),
+    `connect-src 'self' ${api} ${api.replace(/^http/, 'ws')} ${supabase}`.trim(), // ws(s): the realtime socket (older Safari does not map https → wss)
     "frame-src 'none'",
     "worker-src 'self'",
     "object-src 'none'",

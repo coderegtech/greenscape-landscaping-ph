@@ -139,6 +139,7 @@ export async function placeOrder(
       { success: back, cancel: `${back}&cancelled=1` },
     );
     await db.payment.create({ data: { orderId: order.id, provider: payments.name, providerRef: session.ref, amount: total, currency: 'PHP', isTest: payments.isTest, rawLast: { redirectUrl: session.redirectUrl } } });
+    await deps.events.emit('order.created', { orderId: order.id });
     return { number: order.number, redirectUrl: session.redirectUrl, accessKey, isTest: payments.isTest };
   } catch (err) {
     log.error({ err, order: order.number }, 'payment session failed; releasing stock');

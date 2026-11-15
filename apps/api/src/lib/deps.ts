@@ -6,6 +6,8 @@ import { createPrismaClient, type Db } from '@greenscape/database';
 import { createStorage, type Storage } from '@greenscape/storage';
 import { createMailer, type Mailer } from './mailer.ts';
 import { createEventBus, type EventBus } from './events.ts';
+import { createRealtime, type Realtime } from '../realtime/server.ts';
+import { registerRealtimeHandlers } from '../realtime/handlers.ts';
 import { registerNotificationHandlers } from '../modules/notifications/handlers.ts';
 import { createNotifications, type Notifications } from '../modules/notifications/service.ts';
 import { createMockProvider, createStripeProvider, type PaymentProvider } from '../modules/shop/payments.ts';
@@ -30,6 +32,8 @@ export interface Deps {
   /** Domain events: business code emits, notifications (and anything later) subscribe. */
   events: EventBus;
   notifications: Notifications;
+  /** Socket.IO: notification delivery and live "this changed" signals to the portals. */
+  realtime: Realtime;
 }
 
 export function createPayments(env: Env, redis: Redis): PaymentProvider {
@@ -47,10 +51,10 @@ export async function createDeps(env: Env, log: Logger): Promise<Deps> {
   await redis.connect().catch((err) => log.warn({ err: err.message }, 'redis unavailable at boot; continuing without cache'));
   const cache = createCache({ redis, prefix: env.CACHE_PREFIX, logger: log });
   const events = createEventBus(log);
-  const notifications = createNotifications({ db, redis, env, log });
-  await notifications.hub.start();
+  const realtime = createRealtime({ env, log, redis });
+  const notifications = createNotifications({ db, redis, env, log, realtime });
   const deps: Deps = {
-    env, log, db, mongo, redis, cache, events, notifications,
+    env, log, db, mongo, redis, cache, events, notifications, realtime,
     verifyToken: createTokenVerifier(env.SUPABASE_URL),
     storage: createStorage(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY),
     mailer: createMailer(env.SMTP_URL, env.MAIL_FROM, log),
@@ -58,9 +62,11 @@ export async function createDeps(env: Env, log: Logger): Promise<Deps> {
     identities: createIdentityAdmin(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY),
   };
   registerNotificationHandlers(deps, notifications);
+  registerRealtimeHandlers(deps);
+  realtime.start(deps);
   return deps;
 }
 
 export async function closeDeps(d: Deps) {
-  await Promise.allSettled([d.notifications.hub.close(), d.db.$disconnect(), d.mongo.client.close(), d.redis.quit()]);
+  await Promise.allSettled([d.realtime.close(), d.db.$disconnect(), d.mongo.client.close(), d.redis.quit()]);
 }

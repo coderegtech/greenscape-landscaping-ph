@@ -25,7 +25,7 @@ All of these must hold:
 5. This notification id has not played before in this tab, and no other open tab claimed it (Web Locks).
 6. No other notification sound played in the last 1.5 s (a burst is one sound).
 
-Never: on loading history, on a duplicate or malformed event, for someone else's notification (the stream only carries the caller's), after logout (no stream).
+Never: on loading history, on a duplicate or malformed event, for someone else's notification (the socket only carries the caller's), after logout (no socket).
 
 The `success` and `error` tones follow the clock-in form's server answer, never the tap itself: the form action waits for the API, then the tone, the toast and the "Recorded at" tick all appear together.
 

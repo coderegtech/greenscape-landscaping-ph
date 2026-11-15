@@ -7,6 +7,7 @@ import { Button } from '../components/button';
 import { NotificationList } from './list';
 import { PushToggle } from './push-toggle';
 import { useFeed, useNotifications } from './provider';
+import { STATUS_LABELS } from './live';
 import { SoundToggle } from './sound';
 
 /**
@@ -14,7 +15,7 @@ import { SoundToggle } from './sound';
  * `centerHref` is the full notification centre; the list is only fetched the first time the dropdown opens.
  */
 export function NotificationBell({ centerHref }: { centerHref: string }) {
-  const { signedIn, unread, connected, markAllRead } = useNotifications();
+  const { signedIn, unread, status, markAllRead } = useNotifications();
   const [open, setOpen] = useState(false);
   const [opened, setOpened] = useState(false);
   const feed = useFeed({}, opened);
@@ -56,7 +57,7 @@ export function NotificationBell({ centerHref }: { centerHref: string }) {
           </div>
           {open && <PushToggle compact />}
           <div className="flex items-center justify-between gap-2 border-t border-rule px-3 py-2 text-sm">
-            <span className="text-muted" role="status">{connected ? 'Live' : 'Reconnecting…'}</span>
+            <span className="text-muted" role="status">{STATUS_LABELS[status]}</span>
             <Link href={centerHref} onClick={() => setOpen(false)} className="font-medium">
               See all and settings
             </Link>

@@ -49,6 +49,7 @@ export function authRoutes(deps: Deps) {
     if (auth.sessionId) {
       const ttl = Math.max(1, auth.expiresAt * 1000 - Date.now());
       await deps.redis.set(endedSessionKey(deps.env.CACHE_PREFIX, auth.sessionId), '1', 'PX', ttl);
+      await deps.events.emit('user.access_changed', { sessionId: auth.sessionId });
     }
     res.status(204).end();
   });

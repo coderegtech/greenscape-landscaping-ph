@@ -116,6 +116,7 @@ export function hrRoutes(deps: Deps) {
     const e = await db.employee.create({ data: data(input) }).catch(pgUnique('That employee number is already used', 'employeeNo'));
     await linkAccount(e.id, input.email);
     await audit(db, req, res, { action: 'employee.create', entityType: 'employee', entityId: e.id });
+    await deps.events.emit('employee.updated', { employeeId: e.id });
     res.status(201).json(await employeeView(e.id));
   });
   r.put('/employees/:id', requirePermission('employees.manage'), async (req, res) => {
@@ -132,6 +133,7 @@ export function hrRoutes(deps: Deps) {
       await db.userRole.deleteMany({ where: { userId: before.userId, roleId: role.id } });
       await cache.invalidateTags([authzCacheKey(before.userId)]);
     }
+    await deps.events.emit('employee.updated', { employeeId: id });
     await audit(db, req, res, { action: 'employee.update', entityType: 'employee', entityId: id, before: { status: before.employmentStatus, position: before.position }, after: { status: input.employmentStatus, position: input.position } });
     res.json(await employeeView(id));
   });
@@ -250,6 +252,7 @@ export function hrRoutes(deps: Deps) {
     const proposed = toPunches(ymd(rec.workDate), punches);
     const out = await db.$transaction((tx) => replacePunches(tx, id, proposed, 'admin_correction'));
     await audit(db, req, res, { action: 'attendance.edit', entityType: 'attendanceRecord', entityId: id, before: { punches: rec.punches.map((p) => `${p.type} ${p.at.toISOString()}`) }, after: { punches: proposed.map((p) => `${p.type} ${p.at.toISOString()}`), reason } });
+    await deps.events.emit('attendance.changed', { employeeId: rec.employeeId, kind: 'edited' });
     res.json(recordView({ ...out, punches: await db.timePunch.findMany({ where: { recordId: id } }) }));
   });
   r.post('/attendance/approve', requirePermission('attendance.approve'), async (req, res) => {
@@ -261,6 +264,7 @@ export function hrRoutes(deps: Deps) {
       data: { approvedById: actor(res), approvedAt: new Date() },
     });
     await audit(db, req, res, { action: 'attendance.approve', entityType: 'attendanceRecord', entityId: recordIds.length === 1 ? recordIds[0]! : `${recordIds.length} records`, after: { approved: done.count } });
+    if (done.count) await deps.events.emit('attendance.changed', { kind: 'approved' });
     res.json({ approved: done.count, skipped: recordIds.length - done.count });
   });
 

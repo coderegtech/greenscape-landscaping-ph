@@ -9,6 +9,7 @@ import { Notice } from '../form';
 import { NotificationList } from './list';
 import { PushToggle } from './push-toggle';
 import { useFeed, useNotifications } from './provider';
+import { STATUS_LABELS } from './live';
 import { SoundSettings } from './sound';
 
 // The shared Tabs ships unthemed; these classes put it on the site's tokens (readable inactive labels, signal underline, scrolls on phones).
@@ -17,7 +18,7 @@ const tab = 'h-11 flex-none px-4 text-sm text-ink-2 hover:text-ink data-[state=a
 const selectClass = 'h-10 rounded-(--radius-control) border border-rule-strong bg-paper-3 px-3 text-sm text-ink';
 
 function Inbox() {
-  const { unread, connected, markAllRead, clear } = useNotifications();
+  const { unread, status, markAllRead, clear } = useNotifications();
   const [only, setOnly] = useState(false);
   const [category, setCategory] = useState('');
   const [confirm, setConfirm] = useState(false);
@@ -50,7 +51,7 @@ function Inbox() {
             {CATEGORY_KEYS.map((k) => <option key={k} value={k}>{NOTIFICATION_CATEGORIES[k].label}</option>)}
           </select>
         </label>
-        <span className="ml-auto text-sm text-muted" role="status">{connected ? 'Live' : 'Reconnecting…'}</span>
+        <span className="ml-auto text-sm text-muted" role="status">{STATUS_LABELS[status]}</span>
       </div>
       <div className="flex flex-wrap gap-2">
         <Button variant="secondary" size="sm" disabled={unread === 0} onClick={() => void markAllRead()}>Mark all as read</Button>
