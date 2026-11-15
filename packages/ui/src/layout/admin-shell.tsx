@@ -1,11 +1,12 @@
 'use client';
-import { ChevronDown, Leaf, Menu, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { ChevronDown, Menu, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { MotionConfig, motion } from 'motion/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Popover as PopoverPrimitive } from 'radix-ui';
 import { useState, type ReactNode } from 'react';
 import { Button } from '../components/button';
+import { LogoMark } from '../components/logo';
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '../components/sheet';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../components/tooltip';
 import { useStored } from '../hooks/use-stored';
@@ -33,7 +34,7 @@ const matches = (href: string, path: string) => (href === '/' ? path === '/' : p
 function Brand({ collapsed }: { collapsed?: boolean }) {
   return (
     <Link href="/" className="flex h-10 items-center gap-3 px-2 text-ink no-underline">
-      <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-xl bg-signal text-signal-ink"><Leaf className="size-5" /></span>
+      <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-xl bg-signal text-signal-ink"><LogoMark className="w-6" /></span>
       <span className={cn('flex min-w-0 flex-col leading-tight', collapsed && 'sr-only')}>
         <span className="truncate text-base font-bold">Greenscape</span>
         <span className="truncate text-xs text-muted">Admin console</span>
