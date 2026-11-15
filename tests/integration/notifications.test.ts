@@ -452,3 +452,47 @@ describe('announcements', () => {
     await request(app).post('/v1/notifications/broadcast').set(as(users.admin!.token)).send({ title: 'x', message: 'y', app: 'web', href: 'https://evil.example' }).expect(400);
   });
 });
+
+describe('push: portals, test alert, inactive accounts', () => {
+  const dev = (appName: string, id: string) => ({ app: appName, deviceId: `dev-${id}-${tag}`, subscription: { endpoint: `https://push.example.test/${tag}/gap-${id}`, keys: { p256dh: 'p'.repeat(87), auth: 'a'.repeat(22) } } });
+
+  it('registers a device for the console or the employee portal only with access to it', async () => {
+    await request(app).post('/v1/notifications/push/subscriptions').set(as(users.alice!.token)).send(dev('admin', 'alice-admin')).expect(403);
+    await request(app).post('/v1/notifications/push/subscriptions').set(as(users.alice!.token)).send(dev('employee', 'alice-emp')).expect(403);
+    await request(app).post('/v1/notifications/push/subscriptions').set(as(users.admin!.token)).send(dev('admin', 'admin-console')).expect(201);
+  });
+
+  it('a test alert goes only to the caller, needs a device, and runs through the real pipeline', async () => {
+    await request(app).post('/v1/notifications/push/test?app=admin').expect(401);
+    users.carol = await makeUser('carol'); // no device yet
+    await request(app).post('/v1/notifications/push/test?app=web').set(as(users.carol.token)).expect(409);
+    const res = await request(app).post('/v1/notifications/push/test?app=admin').set(as(users.admin!.token)).expect(201);
+    expect(res.body).toEqual({ devices: 1 });
+    const n = await deps.db.notification.findFirstOrThrow({ where: { recipientId: users.admin!.id, type: 'push.test' } });
+    expect(n).toMatchObject({ app: 'admin', category: 'account' });
+    const sub = await deps.db.pushSubscription.findUniqueOrThrow({ where: { endpoint: `https://push.example.test/${tag}/gap-admin-console` } });
+    expect(await deps.db.notificationDelivery.count({ where: { notificationId: n.id, subscriptionId: sub.id } })).toBe(1);
+    expect(await deps.db.notification.count({ where: { type: 'push.test', recipientId: { not: users.admin!.id } } })).toBe(0);
+  });
+
+  it('a suspended account gets no new pushes, and pushes queued before the suspension are not sent', async () => {
+    const sent: string[] = [];
+    const svc = createNotifications(deps, async (s) => { sent.push(s.endpoint); return {}; });
+    const u = users.carol!;
+    await request(app).post('/v1/notifications/push/subscriptions').set(as(u.token)).send(dev('web', 'carol')).expect(201);
+    const sub = await deps.db.pushSubscription.findUniqueOrThrow({ where: { endpoint: `https://push.example.test/${tag}/gap-carol` } });
+    // queued while active (written directly, so no background drain races the suspension)
+    const queued = await deps.db.notification.create({ data: { recipientId: u.id, app: 'web', type: 'test.event', category: 'orders', title: 'queued', message: 'm' } });
+    const d = await deps.db.notificationDelivery.create({ data: { notificationId: queued.id, subscriptionId: sub.id } });
+    await deps.db.user.update({ where: { id: u.id }, data: { status: 'SUSPENDED' } });
+    try {
+      const later = (await svc.notify({ ...base0, userId: u.id, title: 'after suspension' }))!;
+      expect(await deps.db.notificationDelivery.count({ where: { notificationId: later.id } })).toBe(0);
+      await svc.worker.drain();
+      expect(sent).not.toContain(sub.endpoint);
+      expect(await deps.db.notificationDelivery.findUniqueOrThrow({ where: { id: d.id } })).toMatchObject({ status: 'FAILED', failureReason: 'account not active' });
+    } finally {
+      await deps.db.user.update({ where: { id: u.id }, data: { status: 'ACTIVE' } });
+    }
+  });
+});

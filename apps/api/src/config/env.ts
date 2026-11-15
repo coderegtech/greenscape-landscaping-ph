@@ -54,4 +54,6 @@ export const EnvSchema = z.object({
 });
 export type Env = z.infer<typeof EnvSchema>;
 
-export const readEnv = (source?: Record<string, string | undefined>) => loadEnv(EnvSchema, source);
+// Half a VAPID pair would silently switch push off: refuse to start instead.
+const Checked = EnvSchema.refine((e) => !e.VAPID_PUBLIC_KEY === !e.VAPID_PRIVATE_KEY, { message: 'Set both VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY, or neither', path: ['VAPID_PRIVATE_KEY'] });
+export const readEnv = (source?: Record<string, string | undefined>) => loadEnv(Checked, source);
