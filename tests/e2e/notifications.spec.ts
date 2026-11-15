@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test, type Browser, type Page } from '@playwright/test';
+import { expect, test, type Browser, type Page, type WebSocketRoute } from '@playwright/test';
 import { ADMIN, WEB, confirmedUser, signIn, staffUser } from './helpers';
 
 const badge = (p: Page) => p.getByTestId('notification-badge');
@@ -28,6 +28,14 @@ test.describe('notifications', () => {
     const other = await customerOnMessages(browser, 'nt-cust2');
     const staff = await staffUser('nt-admin', ['admin']);
     const adminCtx = await browser.newContext();
+    // The admin's sockets go through here, so the test can cut them and refuse reconnects later.
+    let blocked = false;
+    const sockets = new Set<WebSocketRoute>();
+    await adminCtx.routeWebSocket(/\/v1\/realtime\//, (ws) => {
+      if (blocked) return void ws.close();
+      sockets.add(ws);
+      ws.connectToServer();
+    });
     const tab1 = await adminCtx.newPage();
     await tab1.goto(`${ADMIN}/login`);
     await signIn(tab1, staff.email);
@@ -52,15 +60,15 @@ test.describe('notifications', () => {
     await expect(badge(tab1)).toHaveCount(0);
     await expect(badge(tab2)).toHaveCount(0); // synchronised across tabs
 
-    // The live connection is cut and the network refuses new ones; a notification arrives meanwhile; once the network is
-    // back the page reconnects by itself and the missed notification shows up, with no reload. (Chromium's offline mode
-    // does not sever a stream that is already open, so the connection is dropped through the app's own "back online" path.)
-    const stream = '**/v1/notifications/stream*';
-    await adminCtx.route(stream, (r) => r.abort());
-    await tab2.evaluate(() => window.dispatchEvent(new Event('online')));
+    // The live socket is cut and new ones are refused; a notification arrives meanwhile; once the network is back the
+    // page reconnects by itself and the missed notification shows up, with no reload.
+    blocked = true;
+    await adminCtx.route('**/v1/realtime/**', (r) => r.abort()); // no long-polling fallback either
+    for (const ws of sockets) await ws.close();
     await sendMessage(other.page, 'Also, do you sell mulch?'); // another customer (a follow-up in an unread thread would not notify again)
     await expect(badge(tab2)).toHaveCount(0);
-    await adminCtx.unroute(stream);
+    blocked = false;
+    await adminCtx.unroute('**/v1/realtime/**');
     await expect(badge(tab2)).toHaveText(/^[1-9]/, { timeout: 30_000 });
     await tab1.keyboard.press('Escape');
 

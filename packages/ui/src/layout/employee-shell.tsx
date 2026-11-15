@@ -2,6 +2,7 @@
 import { LogoMark } from '../components/logo';
 import { NotificationBell } from '../notifications/bell';
 import { SoundToggle } from '../notifications/sound';
+import { LiveRefresh, LiveStatus } from '../notifications/live';
 import { CalendarCheck, CalendarClock, FileText, Home, UserRound, type LucideIcon } from 'lucide-react';
 import { MotionConfig, motion } from 'motion/react';
 import Link from 'next/link';
@@ -44,6 +45,7 @@ export function PortalShell({ name, pending, children }: { name: string; pending
               </Link>
             ))}
           </nav>
+          <LiveStatus />
           <SoundToggle />
           <NotificationBell centerHref="/notifications" />
           <Link href="/profile" aria-current={on('/profile') ? 'page' : undefined} className="press hidden size-10 place-items-center rounded-full bg-signal text-sm font-bold text-signal-ink no-underline outline-offset-2 aria-[current=page]:outline-2 aria-[current=page]:outline-signal md:grid">
@@ -51,6 +53,8 @@ export function PortalShell({ name, pending, children }: { name: string; pending
           </Link>
         </div>
       </header>
+      {/* The API sends an employee only changes to their own records: a punch from another device, a decision by HR. */}
+      <LiveRefresh topics={['attendance', 'corrections', 'leave', 'schedule', 'employees']} />
       <main id="main" className="mx-auto w-full max-w-[64rem] px-4 pt-6 pb-28 md:px-6 md:pt-8 md:pb-16">{children}</main>
       <nav aria-label="Portal" className="fixed inset-x-0 bottom-0 z-[200] border-t border-rule bg-paper-3/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden" data-testid="bottom-nav">
         <ul className="mx-auto grid max-w-md grid-cols-5">

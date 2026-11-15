@@ -28,8 +28,10 @@ example `apps/web/**`, `packages/**`, `pnpm-lock.yaml`.
   `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_AUTH_GOOGLE`. Public values only; they are baked into the image.
 - **Environment** (runtime): the `environment:` block of the same-named service in `docker/compose.prod.yml` is the
   list, with the values from `docker/prod.env.example`. Replace the `postgres`, `mongo` and `redis` host names with
-  the internal host names Dokploy shows for the database services. Add `EMPLOYEE_URL` on `api` and `web`, and the
-  employee origin to `CORS_ORIGINS` (`docs/deployment/subdomains.md`).
+  the internal host names Dokploy shows for the database services. `EMPLOYEE_URL` goes on `api` and `web`, and the
+  employee origin is part of `CORS_ORIGINS` (`docs/deployment/subdomains.md`): the realtime socket refuses any other origin.
+- Realtime: Socket.IO shares the API domain and port (path `/v1/realtime`). Dokploy's Traefik forwards WebSocket
+  upgrades as is; keep one `api` replica, or add sticky sessions before scaling out (`docs/realtime/README.md` §11).
 - Secrets go in Environment, never in Build Time Arguments.
 - Health: the images carry a `HEALTHCHECK` (`/v1/health` on the API, `/api/health` on the Next apps).
 

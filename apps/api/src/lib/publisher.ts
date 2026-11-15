@@ -52,7 +52,7 @@ export async function snapshot({ mongo }: Pick<Deps, 'mongo'>, type: ContentType
 }
 
 /** Copies draft → published atomically and makes the document live. */
-export async function publishNow(deps: Pick<Deps, 'mongo' | 'cache' | 'env' | 'log'>, type: ContentType, slug: string, locale: string, userId: string) {
+export async function publishNow(deps: Pick<Deps, 'mongo' | 'cache' | 'env' | 'log' | 'events'>, type: ContentType, slug: string, locale: string, userId: string) {
   const coll = deps.mongo.db.collection(CONTENT_TYPES[type].collection);
   const doc = await coll.findOne({ slug, locale });
   if (!doc?.draft) return null;
@@ -66,6 +66,7 @@ export async function publishNow(deps: Pick<Deps, 'mongo' | 'cache' | 'env' | 'l
   if (!res) return null;
   await snapshot(deps, type, res as never, userId, 'published');
   await invalidate(deps, tagsFor(type, slug));
+  await deps.events.emit('cms.published', { type, slug });
   return res;
 }
 

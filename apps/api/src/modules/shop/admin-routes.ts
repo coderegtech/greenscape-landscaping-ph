@@ -128,12 +128,14 @@ export function shopAdminRoutes(deps: Deps) {
   r.post('/products', requirePermission('products.write'), async (req, res) => {
     const p = await saveProduct(null, ProductInput.parse(req.body), actor(res)).catch(uniqueSlug);
     await audit(db, req, res, { action: 'product.create', entityType: 'product', entityId: p.id });
+    await deps.events.emit('catalog.changed', { what: 'products', id: p.id });
     res.status(201).json(await productDetail(p.id));
   });
   r.put('/products/:id', requirePermission('products.write'), async (req, res) => {
     const id = Id.parse(req.params.id);
     const p = await saveProduct(id, ProductInput.parse(req.body), actor(res)).catch(uniqueSlug);
     await audit(db, req, res, { action: 'product.update', entityType: 'product', entityId: p.id });
+    await deps.events.emit('catalog.changed', { what: 'products', id: p.id });
     res.json(await productDetail(p.id));
   });
 
@@ -203,6 +205,7 @@ export function shopAdminRoutes(deps: Deps) {
       return tx.inventoryLevel.findUniqueOrThrow({ where: { variantId } });
     });
     await audit(db, req, res, { action: `stock.${a.type.toLowerCase()}`, entityType: 'variant', entityId: variantId, after: { quantity: a.quantity, onHand: level.onHand, reason: a.reason } });
+    await deps.events.emit('catalog.changed', { what: 'inventory', id: variantId });
     res.json({ variantId, onHand: level.onHand, reserved: level.reserved, available: level.onHand - level.reserved });
   });
   r.get('/inventory/:variantId/movements', requirePermission('inventory.read'), async (req, res) => {
@@ -248,6 +251,7 @@ export function shopAdminRoutes(deps: Deps) {
       });
       await audit(db, req, res, { action: 'stock.import', entityType: 'inventory', entityId: 'csv', after: { changes: changes.length } });
     }
+    if (!dryRun && !errors.length && changes.length) await deps.events.emit('catalog.changed', { what: 'inventory' });
     res.json({ dryRun, applied: !dryRun && !errors.length, changes, errors });
   });
 

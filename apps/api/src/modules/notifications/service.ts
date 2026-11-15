@@ -4,11 +4,10 @@ import { Prisma } from '@greenscape/database';
 import { CATEGORY_KEYS, NOTIFICATION_CATEGORIES, type NotificationApp, type NotificationCategory, type NotificationPreferenceItem, type NotificationView } from '@greenscape/validation';
 import type { Deps } from '../../lib/deps.ts';
 import { AppError } from '../../lib/errors.ts';
-import { createHub } from './hub.ts';
 import { decodeCursor, effectivePreference, encodeCursor } from './logic.ts';
 import { createPushWorker, type PushSender } from './push.ts';
 
-type ServiceDeps = Pick<Deps, 'db' | 'redis' | 'env' | 'log'>;
+type ServiceDeps = Pick<Deps, 'db' | 'redis' | 'env' | 'log' | 'realtime'>;
 const PUSH_PER_MINUTE = 20; // per user; beyond it the notification is still in the inbox, just not pushed again
 const RETENTION_DAYS = 90;
 
@@ -41,7 +40,7 @@ export const toView = (n: Row): NotificationView => ({
 
 export function createNotifications(deps: ServiceDeps, send?: PushSender) {
   const { db, redis, env, log } = deps;
-  const hub = createHub({ redis, prefix: env.CACHE_PREFIX, log });
+  const hub = deps.realtime; // live delivery to the recipient's open tabs (Socket.IO); the row is already stored
   const worker = createPushWorker(deps, send);
 
   async function pushAllowed(userId: string) {
@@ -193,6 +192,6 @@ export function createNotifications(deps: ServiceDeps, send?: PushSender) {
   }
   const unsubscribe = (userId: string, endpoint: string) => db.pushSubscription.deleteMany({ where: { userId, endpoint } });
 
-  return { hub, worker, notify, notifyMany, notifyPermission, usersWithPermission, list, unreadCount, markRead, markAllRead, remove, clear, preferences, setPreferences, subscribe, unsubscribe };
+  return { worker, notify, notifyMany, notifyPermission, usersWithPermission, list, unreadCount, markRead, markAllRead, remove, clear, preferences, setPreferences, subscribe, unsubscribe };
 }
 export type Notifications = ReturnType<typeof createNotifications>;

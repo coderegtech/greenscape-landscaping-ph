@@ -130,6 +130,7 @@ export function userRoutes(deps: Deps) {
         throw new AppError(502, 'IDENTITY_UPDATE_FAILED', 'The account status was saved, but sign-in could not be blocked at the identity provider yet. Please try again.');
       }
     }
+    await events.emit('user.access_changed', { userId: id });
     const { authUserId: _omit, ...summary } = updated;
     res.json(toSummary(summary));
   });
@@ -150,6 +151,7 @@ export function userRoutes(deps: Deps) {
       await audit(tx, req, res, { action: 'user.sessions.revoke', entityType: 'User', entityId: id, after: { sessionsValidAfter: at.toISOString() } });
     });
     logSecurity(deps, req, res, 'security.sessions_revoked', { target: id });
+    await events.emit('user.access_changed', { userId: id });
     res.status(204).end();
   });
 

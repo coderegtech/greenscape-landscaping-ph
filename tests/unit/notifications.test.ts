@@ -2,7 +2,6 @@ import { BroadcastBody, Href, NotificationListQuery, PreferenceUpdate, PushSubsc
 import { describe, expect, it, vi } from 'vitest';
 import { createEventBus } from '../../apps/api/src/lib/events.ts';
 import { backoffMs, classifyPushError, decodeCursor, effectivePreference, encodeCursor, pushOptions } from '../../apps/api/src/modules/notifications/logic.ts';
-import { createHub } from '../../apps/api/src/modules/notifications/hub.ts';
 
 describe('retry backoff', () => {
   it('doubles from 30 s and caps at one hour', () => {
@@ -85,27 +84,3 @@ describe('event bus', () => {
   });
 });
 
-describe('live hub (single instance, no Redis)', () => {
-  const hub = createHub({ redis: { status: 'end' } as never, prefix: 't', log: { warn: vi.fn() } as never });
-  const e = (userId: string) => ({ userId, app: 'web' as const, event: 'created', data: {} });
-  it('delivers only to the recipient and stops after unsubscribe', () => {
-    const a = vi.fn(), b = vi.fn();
-    const offA = hub.subscribe('alice', a);
-    hub.subscribe('bob', b);
-    hub.publish(e('alice'));
-    expect(a).toHaveBeenCalledOnce();
-    expect(b).not.toHaveBeenCalled();
-    offA();
-    hub.publish(e('alice'));
-    expect(a).toHaveBeenCalledOnce();
-    expect(hub.count('alice')).toBe(0);
-  });
-  it('serves several tabs of one user', () => {
-    const t1 = vi.fn(), t2 = vi.fn();
-    hub.subscribe('carol', t1);
-    hub.subscribe('carol', t2);
-    hub.publish(e('carol'));
-    expect([t1.mock.calls.length, t2.mock.calls.length]).toEqual([1, 1]);
-    expect(hub.count('carol')).toBe(2);
-  });
-});

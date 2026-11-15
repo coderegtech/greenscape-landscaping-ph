@@ -134,11 +134,12 @@ test.describe('admin console', () => {
     await page.getByRole('tab', { name: 'Settings' }).click();
     await expect(page.getByTestId('sound-settings').getByRole('combobox', { name: 'Sound' })).toHaveValue('wood');
 
-    // 8. After sign-out no notification stream is opened again.
+    // 8. After sign-out no live connection is opened again.
     const streams: string[] = [];
     await signOut(page);
     await expect(page).toHaveURL(`${ADMIN}/login`);
-    page.on('request', (r) => { if (r.url().includes('/notifications/stream')) streams.push(r.url()); });
+    page.on('websocket', (ws) => { if (ws.url().includes('/v1/realtime')) streams.push(ws.url()); });
+    page.on('request', (r) => { if (r.url().includes('/v1/realtime')) streams.push(r.url()); });
     await notify(boss, a, 'content_manager');
     await page.waitForTimeout(1500);
     expect(streams).toEqual([]);

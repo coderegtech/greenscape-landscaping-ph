@@ -104,41 +104,46 @@ export function authenticate(deps: Deps): RequestHandler {
     if (!header) return next();
     const [scheme, token] = header.split(' ');
     if (scheme?.toLowerCase() !== 'bearer' || !token) throw AppError.unauthorized('Malformed Authorization header');
-    let verified;
-    try {
-      verified = await deps.verifyToken(token);
-    } catch (err) {
-      if (err instanceof TokenError) throw new AppError(401, err.reason === 'expired' ? 'TOKEN_EXPIRED' : 'INVALID_TOKEN', `Access token ${err.reason}`);
-      throw err;
-    }
-    // Signed out: access tokens are verified locally, so a copy taken before sign-out would otherwise keep working
-    // until it expires. If Redis is unavailable this check is skipped (tokens still expire within the hour).
-    if (verified.sessionId && (await deps.redis.exists(endedSessionKey(deps.env.CACHE_PREFIX, verified.sessionId)).catch(() => 0))) {
-      throw new AppError(401, 'SESSION_ENDED', 'You signed out. Please sign in again.');
-    }
-    const user = await resolveUser(deps, verified.authUserId, verified.email, verified.name, verified.avatarUrl);
-    if (user.status !== 'ACTIVE') throw new AppError(403, 'ACCOUNT_SUSPENDED', 'This account is suspended');
-    // "Sign out everywhere": a session that signed in before the cut-off is refused. The sign-in time comes from the
-    // token's amr timestamps, which survive refreshes. Its still-valid token is used once to end every session of
-    // the user at Supabase, so no device can refresh its way back in.
-    if (user.sessionsValidAfter && verified.authTime * 1000 < user.sessionsValidAfter.getTime()) {
-      await deps.identities.signOutEverywhere(token).catch((err) => deps.log.warn({ err: (err as Error).message }, 'identity.sign_out_failed'));
-      throw new AppError(401, 'SESSION_REVOKED', 'You were signed out. Please sign in again.');
-    }
-    const grants = await loadGrants(deps, user.id);
-    // Deny by default: withheld permissions are simply absent, so every check refuses them.
-    // Employee and staff access needs a password sign-in (never Google) with a password the person chose.
-    const internal = grants.permissions.some((p) => !CUSTOMER_PERMISSIONS.has(p));
-    const passwordSignInRequired = internal && !verified.methods.includes('password');
-    const passwordChangeRequired = user.mustChangePassword;
-    const customerOnly = passwordSignInRequired || passwordChangeRequired;
-    // Optional: until the session is aal2, staff (non-self-service) permissions are absent too.
-    const mfaPending = !customerOnly && deps.env.REQUIRE_STAFF_MFA && verified.aal !== 'aal2' && grants.permissions.some((p) => !SELF_SERVICE_PERMISSIONS.has(p));
-    const keep = customerOnly ? CUSTOMER_PERMISSIONS : mfaPending ? SELF_SERVICE_PERMISSIONS : null;
-    const permissions = new Set(keep ? grants.permissions.filter((p) => keep.has(p)) : grants.permissions);
-    res.locals.auth = { userId: user.id, authUserId: verified.authUserId, email: verified.email, aal: verified.aal, roles: grants.roles, permissions, mfaPending, passwordSignInRequired, passwordChangeRequired, sessionId: verified.sessionId, expiresAt: verified.expiresAt };
+    res.locals.auth = await resolveAuth(deps, token);
     next();
   };
+}
+
+/** Verifies a Supabase access token and loads the account's current status and permissions (REST and the realtime socket). */
+export async function resolveAuth(deps: Deps, token: string): Promise<AuthContext> {
+  let verified;
+  try {
+    verified = await deps.verifyToken(token);
+  } catch (err) {
+    if (err instanceof TokenError) throw new AppError(401, err.reason === 'expired' ? 'TOKEN_EXPIRED' : 'INVALID_TOKEN', `Access token ${err.reason}`);
+    throw err;
+  }
+  // Signed out: access tokens are verified locally, so a copy taken before sign-out would otherwise keep working
+  // until it expires. If Redis is unavailable this check is skipped (tokens still expire within the hour).
+  if (verified.sessionId && (await deps.redis.exists(endedSessionKey(deps.env.CACHE_PREFIX, verified.sessionId)).catch(() => 0))) {
+    throw new AppError(401, 'SESSION_ENDED', 'You signed out. Please sign in again.');
+  }
+  const user = await resolveUser(deps, verified.authUserId, verified.email, verified.name, verified.avatarUrl);
+  if (user.status !== 'ACTIVE') throw new AppError(403, 'ACCOUNT_SUSPENDED', 'This account is suspended');
+  // "Sign out everywhere": a session that signed in before the cut-off is refused. The sign-in time comes from the
+  // token's amr timestamps, which survive refreshes. Its still-valid token is used once to end every session of
+  // the user at Supabase, so no device can refresh its way back in.
+  if (user.sessionsValidAfter && verified.authTime * 1000 < user.sessionsValidAfter.getTime()) {
+    await deps.identities.signOutEverywhere(token).catch((err) => deps.log.warn({ err: (err as Error).message }, 'identity.sign_out_failed'));
+    throw new AppError(401, 'SESSION_REVOKED', 'You were signed out. Please sign in again.');
+  }
+  const grants = await loadGrants(deps, user.id);
+  // Deny by default: withheld permissions are simply absent, so every check refuses them.
+  // Employee and staff access needs a password sign-in (never Google) with a password the person chose.
+  const internal = grants.permissions.some((p) => !CUSTOMER_PERMISSIONS.has(p));
+  const passwordSignInRequired = internal && !verified.methods.includes('password');
+  const passwordChangeRequired = user.mustChangePassword;
+  const customerOnly = passwordSignInRequired || passwordChangeRequired;
+  // Optional: until the session is aal2, staff (non-self-service) permissions are absent too.
+  const mfaPending = !customerOnly && deps.env.REQUIRE_STAFF_MFA && verified.aal !== 'aal2' && grants.permissions.some((p) => !SELF_SERVICE_PERMISSIONS.has(p));
+  const keep = customerOnly ? CUSTOMER_PERMISSIONS : mfaPending ? SELF_SERVICE_PERMISSIONS : null;
+  const permissions = new Set(keep ? grants.permissions.filter((p) => keep.has(p)) : grants.permissions);
+  return { userId: user.id, authUserId: verified.authUserId, email: verified.email, aal: verified.aal, roles: grants.roles, permissions, mfaPending, passwordSignInRequired, passwordChangeRequired, sessionId: verified.sessionId, expiresAt: verified.expiresAt };
 }
 
 export function currentAuth(res: Response): AuthContext {

@@ -2,7 +2,7 @@ import { createRequire } from 'node:module';
 import type { AddressInfo } from 'node:net';
 import type { Server } from 'node:http';
 import request from 'supertest';
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createApp } from '../../apps/api/src/app.ts';
 import { closeDeps, type Deps } from '../../apps/api/src/lib/deps.ts';
 import { MAX_PUSH_ATTEMPTS } from '../../apps/api/src/modules/notifications/logic.ts';
@@ -10,6 +10,7 @@ import { createNotifications, type Notifications } from '../../apps/api/src/modu
 import type { PushSender } from '../../apps/api/src/modules/notifications/push.ts';
 import { testDeps } from './helpers.ts';
 import { deleteAuthUsers, signedInUser } from './supabase.ts';
+import { openSocket, refusal } from './realtime-client.ts';
 
 const tag = `nt${Date.now()}`;
 const as = (t: string) => ({ Authorization: `Bearer ${t}` });
@@ -35,37 +36,8 @@ async function makeUser(label: string, roles: string[] = []) {
   return { token: u.token, id: user.id };
 }
 
-/** A real open event stream, the way the browser holds one (fetch with a Bearer token). */
-async function openStream(token: string, appName = 'web') {
-  const ctrl = new AbortController();
-  const res = await fetch(`${base}/v1/notifications/stream?app=${appName}`, { headers: as(token), signal: ctrl.signal });
-  expect(res.status).toBe(200);
-  const events: { event: string; data: Record<string, any> }[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
-  const reader = res.body!.getReader();
-  const dec = new TextDecoder();
-  let buf = '';
-  void (async () => {
-    try {
-      for (;;) {
-        const { value, done } = await reader.read();
-        if (done) return;
-        buf += dec.decode(value, { stream: true });
-        for (let i = buf.indexOf('\n\n'); i >= 0; i = buf.indexOf('\n\n')) {
-          const block = buf.slice(0, i);
-          buf = buf.slice(i + 2);
-          const ev = /^event: (.+)$/m.exec(block)?.[1];
-          const data = /^data: (.+)$/m.exec(block)?.[1];
-          if (ev && data) events.push({ event: ev, data: JSON.parse(data) });
-        }
-      }
-    } catch { /* aborted */ }
-  })();
-  return {
-    events,
-    waitFor: (event: string, n = 1) => vi.waitFor(() => { const m = events.filter((e) => e.event === event); expect(m.length).toBeGreaterThanOrEqual(n); return m; }, { timeout: 5000, interval: 25 }),
-    close: () => ctrl.abort(),
-  };
-}
+/** A real Socket.IO connection, the way the portals hold one. */
+const openStream = (token: string, appName = 'web') => openSocket(base, token, appName);
 
 const base0 = { app: 'web' as const, type: 'test.event', category: 'orders' as const, title: 'Hello', message: 'World', href: '/orders' };
 const list = (token: string, qs = 'app=web') => request(app).get(`/v1/notifications?${qs}`).set(as(token));
@@ -74,6 +46,7 @@ beforeAll(async () => {
   deps = await testDeps({ REVALIDATE_SECRET: '', FORM_RATE_LIMIT_PER_HOUR: '1000', VAPID_PUBLIC_KEY: vapid.publicKey, VAPID_PRIVATE_KEY: vapid.privateKey });
   app = createApp(deps);
   server = app.listen(0);
+  deps.realtime.attach(server);
   base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   users.alice = await makeUser('alice');
   users.bob = await makeUser('bob');
@@ -102,7 +75,7 @@ describe('inbox API', () => {
 
   it('requires a signed-in user and an app', async () => {
     await request(app).get('/v1/notifications?app=web').expect(401);
-    await request(app).get('/v1/notifications/stream?app=web').expect(401);
+    expect(await refusal(openSocket(base, undefined, 'web'))).toBe('UNAUTHORIZED');
     await list(users.alice!.token, '').expect(400);
   });
 
@@ -245,8 +218,7 @@ describe('live stream', () => {
   it('caps open connections per user', async () => {
     const u = users.shop!;
     const open = await Promise.all(Array.from({ length: 10 }, () => openStream(u.token, 'admin')));
-    const res = await fetch(`${base}/v1/notifications/stream?app=admin`, { headers: as(u.token) });
-    expect(res.status).toBe(429);
+    expect(await refusal(openStream(u.token, 'admin'))).toBe('TOO_MANY_STREAMS');
     open.forEach((s) => s.close());
   });
 });
