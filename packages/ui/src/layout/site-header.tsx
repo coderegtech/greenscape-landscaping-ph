@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Button } from '../components/button';
+import { Logo } from '../components/logo';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/dropdown-menu';
 import { cn } from '../lib/utils';
 
@@ -27,9 +28,8 @@ const isActive = (path: string, href: string) => (href === '/' ? path === '/' : 
 
 export function Wordmark({ className }: { className?: string }) {
   return (
-    <Link href="/" className={cn('flex flex-col leading-none text-ink no-underline', className)}>
-      <span className="font-display text-xl">Greenscape</span>
-      <span className="mt-[3px] text-xs font-medium text-ink-2">Landscaping services</span>
+    <Link href="/" className={cn('flex text-brand no-underline', className)}>
+      <Logo className="h-9 w-auto" />
     </Link>
   );
 }

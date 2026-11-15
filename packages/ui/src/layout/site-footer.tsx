@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { Logo } from '../components/logo';
 import { Reveal } from '../motion/reveal';
 import type { NavLink } from './site-header';
 
@@ -34,7 +35,7 @@ export function SiteFooter({ columns, contact, socials = [], legal, credits, dec
       <div className="container-page py-16 md:py-24">
         {/* Gentle fades, per group: one reveal on the whole footer would sit half-faded at load on short pages. */}
         <Reveal kind="fade">
-          <p className="font-display text-4xl text-ink md:text-display-s">Greenscape</p>
+          <Logo className="h-14 w-auto max-w-full text-ink md:h-20" />
           <p className="mt-3 max-w-[38ch] text-base text-muted">Green today, greener tomorrow. Garden design, landscaping and care across Palawan.</p>
         </Reveal>
         <div data-stagger="fade" className="mt-16 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 lg:grid-cols-[repeat(3,minmax(0,1fr))_minmax(0,1.4fr)]">
