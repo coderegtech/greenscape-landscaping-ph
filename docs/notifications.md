@@ -10,8 +10,8 @@ Real-time in-app notifications and Web Push, for the customer site (`apps/web`),
 | Express API, PostgreSQL (Prisma), Redis (already used for cache, rate limits, locks), Supabase JWT auth, RBAC by permission. Browsers already call the API directly with `Authorization: Bearer`. | Reuse all of it. **No new infrastructure.** One new dependency: `web-push` (VAPID + payload encryption; not worth hand-writing). |
 | Web only: no mobile or desktop app exists in the repo. | **Web Push (VAPID)** covers desktop browsers, Android, and iOS 16.4+ for a site added to the Home Screen. FCM, APNs and Expo are not used: there is no native client to register tokens. `PushSubscription.platform` is there so a native provider can be added later without a schema change. |
 
-### Why SSE and not WebSockets
-Notifications flow one way (server → browser); the browser's own actions are ordinary REST calls. Server-Sent Events over `fetch` give that over plain HTTP: the same Bearer-token auth as every other route, the same CORS, nothing new for proxies or the CDN to learn, no extra dependency, and automatic-style reconnection that we control. `EventSource` itself cannot send an `Authorization` header, so the client reads the stream with `fetch`.
+
+Notifications flow one way (server → browser); the browser's own actions are ordinary REST calls. They used to travel over a fetch-based Server-Sent Events stream; they now share the Socket.IO connection that also carries live dashboard signals, with the same Bearer-token verification and the same "re-fetch on every reconnect" recovery. See [`docs/realtime/README.md`](realtime/README.md).
 
 ## 2. Data flow
 
@@ -22,16 +22,16 @@ Notifications flow one way (server → browser); the browser's own actions are o
                                       │
                        service.notify():  preferences → INSERT (idempotent) ─► Postgres  (source of truth)
                                       │                         │
-                          hub.publish (Redis pub/sub)           └─► NotificationDelivery rows (push queue)
+                  realtime.publish (Socket.IO + Redis adapter)  └─► NotificationDelivery rows (push queue)
                                       │                                         │
-        every API instance ► its open SSE streams            push worker (lease + retry) ► push service ► device
+        every API instance ► its open sockets                push worker (lease + retry) ► push service ► device
                                       │                                                              │
                   browser: bell, toast, sound, list                                  service worker: system notification
 ```
 
 * **Events are emitted after the database transaction commits**, and an event handler that fails is logged and never fails the business action. (shortcut: in-process, not a transactional outbox. A crash between commit and emit loses that notification; the business data is safe.)
-* **Postgres is the truth, Redis is only the delivery wire.** A client that missed live events (restart, network drop, Redis outage) simply re-fetches: the stream sends a `ready` event on every (re)connect and open lists reload on it. Without Redis, live delivery still works for clients on the same API instance.
-* **Horizontal scaling:** every instance subscribes to one Redis channel (`<CACHE_PREFIX>:notif`) and forwards events to its own streams. The push queue is claimed with `FOR UPDATE SKIP LOCKED`, so several instances can run workers.
+* **Postgres is the truth, Redis is only the delivery wire.** A client that missed live events (restart, network drop, Redis outage) simply re-fetches: open lists reload on every (re)connect of the socket. Without Redis, live delivery still works for clients on the same API instance.
+* **Horizontal scaling:** the Socket.IO Redis adapter (`<CACHE_PREFIX>:sio`) carries events to every instance's sockets. The push queue is claimed with `FOR UPDATE SKIP LOCKED`, so several instances can run workers.
 
 ## 3. Database (migration `20261113090000_notifications`)
 
@@ -49,7 +49,7 @@ Notifications flow one way (server → browser); the browser's own actions are o
 | Method & path | |
 |---|---|
 | `GET /?app=&cursor=&limit=&unread=&category=` | Own notifications, newest first, cursor-paginated, plus `unreadCount`. |
-| `GET /stream?app=` | SSE: `ready`, `created`, `read`, `read_all`, `deleted`, `cleared`, `reconnect`; heartbeat every 25 s; closed after 30 min so the client reconnects with a fresh token; ≤ 10 streams per user per instance. |
+| Live delivery | Socket.IO at `/v1/realtime` (handshake `auth: { token, app }`), event `notification` with `created`, `read`, `read_all`, `deleted`, `cleared`; ≤ 10 sockets per user per instance. See `docs/realtime/README.md`. |
 | `POST /:id/read`, `POST /read-all?app=` | Mark read. |
 | `DELETE /:id`, `DELETE /?app=&readOnly=` | Delete one / clear. |
 | `GET` / `PUT /preferences` | Per-category settings. `account` (security) can never be hidden from the inbox. Push needs the inbox: it is switched off when in-app is off. |
@@ -57,7 +57,7 @@ Notifications flow one way (server → browser); the browser's own actions are o
 | `POST` / `DELETE /push/subscriptions` | Register / remove this device. |
 | `POST /broadcast` | Announcement. Needs `notifications.broadcast` (admin, super_admin). Audience = chosen roles, else all staff (`admin`) or all active accounts (`web`). Audited, rate-limited (20/hour/IP). |
 
-Authorization: every query includes `recipientId = <caller>`; someone else's id answers `404`, same as a missing one. The stream is scoped to the caller's own events. Role-based audiences are resolved by **permission**, never by role name.
+Authorization: every query includes `recipientId = <caller>`; someone else's id answers `404`, same as a missing one. The socket is scoped to the caller's own inbox room. Role-based audiences are resolved by **permission**, never by role name.
 
 ## 5. Push
 
@@ -122,16 +122,16 @@ Sign in on `http://localhost:3000`, then in another browser sign in as staff on 
 
 * Run `pnpm db:deploy` and `pnpm db:seed`, set the three `VAPID_*` variables on the API, redeploy API, web and admin.
 * Serve over HTTPS (service workers and push require it). Keep `worker-src 'self'` in both CSPs (already set).
-* If a proxy sits in front of the API, it must **not buffer** `text/event-stream` (the API sends `X-Accel-Buffering: no`) and its idle timeout must exceed 25 s.
+* If a proxy sits in front of the API, it must forward WebSocket upgrades on `/v1/realtime` and its idle timeout must exceed 25 s (the ping interval).
 * Several API instances need only the shared Redis they already use.
 * Changing the VAPID public key invalidates every existing subscription; devices re-subscribe the next time they open the site.
 * Monitoring: logs `push delivery failed`, `push subscription expired or revoked; removing`, `could not queue push deliveries`; failed rows are in `NotificationDelivery` (`status = FAILED`, `failureReason`).
 
 ## 10. Tests
 
-* `tests/unit/notifications.test.ts`, `notification-format.test.ts`: backoff, provider-response classification, preferences, cursor, contracts, event bus, hub, grouping and live-event application.
-* `tests/integration/notifications.test.ts` (real Postgres, Redis, Supabase auth): authorization and ownership, idempotency, pagination, preferences, live SSE delivery, multi-device sync, reconnect catch-up, connection cap, push registration/replacement, queueing, send-once, retry/backoff/give-up, expired-subscription removal, lease recovery, throttle, purge, business events end to end, announcements.
-* `tests/e2e/notifications.spec.ts` (Playwright): a customer message reaches a signed-in admin live; read state syncs across tabs; the stream is cut and recovers; users never see each other's notifications; blocked alerts; preferences persist; accessibility scan.
+* `tests/unit/notifications.test.ts`, `notification-format.test.ts`: backoff, provider-response classification, preferences, cursor, contracts, event bus, grouping (rooms: `realtime.test.ts`) and live-event application.
+* `tests/integration/notifications.test.ts` (real Postgres, Redis, Supabase auth): authorization and ownership, idempotency, pagination, preferences, live socket delivery, multi-device sync, reconnect catch-up, connection cap, push registration/replacement, queueing, send-once, retry/backoff/give-up, expired-subscription removal, lease recovery, throttle, purge, business events end to end, announcements.
+* `tests/e2e/notifications.spec.ts` (Playwright): a customer message reaches a signed-in admin live; read state syncs across tabs; the socket is cut and recovers; users never see each other's notifications; blocked alerts; preferences persist; accessibility scan.
   Base URLs can be overridden with `E2E_WEB` / `E2E_ADMIN` when other servers hold the default ports.
 * Push providers are replaced by an injected sender in tests (`createNotifications(deps, send)`); production always uses `web-push`.
 

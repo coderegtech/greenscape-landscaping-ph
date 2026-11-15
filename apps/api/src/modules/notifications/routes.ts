@@ -10,14 +10,10 @@ import { currentAuth, requireAuth, requirePermission } from '../../middleware/au
 import { formLimit } from '../../middleware/form-limit.ts';
 
 const Id = z.object({ id: z.string().uuid() });
-const MAX_STREAMS_PER_USER = 10; // tabs and devices; protects the process from a runaway client
-const STREAM_MAX_MS = 30 * 60_000; // closed on purpose so the client reconnects with a fresh access token
-const HEARTBEAT_MS = 25_000; // keeps proxies from idling the connection out
 
 const api = (method: 'get' | 'post' | 'put' | 'delete', path: string, summary: string, extra: { body?: z.ZodType; query?: z.ZodType; schema?: z.ZodType } = {}) =>
   registry.registerPath({ method, path: `/v1/notifications${path}`, tags: ['notifications'], auth: true, summary, body: extra.body, query: extra.query, responses: { 200: { description: 'ok', schema: extra.schema } } });
 api('get', '', 'Your notifications for one app (`web` or `admin`), newest first, cursor-paginated, with the unread count.', { query: NotificationListQuery, schema: NotificationPage });
-api('get', '/stream', 'Server-sent events: `ready`, `created`, `read`, `read_all`, `deleted`, `cleared`, `reconnect`. Send the Bearer token with fetch (EventSource cannot).', { query: AppQuery });
 api('post', '/{id}/read', 'Mark one notification read (own only).');
 api('post', '/read-all', 'Mark all read for an app.', { query: AppQuery });
 api('delete', '/{id}', 'Delete one notification (own only).');
@@ -38,20 +34,6 @@ export function notificationRoutes(deps: Deps) {
   r.get('/', async (req, res) => {
     const q = NotificationListQuery.parse(req.query);
     res.set('cache-control', 'no-store').json(NotificationPage.parse(await n.list(uid(res), q)));
-  });
-
-  r.get('/stream', (req, res) => {
-    const { app } = AppQuery.parse(req.query);
-    const userId = uid(res);
-    if (n.hub.count(userId) >= MAX_STREAMS_PER_USER) throw new AppError(429, 'TOO_MANY_STREAMS', 'Too many open connections for this account');
-    res.writeHead(200, { 'content-type': 'text/event-stream; charset=utf-8', 'cache-control': 'no-cache, no-transform', connection: 'keep-alive', 'x-accel-buffering': 'no' });
-    const send = (event: string, data: unknown = {}) => res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
-    res.write('retry: 3000\n\n');
-    const off = n.hub.subscribe(userId, (e) => { if (e.app === app) send(e.event, e.data); });
-    send('ready', { at: new Date().toISOString() }); // the client re-fetches on every `ready`: that is how missed events are recovered
-    const beat = setInterval(() => res.write(': ping\n\n'), HEARTBEAT_MS);
-    const cap = setTimeout(() => { send('reconnect'); res.end(); }, STREAM_MAX_MS);
-    req.on('close', () => { clearInterval(beat); clearTimeout(cap); off(); });
   });
 
   r.post('/read-all', async (req, res) => {

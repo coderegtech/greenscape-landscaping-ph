@@ -97,7 +97,7 @@ export async function completeMfa(page: import('@playwright/test').Page, userEma
 }
 
 /**
- * React has hydrated the page (event handlers attached). Signed-in pages keep a live notifications stream open, so
+ * React has hydrated the page (event handlers attached). Signed-in pages keep a live socket open, so
  * waitForLoadState('networkidle') never settles there.
  */
 export async function hydrated(page: import('@playwright/test').Page) {

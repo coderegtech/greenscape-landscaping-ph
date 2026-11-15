@@ -24,7 +24,7 @@ export const contentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline'", // next/image and Radix set style attributes
   `img-src 'self' data: blob: https://i.ytimg.com ${supabase}`.trim(),
   "font-src 'self'",
-  `connect-src 'self' ${api} ${supabase}`.trim(),
+  `connect-src 'self' ${api} ${api.replace(/^http/, 'ws')} ${supabase}`.trim(), // ws(s): the realtime socket
   'frame-src https://www.youtube-nocookie.com https://www.google.com',
   "media-src 'self'",
   "worker-src 'self'",

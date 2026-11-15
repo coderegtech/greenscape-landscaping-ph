@@ -56,6 +56,7 @@ export function attendanceSelfRoutes(deps: Deps) {
     // With selfies off, a photo sent anyway is not kept (nothing is collected that the notice does not mention).
     const photo = mode !== 'off' && photoId ? await verifyUpload(deps, photoId, currentAuth(res).userId, PHOTO_TYPES, 'selfie') : null;
     await punch(deps, e.id, type, req.ip, new Date(), photo?.id);
+    await deps.events.emit('attendance.changed', { employeeId: e.id, kind: type === 'IN' ? 'clocked_in' : 'clocked_out' });
     res.status(201).json(await today(deps, e.id));
   });
   r.get('/me/attendance', requirePermission('attendance.self'), async (req, res) => {

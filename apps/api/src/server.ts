@@ -19,6 +19,7 @@ const attendanceJobs = startAttendanceJobs(deps);
 const assistantJobs = startAssistantJobs(deps);
 const pushJobs = deps.notifications.worker.start();
 const server = createApp(deps).listen(env.API_PORT, () => log.info({ port: env.API_PORT }, 'api listening'));
+deps.realtime.attach(server); // Socket.IO shares the API's port and HTTP server
 
 let closing = false;
 async function shutdown(signal: string) {
@@ -30,7 +31,7 @@ async function shutdown(signal: string) {
   attendanceJobs.stop();
   assistantJobs.stop();
   pushJobs.stop();
-  server.close();
+  server.close(); // closeDeps also closes the open sockets
   await closeDeps(deps);
   process.exit(0);
 }

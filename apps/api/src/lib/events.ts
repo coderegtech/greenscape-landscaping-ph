@@ -28,6 +28,14 @@ export interface AppEvents {
   /** A day was closed without a clock-out: the employee should ask for a correction. */
   'attendance.incomplete': { recordId: string };
   'testimonial.submitted': { testimonialId: string; rating: number };
+  /** A punch was recorded or an admin changed attendance. kind: clocked_in | clocked_out | edited | approved. */
+  'attendance.changed': { employeeId?: string; kind: string };
+  'employee.updated': { employeeId: string };
+  /** Status changed or sessions revoked (userId), or one session signed out (sessionId): open sockets must re-check. */
+  'user.access_changed': { userId?: string; sessionId?: string };
+  'order.created': { orderId: string };
+  'catalog.changed': { what: 'products' | 'inventory'; id?: string };
+  'cms.published': { type: string; slug: string };
 }
 export type EventName = keyof AppEvents;
 type Handler<K extends EventName> = (payload: AppEvents[K]) => unknown;

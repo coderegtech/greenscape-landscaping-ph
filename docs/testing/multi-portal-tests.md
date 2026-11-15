@@ -56,7 +56,7 @@ per operating system (`-win32`, `-linux` in the file name). After an intended de
 
 ## Writing e2e tests here
 
-- Signed-in pages keep a live notifications stream open, so `waitForLoadState('networkidle')` never settles on them; use
+- Signed-in pages keep a live socket open, so `waitForLoadState('networkidle')` never settles on them; use
   `hydrated(page)` from `tests/e2e/helpers.ts` to wait until React has attached its handlers.
 - Production builds keep hidden copies of recently visited routes; `getByLabel` also matches hidden inputs, so add
   `.filter({ visible: true })` where a page may be in that state (role queries already skip hidden elements).

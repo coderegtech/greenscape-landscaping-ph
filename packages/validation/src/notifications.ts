@@ -76,3 +76,28 @@ export const BroadcastBody = z.object({
   roles: z.array(z.string().max(40)).max(10).optional(),
 });
 export type BroadcastBody = z.infer<typeof BroadcastBody>;
+
+// ── Realtime (Socket.IO) contract. The channel is server → client only: clients never send events on it. ──
+export const REALTIME_PATH = '/v1/realtime';
+/** What changed. Admin sockets get a topic when they hold its read permission; employees get their own changes. */
+export const LIVE_TOPICS = ['attendance', 'corrections', 'leave', 'schedule', 'employees', 'users', 'orders', 'inventory', 'products', 'quotations', 'messages', 'cms'] as const;
+export type LiveTopic = (typeof LIVE_TOPICS)[number];
+/** A small "this changed" signal: ids only, never names or record data. Pages re-fetch through the authorized API. */
+export interface LiveSignal {
+  v: 1;
+  /** Unique per signal: lets a client drop a repeat. */
+  id: string;
+  topic: LiveTopic;
+  /** e.g. clocked_in, clocked_out, requested, decided, paid. */
+  kind: string;
+  /** The changed record's id, when there is one. */
+  ref?: string;
+  at: string;
+}
+export interface RealtimeServerEvents {
+  /** The inbox events the notification centre handles: created | read | read_all | deleted | cleared. */
+  notification: (e: { event: string; data: unknown }) => void;
+  live: (s: LiveSignal) => void;
+}
+/** Connection refusals the client must not retry with the same session (sign in again instead). */
+export const REALTIME_FATAL = ['UNAUTHORIZED', 'INVALID_TOKEN', 'SESSION_ENDED', 'SESSION_REVOKED', 'ACCOUNT_SUSPENDED', 'FORBIDDEN', 'BAD_REQUEST'] as const;

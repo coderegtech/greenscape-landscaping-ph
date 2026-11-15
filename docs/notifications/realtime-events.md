@@ -1,6 +1,6 @@
 # Real-time events
 
-Transport, reconnection and the stream's event names (`ready`, `created`, `read`, `read_all`, `deleted`, `cleared`) are unchanged: see [`docs/notifications.md` §2 and §4](../notifications.md).
+Transport is Socket.IO since the realtime work ([`docs/realtime/README.md`](../realtime/README.md)); the inbox event names (`created`, `read`, `read_all`, `deleted`, `cleared`) are unchanged and arrive as the `notification` socket event. Live dashboard signals (`live`) are listed there too.
 
 ## New triggers
 
@@ -21,7 +21,7 @@ Every event is emitted **after** the database write commits, and each notificati
 
 `provider.tsx`, on a `created` event:
 
-1. The stream is the signed-in person's own (the API filters by recipient); the browser does not trust anything else.
+1. The socket's inbox room is the signed-in person's own (the API filters by recipient); the browser does not trust anything else.
 2. The notification id must be a UUID. Anything malformed is dropped.
 3. The id must not have been seen in this tab. A repeated delivery (reconnect, a second instance) changes nothing: no count, no toast, no sound.
 4. Unread count +1, toast if the tab is visible, then a sound if allowed ([sound-effects.md](sound-effects.md)).
@@ -30,7 +30,7 @@ The initial history (first page of the inbox, and every reload after a reconnect
 
 ## Logout
 
-Signing out posts to `/auth/signout`, which ends the Supabase session on the server and redirects to the login page. That page has no session cookie, so the provider never opens a stream there. Tokens issued before the sign-out are refused by the API (`SESSION_ENDED`), so an old stream cannot be reopened. The admin e2e test checks no stream request is made after sign-out.
+Signing out posts to `/auth/signout`, which ends the Supabase session on the server and redirects to the login page. That page has no session cookie, so the provider never opens a socket there. The API also closes that session's sockets on `/v1/auth/logout`, and tokens issued before the sign-out are refused (`SESSION_ENDED`), so an old socket cannot be reopened. The admin e2e test checks no realtime connection is made after sign-out.
 
 ## Tests
 

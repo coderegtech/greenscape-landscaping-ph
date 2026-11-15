@@ -22,7 +22,7 @@ export function contentSecurityPolicy(nonce: string, dev = process.env.NODE_ENV 
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self'",
-    `connect-src 'self' ${api} ${supabase}`.trim(),
+    `connect-src 'self' ${api} ${api.replace(/^http/, 'ws')} ${supabase}`.trim(), // ws(s): the realtime socket (older Safari does not map https → wss)
     "frame-src 'none'",
     "object-src 'none'",
     "base-uri 'self'",

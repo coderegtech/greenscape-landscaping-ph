@@ -3,6 +3,8 @@ import { AdminShell } from '@greenscape/ui/layout/admin-shell';
 import { NotificationBell } from '@greenscape/ui/notifications/bell';
 import { NotificationsProvider } from '@greenscape/ui/notifications/provider';
 import { SoundToggle } from '@greenscape/ui/notifications/sound';
+import { LiveStatus } from '@greenscape/ui/notifications/live';
+import { ConsoleLive } from '@/components/console-live';
 import Link from 'next/link';
 import { navFor } from '@/lib/nav';
 import { withIcons } from '@/lib/nav-icons';
@@ -38,6 +40,7 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
         user={{ name: me.user.displayName || me.user.email, email: me.user.email, roles: me.roles }}
         actions={
           <>
+            <LiveStatus />
             <SoundToggle />
             <NotificationBell centerHref="/notifications" />
           </>
@@ -52,6 +55,7 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
           </>
         }
       >
+        <ConsoleLive />
         {children}
       </AdminShell>
     </NotificationsProvider>

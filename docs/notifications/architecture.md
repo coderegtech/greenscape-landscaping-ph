@@ -1,6 +1,6 @@
 # Notifications: architecture (2026-11 portal redesign)
 
-The notification system already existed before the redesign and is described in full in [`docs/notifications.md`](../notifications.md): PostgreSQL stores every notification, Redis pub/sub fans live events out across API instances, and browsers receive them over an authenticated Server-Sent Events stream. **The redesign reused all of it: no new infrastructure, no new dependency.**
+The notification system already existed before the redesign and is described in full in [`docs/notifications.md`](../notifications.md): PostgreSQL stores every notification, Socket.IO with the Redis adapter fans live events out across API instances to authenticated browser sockets (it replaced the original Server-Sent Events stream; see `docs/realtime/README.md`). **The redesign reused all of it: no new infrastructure, no new dependency.**
 
 This folder covers what the redesign added on top:
 
@@ -16,11 +16,11 @@ This folder covers what the redesign added on top:
 API (Express)                                   Browser (admin :3001, employee :3002)
 ──────────────                                  ─────────────────────────────────────
 business action ─► events.emit()                NotificationsProvider (one per portal)
-     handlers.ts: audience by permission          │  fetch-based SSE reader, reconnect + backoff
+     handlers.ts: audience by permission          │  Socket.IO client, reconnect + backoff
      or by user id, wording, link                 │  'created' → validate id → dedupe → unread +1
 service.notify(): preferences → INSERT ──► PG     │           → toast → sound-manager.play()
-     hub.publish ──► Redis ──► every instance     │  'read' / 'read_all' / … → lists update
-          └─► SSE stream of the recipient only ───┘
+     realtime.publish ─► Redis adapter ─► sockets │  'read' / 'read_all' / … → lists update
+          └─► inbox room of the recipient only ───┘
 ```
 
 | File | Role |
@@ -40,12 +40,12 @@ The brief suggested `NotificationBell.tsx`, `NotificationSoundProvider.tsx` and 
 | NotificationToast | Sonner toast raised in `provider.tsx` |
 | NotificationSoundProvider | `provider.tsx` + `sound-manager.ts` (no React context needed: settings are read when a sound is due) |
 | NotificationSettings | `center.tsx` (Settings tab) + `sound.tsx` |
-| notification-client.ts | `provider.tsx` (`call`, the stream reader) |
+| notification-client.ts | `provider.tsx` (`call`, the socket) |
 | notification-types.ts | `@greenscape/validation` (`NotificationView`, categories) and `format.ts` (`StreamEvent`) |
 
 ## Security
 
-* Every query and the stream are scoped to the caller (`recipientId = <caller>`); another person's id answers 404. Tested in `tests/integration/notifications.test.ts` and `portal-redesign.test.ts`.
+* Every query and the socket room are scoped to the caller (`recipientId = <caller>`); another person's id answers 404. Tested in `tests/integration/notifications.test.ts` and `portal-redesign.test.ts`.
 * Staff audiences are resolved by **permission**, never role name. Employee notices go to one user id, in the `employee` app only.
 * No personal data in broadcasts: the new review notice carries only the star rating; schedule notices only the schedule's name.
 * Push previews (`sw.ts`) show title and message only, which the handlers keep free of confidential detail.
