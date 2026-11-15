@@ -17,8 +17,9 @@ self.addEventListener('push', (event) => {
   try { d = event.data ? event.data.json() : {}; } catch { d = { body: event.data ? event.data.text() : '' }; }
   event.waitUntil((async () => {
     // A tab the person is looking at already shows this in the app (live stream + toast): no second, system-level copy.
+    // Except the test alert, which is sent from a focused tab precisely to see the system notification.
     const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-    if (wins.some((w) => w.visibilityState === 'visible' && w.focused)) return;
+    if (d.type !== 'push.test' && wins.some((w) => w.visibilityState === 'visible' && w.focused)) return;
     await self.registration.showNotification(d.title || 'Greenscape', {
       body: d.body || '',
       icon: ${JSON.stringify(icon)},

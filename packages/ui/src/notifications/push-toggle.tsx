@@ -1,5 +1,5 @@
 'use client';
-import { BellRing } from 'lucide-react';
+import { BellRing, Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '../components/button';
 import type { PushState } from './push';
@@ -22,6 +22,7 @@ export function PushToggle({ compact = false }: { compact?: boolean }) {
   const [state, setState] = useState<PushState | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [sent, setSent] = useState('');
   useEffect(() => {
     if (signedIn) void import('./push').then((m) => m.pushState(call)).then(setState).catch(() => setState('unsupported'));
   }, [signedIn, call]);
@@ -39,6 +40,19 @@ export function PushToggle({ compact = false }: { compact?: boolean }) {
       setBusy(false);
     }
   };
+  const test = async () => {
+    setBusy(true);
+    setError('');
+    setSent('');
+    try {
+      const { devices } = await (await import('./push')).testPush(call, app);
+      setSent(`Sent to ${devices} device${devices === 1 ? '' : 's'}. It can take a few seconds to appear.`);
+    } catch (e) {
+      setError((e as Error).message || 'Could not send a test alert. Try again.');
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
     <div className={compact ? 'border-t border-rule px-3 py-2' : 'flex flex-col gap-2'}>
       <p className="text-sm text-ink-2" id="push-why">{WHY[state]}</p>
@@ -47,6 +61,12 @@ export function PushToggle({ compact = false }: { compact?: boolean }) {
           <BellRing /> {state === 'on' ? 'Turn off on this device' : 'Turn on alerts'}
         </Button>
       )}
+      {state === 'on' && !compact && (
+        <Button variant="secondary" size="sm" className="self-start" loading={busy} onClick={test}>
+          <Send /> Send a test alert
+        </Button>
+      )}
+      {sent && <p role="status" className="text-sm text-ink-2">{sent}</p>}
       {error && <p role="alert" className="text-sm text-danger">{error}</p>}
     </div>
   );
