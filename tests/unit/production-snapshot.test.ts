@@ -25,7 +25,7 @@ describe('production snapshot manifest', () => {
   it('selects what a build needs and nothing else', () => {
     const allowed = matcher(manifest);
     for (const f of ['pnpm-lock.yaml', 'apps/api/src/server.ts', 'packages/database/prisma/migrations/20261109121123_init/migration.sql', 'apps/web/Dockerfile', 'docker/compose.prod.yml', '.env.example', 'apps/web/postcss.config.mjs']) expect(allowed(f), f).toBe(true);
-    for (const f of ['.env', 'apps/web/.env.local', 'apps/web/node_modules/x/index.js', 'apps/web/.next/server.js', 'tests/e2e/auth.spec.ts', 'docs/audit/report.md', '.github/workflows/ci.yml', 'docker/compose.dev.yml', 'supabase/signing_keys.json', 'packages/ui/src/button.test.tsx', 'apps/web/app/design/page.tsx']) expect(allowed(f), f).toBe(false);
+    for (const f of ['.env', 'apps/web/.env.local', 'apps/web/node_modules/x/index.js', 'apps/web/.next/server.js', 'tests/e2e/auth.spec.ts', 'docs/audit/report.md', '.github/workflows/ci.yml', 'docker/compose.dev.yml', 'supabase/signing_keys.json', 'packages/ui/src/button.test.tsx', 'apps/web/app/design/page.tsx', 'apps/admin/AGENTS.md', 'CLAUDE.md']) expect(allowed(f), f).toBe(false);
   });
 
   it('reports secrets, stray files and missing required paths', () => {
