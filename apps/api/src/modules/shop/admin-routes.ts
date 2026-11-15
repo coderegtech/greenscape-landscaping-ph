@@ -32,7 +32,9 @@ for (const [m, p, s] of [
   ['post', '/v1/shop-admin/orders/{id}/cancel', 'Cancel an unpaid order (orders.manage)'],
   ['post', '/v1/shop-admin/orders/{id}/refund', 'Refund a paid order (payments.refund)'],
   ['get', '/v1/shop-admin/zones', 'Delivery zones (settings.read)'],
-  ['put', '/v1/shop-admin/zones/{id}', 'Update a zone fee/status (settings.manage)'],
+  ['post', '/v1/shop-admin/zones', 'Add a delivery area (settings.manage)'],
+  ['put', '/v1/shop-admin/zones/{id}', 'Update a zone name/fee/status (settings.manage)'],
+  ['delete', '/v1/shop-admin/zones/{id}', 'Remove a delivery area (settings.manage)'],
 ] as const) registry.registerPath({ method: m, path: p, tags: ['shop-admin'], auth: true, summary: s, responses: { 200: { description: 'ok' } } });
 
 const Id = z.string().uuid();
@@ -316,19 +318,42 @@ export function shopAdminRoutes(deps: Deps) {
   });
 
   // ── delivery zones ──
+  const zoneView = (z: { id: string; name: string; province: string; fee: Prisma.Decimal | null; isActive: boolean; sortOrder: number }) => ({ id: z.id, name: z.name, province: z.province, fee: z.fee ? money(z.fee) : null, isActive: z.isActive, sortOrder: z.sortOrder });
+  const zoneConflict = (err: unknown) => {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') throw new AppError(409, 'CONFLICT', 'That area already exists', [{ path: 'name', message: 'Already used' }]);
+    throw err;
+  };
+  const zoneNeedsFee = (z: { isActive: boolean; fee?: string | null }) => {
+    if (z.isActive && !z.fee) throw new AppError(400, 'VALIDATION_ERROR', 'Some fields need attention', [{ path: 'fee', message: 'Set a fee before offering delivery here' }]);
+  };
   r.get('/zones', requirePermission('settings.read'), async (_req, res) => {
-    const zones = await db.deliveryZone.findMany({ orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }] });
-    res.json(zones.map((z) => ({ id: z.id, name: z.name, province: z.province, fee: z.fee ? money(z.fee) : null, isActive: z.isActive, sortOrder: z.sortOrder })));
+    res.json((await db.deliveryZone.findMany({ orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }] })).map(zoneView));
+  });
+  r.post('/zones', requirePermission('settings.manage'), async (req, res) => {
+    const z2 = ZoneInput.parse(req.body);
+    zoneNeedsFee(z2);
+    const created = await db.deliveryZone.create({ data: { name: z2.name, fee: z2.fee ? D(z2.fee) : null, isActive: z2.isActive, sortOrder: z2.sortOrder } }).catch(zoneConflict);
+    await audit(db, req, res, { action: 'zone.create', entityType: 'deliveryZone', entityId: created.id, after: { name: created.name, fee: z2.fee ?? null, isActive: z2.isActive } });
+    res.status(201).json(zoneView(created));
+  });
+  // Past orders keep the address they were placed with (it is stored on the order), so deleting an area is safe.
+  r.delete('/zones/:id', requirePermission('settings.manage'), async (req, res) => {
+    const id = Id.parse(req.params.id);
+    const before = await db.deliveryZone.findUnique({ where: { id } });
+    if (!before) throw AppError.notFound();
+    await db.deliveryZone.delete({ where: { id } });
+    await audit(db, req, res, { action: 'zone.delete', entityType: 'deliveryZone', entityId: id, before: { name: before.name, fee: before.fee?.toString() ?? null, isActive: before.isActive } });
+    res.status(204).end();
   });
   r.put('/zones/:id', requirePermission('settings.manage'), async (req, res) => {
     const id = Id.parse(req.params.id);
     const z2 = ZoneInput.parse(req.body);
-    if (z2.isActive && !z2.fee) throw new AppError(400, 'VALIDATION_ERROR', 'Some fields need attention', [{ path: 'fee', message: 'Set a fee before offering delivery here' }]);
+    zoneNeedsFee(z2);
     const before = await db.deliveryZone.findUnique({ where: { id } });
     if (!before) throw AppError.notFound();
-    const z3 = await db.deliveryZone.update({ where: { id }, data: { name: z2.name, fee: z2.fee ? D(z2.fee) : null, isActive: z2.isActive, sortOrder: z2.sortOrder } });
-    await audit(db, req, res, { action: 'zone.update', entityType: 'deliveryZone', entityId: id, before: { fee: before.fee?.toString() ?? null, isActive: before.isActive }, after: { fee: z2.fee ?? null, isActive: z2.isActive } });
-    res.json({ id: z3.id, name: z3.name, province: z3.province, fee: z3.fee ? money(z3.fee) : null, isActive: z3.isActive, sortOrder: z3.sortOrder });
+    const z3 = await db.deliveryZone.update({ where: { id }, data: { name: z2.name, fee: z2.fee ? D(z2.fee) : null, isActive: z2.isActive, sortOrder: z2.sortOrder } }).catch(zoneConflict);
+    await audit(db, req, res, { action: 'zone.update', entityType: 'deliveryZone', entityId: id, before: { name: before.name, fee: before.fee?.toString() ?? null, isActive: before.isActive }, after: { name: z2.name, fee: z2.fee ?? null, isActive: z2.isActive } });
+    res.json(zoneView(z3));
   });
 
   return r;

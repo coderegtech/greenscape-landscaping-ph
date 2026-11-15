@@ -226,7 +226,7 @@ export default async function AdminHome() {
           <ul className="flex flex-wrap gap-2">
             <li><StatusPill tone={health.status === 'ok' ? 'green' : health.status === 'degraded' ? 'orange' : 'red'} icon={health.status === 'ok' ? <CircleCheck aria-hidden /> : <CircleX aria-hidden />}>API <span data-testid="api-status">{health.status}</span></StatusPill></li>
             {Object.entries(health.checks).map(([name, c]) => (
-              <li key={name}><StatusPill tone={c.ok ? 'green' : 'red'} icon={c.ok ? <CircleCheck aria-hidden /> : <CircleX aria-hidden />}>{name} {c.ok ? `${c.latencyMs} ms` : 'down'}</StatusPill></li>
+              <li key={name}><StatusPill tone={c.ok ? 'green' : 'red'} icon={c.ok ? <CircleCheck aria-hidden /> : <CircleX aria-hidden />}>{name} {c.ok ? (c.detail ?? `${c.latencyMs} ms`) : 'down'}</StatusPill></li>
             ))}
           </ul>
         ) : (

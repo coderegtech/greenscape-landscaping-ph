@@ -1,4 +1,4 @@
-import { ALL_PERMISSIONS, PERMISSIONS, ROLES, expandGrants, type RoleKey } from '@greenscape/database/rbac';
+import { ACCESS_PERMISSIONS, ALL_PERMISSIONS, PERMISSIONS, PERMISSION_GRID, RESERVED_PERMISSIONS, ROLES, expandGrants, type RoleKey } from '@greenscape/database/rbac';
 import { safeNext } from '@greenscape/validation';
 import { describe, expect, it } from 'vitest';
 
@@ -27,6 +27,20 @@ describe('role catalog', () => {
     expect(perms('hr_manager').some((p) => p.startsWith('orders.') || p.startsWith('cms.'))).toBe(false);
     expect(perms('inventory_staff')).not.toContain('products.write');
     expect(perms('inventory_staff')).not.toContain('payments.refund');
+  });
+});
+
+describe('role editor grid', () => {
+  const cells = [...ACCESS_PERMISSIONS, ...PERMISSION_GRID.flatMap((r) => [r.view, r.create, r.update, r.delete, ...(r.other ?? [])].filter((k) => k !== undefined))];
+
+  it('offers every permission exactly once, so no permission is ungrantable or doubled', () => {
+    expect([...cells].sort()).toEqual([...ALL_PERMISSIONS].sort());
+  });
+
+  it('keeps the keys that define roles and administrators out of reach of custom roles (they are still shown, locked)', () => {
+    expect(RESERVED_PERMISSIONS).toEqual(expect.arrayContaining(['roles.define', 'roles.manage_super', 'settings.secrets']));
+    expect(perms('admin')).toContain('roles.define');
+    for (const r of ['content_manager', 'ecommerce_manager', 'inventory_staff', 'hr_manager', 'employee', 'customer'] as const) expect(perms(r)).not.toContain('roles.define');
   });
 });
 

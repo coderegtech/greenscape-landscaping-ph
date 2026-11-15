@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import { NewDocForm } from '@/components/new-doc-form';
-import { CONTENT_TYPES, isTypeKey } from '@/lib/content-types';
+import { CONTENT_TYPES, canAdd, isTypeKey } from '@/lib/content-types';
 import { can, getStaff } from '@/lib/session';
 
 export const dynamic = 'force-dynamic';
@@ -15,6 +15,6 @@ export default async function NewDoc({ params }: { params: Promise<{ type: strin
   const { type } = await params;
   if (!isTypeKey(type)) notFound();
   const me = await getStaff();
-  if (!me || !can(me, 'cms.write')) redirect(`/cms/${type}`);
+  if (!me || !can(me, 'cms.write') || !canAdd(type)) redirect(`/cms/${type}`);
   return <NewDocForm type={type} />;
 }

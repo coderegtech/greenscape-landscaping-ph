@@ -16,12 +16,12 @@ export const ErrorBody = z.object({
 });
 export type ErrorBody = z.infer<typeof ErrorBody>;
 
-export const DependencyStatus = z.object({ ok: z.boolean(), latencyMs: z.number().optional(), error: z.string().optional() });
+export const DependencyStatus = z.object({ ok: z.boolean(), latencyMs: z.number().optional(), error: z.string().optional(), detail: z.string().optional() });
 export const HealthResponse = z.object({
   status: z.enum(['ok', 'degraded', 'down']),
   version: z.string(),
   uptimeSec: z.number(),
-  checks: z.object({ postgres: DependencyStatus, mongo: DependencyStatus, redis: DependencyStatus }),
+  checks: z.object({ postgres: DependencyStatus, mongo: DependencyStatus, redis: DependencyStatus, websocket: DependencyStatus }),
 });
 export type HealthResponse = z.infer<typeof HealthResponse>;
 
@@ -78,7 +78,17 @@ export const ProvisionAccountBody = z.object({
 export const ProvisionedAccount = z.object({ userId: z.string().uuid(), email: z.string(), temporaryPassword: z.string() });
 export type ProvisionedAccount = z.infer<typeof ProvisionedAccount>;
 
-export const RoleSummary = z.object({ key: z.string(), name: z.string(), permissions: z.array(z.string()) });
+export const RoleSummary = z.object({ key: z.string(), name: z.string(), permissions: z.array(z.string()), isSystem: z.boolean(), users: z.number().int() });
+/** What the role editor offers: the module × action grid, access checkboxes and the keys a custom role may not hold. */
+export const PermissionCatalog = z.object({
+  descriptions: z.record(z.string(), z.string()),
+  access: z.array(z.string()),
+  reserved: z.array(z.string()),
+  grid: z.array(z.object({ module: z.string(), view: z.string().optional(), create: z.string().optional(), update: z.string().optional(), delete: z.string().optional(), other: z.array(z.string()).optional() })),
+});
+export type PermissionCatalog = z.infer<typeof PermissionCatalog>;
+/** Create or replace a custom role. */
+export const RoleBody = z.object({ name: z.string().trim().min(2).max(60), permissions: z.array(z.string().max(60)).max(100) });
 
 // ── Auth forms (client + server). Password rules mirror supabase/config.toml. ──
 export const Password = z

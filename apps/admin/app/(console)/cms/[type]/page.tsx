@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { ImportButton } from '@/components/import-button';
-import { CONTENT_TYPES, isTypeKey } from '@/lib/content-types';
+import { CONTENT_TYPES, canAdd, isTypeKey } from '@/lib/content-types';
 import { can, getStaff } from '@/lib/session';
 
 export const dynamic = 'force-dynamic';
@@ -45,7 +45,7 @@ export default async function ContentList({ params, searchParams }: { params: Pr
             <input id="q" name="q" defaultValue={sp.q} placeholder="Title or address" className="h-10 w-56 border border-rule-strong bg-paper-3 px-3 text-sm" />
             <button type="submit" className="h-10 rounded-pill border-[1.5px] border-signal px-4 text-sm font-bold text-signal">Search</button>
           </form>
-          {can(me, 'cms.write') && (
+          {can(me, 'cms.write') && canAdd(type) && (
             <>
               <ImportButton type={type} />
               <Link href={`/cms/${type}/new`} className="inline-flex h-10 items-center rounded-pill bg-signal px-4 text-sm font-bold text-signal-ink no-underline">New {def.singular}</Link>

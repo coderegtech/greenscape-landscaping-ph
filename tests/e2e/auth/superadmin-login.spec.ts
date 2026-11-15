@@ -12,7 +12,7 @@ test('a super admin reaches every area, creates an administrator, and signs out'
   await signIn(page, s.email);
   await expect(page.getByTestId('staff-identity')).toContainText('super_admin');
   const nav = page.getByRole('navigation', { name: 'Admin' });
-  for (const area of ['Users and roles', 'Employees', 'Pages', 'Analytics', 'System monitoring', 'Audit logs', 'Settings']) await expect(nav.getByRole('link', { name: area, exact: true })).toBeVisible();
+  for (const area of ['Users', 'Roles', 'Employees', 'Pages', 'Analytics', 'System monitoring', 'Audit logs', 'Settings']) await expect(nav.getByRole('link', { name: area, exact: true })).toBeVisible();
 
   await page.goto(`${ADMIN}/users`);
   await page.getByRole('button', { name: 'Create staff account' }).click();

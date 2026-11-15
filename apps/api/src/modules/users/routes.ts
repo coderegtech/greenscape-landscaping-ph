@@ -1,6 +1,8 @@
-import { PROTECTED_ROLES, ROLE_KEYS, type RoleKey } from '@greenscape/database/rbac';
-import { ProvisionAccountBody, ProvisionedAccount, RoleSummary, SetRolesBody, SetStatusBody, UserSummary, UsersQuery, paginated, z } from '@greenscape/validation';
+import { randomBytes } from 'node:crypto';
+import { ACCESS_PERMISSIONS, ALL_PERMISSIONS, PERMISSIONS, PERMISSION_GRID, PROTECTED_ROLES, RESERVED_PERMISSIONS, type RoleKey } from '@greenscape/database/rbac';
+import { ProvisionAccountBody, ProvisionedAccount, RoleBody, RoleSummary, SetRolesBody, SetStatusBody, UserSummary, UsersQuery, paginated, z } from '@greenscape/validation';
 import { assertGrantable, provisionAccount } from './provision.ts';
+import { assertRolesExist } from './roles.ts';
 import { Router } from 'express';
 import { audit } from '../../lib/audit.ts';
 import { logSecurity } from '../../lib/security-log.ts';
@@ -17,6 +19,10 @@ registry.registerPath({ method: 'post', path: '/v1/users', tags: ['users'], auth
 registry.registerPath({ method: 'put', path: '/v1/users/{id}/roles', tags: ['users'], auth: true, summary: "Replace a user's roles (roles.manage; super_admin needs roles.manage_super). Audited.", body: SetRolesBody, responses: { 200: { description: 'updated user', schema: UserSummary }, 403: { description: 'not allowed' } } });
 registry.registerPath({ method: 'patch', path: '/v1/users/{id}/status', tags: ['users'], auth: true, summary: 'Suspend or reactivate a user (users.manage). Audited.', body: SetStatusBody, responses: { 200: { description: 'updated user', schema: UserSummary } } });
 registry.registerPath({ method: 'post', path: '/v1/users/{id}/sessions/revoke', tags: ['users'], auth: true, summary: 'Sign a user out everywhere: sessions from before now are refused and ended at Supabase (users.manage; administrators need roles.manage_super). Audited.', responses: { 204: { description: 'done' } } });
+registry.registerPath({ method: 'get', path: '/v1/permissions', tags: ['users'], auth: true, summary: 'The permission catalogue for the role editor (users.read).', responses: { 200: { description: 'catalogue' } } });
+registry.registerPath({ method: 'post', path: '/v1/roles', tags: ['users'], auth: true, summary: 'Create a custom role (roles.define). Reserved permissions cannot be granted. Audited.', body: RoleBody, responses: { 201: { description: 'created', schema: RoleSummary }, 409: { description: 'name taken' } } });
+registry.registerPath({ method: 'put', path: '/v1/roles/{key}', tags: ['users'], auth: true, summary: 'Rename a custom role and replace its permissions (roles.define). Built-in roles are fixed. Audited.', body: RoleBody, responses: { 200: { description: 'updated', schema: RoleSummary } } });
+registry.registerPath({ method: 'delete', path: '/v1/roles/{key}', tags: ['users'], auth: true, summary: 'Delete a custom role nobody holds (roles.define). Audited.', responses: { 204: { description: 'deleted' }, 409: { description: 'still assigned' } } });
 registry.registerPath({ method: 'get', path: '/v1/roles', tags: ['users'], auth: true, summary: 'Roles and their permissions (users.read).', responses: { 200: { description: 'roles', schema: z.array(RoleSummary) } } });
 
 const userSelect = {
@@ -69,7 +75,7 @@ export function userRoutes(deps: Deps) {
   r.post('/users', requirePermission('users.manage', 'roles.manage'), async (req, res) => {
     const input = ProvisionAccountBody.parse(req.body);
     const roles = [...new Set(input.roles)].sort();
-    assertGrantable(res, roles);
+    await assertGrantable(db, res, roles);
     const account = await provisionAccount(deps, req, res, { ...input, roles });
     logSecurity(deps, req, res, 'security.account_provisioned', { target: account.userId, roles: roles.join(' ') });
     res.status(201).json(ProvisionedAccount.parse(account));
@@ -80,8 +86,7 @@ export function userRoutes(deps: Deps) {
     const { roles } = SetRolesBody.parse(req.body);
     const actor = currentAuth(res);
     const wanted = [...new Set(roles)].sort();
-    const unknown = wanted.filter((k) => !ROLE_KEYS.includes(k as RoleKey));
-    if (unknown.length) throw AppError.badRequest('Unknown roles', { unknown });
+    await assertRolesExist(db, wanted);
     if (id === actor.userId) throw AppError.forbidden('You cannot change your own roles');
 
     const updated = await db.$transaction(async (tx) => {
@@ -155,12 +160,84 @@ export function userRoutes(deps: Deps) {
     res.status(204).end();
   });
 
+  const roleSelect = { key: true, name: true, isSystem: true, permissions: { select: { permission: { select: { key: true } } } }, _count: { select: { users: true } } } as const;
+  const toRole = (x: { key: string; name: string; isSystem: boolean; permissions: { permission: { key: string } }[]; _count: { users: number } }) =>
+    ({ key: x.key, name: x.name, isSystem: x.isSystem, users: x._count.users, permissions: x.permissions.map((p) => p.permission.key).sort() });
+
   r.get('/roles', requirePermission('users.read'), async (_req, res) => {
-    const roles = await db.role.findMany({
-      orderBy: { key: 'asc' },
-      select: { key: true, name: true, permissions: { select: { permission: { select: { key: true } } } } },
+    res.json((await db.role.findMany({ orderBy: [{ isSystem: 'desc' }, { name: 'asc' }], select: roleSelect })).map(toRole));
+  });
+
+  r.get('/permissions', requirePermission('users.read'), (_req, res) => {
+    res.json({ descriptions: PERMISSIONS, access: ACCESS_PERMISSIONS, reserved: RESERVED_PERMISSIONS, grid: PERMISSION_GRID });
+  });
+
+  /** Only real, non-reserved permissions: a custom role can never hold the keys that define roles or grant administrators. */
+  const checkPermissions = (keys: string[]) => {
+    const unknown = keys.filter((k) => !(ALL_PERMISSIONS as string[]).includes(k));
+    if (unknown.length) throw AppError.badRequest('Unknown permissions', { unknown });
+    if (keys.some((k) => (RESERVED_PERMISSIONS as string[]).includes(k))) throw AppError.forbidden('Those permissions are reserved for the built-in administrator roles');
+  };
+  /** Role changes reach every holder on their next click, not after the permission cache expires. */
+  const refreshHolders = async (key: string) => {
+    const ids = (await db.userRole.findMany({ where: { role: { key } }, select: { userId: true } })).map((u) => u.userId);
+    await cache.invalidateTags(ids.map(authzCacheKey));
+    for (const userId of ids) await events.emit('user.access_changed', { userId });
+  };
+  const customKey = (name: string) => `c_${name.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 24) || 'role'}_${randomBytes(2).toString('hex')}`;
+  const customRole = async (key: string) => {
+    const role = await db.role.findUnique({ where: { key }, select: { id: true, isSystem: true, name: true, permissions: { select: { permission: { select: { key: true } } } } } });
+    if (!role) throw AppError.notFound('Role not found');
+    if (role.isSystem) throw AppError.forbidden('Built-in roles are fixed. Create a custom role instead.');
+    return role;
+  };
+  const assertNameFree = async (name: string, exceptKey?: string) => {
+    if (await db.role.findFirst({ where: { name: { equals: name, mode: 'insensitive' }, ...(exceptKey ? { key: { not: exceptKey } } : {}) }, select: { id: true } })) throw AppError.conflict('A role with this name already exists');
+  };
+
+  r.post('/roles', requirePermission('roles.define'), async (req, res) => {
+    const { name, permissions } = RoleBody.parse(req.body);
+    const wanted = [...new Set(permissions)].sort();
+    checkPermissions(wanted);
+    await assertNameFree(name);
+    const key = customKey(name);
+    const created = await db.$transaction(async (tx) => {
+      const perms = await tx.permission.findMany({ where: { key: { in: wanted } }, select: { id: true } });
+      const role = await tx.role.create({ data: { key, name, isSystem: false, permissions: { create: perms.map((p) => ({ permissionId: p.id })) } }, select: roleSelect });
+      await audit(tx, req, res, { action: 'role.create', entityType: 'Role', entityId: key, after: { name, permissions: wanted } });
+      return role;
     });
-    res.json(roles.map((x) => ({ key: x.key, name: x.name, permissions: x.permissions.map((p) => p.permission.key).sort() })));
+    res.status(201).json(toRole(created));
+  });
+
+  r.put('/roles/:key', requirePermission('roles.define'), async (req, res) => {
+    const key = z.string().max(40).parse(req.params.key);
+    const { name, permissions } = RoleBody.parse(req.body);
+    const wanted = [...new Set(permissions)].sort();
+    checkPermissions(wanted);
+    const before = await customRole(key);
+    await assertNameFree(name, key);
+    const updated = await db.$transaction(async (tx) => {
+      const perms = await tx.permission.findMany({ where: { key: { in: wanted } }, select: { id: true } });
+      await tx.rolePermission.deleteMany({ where: { roleId: before.id } });
+      await tx.rolePermission.createMany({ data: perms.map((p) => ({ roleId: before.id, permissionId: p.id })) });
+      await audit(tx, req, res, { action: 'role.update', entityType: 'Role', entityId: key, before: { name: before.name, permissions: before.permissions.map((p) => p.permission.key).sort() }, after: { name, permissions: wanted } });
+      return tx.role.update({ where: { id: before.id }, data: { name }, select: roleSelect });
+    });
+    await refreshHolders(key);
+    res.json(toRole(updated));
+  });
+
+  r.delete('/roles/:key', requirePermission('roles.define'), async (req, res) => {
+    const key = z.string().max(40).parse(req.params.key);
+    const role = await customRole(key);
+    const holders = await db.userRole.count({ where: { roleId: role.id } });
+    if (holders) throw AppError.conflict(`${holders} ${holders === 1 ? 'person has' : 'people have'} this role. Take it off them first.`);
+    await db.$transaction(async (tx) => {
+      await tx.role.delete({ where: { id: role.id } });
+      await audit(tx, req, res, { action: 'role.delete', entityType: 'Role', entityId: key, before: { name: role.name } });
+    });
+    res.status(204).end();
   });
 
   return r;

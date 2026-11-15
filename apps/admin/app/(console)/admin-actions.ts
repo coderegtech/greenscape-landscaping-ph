@@ -52,6 +52,20 @@ export async function setUserRoles(id: string, roles: string[]) {
     return out;
   });
 }
+export async function saveRole(key: string | null, input: unknown) {
+  return attempt(async () => {
+    const out = await api(key ? `/v1/roles/${encodeURIComponent(key)}` : '/v1/roles', Any, json(key ? 'PUT' : 'POST', input));
+    revalidatePath('/users/roles');
+    return out as { key: string };
+  });
+}
+export async function deleteRole(key: string) {
+  return attempt(async () => {
+    await api(`/v1/roles/${encodeURIComponent(key)}`, z.undefined(), json('DELETE', {}));
+    revalidatePath('/users/roles');
+    return true;
+  });
+}
 export async function revokeSessions(id: string) {
   return attempt(() => api(`/v1/users/${Id.parse(id)}/sessions/revoke`, z.undefined(), json('POST', {})));
 }
