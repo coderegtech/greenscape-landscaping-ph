@@ -1,11 +1,12 @@
 import { randomBytes } from 'node:crypto';
-import { PROTECTED_ROLES, ROLE_KEYS, type RoleKey } from '@greenscape/database/rbac';
+import { PROTECTED_ROLES, type RoleKey } from '@greenscape/database/rbac';
 import type { ProvisionedAccount } from '@greenscape/validation';
 import type { Request, Response } from 'express';
 import { audit } from '../../lib/audit.ts';
 import type { Deps } from '../../lib/deps.ts';
 import { AppError } from '../../lib/errors.ts';
 import { currentAuth } from '../../middleware/auth.ts';
+import { assertRolesExist } from './roles.ts';
 
 type Tx = Parameters<Parameters<Deps['db']['$transaction']>[0]>[0];
 
@@ -13,9 +14,8 @@ type Tx = Parameters<Parameters<Deps['db']['$transaction']>[0]>[0];
 export const temporaryPassword = () => `${randomBytes(12).toString('base64url')}-Gs7`;
 
 /** Throws unless the signed-in actor may grant every role in `roles`. */
-export function assertGrantable(res: Response, roles: string[]) {
-  const unknown = roles.filter((k) => !ROLE_KEYS.includes(k as RoleKey));
-  if (unknown.length) throw AppError.badRequest('Unknown roles', { unknown });
+export async function assertGrantable(db: Deps['db'], res: Response, roles: string[]) {
+  await assertRolesExist(db, roles);
   if (roles.some((k) => PROTECTED_ROLES.includes(k as RoleKey)) && !currentAuth(res).permissions.has('roles.manage_super')) {
     throw AppError.forbidden('Only a super administrator can grant administrator roles');
   }

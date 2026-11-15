@@ -10,7 +10,7 @@ import { can, getStaff } from '@/lib/session';
 export const metadata: Metadata = { title: 'System status' };
 export const dynamic = 'force-dynamic';
 
-const Check = z.object({ ok: z.boolean(), latencyMs: z.number(), error: z.string().optional() });
+const Check = z.object({ ok: z.boolean(), latencyMs: z.number(), error: z.string().optional(), detail: z.string().optional() });
 const Status = z.object({
   version: z.string(), environment: z.string(), uptimeSec: z.number(),
   checks: z.record(z.string(), Check),
@@ -19,7 +19,7 @@ const Status = z.object({
   webhooks: z.object({ failed7d: z.number(), stuck: z.number(), recent: z.array(z.object({ id: z.string(), provider: z.string(), type: z.string(), error: z.string().nullable(), receivedAt: z.string() })) }),
   pushJobs: z.object({ failed7d: z.number(), overdue: z.number(), recent: z.array(z.object({ id: z.string(), failureReason: z.string().nullable(), attempts: z.number(), createdAt: z.string() })) }),
 });
-const LABEL: Record<string, string> = { postgres: 'Database (Postgres)', mongo: 'Content database (MongoDB)', redis: 'Cache (Redis)', storage: 'File storage (Supabase)' };
+const LABEL: Record<string, string> = { postgres: 'Database (Postgres)', mongo: 'Content database (MongoDB)', redis: 'Cache (Redis)', storage: 'File storage (Supabase)', websocket: 'Live updates (WebSocket)' };
 const uptime = (s: number) => (s >= 86_400 ? `${Math.floor(s / 86_400)} d ${Math.floor((s % 86_400) / 3600)} h` : `${Math.floor(s / 3600)} h ${Math.floor((s % 3600) / 60)} min`);
 
 export default async function SystemPage() {
@@ -42,7 +42,7 @@ export default async function SystemPage() {
               <span>{LABEL[k] ?? k}</span>
               <span className="flex items-center gap-2">
                 {c.ok ? <Badge variant="signal">OK</Badge> : <Badge variant="outline" className="border-danger text-danger">Down</Badge>}
-                <span className="tabular text-muted">{c.latencyMs} ms</span>
+                <span className="tabular text-muted">{c.detail ?? `${c.latencyMs} ms`}</span>
               </span>
             </li>
           ))}

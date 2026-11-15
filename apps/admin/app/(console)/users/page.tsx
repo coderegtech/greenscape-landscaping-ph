@@ -7,7 +7,7 @@ import { CreateStaffAccount } from '@/components/provision';
 import { UsersTable } from '@/components/users-table';
 import { can, getStaff } from '@/lib/session';
 
-export const metadata: Metadata = { title: 'Users and roles' };
+export const metadata: Metadata = { title: 'Users' };
 export const dynamic = 'force-dynamic';
 
 export default async function UsersPage({ searchParams }: { searchParams: Promise<{ q?: string; role?: string; page?: string }> }) {
@@ -25,7 +25,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <h2 className="text-3xl">Users and roles</h2>
+        <h2 className="text-3xl">Users</h2>
         <form method="get" role="search" className="flex flex-wrap items-end gap-2">
           <label className="flex flex-col gap-1 text-xs text-muted">Search<input name="q" defaultValue={sp.q} placeholder="Email or name" className={`${sel} w-60`} /></label>
           <label className="flex flex-col gap-1 text-xs text-muted">Role
@@ -34,7 +34,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
           <button type="submit" className="h-10 rounded-pill border-[1.5px] border-signal px-4 text-sm font-bold text-signal">Show</button>
         </form>
       </div>
-      <p className="max-w-2xl text-sm text-ink-2">Customers sign up on the website. Staff accounts are created here with a temporary password; roles take effect on the next click. Employees get their login from their employee record. Staff tools only open after a password sign-in, never through Google.</p>
+      <p className="max-w-2xl text-sm text-ink-2">Customers sign up on the website. Staff accounts are created here with a temporary password; roles take effect on the next click (manage the roles themselves under <Link href="/users/roles">Roles</Link>). Employees get their login from their employee record. Staff tools only open after a password sign-in, never through Google.</p>
       {can(me, 'users.manage') && can(me, 'roles.manage') && <CreateStaffAccount roles={roles} canSuper={can(me, 'roles.manage_super')} adminUrl={process.env.ADMIN_URL ?? 'the admin app'} />}
       <UsersTable users={data.items} roles={roles} meId={me.user.id} canRoles={can(me, 'roles.manage')} canStatus={can(me, 'users.manage')} canSuper={can(me, 'roles.manage_super')} />
       {pages > 1 && (

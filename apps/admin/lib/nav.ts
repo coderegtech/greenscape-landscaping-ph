@@ -36,7 +36,6 @@ export const ADMIN_IA: { title: string; items: Item[] }[] = [
       { label: 'Projects', href: '/cms/projects', permission: 'cms.read', ready: true, icon: 'projects' },
       { label: 'Stories', href: '/cms/articles', permission: 'cms.read', ready: true, icon: 'stories' },
       { label: 'Gallery', href: '/cms/gallery', permission: 'cms.read', ready: true, icon: 'gallery' },
-      { label: 'Media', href: '/media', permission: 'media.read', ready: true, icon: 'media' },
       { label: 'Testimonials', href: '/cms/testimonials', permission: 'testimonials.moderate', ready: true, icon: 'testimonials', badge: 'testimonials' },
       { label: 'FAQs', href: '/cms/faqs', permission: 'cms.read', ready: true, icon: 'faqs' },
       { label: 'Site settings', href: '/cms/site', permission: 'cms.read', ready: true, icon: 'site' },
@@ -55,7 +54,8 @@ export const ADMIN_IA: { title: string; items: Item[] }[] = [
   {
     title: 'Administration',
     items: [
-      { label: 'Users and roles', href: '/users', permission: 'users.read', ready: true, icon: 'users' },
+      { label: 'Users', href: '/users', permission: 'users.read', ready: true, icon: 'users' },
+      { label: 'Roles', href: '/users/roles', permission: 'users.read', ready: true, icon: 'roles' },
       { label: 'System monitoring', href: '/system', permission: 'system.monitor', ready: true, icon: 'system' },
       { label: 'Settings', href: '/settings', permission: 'settings.read', ready: true, icon: 'settings' },
       { label: 'Audit logs', href: '/audit', permission: 'audit.read', ready: true, icon: 'audit' },

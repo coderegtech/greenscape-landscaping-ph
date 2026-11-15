@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
-import { ROLE_KEYS } from '@greenscape/database/rbac';
 import { AppQuery, BroadcastBody, type NotificationApp, ClearQuery, NotificationListQuery, NotificationPage, PreferenceUpdate, PushSubscriptionBody, PushUnsubscribeBody, z } from '@greenscape/validation';
 import { Router } from 'express';
 import { audit } from '../../lib/audit.ts';
+import { assertRolesExist } from '../users/roles.ts';
 import type { Deps } from '../../lib/deps.ts';
 import { AppError } from '../../lib/errors.ts';
 import { registry } from '../../lib/openapi.ts';
@@ -77,8 +77,7 @@ export function notificationRoutes(deps: Deps) {
 
   r.post('/broadcast', requirePermission('notifications.broadcast'), formLimit(deps, 'broadcast', 20), async (req, res) => {
     const b = BroadcastBody.parse(req.body);
-    const unknown = (b.roles ?? []).filter((k) => !(ROLE_KEYS as string[]).includes(k));
-    if (unknown.length) throw AppError.badRequest('Unknown roles', { unknown });
+    await assertRolesExist(db, b.roles ?? []);
     // Audience: the chosen roles; otherwise everyone who can use that app (staff for `admin`, employees for `employee`,
     // every active account for `web`).
     const ids = b.roles?.length

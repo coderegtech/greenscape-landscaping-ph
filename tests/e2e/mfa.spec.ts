@@ -11,14 +11,14 @@ test('staff enrol an authenticator, then are challenged at every sign-in', async
   test.setTimeout(150_000); // may wait for a fresh 30-second code window
   const u = await staffUser('mfa', ['content_manager']);
   const signInPassword = async () => {
-    await page.goto(`${ADMIN}/login?next=%2Fmedia`);
+    await page.goto(`${ADMIN}/login?next=%2Fcms%2Ffaqs`);
     await page.getByLabel('Email').fill(u.email);
     await page.getByLabel('Password', { exact: true }).fill(PASSWORD);
     await page.getByRole('button', { name: 'Sign in' }).click();
   };
 
   await signInPassword();
-  await expect(page).toHaveURL(`${ADMIN}/mfa?next=%2Fmedia`);
+  await expect(page).toHaveURL(`${ADMIN}/mfa?next=%2Fcms%2Ffaqs`);
   await expect(page.getByTestId('mfa-enrol')).toBeVisible();
   await expect(page.getByRole('img', { name: 'QR code for your authenticator app' })).toBeVisible();
 
@@ -31,9 +31,9 @@ test('staff enrol an authenticator, then are challenged at every sign-in', async
   await page.getByRole('button', { name: 'Turn on and continue' }).click();
   await expect(page.getByRole('alert').filter({ hasText: 'That code did not work' })).toBeVisible();
 
-  await page.goto(`${ADMIN}/media`);
+  await page.goto(`${ADMIN}/cms/faqs`);
   await completeMfa(page, u.email);
-  await expect(page).toHaveURL(`${ADMIN}/media`);
+  await expect(page).toHaveURL(`${ADMIN}/cms/faqs`);
   await expect(page.getByTestId('staff-identity')).toBeVisible();
 
   // Sign out and back in: now a challenge, not a new enrolment.
@@ -41,5 +41,5 @@ test('staff enrol an authenticator, then are challenged at every sign-in', async
   await signInPassword();
   await expect(page.getByTestId('mfa-verify')).toBeVisible();
   await completeMfa(page, u.email);
-  await expect(page).toHaveURL(`${ADMIN}/media`);
+  await expect(page).toHaveURL(`${ADMIN}/cms/faqs`);
 });

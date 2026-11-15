@@ -1,5 +1,5 @@
-import { TableSkeleton } from '@greenscape/ui/components/skeletons';
+import { LoadingOverlay } from '@greenscape/ui/components/loading-overlay';
 
 export default function Loading() {
-  return <TableSkeleton />;
+  return <LoadingOverlay />;
 }

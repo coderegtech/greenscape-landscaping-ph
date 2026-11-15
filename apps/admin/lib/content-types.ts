@@ -113,7 +113,9 @@ export const CONTENT_TYPES = {
 } as const;
 
 export type TypeKey = keyof typeof CONTENT_TYPES;
-export const isTypeKey = (t: string): t is TypeKey => t in CONTENT_TYPES;
+/** The site's pages are fixed: staff edit them but cannot add new ones (the API refuses too). */
+export const canAdd = (t: TypeKey) => t !== 'pages';
+export const isTypeKey =(t: string): t is TypeKey => t in CONTENT_TYPES;
 
 /** Immutable set by path (["sections", 2, "heading"]). */
 export function setIn<T>(obj: T, path: (string | number)[], value: unknown): T {
