@@ -64,15 +64,19 @@ verify:
   timeout: 2h
   rules:
     - if: $CI_PIPELINE_SOURCE != "schedule"
+  # Docker on this machine has ~7 GB shared with GitLab itself: run the heavy steps with less parallelism than
+  # GitHub did, or the kernel kills them (exit 137).
+  variables:
+    npm_config_workspace_concurrency: 1 # pnpm build: the three Next builds one after another
   before_script: [*docker, *local-stack]
   script:
-    - pnpm typecheck
+    - pnpm -r --workspace-concurrency=2 typecheck && pnpm exec tsc -p tests # = pnpm typecheck, 2 at a time
     - pnpm lint
     - pnpm test
     - pnpm test:integration
     # Builds web + admin with the API running (the web app pre-renders pages from the CMS).
     - pnpm build
-    - CI=true pnpm test:e2e
+    - CI=true pnpm test:e2e --workers=2
     # The web image pre-renders CMS pages, so it is built and scanned here, where the API is reachable.
     - val() { grep "^$1=" .env | cut -d= -f2-; } # .env is not shell-safe to source (URLs contain &)
     - (pnpm --filter @greenscape/api start > api-image-build.log 2>&1 &)
