@@ -66,10 +66,10 @@ try {
 
 // No timestamp: the same commit always produces the same tree. The publish commit and the workflow run carry the time.
 const metadata = {
-  notice: 'Generated from main by .github/workflows/production-pipeline.yml. Do not edit this branch by hand.',
+  notice: 'Generated from main by the production pipeline (.gitlab-ci.yml, .github/workflows/production-pipeline.yml). Do not edit this branch by hand.',
   sourceBranch: merged ? SOURCE_BRANCH : null,
   sourceCommit: commit,
-  generatedBy: process.env.GITHUB_ACTIONS ? 'github-actions' : 'local',
+  generatedBy: process.env.GITLAB_CI ? 'gitlab-ci' : process.env.GITHUB_ACTIONS ? 'github-actions' : 'local',
   deploymentTarget: 'dokploy',
   fileCount: files.length,
 };
