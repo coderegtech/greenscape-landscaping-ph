@@ -29,6 +29,8 @@ pnpm exec playwright test pwa
 | `pnpm exec eslint .`, `pnpm typecheck` (ui, admin, employee, tests), `pnpm test` | Clean; 118 unit tests passed |
 | `docker build -f apps/employee/Dockerfile` and a run of the image | Built; container healthy; `/manifest.webmanifest`, `/sw.js`, `/offline`, `/icons/*`, `/apple-icon.png` answer 200 with the right content types |
 
+After merging `main` (2026-11-15, GS mark in the brand tiles): the PWA suite passed again on both projects. One existing test (`portal-redesign`: "clock-in is confirmed by the server") timed out when four workers ran at once, because the local API was answering in 2 to 7 seconds under that load; it passes alone and with two workers.
+
 Found on the way: several existing test files cleaned up employees by a label shared between parallel workers, so one worker could delete the employee another was using ("account is not linked to an employee record"). `portal-redesign`, `auth/logout`, `auth/session-persistence`, `auth/cross-portal-access` and `employee/attendance-access` now use a per-worker tag, like `auth/employee-login` already did.
 
 ## What automation does not prove
@@ -58,5 +60,5 @@ Also not automated: real push delivery through FCM / APNs (needs VAPID keys and 
 - Opening `/offline` directly while online still says "You are offline" (nothing links to it).
 - iOS splash images are not generated; iOS shows the app background until the first paint.
 - On a shared device, push notifications continue after sign-out until alerts are turned off (`docs/pwa/security.md`).
-- The customer site still uses the previous "G" icon.
-- Visual baselines exist for Windows only (`tests/e2e/visual`); the two staff sign-in baselines were refreshed for the new mark.
+- The brand tile in the apps is the GS mark while the app icons use the leaf with a gear or clock: whether the icons should be redrawn around the GS mark is an open design decision (`docs/branding/logo-guidelines.md`).
+- Visual baselines exist for Windows only (`tests/e2e/visual`); the staff sign-in baselines were refreshed on 2026-11-14, before the GS mark replaced the brand tile; they still pass within the 2% tolerance, but refresh them (`pnpm test:visual --update-snapshots=all`) to make them exact.

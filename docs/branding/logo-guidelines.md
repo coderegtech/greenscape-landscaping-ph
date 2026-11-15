@@ -1,5 +1,7 @@
 # Logo guidelines
 
+> **Status (2026-11-15).** The mark the product shows today is the **GS mark** with the outlined "Greenscape Landscaping Services" wordmark, in `packages/ui/src/components/logo.tsx` (site header and footer, the portals' brand tile, the customer site's favicon). The logo set described below was drawn for the app-icon work and is **not used in the interface**; only its leaf appears, inside the Admin and Employee app icons. Which of the two is the brand going forward is an open decision.
+
 ![Contact sheet](preview.png)
 
 ## The mark
@@ -41,8 +43,8 @@ All have transparent backgrounds. The mono files take the colour of the surround
 
 ## Changing the artwork
 
-Edit the geometry in `scripts/brand-assets.mjs` and run `node scripts/brand-assets.mjs`. Every SVG, every app icon and the contact sheet are regenerated from it. The in-app mark (`packages/ui/src/layout/brand-mark.tsx`) holds a copy of the two paths: update it if the mark changes.
+Edit the geometry in `scripts/brand-assets.mjs` and run `node scripts/brand-assets.mjs`. Every SVG, every app icon and the contact sheet are regenerated from it.
 
 ## Originals
 
-The previous icons are kept in `packages/branding/original/`. The customer site (`apps/web`) still uses them; moving it to the new mark is a separate decision.
+The icons from before both changes (a plain "G") are kept in `packages/branding/original/`.

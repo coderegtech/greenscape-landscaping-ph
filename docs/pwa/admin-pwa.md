@@ -14,7 +14,7 @@
 - **Offline**: a floating notice, "You are offline. Changes cannot be saved until you are back online.", with Retry. A page that cannot load shows the offline screen.
 - **Mutations**: forms use server actions; offline they fail and say so. Nothing is queued or replayed.
 - **Layout**: the header and the mobile menu respect the top safe area; the existing sidebar (rail on desktop, drawer on phones), dashboard cards and notification bell are unchanged.
-- **Brand**: the sidebar and sign-in screen show the new mark.
+- **Brand**: the sidebar and sign-in screen show the GS mark; the app icon (home screen, tab, notifications) is the Admin gear.
 
 ## Notifications
 

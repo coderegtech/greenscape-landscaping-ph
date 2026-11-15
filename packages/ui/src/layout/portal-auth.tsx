@@ -1,4 +1,4 @@
-import { BrandMark } from './brand-mark';
+import { LogoMark } from '../components/logo';
 import type { ReactNode } from 'react';
 import { cn } from '../lib/utils';
 
@@ -37,7 +37,7 @@ export function PortalAuth({ tone, product, title, lead, pitch, footer, children
     <main id="main" className="grid min-h-dvh lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
       <div className={cn('relative hidden flex-col justify-between gap-8 overflow-clip p-12 lg:flex', tone === 'deep' ? 'band-sidebar' : 'tone-green bg-(--tone-soft)')}>
         <p className="flex items-center gap-3 text-lg font-bold text-ink">
-          <span aria-hidden className="grid size-10 place-items-center rounded-xl bg-signal text-signal-ink"><BrandMark className="size-6" /></span>
+          <span aria-hidden className="grid size-10 place-items-center rounded-xl bg-signal text-signal-ink"><LogoMark className="w-7" /></span>
           Greenscape
         </p>
         <Plant className="mx-auto w-full max-w-sm" />
@@ -47,7 +47,7 @@ export function PortalAuth({ tone, product, title, lead, pitch, footer, children
         <div className="hero-in mx-auto flex w-full max-w-[26rem] flex-col gap-6">
           <div className="flex items-center justify-between gap-4 lg:hidden">
             <p className="flex items-center gap-2.5 text-base font-bold text-ink">
-              <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-signal text-signal-ink"><BrandMark className="size-6" /></span>
+              <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-signal text-signal-ink"><LogoMark className="w-6" /></span>
               Greenscape
             </p>
             <Plant className="size-20" />

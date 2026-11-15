@@ -1,5 +1,7 @@
 # App icon guidelines
 
+The interface's brand tile shows the GS mark (`packages/ui/src/components/logo.tsx`). The app icons do not repeat it: at home-screen size two "GS" tiles would be hard to tell apart, so each app gets a symbol instead.
+
 Both icons use the same parts (a white ring, the lime Greenscape leaf, a green tile) so they read as one family. The symbol on the ring tells them apart; there is no text.
 
 | | Greenscape Admin | Greenscape Employee |

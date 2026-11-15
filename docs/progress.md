@@ -51,7 +51,7 @@
 - Local service ports are offset (55433/57017/56379) because the defaults are used by other projects on this machine.
 
 ## Not yet done
-- Installable Admin and Employee apps (2026-11-14, `docs/pwa/`): built and tested in Chromium; installation on real Android, iOS and desktop devices is still to be checked against the list in `docs/pwa/testing.md`. The customer site keeps the previous icon.
+- Installable Admin and Employee apps (2026-11-14, `docs/pwa/`): built and tested in Chromium; installation on real Android, iOS and desktop devices is still to be checked against the list in `docs/pwa/testing.md`. The app icons use a leaf with a gear / clock, not the GS mark: open design decision (`docs/branding/logo-guidelines.md`).
 - CI on GitHub (from 2026-11-11) uses MongoDB 7.0: runner kernels are 6.19+, where MongoDB 8.x will not start (SERVER-121912). Production hosting must check the same (`docs/deployment.md`).
 - Phase 13 (QA/release) in progress: deployment and rollback runbooks and the sign-off checklist are in `docs/deployment.md`; staging run and visual regression are still to do.
 - Google sign-in is wired but needs a Google OAuth client configured in Supabase (`[auth.external.google]`) and `NEXT_PUBLIC_AUTH_GOOGLE=true`; untested end-to-end.
