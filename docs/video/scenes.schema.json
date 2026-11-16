@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Greenscape video scene manifest",
+  "type": "object",
+  "required": ["project", "voice", "scenes", "presentations"],
+  "additionalProperties": false,
+  "properties": {
+    "project": { "type": "string" },
+    "voice": {
+      "type": "object",
+      "required": ["style", "wordsPerMinute"],
+      "additionalProperties": false,
+      "properties": {
+        "style": { "type": "string" },
+        "wordsPerMinute": { "type": "number" },
+        "elevenLabsVoiceId": { "type": ["string", "null"] }
+      }
+    },
+    "scenes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "portal", "feature", "screenAction", "narration", "visualDirection", "screenshot", "recording", "audio", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z]+-[0-9]{2}$" },
+          "title": { "type": "string" },
+          "portal": { "enum": ["customer", "employee", "admin", "all"] },
+          "route": { "type": ["string", "null"] },
+          "feature": { "type": "string" },
+          "screenAction": { "type": "array", "items": { "type": "string" } },
+          "narration": { "type": "string", "minLength": 20 },
+          "pronunciation": { "type": "string" },
+          "tone": { "type": "string" },
+          "visualDirection": { "type": "array", "items": { "type": "string" } },
+          "screenshot": { "type": ["string", "null"] },
+          "recording": { "type": ["string", "null"] },
+          "audio": { "type": ["string", "null"] },
+          "status": { "enum": ["pending-recording", "blocked", "recorded", "final"] },
+          "blockedReason": { "type": "string" }
+        }
+      }
+    },
+    "presentations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "targetSeconds", "sceneIds", "export", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "targetSeconds": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+          "sceneIds": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "export": { "type": ["string", "null"] },
+          "url": { "type": ["string", "null"] },
+          "status": { "enum": ["planned", "recording", "editing", "published"] }
+        }
+      }
+    }
+  }
+}

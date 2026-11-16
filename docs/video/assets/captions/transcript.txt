@@ -1,0 +1,106 @@
+Full System Walkthrough
+
+This is Greenscape Landscaping PH, a landscaping and plant business in Palawan. Its new platform brings the public website, an online shop, an employee attendance portal and a business administration console together on one system. In the next few minutes we will walk through each part, using the running application and sample data.
+
+The system has three portals. Customers use the website to explore services and projects, request quotations and buy plants. Employees use a separate portal to clock in and out, check their schedule and file requests. Staff and administrators use the admin console to manage content, orders, people and settings. All three share one secure API and one sign-in service, and every permission is checked on the server.
+
+The homepage opens with an editorial hero and a white botanical design. As visitors scroll, sections reveal themselves with gentle, scroll-driven motion, and the page stays fully usable for visitors who prefer reduced motion. Below the hero come the four services, featured projects, a masonry wall of photos from the sites, stories from the team and client testimonials. The header keeps navigation, the quote button and the account in reach.
+
+Each service has its own page with maintenance packages, a before-and-after comparison and guides from the growers. The projects portfolio can be filtered by category, and every project tells its story with photographs. The gallery collects the photos in a Pinterest-style masonry layout. Visitors can filter by category or place, and open any photo in a full-screen viewer that supports swiping on phones.
+
+The shop lists the nursery's plants with search, filters and sorting. A product page shows photos, sizes, live stock and care information. Signed-in customers add items to their cart and check out with delivery anywhere in Palawan, where the fee for their municipality is added. Prices and stock are checked on the server, and stock is held while the payment is pending. This environment uses a test payment provider, so the checkout shows a clear test-mode notice and no real money moves.
+
+Customers can create an account with email and password, and Google sign-in can be switched on for each environment. The account page shows orders and quotation requests with their status. The quotation form guides customers through their project in three steps and accepts photos and plans as attachments. Customers can also message the team directly, and replies arrive in the same thread.
+
+Employees have their own portal. They do not sign up themselves: HR creates each login from the employee record, with a temporary password that must be changed on first sign-in. The dashboard greets the employee and puts the clock card first, followed by upcoming shifts, a seven-day summary and recent notifications.
+
+Clocking in takes one tap. The time always comes from the server, not the phone, and repeated taps count only once. The attendance page shows a month calendar and each day's record, including late arrivals, undertime and overtime worked out from the employee's schedule. The schedule page shows the shifts assigned by HR.
+
+From the requests page, employees file leave and correct missed punches. Leave is checked against the employee's balance and against overlapping requests before it is sent. A correction shows the proposed times next to what was recorded and can include a photo or document. Every decision comes back to the employee as a notification.
+
+The admin console is for staff. Its dashboard adapts to each person's role: a sales manager sees sales and orders, HR sees attendance and leave, and a super administrator sees everything. Panels show today's sales, items waiting for a decision, website traffic, low stock and system status, each linking to the page where the work is done.
+
+Website content is managed in the console. Pages, services, projects, stories, the gallery, testimonials and FAQs each have an editor built from the content's structure. Changes are saved as drafts, can be previewed on the real website through a private link, and are published immediately or on a schedule. Every save is kept in the version history, so an earlier version can be restored.
+
+Orders move through clear fulfilment steps, with refunds and cancellations recorded. Products, sizes and prices are edited in one place, and inventory changes always carry a reason, so stock history can be traced. For HR, the console holds employee records, work schedules, a daily attendance board, a corrections queue and leave approvals. Nobody can approve their own records.
+
+Changes appear live. When an employee clocks in, the attendance board in the admin console updates on its own, without a page reload. The live connection only carries a short signal; the console then fetches the new data through the API, which checks the viewer's permissions again. If the connection drops, it reconnects and catches up.
+
+The admin console and the employee portal each have a notification centre with an unread count, categories and optional sounds, and customers get their own on the website. People choose which notifications they receive. Web Push can deliver them to the device when the portal is closed, once push keys are configured for the environment.
+
+Under the hood, the three portals are Next.js applications, and they talk to an Express API written in TypeScript. PostgreSQL holds orders, people and attendance, MongoDB holds the website content, and Redis provides caching and coordination. Supabase handles sign-in and file storage, and Socket.IO carries live updates. Each service runs in its own Docker container, and every change passes automated tests and security scans before it reaches production.
+
+Greenscape now runs its website, shop, attendance and administration on one connected system. Customers get a clear way to explore and buy, employees get a simple daily tool, and the team gets one place to run the business. Thank you for watching.
+
+
+Short Product Overview
+
+Greenscape Landscaping PH designs and maintains gardens in Palawan and runs a plant nursery. Its new platform connects customers, employees and the business team.
+
+The website presents the services, a portfolio of finished projects and a masonry photo gallery, all managed by the team in the admin console.
+
+Customers buy plants online with live stock and a secure checkout, which runs in test mode here, or request a quotation for a landscaping project, with photos and plans attached.
+
+Employees sign in with an account created by HR, clock in with one tap, review their attendance and schedule, and request leave or corrections from their phone.
+
+Staff run the business from the admin console: a dashboard tailored to each role, website content with drafts and scheduled publishing, orders and inventory, and attendance and leave approvals.
+
+Updates appear live across portals, and every action is checked against the person's role on the server, with an audit log of sensitive changes.
+
+One platform for Greenscape's customers, crews and business. Thank you for watching.
+
+
+Promotional Demo
+
+Greenscape Landscaping PH. Landscaping, gardens and plants in Palawan, now on one connected platform.
+
+Explore real projects in a photo gallery built for browsing.
+
+Shop plants online, with live stock and a simple checkout.
+
+Employees clock in with one tap from their phone.
+
+And the team sees it live, next to sales, content and analytics.
+
+Greenscape Landscaping PH. One platform for customers, crews and the business.
+
+
+Customer Website Walkthrough
+
+This is Greenscape Landscaping PH, a landscaping and plant business in Palawan. Its new platform brings the public website, an online shop, an employee attendance portal and a business administration console together on one system. In the next few minutes we will walk through each part, using the running application and sample data.
+
+The homepage opens with an editorial hero and a white botanical design. As visitors scroll, sections reveal themselves with gentle, scroll-driven motion, and the page stays fully usable for visitors who prefer reduced motion. Below the hero come the four services, featured projects, a masonry wall of photos from the sites, stories from the team and client testimonials. The header keeps navigation, the quote button and the account in reach.
+
+Each service has its own page with maintenance packages, a before-and-after comparison and guides from the growers. The projects portfolio can be filtered by category, and every project tells its story with photographs. The gallery collects the photos in a Pinterest-style masonry layout. Visitors can filter by category or place, and open any photo in a full-screen viewer that supports swiping on phones.
+
+The shop lists the nursery's plants with search, filters and sorting. A product page shows photos, sizes, live stock and care information. Signed-in customers add items to their cart and check out with delivery anywhere in Palawan, where the fee for their municipality is added. Prices and stock are checked on the server, and stock is held while the payment is pending. This environment uses a test payment provider, so the checkout shows a clear test-mode notice and no real money moves.
+
+Customers can create an account with email and password, and Google sign-in can be switched on for each environment. The account page shows orders and quotation requests with their status. The quotation form guides customers through their project in three steps and accepts photos and plans as attachments. Customers can also message the team directly, and replies arrive in the same thread.
+
+Greenscape now runs its website, shop, attendance and administration on one connected system. Customers get a clear way to explore and buy, employees get a simple daily tool, and the team gets one place to run the business. Thank you for watching.
+
+
+Employee Portal Walkthrough
+
+Employees have their own portal. They do not sign up themselves: HR creates each login from the employee record, with a temporary password that must be changed on first sign-in. The dashboard greets the employee and puts the clock card first, followed by upcoming shifts, a seven-day summary and recent notifications.
+
+Clocking in takes one tap. The time always comes from the server, not the phone, and repeated taps count only once. The attendance page shows a month calendar and each day's record, including late arrivals, undertime and overtime worked out from the employee's schedule. The schedule page shows the shifts assigned by HR.
+
+From the requests page, employees file leave and correct missed punches. Leave is checked against the employee's balance and against overlapping requests before it is sent. A correction shows the proposed times next to what was recorded and can include a photo or document. Every decision comes back to the employee as a notification.
+
+Changes appear live. When an employee clocks in, the attendance board in the admin console updates on its own, without a page reload. The live connection only carries a short signal; the console then fetches the new data through the API, which checks the viewer's permissions again. If the connection drops, it reconnects and catches up.
+
+
+Admin Console Walkthrough
+
+The admin console is for staff. Its dashboard adapts to each person's role: a sales manager sees sales and orders, HR sees attendance and leave, and a super administrator sees everything. Panels show today's sales, items waiting for a decision, website traffic, low stock and system status, each linking to the page where the work is done.
+
+Website content is managed in the console. Pages, services, projects, stories, the gallery, testimonials and FAQs each have an editor built from the content's structure. Changes are saved as drafts, can be previewed on the real website through a private link, and are published immediately or on a schedule. Every save is kept in the version history, so an earlier version can be restored.
+
+Orders move through clear fulfilment steps, with refunds and cancellations recorded. Products, sizes and prices are edited in one place, and inventory changes always carry a reason, so stock history can be traced. For HR, the console holds employee records, work schedules, a daily attendance board, a corrections queue and leave approvals. Nobody can approve their own records.
+
+Changes appear live. When an employee clocks in, the attendance board in the admin console updates on its own, without a page reload. The live connection only carries a short signal; the console then fetches the new data through the API, which checks the viewer's permissions again. If the connection drops, it reconnects and catches up.
+
+The admin console and the employee portal each have a notification centre with an unread count, categories and optional sounds, and customers get their own on the website. People choose which notifications they receive. Web Push can deliver them to the device when the portal is closed, once push keys are configured for the environment.
+
+Under the hood, the three portals are Next.js applications, and they talk to an Express API written in TypeScript. PostgreSQL holds orders, people and attendance, MongoDB holds the website content, and Redis provides caching and coordination. Supabase handles sign-in and file storage, and Socket.IO carries live updates. Each service runs in its own Docker container, and every change passes automated tests and security scans before it reaches production.
