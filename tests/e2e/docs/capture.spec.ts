@@ -125,7 +125,8 @@ async function shoot(page: Page, base: string, portal: string, area: string, nam
   await ready(page);
   await settled(page);
   const title = PRIVATE.reduce((t, v) => t.split(v).join('Private Person'), await page.title());
-  const errorShown = (await page.getByText(/didn.t grow as expected/i).count()) > 0;
+  // /design shows the error state on purpose, as a sample.
+  const errorShown = route !== '/design' && (await page.getByText(/didn.t grow as expected/i).count()) > 0;
   if (errorShown) console.log(`[error page] ${portal}${route}`);
   if (errorShown && o.skipIfError) return false;
   const take = async (suffix: string, full = false) => {

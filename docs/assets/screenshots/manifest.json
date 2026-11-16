@@ -1,0 +1,1224 @@
+{
+  "generatedAt": "2026-11-16T00:43:13.229Z",
+  "shots": [
+    {
+      "portal": "admin",
+      "area": "analytics",
+      "name": "analytics",
+      "route": "/analytics",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Analytics · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/analytics/analytics-desktop.png",
+        "docs/assets/screenshots/admin/analytics/analytics-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "assistant",
+      "name": "assistant-conversations",
+      "route": "/assistant/conversations",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Assistant chats and usage · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/assistant/assistant-conversations-desktop.png",
+        "docs/assets/screenshots/admin/assistant/assistant-conversations-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "assistant",
+      "name": "assistant-knowledge",
+      "route": "/assistant/knowledge",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Assistant knowledge · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/assistant/assistant-knowledge-desktop.png",
+        "docs/assets/screenshots/admin/assistant/assistant-knowledge-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "assistant",
+      "name": "assistant-settings",
+      "route": "/assistant",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "AI assistant · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/assistant/assistant-settings-desktop.png",
+        "docs/assets/screenshots/admin/assistant/assistant-settings-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "assistant",
+      "name": "conversation-detail",
+      "route": "/assistant/conversations/30d417bd-9e7d-44d4-a3b1-10c68982855b",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Assistant chat · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/assistant/conversation-detail-desktop.png",
+        "docs/assets/screenshots/admin/assistant/conversation-detail-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "attendance",
+      "name": "attendance",
+      "route": "/attendance",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Attendance · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/attendance/attendance-desktop.png",
+        "docs/assets/screenshots/admin/attendance/attendance-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "attendance",
+      "name": "corrections",
+      "route": "/attendance/corrections",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Corrections · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/attendance/corrections-desktop.png",
+        "docs/assets/screenshots/admin/attendance/corrections-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "attendance",
+      "name": "employee-days",
+      "route": "/attendance/employee/7735b599-fb3e-450c-901b-c85b97531e78",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Attendance history · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/attendance/employee-days-desktop.png",
+        "docs/assets/screenshots/admin/attendance/employee-days-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "audit",
+      "name": "audit",
+      "route": "/audit",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Audit log · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/audit/audit-desktop.png",
+        "docs/assets/screenshots/admin/audit/audit-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "cms",
+      "name": "articles",
+      "route": "/cms/articles",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Stories and guides · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/cms/articles-desktop.png",
+        "docs/assets/screenshots/admin/cms/articles-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "cms",
+      "name": "cms-home",
+      "route": "/cms",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/cms/cms-home-desktop.png",
+        "docs/assets/screenshots/admin/cms/cms-home-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "cms",
+      "name": "faqs",
+      "route": "/cms/faqs",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "FAQs · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/cms/faqs-desktop.png",
+        "docs/assets/screenshots/admin/cms/faqs-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "cms",
+      "name": "gallery",
+      "route": "/cms/gallery",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Gallery · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/cms/gallery-desktop.png",
+        "docs/assets/screenshots/admin/cms/gallery-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "cms",
+      "name": "pages",
+      "route": "/cms/pages",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Pages · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/cms/pages-desktop.png",
+        "docs/assets/screenshots/admin/cms/pages-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "cms",
+      "name": "projects",
+      "route": "/cms/projects",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Projects · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/cms/projects-desktop.png",
+        "docs/assets/screenshots/admin/cms/projects-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "cms",
+      "name": "service-editor",
+      "route": "/cms/services/garden-design",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Edit · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/cms/service-editor-desktop.png",
+        "docs/assets/screenshots/admin/cms/service-editor-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "cms",
+      "name": "service-new",
+      "route": "/cms/services/new",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "New service · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/cms/service-new-desktop.png",
+        "docs/assets/screenshots/admin/cms/service-new-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "cms",
+      "name": "services",
+      "route": "/cms/services",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Services · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/cms/services-desktop.png",
+        "docs/assets/screenshots/admin/cms/services-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "cms",
+      "name": "site-settings",
+      "route": "/cms/site",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Site settings · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/cms/site-settings-desktop.png",
+        "docs/assets/screenshots/admin/cms/site-settings-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "cms",
+      "name": "testimonials",
+      "route": "/cms/testimonials",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Testimonials · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/cms/testimonials-desktop.png",
+        "docs/assets/screenshots/admin/cms/testimonials-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "customers",
+      "name": "customer-detail",
+      "route": "/customers/f8918bad-2916-4cf3-8765-6871701d752a",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Customer · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/customers/customer-detail-desktop.png",
+        "docs/assets/screenshots/admin/customers/customer-detail-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "customers",
+      "name": "customers",
+      "route": "/customers",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Customers · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/customers/customers-desktop.png",
+        "docs/assets/screenshots/admin/customers/customers-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "dashboard",
+      "name": "dashboard",
+      "route": "/",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Dashboard · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/dashboard/dashboard-desktop.png",
+        "docs/assets/screenshots/admin/dashboard/dashboard-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "employees",
+      "name": "employee-detail",
+      "route": "/employees/7735b599-fb3e-450c-901b-c85b97531e78",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Employee · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/employees/employee-detail-desktop.png",
+        "docs/assets/screenshots/admin/employees/employee-detail-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "employees",
+      "name": "employee-new",
+      "route": "/employees/new",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "New employee · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/employees/employee-new-desktop.png",
+        "docs/assets/screenshots/admin/employees/employee-new-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "employees",
+      "name": "employees",
+      "route": "/employees",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Employees · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/employees/employees-desktop.png",
+        "docs/assets/screenshots/admin/employees/employees-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "employees",
+      "name": "schedules",
+      "route": "/employees/schedules",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Schedules · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/employees/schedules-desktop.png",
+        "docs/assets/screenshots/admin/employees/schedules-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "errors",
+      "name": "not-found",
+      "route": "/this-page-does-not-exist",
+      "auth": "super_admin",
+      "status": 404,
+      "title": "Page not found · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/errors/not-found-desktop.png",
+        "docs/assets/screenshots/admin/errors/not-found-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "inventory",
+      "name": "inventory",
+      "route": "/inventory",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Inventory · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/inventory/inventory-desktop.png",
+        "docs/assets/screenshots/admin/inventory/inventory-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "leave",
+      "name": "balances",
+      "route": "/leave/balances",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Leave balances · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/leave/balances-desktop.png",
+        "docs/assets/screenshots/admin/leave/balances-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "leave",
+      "name": "leave",
+      "route": "/leave",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Leave · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/leave/leave-desktop.png",
+        "docs/assets/screenshots/admin/leave/leave-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "leave",
+      "name": "settings",
+      "route": "/leave/settings",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Leave and attendance settings · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/leave/settings-desktop.png",
+        "docs/assets/screenshots/admin/leave/settings-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "login",
+      "name": "login",
+      "route": "/login",
+      "auth": "public",
+      "status": 200,
+      "title": "Sign in · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/login/login-desktop.png",
+        "docs/assets/screenshots/admin/login/login-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "messages",
+      "name": "contact-inquiries",
+      "route": "/messages/contact",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Contact form · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/messages/contact-inquiries-desktop.png",
+        "docs/assets/screenshots/admin/messages/contact-inquiries-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "messages",
+      "name": "message-thread",
+      "route": "/messages/3253739b-a770-4049-ba90-34052da13731",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Conversation · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/messages/message-thread-desktop.png",
+        "docs/assets/screenshots/admin/messages/message-thread-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "messages",
+      "name": "messages",
+      "route": "/messages",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Messages · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/messages/messages-desktop.png",
+        "docs/assets/screenshots/admin/messages/messages-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "notifications",
+      "name": "notifications",
+      "route": "/notifications",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Notifications · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/notifications/notifications-desktop.png",
+        "docs/assets/screenshots/admin/notifications/notifications-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "orders",
+      "name": "order-detail",
+      "route": "/orders/f94c35d9-fb39-4dbd-ad68-d41b7f3073bd",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Order · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/orders/order-detail-desktop.png",
+        "docs/assets/screenshots/admin/orders/order-detail-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "orders",
+      "name": "orders",
+      "route": "/orders",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Orders · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/orders/orders-desktop.png",
+        "docs/assets/screenshots/admin/orders/orders-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "products",
+      "name": "product-edit",
+      "route": "/products/4aaa1e9b-9db4-484b-ab22-904283471027",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Product · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/products/product-edit-desktop.png",
+        "docs/assets/screenshots/admin/products/product-edit-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "products",
+      "name": "product-new",
+      "route": "/products/new",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "New product · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/products/product-new-desktop.png",
+        "docs/assets/screenshots/admin/products/product-new-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "products",
+      "name": "products",
+      "route": "/products",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Products · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/products/products-desktop.png",
+        "docs/assets/screenshots/admin/products/products-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "quotations",
+      "name": "quotation-detail",
+      "route": "/quotations/d190b220-808e-4d68-9e1a-ed9616fa667a",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Quotation · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/quotations/quotation-detail-desktop.png",
+        "docs/assets/screenshots/admin/quotations/quotation-detail-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "quotations",
+      "name": "quotations",
+      "route": "/quotations",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Quotations · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/quotations/quotations-desktop.png",
+        "docs/assets/screenshots/admin/quotations/quotations-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "reports",
+      "name": "attendance-report",
+      "route": "/reports/attendance",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Attendance report · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/reports/attendance-report-desktop.png",
+        "docs/assets/screenshots/admin/reports/attendance-report-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "reports",
+      "name": "sales-report",
+      "route": "/reports/sales",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Sales report · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/reports/sales-report-desktop.png",
+        "docs/assets/screenshots/admin/reports/sales-report-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "settings",
+      "name": "delivery-zones",
+      "route": "/settings/delivery",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Delivery areas · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/settings/delivery-zones-desktop.png",
+        "docs/assets/screenshots/admin/settings/delivery-zones-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "settings",
+      "name": "settings",
+      "route": "/settings",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Settings · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/settings/settings-desktop.png",
+        "docs/assets/screenshots/admin/settings/settings-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "system",
+      "name": "system",
+      "route": "/system",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "System status · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/system/system-desktop.png",
+        "docs/assets/screenshots/admin/system/system-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "users",
+      "name": "role-editor",
+      "route": "/users/roles/new",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Role · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/users/role-editor-desktop.png",
+        "docs/assets/screenshots/admin/users/role-editor-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "users",
+      "name": "roles",
+      "route": "/users/roles",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Roles · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/users/roles-desktop.png",
+        "docs/assets/screenshots/admin/users/roles-mobile.png"
+      ]
+    },
+    {
+      "portal": "admin",
+      "area": "users",
+      "name": "users",
+      "route": "/users",
+      "auth": "super_admin",
+      "status": 200,
+      "title": "Users · Greenscape Admin",
+      "files": [
+        "docs/assets/screenshots/admin/users/users-desktop.png",
+        "docs/assets/screenshots/admin/users/users-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "about",
+      "name": "about",
+      "route": "/about",
+      "auth": "public",
+      "status": 200,
+      "title": "About Greenscape | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/about/about-desktop.png",
+        "docs/assets/screenshots/customer/about/about-fullpage.png",
+        "docs/assets/screenshots/customer/about/about-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "account",
+      "name": "account",
+      "route": "/account",
+      "auth": "customer",
+      "status": 200,
+      "title": "My account | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/account/account-desktop.png",
+        "docs/assets/screenshots/customer/account/account-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "account",
+      "name": "messages",
+      "route": "/messages",
+      "auth": "customer",
+      "status": 200,
+      "title": "Messages | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/account/messages-desktop.png",
+        "docs/assets/screenshots/customer/account/messages-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "account",
+      "name": "notifications",
+      "route": "/account/notifications",
+      "auth": "customer",
+      "status": 200,
+      "title": "Notifications | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/account/notifications-desktop.png",
+        "docs/assets/screenshots/customer/account/notifications-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "auth",
+      "name": "forgot-password",
+      "route": "/auth/forgot-password",
+      "auth": "public",
+      "status": 200,
+      "title": "Reset your password | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/auth/forgot-password-desktop.png",
+        "docs/assets/screenshots/customer/auth/forgot-password-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "auth",
+      "name": "login",
+      "route": "/auth/login",
+      "auth": "public",
+      "status": 200,
+      "title": "Sign in | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/auth/login-desktop.png",
+        "docs/assets/screenshots/customer/auth/login-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "auth",
+      "name": "register",
+      "route": "/auth/register",
+      "auth": "public",
+      "status": 200,
+      "title": "Create an account | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/auth/register-desktop.png",
+        "docs/assets/screenshots/customer/auth/register-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "cart",
+      "name": "cart",
+      "route": "/cart",
+      "auth": "customer",
+      "status": 200,
+      "title": "Your cart | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/cart/cart-desktop.png",
+        "docs/assets/screenshots/customer/cart/cart-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "cart",
+      "name": "cart-empty",
+      "route": "/cart",
+      "auth": "customer",
+      "status": 200,
+      "title": "Your cart | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/cart/cart-empty-desktop.png",
+        "docs/assets/screenshots/customer/cart/cart-empty-mobile.png"
+      ],
+      "note": "Empty state"
+    },
+    {
+      "portal": "customer",
+      "area": "checkout",
+      "name": "checkout",
+      "route": "/checkout",
+      "auth": "customer",
+      "status": 200,
+      "title": "Checkout | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/checkout/checkout-desktop.png",
+        "docs/assets/screenshots/customer/checkout/checkout-fullpage.png",
+        "docs/assets/screenshots/customer/checkout/checkout-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "contact",
+      "name": "contact",
+      "route": "/contact",
+      "auth": "public",
+      "status": 200,
+      "title": "Contact Greenscape | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/contact/contact-desktop.png",
+        "docs/assets/screenshots/customer/contact/contact-fullpage.png",
+        "docs/assets/screenshots/customer/contact/contact-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "design",
+      "name": "design-system",
+      "route": "/design",
+      "auth": "public",
+      "status": 200,
+      "title": "Design system | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/design/design-system-desktop.png",
+        "docs/assets/screenshots/customer/design/design-system-fullpage.png"
+      ],
+      "note": "Internal design-system gallery"
+    },
+    {
+      "portal": "customer",
+      "area": "errors",
+      "name": "not-found",
+      "route": "/this-page-does-not-exist",
+      "auth": "public",
+      "status": 404,
+      "title": "Greenscape Landscaping Services | Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/errors/not-found-desktop.png",
+        "docs/assets/screenshots/customer/errors/not-found-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "faq",
+      "name": "faq",
+      "route": "/faq",
+      "auth": "public",
+      "status": 200,
+      "title": "Questions we are often asked | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/faq/faq-desktop.png",
+        "docs/assets/screenshots/customer/faq/faq-fullpage.png",
+        "docs/assets/screenshots/customer/faq/faq-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "gallery",
+      "name": "gallery",
+      "route": "/gallery",
+      "auth": "public",
+      "status": 200,
+      "title": "Gallery | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/gallery/gallery-desktop.png",
+        "docs/assets/screenshots/customer/gallery/gallery-fullpage.png",
+        "docs/assets/screenshots/customer/gallery/gallery-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "gallery",
+      "name": "gallery-lightbox",
+      "route": "/gallery",
+      "auth": "public",
+      "status": 200,
+      "title": "Gallery | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/gallery/gallery-lightbox-desktop.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "home",
+      "name": "home",
+      "route": "/",
+      "auth": "public",
+      "status": 200,
+      "title": "Greenscape Landscaping Services | Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/home/home-desktop.png",
+        "docs/assets/screenshots/customer/home/home-fullpage.png",
+        "docs/assets/screenshots/customer/home/home-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "home",
+      "name": "home-sizes",
+      "route": "/",
+      "auth": "public",
+      "status": 200,
+      "title": "Greenscape Landscaping Services | Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/home/home-tablet.png",
+        "docs/assets/screenshots/customer/home/home-fullhd.png"
+      ],
+      "note": "Tablet 768×1024 and Full HD 1920×1080"
+    },
+    {
+      "portal": "customer",
+      "area": "legal",
+      "name": "delivery-policy",
+      "route": "/delivery-policy",
+      "auth": "public",
+      "status": 200,
+      "title": "Delivery terms | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/legal/delivery-policy-desktop.png",
+        "docs/assets/screenshots/customer/legal/delivery-policy-fullpage.png",
+        "docs/assets/screenshots/customer/legal/delivery-policy-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "legal",
+      "name": "privacy",
+      "route": "/privacy",
+      "auth": "public",
+      "status": 200,
+      "title": "Privacy notice | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/legal/privacy-desktop.png",
+        "docs/assets/screenshots/customer/legal/privacy-fullpage.png",
+        "docs/assets/screenshots/customer/legal/privacy-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "projects",
+      "name": "project-detail",
+      "route": "/projects/sustainable-landscaping-in-action",
+      "auth": "public",
+      "status": 200,
+      "title": "Sustainable Landscaping in Action | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/projects/project-detail-desktop.png",
+        "docs/assets/screenshots/customer/projects/project-detail-fullpage.png",
+        "docs/assets/screenshots/customer/projects/project-detail-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "projects",
+      "name": "projects",
+      "route": "/projects",
+      "auth": "public",
+      "status": 200,
+      "title": "Projects | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/projects/projects-desktop.png",
+        "docs/assets/screenshots/customer/projects/projects-fullpage.png",
+        "docs/assets/screenshots/customer/projects/projects-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "quote",
+      "name": "quote",
+      "route": "/quote",
+      "auth": "public",
+      "status": 200,
+      "title": "Request a quote | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/quote/quote-desktop.png",
+        "docs/assets/screenshots/customer/quote/quote-fullpage.png",
+        "docs/assets/screenshots/customer/quote/quote-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "services",
+      "name": "service-detail",
+      "route": "/services/garden-design",
+      "auth": "public",
+      "status": 200,
+      "title": "Garden Design | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/services/service-detail-desktop.png",
+        "docs/assets/screenshots/customer/services/service-detail-fullpage.png",
+        "docs/assets/screenshots/customer/services/service-detail-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "services",
+      "name": "services",
+      "route": "/services",
+      "auth": "public",
+      "status": 200,
+      "title": "Services | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/services/services-desktop.png",
+        "docs/assets/screenshots/customer/services/services-fullpage.png",
+        "docs/assets/screenshots/customer/services/services-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "shop",
+      "name": "product-detail",
+      "route": "/shop/docs-demo-5aaa04",
+      "auth": "public",
+      "status": 200,
+      "title": "Banaba | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/shop/product-detail-desktop.png",
+        "docs/assets/screenshots/customer/shop/product-detail-mobile.png"
+      ],
+      "note": "Temporary priced demo product"
+    },
+    {
+      "portal": "customer",
+      "area": "shop",
+      "name": "product-price-on-request",
+      "route": "/shop/banaba",
+      "auth": "public",
+      "status": 200,
+      "title": "Banaba | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/shop/product-price-on-request-desktop.png",
+        "docs/assets/screenshots/customer/shop/product-price-on-request-mobile.png"
+      ],
+      "note": "Imported product without a priced size"
+    },
+    {
+      "portal": "customer",
+      "area": "shop",
+      "name": "shop",
+      "route": "/shop",
+      "auth": "public",
+      "status": 200,
+      "title": "Shop plants and garden supplies | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/shop/shop-desktop.png",
+        "docs/assets/screenshots/customer/shop/shop-fullpage.png",
+        "docs/assets/screenshots/customer/shop/shop-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "stories",
+      "name": "stories",
+      "route": "/stories",
+      "auth": "public",
+      "status": 200,
+      "title": "Stories | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/stories/stories-desktop.png",
+        "docs/assets/screenshots/customer/stories/stories-fullpage.png",
+        "docs/assets/screenshots/customer/stories/stories-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "stories",
+      "name": "story-detail",
+      "route": "/stories/women-who-inspire-nanay-esthers-journey-at-greenscape",
+      "auth": "public",
+      "status": 200,
+      "title": "Women Who Inspire: Nanay Esther’s Journey at Greenscape | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/stories/story-detail-desktop.png",
+        "docs/assets/screenshots/customer/stories/story-detail-fullpage.png",
+        "docs/assets/screenshots/customer/stories/story-detail-mobile.png"
+      ]
+    },
+    {
+      "portal": "customer",
+      "area": "testimonials",
+      "name": "testimonials",
+      "route": "/testimonials",
+      "auth": "public",
+      "status": 200,
+      "title": "Client feedback | Greenscape Palawan",
+      "files": [
+        "docs/assets/screenshots/customer/testimonials/testimonials-desktop.png",
+        "docs/assets/screenshots/customer/testimonials/testimonials-fullpage.png",
+        "docs/assets/screenshots/customer/testimonials/testimonials-mobile.png"
+      ]
+    },
+    {
+      "portal": "employee",
+      "area": "attendance",
+      "name": "attendance",
+      "route": "/attendance",
+      "auth": "employee",
+      "status": 200,
+      "title": "Attendance · Greenscape Employees",
+      "files": [
+        "docs/assets/screenshots/employee/attendance/attendance-desktop.png",
+        "docs/assets/screenshots/employee/attendance/attendance-fullpage.png",
+        "docs/assets/screenshots/employee/attendance/attendance-mobile.png"
+      ]
+    },
+    {
+      "portal": "employee",
+      "area": "dashboard",
+      "name": "dashboard-before-clock-in",
+      "route": "/",
+      "auth": "employee",
+      "status": 200,
+      "title": "Dashboard · Greenscape Employees",
+      "files": [
+        "docs/assets/screenshots/employee/dashboard/dashboard-before-clock-in-desktop.png",
+        "docs/assets/screenshots/employee/dashboard/dashboard-before-clock-in-mobile.png"
+      ]
+    },
+    {
+      "portal": "employee",
+      "area": "dashboard",
+      "name": "dashboard-clocked-in",
+      "route": "/",
+      "auth": "employee",
+      "status": 200,
+      "title": "Dashboard · Greenscape Employees",
+      "files": [
+        "docs/assets/screenshots/employee/dashboard/dashboard-clocked-in-desktop.png",
+        "docs/assets/screenshots/employee/dashboard/dashboard-clocked-in-mobile.png"
+      ]
+    },
+    {
+      "portal": "employee",
+      "area": "errors",
+      "name": "not-found",
+      "route": "/this-page-does-not-exist",
+      "auth": "employee",
+      "status": 404,
+      "title": "Page not found · Greenscape Employees",
+      "files": [
+        "docs/assets/screenshots/employee/errors/not-found-desktop.png",
+        "docs/assets/screenshots/employee/errors/not-found-mobile.png"
+      ]
+    },
+    {
+      "portal": "employee",
+      "area": "login",
+      "name": "login",
+      "route": "/login",
+      "auth": "public",
+      "status": 200,
+      "title": "Sign in · Greenscape Employees",
+      "files": [
+        "docs/assets/screenshots/employee/login/login-desktop.png",
+        "docs/assets/screenshots/employee/login/login-mobile.png"
+      ]
+    },
+    {
+      "portal": "employee",
+      "area": "notifications",
+      "name": "notifications",
+      "route": "/notifications",
+      "auth": "employee",
+      "status": 200,
+      "title": "Notifications · Greenscape Employees",
+      "files": [
+        "docs/assets/screenshots/employee/notifications/notifications-desktop.png",
+        "docs/assets/screenshots/employee/notifications/notifications-mobile.png"
+      ]
+    },
+    {
+      "portal": "employee",
+      "area": "profile",
+      "name": "profile",
+      "route": "/profile",
+      "auth": "employee",
+      "status": 200,
+      "title": "Profile · Greenscape Employees",
+      "files": [
+        "docs/assets/screenshots/employee/profile/profile-desktop.png",
+        "docs/assets/screenshots/employee/profile/profile-mobile.png"
+      ]
+    },
+    {
+      "portal": "employee",
+      "area": "requests",
+      "name": "requests",
+      "route": "/requests",
+      "auth": "employee",
+      "status": 200,
+      "title": "Requests · Greenscape Employees",
+      "files": [
+        "docs/assets/screenshots/employee/requests/requests-desktop.png",
+        "docs/assets/screenshots/employee/requests/requests-fullpage.png",
+        "docs/assets/screenshots/employee/requests/requests-mobile.png"
+      ]
+    },
+    {
+      "portal": "employee",
+      "area": "schedule",
+      "name": "schedule",
+      "route": "/schedule",
+      "auth": "employee",
+      "status": 200,
+      "title": "Schedule · Greenscape Employees",
+      "files": [
+        "docs/assets/screenshots/employee/schedule/schedule-desktop.png",
+        "docs/assets/screenshots/employee/schedule/schedule-mobile.png"
+      ]
+    }
+  ]
+}
