@@ -1,4 +1,6 @@
 import { api } from '@greenscape/auth/api';
+import { PWA } from '@greenscape/ui/pwa/app';
+import { InstallApp } from '@greenscape/ui/pwa/client';
 import { HealthResponse, z } from '@greenscape/validation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -31,6 +33,10 @@ export default async function SettingsPage() {
         <h3 id="notify" className="text-xl">Who gets emails</h3>
         <p className="text-sm text-ink-2">One address per line. Leave a box empty to use the default shown under it.</p>
         <NotificationsForm saved={n.saved} effective={n.effective} kinds={n.kinds} canManage={can(me, 'settings.manage')} />
+      </section>
+      <section aria-labelledby="install" className="flex flex-col gap-3">
+        <h3 id="install" className="text-xl">Install the app</h3>
+        <InstallApp name={PWA.admin.name} />
       </section>
       <section aria-labelledby="status" className="flex flex-col gap-2 text-sm">
         <h3 id="status" className="text-xl">System</h3>

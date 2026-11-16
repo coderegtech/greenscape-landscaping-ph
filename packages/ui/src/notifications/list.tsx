@@ -1,7 +1,7 @@
 'use client';
 import type { NotificationView } from '@greenscape/validation';
 import type { NotificationCategory } from '@greenscape/validation';
-import { BellOff, CalendarCheck, Megaphone, MessageSquare, ReceiptText, ShieldAlert, ShoppingBag, TriangleAlert, Warehouse, X, type LucideIcon } from 'lucide-react';
+import { BellOff, CalendarCheck, Clock, Megaphone, MessageSquare, ReceiptText, ShieldAlert, ShoppingBag, TriangleAlert, Warehouse, X, type LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../components/badge';
 import { Skeleton } from '../components/skeleton';
@@ -16,6 +16,7 @@ const CATEGORY: Record<NotificationCategory, { icon: LucideIcon; tone: string; n
   messages: { icon: MessageSquare, tone: 'tone-blue', name: 'Message' },
   stock: { icon: Warehouse, tone: 'tone-orange', name: 'Stock' },
   hr: { icon: CalendarCheck, tone: 'tone-purple', name: 'Attendance and leave' },
+  clock: { icon: Clock, tone: 'tone-purple', name: 'Clock-in' },
   account: { icon: ShieldAlert, tone: 'tone-red', name: 'Account' },
   system: { icon: Megaphone, tone: 'tone-lime', name: 'Announcement' },
 };

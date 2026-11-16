@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { AppQuery, BroadcastBody, ClearQuery, NotificationListQuery, NotificationPage, PreferenceUpdate, PushSubscriptionBody, PushUnsubscribeBody, z } from '@greenscape/validation';
+import { AppQuery, BroadcastBody, type NotificationApp, ClearQuery, NotificationListQuery, NotificationPage, PreferenceUpdate, PushSubscriptionBody, PushUnsubscribeBody, z } from '@greenscape/validation';
 import { Router } from 'express';
 import { audit } from '../../lib/audit.ts';
 import { assertRolesExist } from '../users/roles.ts';
@@ -23,7 +23,11 @@ api('put', '/preferences', 'Save settings. Account and security notices cannot b
 api('get', '/push/config', 'Whether push is on, and the public VAPID key the browser subscribes with.');
 api('post', '/push/subscriptions', 'Register this browser for push (one row per device).', { body: PushSubscriptionBody });
 api('delete', '/push/subscriptions', 'Remove a push subscription.', { body: PushUnsubscribeBody });
+api('post', '/push/test', 'Send a test alert to your own devices for one app. Rate-limited.', { query: AppQuery });
 api('post', '/broadcast', 'Send an announcement (notifications.broadcast). Audited; rate-limited.', { body: BroadcastBody });
+
+/** Who may receive pushes from a portal: a device registers for the console or the employee portal only with access to it. */
+const PORTAL_PERMISSION: Record<NotificationApp, string | null> = { web: null, admin: 'admin.access', employee: 'attendance.self' };
 
 export function notificationRoutes(deps: Deps) {
   const { notifications: n, env, db } = deps;
@@ -52,12 +56,23 @@ export function notificationRoutes(deps: Deps) {
   r.post('/push/subscriptions', async (req, res) => {
     if (!n.worker.enabled) throw new AppError(503, 'PUSH_DISABLED', 'Push notifications are not configured on this server');
     const b = PushSubscriptionBody.parse(req.body);
+    const need = PORTAL_PERMISSION[b.app];
+    if (need && !currentAuth(res).permissions.has(need)) throw AppError.forbidden('Your account cannot use this portal');
     await n.subscribe(uid(res), { app: b.app, deviceId: b.deviceId, endpoint: b.subscription.endpoint, p256dh: b.subscription.keys.p256dh, auth: b.subscription.keys.auth, userAgent: req.get('user-agent') });
     res.status(201).json({ ok: true });
   });
   r.delete('/push/subscriptions', async (req, res) => {
     await n.unsubscribe(uid(res), PushUnsubscribeBody.parse(req.body).endpoint);
     res.json({ ok: true });
+  });
+
+  // Goes through the real pipeline (inbox, live, push queue) to the caller's own devices only; nobody else can be named.
+  r.post('/push/test', formLimit(deps, 'push-test', 10), async (req, res) => {
+    const { app } = AppQuery.parse(req.query);
+    const devices = await db.pushSubscription.count({ where: { userId: uid(res), app } });
+    if (!devices) throw new AppError(409, 'NO_DEVICE', 'Turn on alerts on this device first');
+    await n.notify({ userId: uid(res), app, type: 'push.test', category: 'account', title: 'Test alert', message: 'Alerts work on this device.', href: app === 'web' ? '/account/notifications' : '/notifications', priority: 'HIGH' });
+    res.status(201).json({ devices });
   });
 
   r.post('/broadcast', requirePermission('notifications.broadcast'), formLimit(deps, 'broadcast', 20), async (req, res) => {

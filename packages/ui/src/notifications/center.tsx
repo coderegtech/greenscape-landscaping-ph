@@ -1,5 +1,5 @@
 'use client';
-import { CATEGORY_KEYS, NOTIFICATION_CATEGORIES, type NotificationCategory, type NotificationPreferenceItem } from '@greenscape/validation';
+import { categoriesFor, NOTIFICATION_CATEGORIES, type NotificationCategory, type NotificationPreferenceItem } from '@greenscape/validation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '../components/button';
 import { Checkbox } from '../components/checkbox';
@@ -18,7 +18,7 @@ const tab = 'h-11 flex-none px-4 text-sm text-ink-2 hover:text-ink data-[state=a
 const selectClass = 'h-10 rounded-(--radius-control) border border-rule-strong bg-paper-3 px-3 text-sm text-ink';
 
 function Inbox() {
-  const { unread, status, markAllRead, clear } = useNotifications();
+  const { app, unread, status, markAllRead, clear } = useNotifications();
   const [only, setOnly] = useState(false);
   const [category, setCategory] = useState('');
   const [confirm, setConfirm] = useState(false);
@@ -48,7 +48,7 @@ function Inbox() {
           <span className="sr-only sm:not-sr-only">Type</span>
           <select value={category} onChange={(e) => setCategory(e.target.value)} className={selectClass}>
             <option value="">All types</option>
-            {CATEGORY_KEYS.map((k) => <option key={k} value={k}>{NOTIFICATION_CATEGORIES[k].label}</option>)}
+            {categoriesFor(app).map((k) => <option key={k} value={k}>{NOTIFICATION_CATEGORIES[k].label}</option>)}
           </select>
         </label>
         <span className="ml-auto text-sm text-muted" role="status">{STATUS_LABELS[status]}</span>
@@ -102,7 +102,8 @@ function Row({ category, value, onChange, disabled }: { category: NotificationCa
 }
 
 function Preferences() {
-  const { call } = useNotifications();
+  const { app, call } = useNotifications();
+  const shown = categoriesFor(app);
   const [prefs, setPrefs] = useState<NotificationPreferenceItem[] | null>(null);
   const [msg, setMsg] = useState<{ tone: 'error' | 'success'; text: string } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -136,10 +137,10 @@ function Preferences() {
               <span role="columnheader">Type</span>
               {['In the app', 'Alerts', 'Sound'].map((h) => <span key={h} role="columnheader" className="text-center">{h}</span>)}
             </div>
-            {prefs.map((p) => <Row key={p.category} category={p.category} value={p} onChange={change} disabled={false} />)}
+            {prefs.filter((p) => shown.includes(p.category)).map((p) => <Row key={p.category} category={p.category} value={p} onChange={change} disabled={false} />)}
           </div>
         ) : (
-          <div className="flex flex-col gap-3">{CATEGORY_KEYS.map((k) => <Skeleton key={k} className="h-8 w-full" />)}</div>
+          <div className="flex flex-col gap-3">{shown.map((k) => <Skeleton key={k} className="h-8 w-full" />)}</div>
         )}
       </section>
     </div>

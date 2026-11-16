@@ -2,7 +2,7 @@ import { refreshSession } from '@greenscape/auth/next';
 import { NextResponse, type NextRequest } from 'next/server';
 
 // Employee portal: every page needs a session; who is an employee is decided by the API, never here.
-const PUBLIC = ['/login', '/auth/callback', '/api/health', '/sw.js'];
+const PUBLIC = ['/login', '/auth/callback', '/api/health', '/sw.js', '/manifest.webmanifest', '/offline'];
 
 const origin = (u: string | undefined) => {
   try {

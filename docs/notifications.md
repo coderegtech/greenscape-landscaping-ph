@@ -54,7 +54,8 @@ Notifications flow one way (server → browser); the browser's own actions are o
 | `DELETE /:id`, `DELETE /?app=&readOnly=` | Delete one / clear. |
 | `GET` / `PUT /preferences` | Per-category settings. `account` (security) can never be hidden from the inbox. Push needs the inbox: it is switched off when in-app is off. |
 | `GET /push/config` | `{ enabled, publicKey }`: the **public** VAPID key only. |
-| `POST` / `DELETE /push/subscriptions` | Register / remove this device. |
+| `POST` / `DELETE /push/subscriptions` | Register / remove this device. A device registers for `admin` only with `admin.access` and for `employee` only with `attendance.self` (403 otherwise). |
+| `POST /push/test?app=` | Test alert to the caller's own devices for that app (409 without one). No recipient parameter exists. 10/hour. |
 | `POST /broadcast` | Announcement. Needs `notifications.broadcast` (admin, super_admin). Audience = chosen roles, else all staff (`admin`) or all active accounts (`web`). Audited, rate-limited (20/hour/IP). |
 
 Authorization: every query includes `recipientId = <caller>`; someone else's id answers `404`, same as a missing one. The socket is scoped to the caller's own inbox room. Role-based audiences are resolved by **permission**, never by role name.
@@ -66,6 +67,8 @@ Authorization: every query includes `recipientId = <caller>`; someone else's id 
 * **Duplicate prevention:** `dedupeKey` (one notification per event per person), `UNIQUE(notification, device)` (one push per device), the visible-tab rule above, and the worker skips a push whose notification was read elsewhere before it went out.
 * **Retries:** 429, 5xx and network errors retry after 30 s, 1 min, 2 min, 4 min, 8 min (±20 %, max 1 h), 6 attempts, then `FAILED` with the reason. 404/410 mark the device `GONE` and delete the subscription. Other 4xx are final. A device is only removed after 5 notifications failed for good in a row, so a push-service outage never deletes healthy devices.
 * **Restarts:** workers claim rows with a 2-minute lease; a crash mid-send lets the lease lapse and the row is picked up again.
+* **Inactive accounts:** a suspended or deleted account gets no new push rows, and rows queued before the suspension end `FAILED` (`account not active`) instead of being sent.
+* **Sign-out:** the login page drops the browser's local push subscription when there is no session, so a shared device stops receiving the previous account's alerts (the push service then answers 410 and the server deletes the row). The next person turns alerts on themselves.
 * **Throttle:** at most 20 pushes per user per minute; beyond that the notification is still stored and streamed.
 
 ## 6. Notification catalogue (triggers)
@@ -90,10 +93,11 @@ Authorization: every query includes `recipientId = <caller>`; someone else's id 
 | `correction.requested` / `correction.decided` | `attendance.approve` / the employee (employee app, `/attendance`) | Time correction … |
 | `schedule.changed` | the employee moved onto a schedule, or everyone currently on an edited schedule (employee app) | Your work schedule changed / was updated (`/schedule`) |
 | `attendance.incomplete` | the employee (employee app), when the day-close job finds no clock-out | You did not clock out (`/attendance`) |
+| `attendance.changed` (clock-in) | `attendance.read` (admin, category `clock`) | Employee clocked in (`/attendance`); first name and last initial only. Clock-outs send nothing. |
 | `testimonial.submitted` | `testimonials.moderate` (admin) | New review to moderate (`/cms/testimonials`); no reviewer name or text |
 | announcement | chosen audience | Admin → Notifications → Send an announcement |
 
-Payload stored with a notification: `{ href }` (a path inside the app that shows it). Push body: `{ id, title, body, url, tag, priority, icon }`.
+Payload stored with a notification: `{ href }` (a path inside the app that shows it). Push body: `{ id, title, body, url, tag, type, priority, icon }`.
 
 Not built: shift/schedule **reminders** (needs a scheduler job; the push and inbox pipeline is ready for it: call `notifications.notify`), payment-method or password-change security alerts (Supabase handles those flows outside this API).
 
@@ -105,7 +109,7 @@ Not built: shift/schedule **reminders** (needs a scheduler job; the push and inb
 | `VAPID_PRIVATE_KEY` | API only | **Secret.** Never sent to a client, never logged. |
 | `VAPID_SUBJECT` | API | `mailto:` or `https:` contact the push services can reach. |
 
-`pnpm vapid:keys` prints a pair. Unset keys = push is off (the inbox and live stream still work; the UI says alerts are not set up).
+`pnpm vapid:keys` prints a pair. Unset keys = push is off; one key without the other stops the API at startup (the inbox and live stream still work; the UI says alerts are not set up).
 
 ## 8. Local development
 
@@ -138,5 +142,5 @@ Sign in on `http://localhost:3000`, then in another browser sign in as staff on 
 ## 11. Known limits
 
 * Real push to a real device is not covered by automated tests (browsers need a user gesture and a real push service). Validate once per target: Chrome desktop, Chrome Android, Safari (iOS: installed to Home Screen), Firefox.
-* iOS needs the site installed as a web app (Home Screen) for push; there is no web manifest yet.
+* iOS needs the portal installed as a web app (Home Screen, iOS 16.4+) for push; the manifests come from the PWA work (`docs/pwa/`).
 * Live delivery is at-most-once; recovery relies on the re-fetch after reconnect (and on the stored inbox).

@@ -1,5 +1,7 @@
 import { SignOutButton } from '@greenscape/ui/auth-forms';
 import { PageHeader } from '@greenscape/ui/layout/dashboard';
+import { PWA } from '@greenscape/ui/pwa/app';
+import { InstallApp } from '@greenscape/ui/pwa/client';
 import { Bell, ChevronRight, KeyRound } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -54,6 +56,11 @@ export default async function ProfilePage() {
           <ChevronRight aria-hidden className="size-4 text-muted" />
         </a>
       </nav>
+
+      <section aria-labelledby="install" className="flex flex-col gap-2 rounded-card border border-rule bg-paper-3 p-5 shadow-soft">
+        <h2 id="install" className="text-base font-bold text-ink">Install the app</h2>
+        <InstallApp name={PWA.employee.name} />
+      </section>
 
       <SignOutButton />
     </div>

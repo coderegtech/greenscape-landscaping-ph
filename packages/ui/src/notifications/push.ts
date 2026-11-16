@@ -62,9 +62,35 @@ export async function disablePush(call: Call): Promise<PushState> {
   return 'off';
 }
 
+/** Sends a test alert to this account's devices for this app (the server picks the recipient: always the caller). */
+export const testPush = (call: Call, app: NotificationApp) => call<{ devices: number }>(`/push/test?app=${app}`, { method: 'POST' });
+
+/**
+ * Signed out (login page): this browser must stop receiving the previous account's alerts. Without a session we cannot
+ * call the API, so the subscription is dropped locally; the push service then answers 410 and the server deletes the row.
+ * The next person must turn alerts on again themselves.
+ */
+export async function dropLocalPush() {
+  if (!supported()) return;
+  const sub = await (await navigator.serviceWorker.getRegistration('/'))?.pushManager.getSubscription();
+  await sub?.unsubscribe();
+}
+
 /** On page load for someone who already allowed push: keeps this device's row fresh and survives key rotation. Never prompts. */
 export async function resyncPush(call: Call, app: NotificationApp) {
   if (!supported() || Notification.permission !== 'granted') return;
-  const sub = await (await navigator.serviceWorker.getRegistration('/'))?.pushManager.getSubscription();
-  if (sub) await send(call, app, sub).catch(() => undefined);
+  const reg = await navigator.serviceWorker.getRegistration('/');
+  let sub = await reg?.pushManager.getSubscription();
+  if (!reg || !sub) return;
+  // Made with a key the server no longer uses (rotation): the push service would refuse every push to it, so swap it.
+  const cfg = await call<Config>('/push/config').catch(() => null);
+  const used = sub.options.applicationServerKey;
+  if (cfg?.publicKey && used && !sameBytes(new Uint8Array(used), keyBytes(cfg.publicKey))) {
+    await sub.unsubscribe();
+    sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(cfg.publicKey) }).catch(() => null);
+    if (!sub) return; // this browser wants a click for it: the settings show "Turn on alerts" again
+  }
+  await send(call, app, sub).catch(() => undefined);
 }
+
+const sameBytes = (a: Uint8Array, b: Uint8Array) => a.length === b.length && a.every((x, i) => x === b[i]);

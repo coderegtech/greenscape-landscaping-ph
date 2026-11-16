@@ -14,6 +14,8 @@
     "./notifications/format": "./src/notifications/format.ts",
     "./notifications/sound-manager": "./src/notifications/sound-manager.ts",
     "./notifications/*": "./src/notifications/*.tsx",
+    "./pwa/app": "./src/pwa/app.ts",
+    "./pwa/*": "./src/pwa/*.tsx",
     "./lib/*": "./src/lib/*.ts",
     "./hooks/*": "./src/hooks/*.ts",
     "./styles/theme.css": "./src/styles/theme.css",

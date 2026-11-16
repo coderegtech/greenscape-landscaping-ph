@@ -86,7 +86,7 @@ export function createNotifications(deps: ServiceDeps, send?: PushSender) {
     if (pref.push && worker.enabled && (await pushAllowed(input.userId))) {
       // Best effort: the notification is already stored and streamed; a subscription removed mid-way must not fail the event.
       try {
-        const subs = await db.pushSubscription.findMany({ where: { userId: input.userId, app: input.app }, select: { id: true } });
+        const subs = await db.pushSubscription.findMany({ where: { userId: input.userId, app: input.app, user: { status: 'ACTIVE' } }, select: { id: true } });
         if (subs.length) {
           await db.notificationDelivery.createMany({ data: subs.map((s) => ({ notificationId: row.id, subscriptionId: s.id })), skipDuplicates: true });
           void worker.drain().catch(() => undefined);

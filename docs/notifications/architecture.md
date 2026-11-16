@@ -8,7 +8,7 @@ This folder covers what the redesign added on top:
 |---|---|
 | [realtime-events.md](realtime-events.md) | The three new triggers, how a live event is accepted in the browser (validation, deduplication), and what happens on logout |
 | [sound-effects.md](sound-effects.md) | The five tones, when a sound plays and when it never does, browser autoplay rules, multi-tab behaviour |
-| [user-preferences.md](user-preferences.md) | Where each setting lives (server per category, browser per device) and the controls |
+| [notification-preferences.md](notification-preferences.md) | Where each setting lives (server per category, browser per device) and the controls |
 
 ## Pieces
 
