@@ -25,6 +25,10 @@ jobs:
 
       - run: pnpm typecheck
       - run: pnpm lint
+      # Documentation: links, screenshots, scene manifest, no secrets; route table matches the app folders.
+      # (Screenshots and video are never regenerated in CI: pnpm docs:capture runs locally.)
+      - run: pnpm docs:validate
+      - run: pnpm docs:inventory --check
       - run: pnpm test
       - run: pnpm test:integration
       # Builds web + admin with the API running (the web app pre-renders pages from the CMS).

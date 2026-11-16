@@ -13,3 +13,8 @@ next-env.d.ts
 *.tsbuildinfo
 # Local-only generated files (e.g. dev admin credentials)
 .local/
+
+# Video production (large; published copies are linked from docs/video/README.md)
+docs/video/assets/recordings/
+docs/video/assets/audio/
+docs/video/exports/
