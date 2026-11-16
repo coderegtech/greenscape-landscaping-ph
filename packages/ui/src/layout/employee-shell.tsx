@@ -29,7 +29,7 @@ export function PortalShell({ name, pending, children }: { name: string; pending
   return (
     <MotionConfig reducedMotion="user">
       <a href="#main" className="sr-only z-[300] rounded-lg bg-signal px-4 py-3 font-bold text-signal-ink focus:not-sr-only focus:fixed focus:top-2 focus:left-2">Skip to content</a>
-      <header className="sticky top-0 z-[200] border-b border-rule bg-paper/90 backdrop-blur">
+      <header className="sticky top-0 z-[200] border-b border-rule bg-paper/90 pt-[env(safe-area-inset-top)] backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-[64rem] items-center gap-2 px-4 md:px-6">
           <Link href="/" className="mr-auto flex items-center gap-2.5 text-ink no-underline md:mr-6">
             <span aria-hidden className="grid size-9 place-items-center rounded-xl bg-signal-deep text-signal-ink"><LogoMark className="w-6" /></span>

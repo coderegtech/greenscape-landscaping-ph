@@ -3,7 +3,8 @@
 #   docker build -f apps/employee/Dockerfile --build-arg NEXT_PUBLIC_API_URL=https://api.example \
 #     --build-arg NEXT_PUBLIC_SUPABASE_URL=https://xyz.supabase.co \
 #     --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_... -t greenscape-employee .
-# The web, admin and employee Dockerfiles differ only in this header and the APP/PORT defaults: change all three together.
+# The web, admin and employee Dockerfiles differ only in this header, the APP/PORT defaults and the
+# public/ copy (admin and employee ship app icons; web has no public folder): change all three together.
 # NEXT_PUBLIC_* values are public by definition (they ship to browsers) and are baked in at build time. Server secrets
 # (SUPABASE_SECRET_KEY is not used by these apps; REVALIDATE_SECRET, PREVIEW_SECRET, INTERNAL_API_KEY) are
 # runtime environment variables only, never build args.
@@ -35,6 +36,8 @@ WORKDIR /app
 # read-only for the app user (run with --read-only; Next's image cache needs a writable /app/apps/APP/.next/cache).
 COPY --from=build --chown=root:root /repo/apps/${APP}/.next/standalone ./
 COPY --from=build --chown=root:root /repo/apps/${APP}/.next/static ./apps/${APP}/.next/static
+# App icons for the installable app (manifest, push notifications, offline screen).
+COPY --from=build --chown=root:root /repo/apps/${APP}/public ./apps/${APP}/public
 RUN mkdir -p ./apps/${APP}/.next/cache && chown node:node ./apps/${APP}/.next/cache
 ENV APP_DIR=/app/apps/${APP}
 USER node

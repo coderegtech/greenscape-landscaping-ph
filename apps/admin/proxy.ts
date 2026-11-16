@@ -2,7 +2,7 @@ import { refreshSession } from '@greenscape/auth/next';
 import { NextResponse, type NextRequest } from 'next/server';
 
 // Everything in admin requires a session; permission checks happen server-side against the API.
-const PUBLIC = ['/login', '/auth/callback', '/api/health', '/sw.js'];
+const PUBLIC = ['/login', '/auth/callback', '/api/health', '/sw.js', '/manifest.webmanifest', '/offline'];
 
 const origin = (u: string | undefined) => {
   try {

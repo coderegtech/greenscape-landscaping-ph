@@ -162,14 +162,14 @@ export function AdminShell({ groups, title, user, account, actions, children }: 
           </div>
         </aside>
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-[200] flex h-16 items-center gap-2 border-b border-rule bg-paper/90 px-4 backdrop-blur md:px-6">
+          <header className="sticky top-0 z-[200] flex h-[calc(4rem+env(safe-area-inset-top))] items-center gap-2 border-b border-rule bg-paper/90 px-4 pt-[env(safe-area-inset-top)] backdrop-blur md:px-6">
             <Sheet open={drawer} onOpenChange={setDrawer}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon-sm" className="lg:hidden" aria-label="Open menu">
                   <Menu />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="band-sidebar w-[min(18rem,100vw)] gap-6 overflow-y-auto border-r-0 p-3">
+              <SheetContent side="left" className="band-sidebar w-[min(18rem,100vw)] gap-6 overflow-y-auto border-r-0 p-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
                 <SheetTitle className="sr-only">Greenscape Admin</SheetTitle>
                 <SheetDescription className="sr-only">Admin navigation</SheetDescription>
                 <Brand />

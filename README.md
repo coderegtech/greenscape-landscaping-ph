@@ -257,7 +257,8 @@ Last recorded full runs (2026-11-12): unit 110, integration 181, e2e 216 passed 
 | Operations | [Deployment](docs/deployment.md) · [Testing](docs/testing.md) · [Progress log](docs/progress.md) |
 | Video | [docs/video/README.md](docs/video/README.md) |
 
-Re-run the audit of the old public site (read-only):
+## Docs
+`docs/audit/` (what exists today) · `docs/architecture.md` · `docs/database-schema.md` · `docs/implementation-plan.md` · `docs/migration-plan.md` · `docs/ui-ux-guidelines.md` · `docs/animation-system.md` · `docs/security.md` · `docs/api-documentation.md` · `docs/testing.md` · `docs/progress.md` · `docs/pwa/` (installable Admin and Employee apps) · `docs/branding/` (logo and app icons)
 
 ```bash
 cd scripts/audit && node crawl.mjs 80 && node lighthouse.mjs && node report.mjs

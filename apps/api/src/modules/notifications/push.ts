@@ -27,16 +27,18 @@ export function createPushWorker(deps: PushDeps, send?: PushSender) {
   }
 
   async function deliver(id: string) {
-    const d = await db.notificationDelivery.findUnique({ where: { id }, include: { notification: true, subscription: true } });
+    const d = await db.notificationDelivery.findUnique({ where: { id }, include: { notification: true, subscription: { include: { user: { select: { status: true } } } } } });
     if (!d || d.status !== 'PENDING') return;
     const { notification: n, subscription: sub } = d;
     if (!sub) return void (await db.notificationDelivery.update({ where: { id }, data: { status: 'GONE', failureReason: 'subscription removed' } }));
+    // Suspended or deleted since it was queued: private notices must not reach the device any more.
+    if (sub.user.status !== 'ACTIVE') return void (await db.notificationDelivery.update({ where: { id }, data: { status: 'FAILED', failureReason: 'account not active' } }));
     if (n.readAt || (n.expiresAt && n.expiresAt < new Date())) {
       // Read on another device (or expired) before the push went out: nothing to show.
       return void (await db.notificationDelivery.update({ where: { id }, data: { status: 'SENT', failureReason: 'skipped: already read or expired' } }));
     }
     const href = (n.payload as { href?: string } | null)?.href ?? '/';
-    const body = JSON.stringify({ id: n.id, title: n.title, body: n.message, url: href, tag: n.id, priority: n.priority, icon: '/icon.png' });
+    const body = JSON.stringify({ id: n.id, title: n.title, body: n.message, url: href, tag: n.id, type: n.type, priority: n.priority, icon: '/icon.png' });
     let outcome: ReturnType<typeof classifyPushError>;
     try {
       await sendPush({ endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } }, body, pushOptions(n.priority));

@@ -5,18 +5,21 @@ import { z } from 'zod';
 export const NOTIFICATION_APPS = ['web', 'admin', 'employee'] as const;
 export type NotificationApp = (typeof NOTIFICATION_APPS)[number];
 
-/** Preference buckets. `locked` categories always appear in the inbox (security and account notices). */
+/** Preference buckets. `locked` categories always appear in the inbox (security and account notices). `apps`: the portals whose settings show it. */
 export const NOTIFICATION_CATEGORIES = {
-  orders: { label: 'Orders and payments', locked: false },
-  quotes: { label: 'Quote requests', locked: false },
-  messages: { label: 'Messages and support', locked: false },
-  stock: { label: 'Low stock', locked: false },
-  hr: { label: 'Attendance and leave', locked: false },
-  account: { label: 'Account and security', locked: true },
-  system: { label: 'Announcements', locked: false },
+  orders: { label: 'Orders and payments', locked: false, apps: ['web', 'admin'] },
+  quotes: { label: 'Quote requests', locked: false, apps: ['web', 'admin'] },
+  messages: { label: 'Messages and support', locked: false, apps: ['web', 'admin'] },
+  stock: { label: 'Low stock', locked: false, apps: ['admin'] },
+  hr: { label: 'Attendance and leave', locked: false, apps: ['admin', 'employee'] },
+  clock: { label: 'Employee clock-ins', locked: false, apps: ['admin'] },
+  account: { label: 'Account and security', locked: true, apps: ['web', 'admin', 'employee'] },
+  system: { label: 'Announcements', locked: false, apps: ['web', 'admin', 'employee'] },
 } as const;
 export type NotificationCategory = keyof typeof NOTIFICATION_CATEGORIES;
 export const CATEGORY_KEYS = Object.keys(NOTIFICATION_CATEGORIES) as [NotificationCategory, ...NotificationCategory[]];
+/** The categories a portal's settings and filters show. */
+export const categoriesFor = (app: NotificationApp) => CATEGORY_KEYS.filter((k) => (NOTIFICATION_CATEGORIES[k].apps as readonly NotificationApp[]).includes(app));
 const Category = z.enum(CATEGORY_KEYS);
 
 export const PRIORITIES = ['LOW', 'NORMAL', 'HIGH', 'URGENT'] as const;

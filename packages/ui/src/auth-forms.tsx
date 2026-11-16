@@ -3,7 +3,7 @@ import { createSupabaseBrowserClient } from '@greenscape/auth/browser';
 import { ForgotPasswordForm, ResetPasswordForm, SignInForm, SignUpForm } from '@greenscape/validation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { z } from 'zod';
 import { Button } from './components/button';
@@ -53,6 +53,10 @@ export function SignInFormView({ next, forgotHref = '/auth/forgot-password' }: {
   const [error, setError] = useState<string>();
   const [shown, setShown] = useState(false);
   const { register, handleSubmit, formState } = useForm<z.input<typeof SignInForm>, unknown, z.output<typeof SignInForm>>({ resolver: zodResolver(SignInForm) });
+  // Signed out on this browser: stop the previous account's alerts reaching it (sign-out, expired session, shared computer).
+  useEffect(() => {
+    if (!/(?:^|;\s*)sb-[^=]*-auth-token/.test(document.cookie)) void import('./notifications/push').then((m) => m.dropLocalPush()).catch(() => undefined);
+  }, []);
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
     setError(undefined);

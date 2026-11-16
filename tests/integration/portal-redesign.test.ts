@@ -16,6 +16,7 @@ let app: ReturnType<typeof createApp>;
 let restoreSelfie: (() => Promise<void>) | undefined;
 const authIds: string[] = [];
 let hr = '';
+let hrId = '';
 let moderator = { token: '', userId: '' };
 let mine = { token: '', userId: '', employeeId: '' };
 let other = { token: '', userId: '', employeeId: '' };
@@ -52,7 +53,9 @@ beforeAll(async () => {
   deps = await testDeps({ REVALIDATE_SECRET: '' });
   app = createApp(deps);
   restoreSelfie = await keepSelfieSetting(deps.db);
-  hr = (await user('hr', 'hr_manager')).token;
+  const h = await user('hr', 'hr_manager');
+  hr = h.token;
+  hrId = h.userId;
   const m = await user('mod', 'content_manager');
   moderator = { token: m.token, userId: m.userId };
   mine = await employee('mine');
@@ -103,6 +106,20 @@ describe('schedule', () => {
     expect(await inbox(mine.userId, 'schedule.updated')).toHaveLength(1);
     expect(await inbox(other.userId, 'schedule.updated')).toHaveLength(1);
     expect(await deps.db.notification.count({ where: { recipientId: moderator.userId, type: { startsWith: 'schedule.' } } })).toBe(0);
+  });
+});
+
+describe('clock-in', () => {
+  it('tells attendance staff in the console, once per punch, without the full name; clock-outs and others stay quiet', async () => {
+    await deps.events.emit('attendance.changed', { employeeId: other.employeeId, kind: 'clocked_in' });
+    await deps.events.emit('attendance.changed', { employeeId: other.employeeId, kind: 'clocked_in' }); // replay in the same minute
+    await deps.events.emit('attendance.changed', { employeeId: other.employeeId, kind: 'clocked_out' });
+    const rows = await inbox(hrId, 'attendance.clock_in');
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({ app: 'admin', category: 'clock', payload: { href: '/attendance' } });
+    expect(rows[0]!.message).toMatch(/^Test o\. started their shift at /);
+    expect(rows[0]!.message).not.toContain(tag);
+    expect(await deps.db.notification.count({ where: { recipientId: { in: [moderator.userId, other.userId] }, type: 'attendance.clock_in' } })).toBe(0);
   });
 });
 
